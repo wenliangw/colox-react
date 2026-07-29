@@ -1,0 +1,17 @@
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: { api: 'modern' },
+    },
+  },
+  test: {
+    environment: 'jsdom',
+    globals: false,
+    setupFiles: ['./src/test-setup.ts'],
+    css: true,
+  },
+});

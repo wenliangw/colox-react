@@ -1,0 +1,20 @@
+@use 'variables' as *;
+
+// Expose tokens as CSS custom properties so consumers can theme at runtime
+// without recompiling SCSS.
+:root {
+  --colox-color-primary: #{$colox-color-primary};
+  --colox-color-primary-hover: #{$colox-color-primary-hover};
+  --colox-color-secondary: #{$colox-color-secondary};
+  --colox-color-danger: #{$colox-color-danger};
+  --colox-radius-sm: #{$colox-radius-sm};
+  --colox-radius-md: #{$colox-radius-md};
+  --colox-radius-lg: #{$colox-radius-lg};
+  --colox-font-family: #{$colox-font-family};
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

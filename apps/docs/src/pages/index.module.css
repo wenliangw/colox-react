@@ -1,0 +1,25 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  margin: 0 0 0.5rem;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0 0 2rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}

@@ -1,0 +1,97 @@
+@use 'sass:color';
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.colox-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $colox-spacing-2;
+  border: 1px solid transparent;
+  border-radius: $colox-radius-md;
+  font-family: $colox-font-family;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+  @include button-size('md');
+
+  &:focus-visible {
+    outline: 2px solid $colox-color-primary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--sm {
+    @include button-size('sm');
+  }
+
+  &--lg {
+    @include button-size('lg');
+  }
+
+  &--primary {
+    background-color: $colox-color-primary;
+    color: $colox-text-on-primary;
+
+    &:hover:not(:disabled) {
+      background-color: $colox-color-primary-hover;
+    }
+  }
+
+  &--secondary {
+    background-color: $colox-color-secondary;
+    color: $colox-text-on-secondary;
+
+    &:hover:not(:disabled) {
+      background-color: $colox-color-secondary-hover;
+    }
+  }
+
+  &--ghost {
+    background-color: transparent;
+    color: $colox-color-primary;
+
+    &:hover:not(:disabled) {
+      background-color: color.adjust($colox-color-primary, $alpha: -0.85);
+    }
+  }
+
+  &--danger {
+    background-color: $colox-color-danger;
+    color: $colox-text-on-danger;
+
+    &:hover:not(:disabled) {
+      background-color: $colox-color-danger-hover;
+    }
+  }
+
+  &__spinner {
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: colox-spin 0.6s linear infinite;
+  }
+
+  &__content {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@keyframes colox-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

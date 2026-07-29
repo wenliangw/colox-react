@@ -1,0 +1,51 @@
+{
+  "name": "colox-react",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Colox React component library monorepo (Vite + TS + React + Storybook + Docusaurus).",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @colox/storybook storybook",
+    "storybook": "pnpm --filter @colox/storybook storybook",
+    "build:storybook": "pnpm --filter @colox/storybook build-storybook",
+    "docs:dev": "pnpm --filter @colox/docs dev",
+    "docs:build": "pnpm --filter @colox/docs build",
+    "docs:serve": "pnpm --filter @colox/docs serve",
+    "build": "pnpm --filter \"./packages/*\" run build",
+    "build:watch": "pnpm --filter @colox/react build:watch",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,jsx,json,md,mdx,scss,css,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,cjs,mjs,ts,tsx,jsx,json,md,mdx,scss,css,yml,yaml}\"",
+    "test": "pnpm -r run test",
+    "test:watch": "pnpm --filter @colox/react test:watch",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.11",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.21.0"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@10.13.0"
+}

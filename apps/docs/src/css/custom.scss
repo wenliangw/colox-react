@@ -1,0 +1,30 @@
+/**
+ * Docusaurus theme overrides.
+ */
+:root {
+  --ifm-color-primary: #4f46e5;
+  --ifm-color-primary-dark: #4438ca;
+  --ifm-color-primary-darker: #3f34c0;
+  --ifm-color-primary-darkest: #352b9e;
+  --ifm-color-primary-light: #6366f1;
+  --ifm-color-primary-lighter: #7275f3;
+  --ifm-color-primary-lightest: #9094f6;
+  --ifm-code-font-size: 95%;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #818cf8;
+  --ifm-color-primary-dark: #6366f1;
+  --ifm-color-primary-darker: #4f46e5;
+  --ifm-color-primary-darkest: #4338ca;
+  --ifm-color-primary-light: #a5b0fa;
+  --ifm-color-primary-lighter: #b8c1fb;
+  --ifm-color-primary-lightest: #d4d9fd;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}

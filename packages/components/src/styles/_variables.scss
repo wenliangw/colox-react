@@ -1,0 +1,29 @@
+// Colox design tokens. Override these before importing the library styles
+// to theme components for your product.
+
+$colox-color-primary: #4f46e5 !default;
+$colox-color-primary-hover: #4338ca !default;
+$colox-color-secondary: #6b7280 !default;
+$colox-color-secondary-hover: #4b5563 !default;
+$colox-color-danger: #dc2626 !default;
+$colox-color-danger-hover: #b91c1c !default;
+
+$colox-text-on-primary: #ffffff !default;
+$colox-text-on-secondary: #ffffff !default;
+$colox-text-on-danger: #ffffff !default;
+
+$colox-radius-sm: 4px !default;
+$colox-radius-md: 8px !default;
+$colox-radius-lg: 12px !default;
+
+$colox-spacing-1: 4px !default;
+$colox-spacing-2: 8px !default;
+$colox-spacing-3: 12px !default;
+$colox-spacing-4: 16px !default;
+
+$colox-font-size-sm: 12px !default;
+$colox-font-size-md: 14px !default;
+$colox-font-size-lg: 16px !default;
+
+$colox-font-family:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !default;
