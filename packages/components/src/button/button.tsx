@@ -1,6 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
-import { cn } from '../utils/cn';
-import './Button.scss';
+import clsx from 'clsx';
+
+import './button.scss';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -17,11 +18,18 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 /**
  * A versatile button component with variants, sizes and a loading state.
  */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'primary', size = 'md', loading = false, className, disabled, children, ...rest },
-  ref,
-) {
-  const classes = cn('colox-btn', `colox-btn--${variant}`, `colox-btn--${size}`, className);
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+  const {
+    variant = 'primary',
+    size = 'md',
+    loading = false,
+    className,
+    disabled,
+    children,
+    ...rest
+  } = props;
+
+  const classes = clsx('colox-btn', `colox-btn--${variant}`, `colox-btn--${size}`, className);
 
   return (
     <button

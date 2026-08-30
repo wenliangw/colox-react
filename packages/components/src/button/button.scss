@@ -1,6 +1,5 @@
 @use 'sass:color';
 @use '../styles/variables' as *;
-@use '../styles/mixins' as *;
 
 .colox-btn {
   display: inline-flex;
@@ -19,7 +18,8 @@
     border-color 0.2s ease,
     color 0.2s ease,
     box-shadow 0.2s ease;
-  @include button-size('md');
+  padding: $colox-spacing-2 $colox-spacing-4;
+  font-size: $colox-font-size-md;
 
   &:focus-visible {
     outline: 2px solid $colox-color-primary;
@@ -32,11 +32,13 @@
   }
 
   &--sm {
-    @include button-size('sm');
+    padding: $colox-spacing-1 $colox-spacing-3;
+    font-size: $colox-font-size-sm;
   }
 
   &--lg {
-    @include button-size('lg');
+    padding: $colox-spacing-3 $colox-spacing-4;
+    font-size: $colox-font-size-lg;
   }
 
   &--primary {

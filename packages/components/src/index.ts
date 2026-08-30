@@ -1,2 +1,4 @@
+import './styles/index.scss';
+
 export * from './button';
-export * from './utils/cn';
+export * from './input';

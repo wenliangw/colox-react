@@ -1,0 +1,48 @@
+.colox-input {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--colox-color-border);
+  border-radius: var(--colox-radius-md);
+  font-family: var(--colox-font-family);
+  line-height: 1.4;
+  color: inherit;
+  background-color: var(--colox-color-surface);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: color-mix(
+      in srgb,
+      var(--colox-color-secondary) var(--colox-alpha-placeholder),
+      transparent
+    );
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--colox-color-primary);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--colox-color-primary) var(--colox-alpha-focus), transparent);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: color-mix(
+      in srgb,
+      var(--colox-color-secondary) var(--colox-alpha-disabled),
+      transparent
+    );
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-danger);
+
+    &:focus-visible {
+      border-color: var(--colox-color-danger);
+      box-shadow: 0 0 0 2px
+        color-mix(in srgb, var(--colox-color-danger) var(--colox-alpha-focus), transparent);
+    }
+  }
+}

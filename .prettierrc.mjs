@@ -7,5 +7,4 @@ export default {
   tabWidth: 2,
   arrowParens: 'always',
   endOfLine: 'lf',
-  plugins: ['prettier-plugin-organize-imports'],
 };

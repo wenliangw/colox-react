@@ -1,0 +1,32 @@
+---
+sidebar_position: 3
+---
+
+import { Input } from '@colox/react';
+import '@colox/react/style.css';
+
+# Input
+
+Inputs capture single-line text from users.
+
+## Sizes
+
+<Input size="sm" placeholder="Small" /> <Input size="md" placeholder="Medium" />
+<Input size="lg" placeholder="Large" />
+
+## Invalid
+
+<Input invalid placeholder="Invalid input" />
+
+## Disabled
+
+<Input disabled placeholder="Disabled" />
+
+## Props
+
+| Prop    | Type                   | Default |
+| ------- | ---------------------- | ------- |
+| size    | `'sm' \| 'md' \| 'lg'` | `'md'`  |
+| invalid | `boolean`              | `false` |
+
+It also accepts all native `<input>` attributes.

@@ -1,16 +1,40 @@
 @use 'variables' as *;
 
-// Expose tokens as CSS custom properties so consumers can theme at runtime
-// without recompiling SCSS.
+// Expose design tokens as CSS custom properties so consumers can theme at
+// runtime without recompiling SCSS.
 :root {
   --colox-color-primary: #{$colox-color-primary};
   --colox-color-primary-hover: #{$colox-color-primary-hover};
   --colox-color-secondary: #{$colox-color-secondary};
+  --colox-color-secondary-hover: #{$colox-color-secondary-hover};
   --colox-color-danger: #{$colox-color-danger};
+  --colox-color-danger-hover: #{$colox-color-danger-hover};
+
+  --colox-text-on-primary: #{$colox-text-on-primary};
+  --colox-text-on-secondary: #{$colox-text-on-secondary};
+  --colox-text-on-danger: #{$colox-text-on-danger};
+
+  --colox-color-border: #{$colox-color-border};
+  --colox-color-surface: #{$colox-color-surface};
+
   --colox-radius-sm: #{$colox-radius-sm};
   --colox-radius-md: #{$colox-radius-md};
   --colox-radius-lg: #{$colox-radius-lg};
+
+  --colox-spacing-1: #{$colox-spacing-1};
+  --colox-spacing-2: #{$colox-spacing-2};
+  --colox-spacing-3: #{$colox-spacing-3};
+  --colox-spacing-4: #{$colox-spacing-4};
+
+  --colox-font-size-sm: #{$colox-font-size-sm};
+  --colox-font-size-md: #{$colox-font-size-md};
+  --colox-font-size-lg: #{$colox-font-size-lg};
   --colox-font-family: #{$colox-font-family};
+
+  --colox-alpha-hover: #{$colox-alpha-hover};
+  --colox-alpha-focus: #{$colox-alpha-focus};
+  --colox-alpha-disabled: #{$colox-alpha-disabled};
+  --colox-alpha-placeholder: #{$colox-alpha-placeholder};
 }
 
 *,

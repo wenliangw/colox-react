@@ -1,18 +1,5 @@
-@use 'variables' as *;
-
-@mixin button-size($size) {
-  @if $size == 'sm' {
-    padding: $colox-spacing-1 $colox-spacing-3;
-    font-size: $colox-font-size-sm;
-  } @else if $size == 'lg' {
-    padding: $colox-spacing-3 $colox-spacing-4;
-    font-size: $colox-font-size-lg;
-  } @else {
-    padding: $colox-spacing-2 $colox-spacing-4;
-    font-size: $colox-font-size-md;
-  }
-}
-
+// Generic, framework-agnostic style utilities. Component-specific size logic
+// belongs inside each component's own styles/ folder.
 @mixin respond-to($breakpoint) {
   @if $breakpoint == 'sm' {
     @media (max-width: 640px) {
