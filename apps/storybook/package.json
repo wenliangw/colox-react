@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "pnpm --filter @colox/react run build:tokens",
     "dev": "storybook dev -p 6006",
+    "prestorybook": "pnpm --filter @colox/react run build:tokens",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "pnpm --filter @colox/react build && storybook build"
   },
   "devDependencies": {
     "@colox/react": "workspace:*",

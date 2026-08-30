@@ -1,40 +1,24 @@
-@use 'variables' as *;
+// 库入口结构样式：组件公共基础 + reset。
+// 主题值（--colox-color-* / --colox-alpha-*）由构建产物 themes/light.css 提供，
+// 详见 sd.config.mjs —— 主题文件由消费者显式引入，入口不再输出颜色 token。
 
-// Expose design tokens as CSS custom properties so consumers can theme at
-// runtime without recompiling SCSS.
+// TODO(design-tokens): 尺寸/字体/圆角 token 待 Figma 导出（typography/spacing/radius）
+// 补齐后迁入 styles/tokens/ 由 Style Dictionary 生成，不再手写这一块。
 :root {
-  --colox-color-primary: #{$colox-color-primary};
-  --colox-color-primary-hover: #{$colox-color-primary-hover};
-  --colox-color-secondary: #{$colox-color-secondary};
-  --colox-color-secondary-hover: #{$colox-color-secondary-hover};
-  --colox-color-danger: #{$colox-color-danger};
-  --colox-color-danger-hover: #{$colox-color-danger-hover};
+  --colox-radius-sm: 4px;
+  --colox-radius-md: 8px;
+  --colox-radius-lg: 12px;
 
-  --colox-text-on-primary: #{$colox-text-on-primary};
-  --colox-text-on-secondary: #{$colox-text-on-secondary};
-  --colox-text-on-danger: #{$colox-text-on-danger};
+  --colox-spacing-1: 4px;
+  --colox-spacing-2: 8px;
+  --colox-spacing-3: 12px;
+  --colox-spacing-4: 16px;
 
-  --colox-color-border: #{$colox-color-border};
-  --colox-color-surface: #{$colox-color-surface};
-
-  --colox-radius-sm: #{$colox-radius-sm};
-  --colox-radius-md: #{$colox-radius-md};
-  --colox-radius-lg: #{$colox-radius-lg};
-
-  --colox-spacing-1: #{$colox-spacing-1};
-  --colox-spacing-2: #{$colox-spacing-2};
-  --colox-spacing-3: #{$colox-spacing-3};
-  --colox-spacing-4: #{$colox-spacing-4};
-
-  --colox-font-size-sm: #{$colox-font-size-sm};
-  --colox-font-size-md: #{$colox-font-size-md};
-  --colox-font-size-lg: #{$colox-font-size-lg};
-  --colox-font-family: #{$colox-font-family};
-
-  --colox-alpha-hover: #{$colox-alpha-hover};
-  --colox-alpha-focus: #{$colox-alpha-focus};
-  --colox-alpha-disabled: #{$colox-alpha-disabled};
-  --colox-alpha-placeholder: #{$colox-alpha-placeholder};
+  --colox-font-size-sm: 12px;
+  --colox-font-size-md: 14px;
+  --colox-font-size-lg: 16px;
+  --colox-font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 *,

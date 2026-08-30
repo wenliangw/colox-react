@@ -41,6 +41,15 @@
         "subtleHover": {
           "$value": "color-mix(in srgb, {colox.palette.indigo.500} {colox.alpha.hover}, transparent)",
           "$type": "color"
+        },
+        "secondary": { "$value": "{colox.palette.gray.700}", "$type": "color" },
+        "secondaryHover": {
+          "$value": "color-mix(in srgb, {colox.palette.gray.700} 85%, #000)",
+          "$type": "color"
+        },
+        "secondaryActive": {
+          "$value": "color-mix(in srgb, {colox.palette.gray.700} 75%, #000)",
+          "$type": "color"
         }
       },
       "focus": {
