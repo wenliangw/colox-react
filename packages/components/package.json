@@ -22,11 +22,14 @@
       "require": "./dist/cjs/index.cjs"
     },
     "./style.css": "./dist/style.css",
+    "./themes/light.css": "./dist/themes/light.css",
+    "./themes/*": "./dist/themes/*",
     "./styles/*": "./src/styles/*",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && pnpm run build:tokens",
+    "build:tokens": "style-dictionary build --config sd.config.mjs",
     "build:watch": "vite build --watch",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
@@ -47,6 +50,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sass": "^1.83.0",
+    "style-dictionary": "^4.4.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.5.0",
