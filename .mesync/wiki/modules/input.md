@@ -33,7 +33,8 @@ input/
 - 变体层：`inputVariants = cva('colox-input', { variants: { size }, defaultVariants: { size: 'md' } })`，`InputSize` 由 `VariantProps` 推导。
 - 类名：`clsx(inputVariants({ size }), { 'colox-input--invalid': invalid }, className)`——`invalid` 是状态（非变体），用 clsx 对象语法拼接。
 - `invalid` 时设 `aria-invalid={true}`，其余属性透传。
-- 样式全部消费 CSS 变量；alpha 用 `color-mix(in srgb, var(--colox-color-*) var(--colox-alpha-*), transparent)`。
+- 样式全部消费语义层 CSS 变量（`--colox-color-*`）：border-default / bg-default / text-placeholder / focus-ring（30% 派生已是语义变量）/ action.primary / bg-muted / text-disabled / border-subtle / status.danger.fill；invalid 的 focus 环因契约未含 danger-ring，在组件层按统一规则内联 `color-mix(danger-fill, alpha-focus, transparent)` 派生。
+- disabled 态用显式语义 token（无 opacity 透灰）；占位符直接消费预派生 `text.placeholder`。
 
 ## 调用关系
 
