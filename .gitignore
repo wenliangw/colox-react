@@ -1,3 +1,7 @@
+# database
+*.db-shm
+*.db-wal
+
 # dependencies
 node_modules
 .pnpm-store
