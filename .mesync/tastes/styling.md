@@ -44,6 +44,21 @@
 - lineHeight 拒绝 unitless 比率：行盒 = 字号×比率，控件总高 = 行盒+padding+border 会产生小数、落出像素网格，高度不可控。
 - 采用与 fontSize 同名的绝对 px 档位（lineHeight.md 配 fontSize.md，13 档 1:1），控件高度推导完全确定。
 
+## 间距统一：gap/margin/padding 全部消费 spacing
+
+- 组件里一切空隙（gap、margin、padding）都消费 spacing 档位，不为个别用途另设 grid-gap 类 token。
+- 控件高度现在由「行高 + 间距」组合自然落入像素网格（sm 26 / md 36 / lg 48px），不额外引入 control-height token。
+
+## 组件 size prop 属组件私有变体，不进全局 token
+
+- Card/Avatar/Dialog 这类 `size: sm|md|lg` 的具体尺寸是各组件自己的 CVA 变体（内部可组合 spacing/fontSize 等全局 token），彼此无关联、无复用价值，不做全局 size 文件。
+- 全局 token 只承载「跨组件共享」的量。
+
+## 断点：工程侧常量 + 编译期注入
+
+- 断点归属 base.tokens.json，Desktop 优先（sm 640 / md 768 / lg 1024 / xl 1280，max-width 向下语义）。
+- 媒体查询不能读 CSS 变量，断点以「CSS 变量（供读）+ 生成 SCSS 常量（供 mixin 编译期写死）」双输出。
+
 ## 变体层用 CVA，className-only
 
 - variant/size 等变体用 `cva()` 定义，只拼 className、零运行时 CSS；类名沿用 `colox-` BEM 前缀。
