@@ -111,5 +111,5 @@ const scssLines = [
     ([name, token]) => `$breakpoint-${cleanKey(name)}: ${token.$value};`,
   ),
 ];
-await writeFile(path.join(OUT_DIR, '_breakpoints.scss'), scssLines.join('\n') + '\n');
-console.log('[ok] base.tokens.json breakpoints -> styles/tokens/_breakpoints.scss');
+await writeFile(path.join(OUT_DIR, 'breakpoints.scss'), scssLines.join('\n') + '\n');
+console.log('[ok] base.tokens.json breakpoints -> styles/tokens/breakpoints.scss');

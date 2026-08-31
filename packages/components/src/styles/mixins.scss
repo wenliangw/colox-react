@@ -2,7 +2,7 @@
 // belongs inside each component's own styles/ folder.
 //
 // Breakpoint values are generated from base.tokens.json (SSOT) by
-// `pnpm run tokens:sync` into tokens/_breakpoints.scss. Media queries cannot
+// `pnpm run tokens:sync` into tokens/breakpoints.scss. Media queries cannot
 // read CSS custom properties, so the mixin layer needs these as SCSS constants.
 @use './tokens/breakpoints' as bp;
 
