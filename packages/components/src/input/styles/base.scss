@@ -4,7 +4,7 @@
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
   font-family: var(--colox-font-sans);
-  line-height: 1.4; // TODO(design-tokens): 待 Figma lineHeight 导出后换 token
+  line-height: var(--colox-line-height-sm);
   color: inherit;
   background-color: var(--colox-color-bg-solid);
   transition:

@@ -6,8 +6,8 @@
   border: 1px solid transparent;
   border-radius: var(--colox-radius-lg);
   font-family: var(--colox-font-sans);
-  font-weight: 600; // TODO(design-tokens): 待 Figma fontWeight 导出后换 token
-  line-height: 1.4; // TODO(design-tokens): 待 Figma lineHeight 导出后换 token
+  font-weight: var(--colox-font-weight-semibold);
+  line-height: var(--colox-line-height-sm);
   cursor: pointer;
   user-select: none;
   transition:
@@ -31,11 +31,13 @@
   &--sm {
     padding: var(--colox-spacing-1) var(--colox-spacing-3);
     font-size: var(--colox-font-size-xs);
+    line-height: var(--colox-line-height-xs);
   }
 
   &--lg {
     padding: var(--colox-spacing-3) var(--colox-spacing-4);
     font-size: var(--colox-font-size-md);
+    line-height: var(--colox-line-height-md);
   }
 
   &--primary {
