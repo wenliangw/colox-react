@@ -39,3 +39,17 @@
 
 - 组件所有 props 类型集中定义在 `<Component>/types/` 目录，`forwardRef` 的 ref 也显式定义类型（如 `export type InputRef = HTMLInputElement`）。
 - 不使用 `any`。
+
+## 代码注释与提交全英文，mesync 中文
+
+- 开源定位：**代码注释与 commit message 一律英文**（有 husky 钩子兜底禁 CJK）；`.mesync/` 记忆文档维持中文（维护者是中文团队，属内部资料）。
+- 贡献约定写在 CONTRIBUTING.md。
+
+## 注释克制：只解释「为什么」
+
+- 推崇自解释代码；注释解释 why 不解释 what。
+- 不加无意义、啰嗦的注释；必要说明（构建链路、契约来源等）保留。
+
+## JSDoc 多行书写
+
+- props 注释放多行（`/**` 起、`*` 续行、` * @default 'md'` 一行一个 tag），不用单行挤写 `/** ... */`。
