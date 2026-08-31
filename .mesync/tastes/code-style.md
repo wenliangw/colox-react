@@ -25,6 +25,11 @@
 - 导出的组件/类型符号仍用 PascalCase（`Input`、`InputProps`），仅文件名小写。
 - SCSS 文件**不加下划线前缀**：partial 与普通文件同样命名（`mixins.scss`、`tokens/breakpoints.scss`），不用 Sass 惯用的 `_partial.scss` 约定。
 
+## 命名用全拼，不用缩写
+
+- 标识符、DOM data 属性等一律全拼单词：`data-colox-breakpoint`（而非 `data-colox-bp`）、`variant`（而非 `vnt`）。
+- 用户明确表述过「喜欢全拼，不太喜欢缩写」。
+
 ## Storybook stories 按关注点单页对比
 
 - 每个关注点一个 story 页面：`size` 一个页面、`state` 一个页面。

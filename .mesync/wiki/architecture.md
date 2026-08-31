@@ -48,4 +48,5 @@ apps/docs ───────┘
 - **变体与状态分离**：`variant`/`size` 是互斥选择轴 → CVA；`disabled`/`invalid`/`hover`/`focus` 是状态 → CSS 伪类/布尔 prop 加修饰类，不塞进 CVA。
 - **变体类名约定**：BEM 风格，`colox-<component>` 基类 + `colox-<component>--<variant|size|state>` 修饰类。
 - **mixin 只放通用工具**：`styles/mixins.scss` 只保留与组件无关的通用工具（如 `respond-to`）；组件私有尺寸样式内联在组件自己的 `styles/` 里。
+- **响应式运行时机制**：ColoxThemeContext 支持使用方自定义断点，matchMedia 观察层把「当前段」写入 `<html data-colox-breakpoint="md">`（命名全拼不缩写），组件 CSS 用属性选择器（非媒体查询）驱动响应式；无 Provider 时自动退化到内置契约断点（sm 640/md 768/lg 1024/xl 1280）。SSR 首帧靠包内 head 引导脚本写属性；阈值判断一律 matchMedia（禁用 innerWidth）。视图层对齐 vs 容器层隔离的取舍待具体布局组件（Grid 等）时定。
 - **原生属性冲突处理**：当组件自定义 prop 与原生 HTML 属性同名且语义冲突时（如 `size`），用 `Omit<XxxHTMLAttributes, 'prop'>` 覆盖原生属性，保持组件库 API 一致。
