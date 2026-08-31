@@ -23,7 +23,7 @@
 
 - 文件名一律小写，多单词用 `-` 连字符：组件文件 `input.tsx`/`button.tsx`、样式 `button.scss`、用例 `size.stories.tsx`。
 - 导出的组件/类型符号仍用 PascalCase（`Input`、`InputProps`），仅文件名小写。
-- SCSS 文件**不加下划线前缀**：partial 与普通文件同样命名（`mixins.scss`、`tokens/breakpoints.scss`），不用 Sass 惯用的 `_partial.scss` 约定。
+- SCSS 文件**不加下划线前缀**：partial 与普通文件同样命名（如 `base.scss`、`size.scss`），不用 Sass 惯用的 `_partial.scss` 约定。
 
 ## 命名用全拼，不用缩写
 

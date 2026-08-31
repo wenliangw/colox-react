@@ -54,10 +54,10 @@
 - Card/Avatar/Dialog 这类 `size: sm|md|lg` 的具体尺寸是各组件自己的 CVA 变体（内部可组合 spacing/fontSize 等全局 token），彼此无关联、无复用价值，不做全局 size 文件。
 - 全局 token 只承载「跨组件共享」的量。
 
-## 断点：工程侧常量 + 编译期注入
+## 断点：工程侧常量 + 运行时 JS 消费
 
 - 断点归属 base.tokens.json，Desktop 优先（sm 640 / md 768 / lg 1024 / xl 1280，max-width 向下语义）。
-- 媒体查询不能读 CSS 变量，断点以「CSS 变量（供读）+ 生成 SCSS 常量（供 mixin 编译期写死）」双输出。
+- 媒体查询不能读 CSS 变量、响应式走运行时 `data-colox-breakpoint` 属性机制，断点值注入 JS 层：tokens:sync 从 base.tokens.json 生成 `tokens/breakpoints.ts` 的 `defaultBreakpoints`（供 ColoxThemeContext 默认值与 head 引导脚本）；light.css 的 CSS 变量副本仅保留供读。
 
 ## 变体层用 CVA，className-only
 
@@ -72,6 +72,5 @@
 
 ## 组件尺寸样式内联在组件内，全局 mixin 只放通用工具
 
-- 组件的尺寸（size）样式直接写在组件自己的 `styles/` 里（如 `input/styles/size.scss`），不进全局 `mixins.scss`。
-- 全局 `styles/mixins.scss` 只保留与具体组件无关的通用工具（如 `respond-to`）。
+- 组件的尺寸（size）样式直接写在组件自己的 `styles/` 里（如 `input/styles/size.scss`）。全局 mixin 文件按需再建（respond-to 已随媒体查询路线移除，响应式属性选择器 mixin 待布局组件时建）。
 - 类名拼接用 `clsx`，不复用自研 `cn`。
