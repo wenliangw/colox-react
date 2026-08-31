@@ -10,6 +10,9 @@ Thanks for your interest in contributing!
 - **Comments are kept minimal.** Prefer self-documenting code. Add a comment
   only when it explains _why_ (a pipeline step, an obscure constraint) — never
   to restate what the code does.
+- **No patch code.** Make the right choice, not a workaround: if a fix starts
+  to feel like a patch, revisit the design instead of committing it. Keep the
+  codebase clean and evolving forward.
 - **JSDoc uses the multi-line form** for prop types:
 
   ```ts
