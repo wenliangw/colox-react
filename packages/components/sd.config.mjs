@@ -1,16 +1,15 @@
 /**
  * Colox theme generation (Style Dictionary v4).
  *
- * Sources (all under src/styles/tokens/, generated or maintained as noted):
- * - color.tokens.json           基元色板（figma-to-tokens.mjs 从 Figma 导出生成）
- * - semantic-color.tokens.json  语义层（figma-to-tokens.mjs 从 Figma 导出生成）
- * - semantic.derived.tokens.json 实底交互态派生（人工维护的 color-mix 规则）
- * - typography.tokens.json      字号/字重/行高（figma-to-tokens.mjs 生成）
- * - size.tokens.json            圆角/间距（figma-to-tokens.mjs 生成）
- * - base.tokens.json            字体族/阴影/动效（人工维护：Figma variables 不便承载）
+ * Sources (src/styles/tokens/):
+ * - generated from Figma exports via figma-to-tokens.mjs: color,
+ *   semantic-color, typography, size
+ * - hand-maintained: semantic.derived (solid hover/active color-mix rules),
+ *   base (font family / shadow / motion / breakpoints)
  *
- * Output: dist/themes/light.css — 运行时单层展平（outputReferences: false），
- * 仅输出语义与尺寸变量（filter 排除 palette），主题 = 同名变量的多组赋值。
+ * Output: dist/themes/light.css — flat runtime variables (outputReferences:
+ * false), palette filtered out. A theme is another assignment of the same
+ * variable names.
  */
 export default {
   source: [

@@ -1,7 +1,6 @@
-// 库入口结构样式：组件公共基础 + reset。
-// 主题值（颜色/字体/阴影/动效/字号/圆角/间距）全部由构建产物 themes/light.css 提供，
-// 详见 sd.config.mjs —— 主题文件由消费者显式引入，入口不再输出任何 token。
-// 其中字体族/阴影/动效为工程侧人工维护（src/styles/tokens/base.tokens.json）。
+// Library entry styles: box-sizing reset only.
+// Theme values come from the build output themes/light.css (see sd.config.mjs),
+// which consumers import explicitly.
 
 *,
 *::before,
