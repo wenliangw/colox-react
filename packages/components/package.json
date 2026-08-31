@@ -33,7 +33,7 @@
     "emit:themes": "style-dictionary build --config sd.config.mjs",
     "tokens:sync": "node scripts/figma-to-tokens.mjs",
     "build:watch": "pnpm run tokens:sync && vite build --watch",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "pnpm run tokens:sync && tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
