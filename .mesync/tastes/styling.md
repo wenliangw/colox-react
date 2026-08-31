@@ -72,6 +72,6 @@
 
 ## 组件尺寸样式内联在组件内，全局 mixin 只放通用工具
 
-- 组件的尺寸（size）样式直接写在组件自己的 `styles/` 里（如 `input/styles/size.scss`），不进全局 `_mixins.scss`。
-- 全局 `styles/_mixins.scss` 只保留与具体组件无关的通用工具（如 `respond-to`）。
+- 组件的尺寸（size）样式直接写在组件自己的 `styles/` 里（如 `input/styles/size.scss`），不进全局 `mixins.scss`。
+- 全局 `styles/mixins.scss` 只保留与具体组件无关的通用工具（如 `respond-to`）。
 - 类名拼接用 `clsx`，不复用自研 `cn`。

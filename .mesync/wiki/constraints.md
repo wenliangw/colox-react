@@ -32,5 +32,5 @@
 - 类名拼接用 `clsx`，状态类用对象语法 `clsx(base, { 'cls--state': state }, className)`，不用三目运算符控制类名。
 - import 排序：`react` 引用第一；其余按 第三方库 → `@/` → 相对路径 依次排列，库/别名/相对路径之间不留空行；仅在 `.css`/`.scss` 样式引用前保留一个空行，样式引用永远最后。
 - variant/size 走 CVA（`variants/` 里 `cva()` 组装）；state（disabled/invalid/hover/focus）走 CSS 或布尔 prop，不进 CVA。
-- 组件样式消费 CSS 变量 `var(--colox-*)`，alpha 用 `color-mix(...)` + `--colox-alpha-*`；尺寸样式内联在组件 `styles/`，全局 `_mixins.scss` 只放通用工具。
+- 组件样式消费 CSS 变量 `var(--colox-*)`，尺寸样式内联在组件 `styles/`，全局 `mixins.scss` 只放通用工具。
 - 测试环境为 jsdom，`globals: false`（测试里需显式从 `vitest` 导入 `describe/it/expect`），`test-setup.ts` 里手动 `cleanup`。

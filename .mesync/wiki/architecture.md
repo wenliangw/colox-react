@@ -47,5 +47,5 @@ apps/docs ───────┘
 
 - **变体与状态分离**：`variant`/`size` 是互斥选择轴 → CVA；`disabled`/`invalid`/`hover`/`focus` 是状态 → CSS 伪类/布尔 prop 加修饰类，不塞进 CVA。
 - **变体类名约定**：BEM 风格，`colox-<component>` 基类 + `colox-<component>--<variant|size|state>` 修饰类。
-- **mixin 只放通用工具**：`styles/_mixins.scss` 只保留与组件无关的通用工具（如 `respond-to`）；组件私有尺寸样式内联在组件自己的 `styles/` 里。
+- **mixin 只放通用工具**：`styles/mixins.scss` 只保留与组件无关的通用工具（如 `respond-to`）；组件私有尺寸样式内联在组件自己的 `styles/` 里。
 - **原生属性冲突处理**：当组件自定义 prop 与原生 HTML 属性同名且语义冲突时（如 `size`），用 `Omit<XxxHTMLAttributes, 'prop'>` 覆盖原生属性，保持组件库 API 一致。
