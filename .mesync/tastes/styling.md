@@ -2,8 +2,8 @@
 
 ## 设计语言用 CSS 自定义属性承载，JSON + Style Dictionary 构建期生成
 
-- 单一来源**已决定**：从 SCSS 变量手写迁移为 W3C DTCG JSON + Style Dictionary v4（待 Figma 设计稿落地实施）。
-- 三层 token：基元层（palette 色阶）→ 语义层（bg/text/border/action 等用途语义，组件唯一消费的稳定 API）→ 组件层（按需）。
+- 单一来源已落地：W3C DTCG JSON + Style Dictionary v4；链路 = Figma 导出（styles/meta/*.tokens.json）→ figma-to-tokens.mjs 转换 → SD 生成 themes/light.css。
+- 三层 token：基元层（palette 色阶）→ 语义层（角色组 text/bg/border + 颜色四档组，组件唯一消费的稳定 API）→ 组件层（按需）。
 - 主题 = 语义层的多组映射：换主题 = 换语义层赋值，基元与组件都不动。
 
 ## 换肤机制：选择器作用域 + 混合暗色
@@ -26,12 +26,12 @@
 - 颜色 token 保持完整色值（如 `#4f46e5`），保证可预览、可读。
 - 明确否决「RGB 通道三元组（`79 70 229`）+ `rgb(var(--rgb) / alpha)`」方案——用户认为通道值不可读。
 
-## alpha 语义化 + color-mix
+## 强度四档体系：solid / muted / subtle / inverse
 
-- 透明度定义为语义化**百分比** token：`--colox-alpha-hover`、`--colox-alpha-focus`、`--colox-alpha-disabled` 等（值如 `15%`，不是 `0.15`）。
-- 用法：`color-mix(in srgb, var(--colox-color-primary) var(--colox-alpha-hover), transparent)`。
-- 交互态（hover/active/focus）用 alpha 从基色派生，不引用固定色阶（如不用 primary.600 做 hover）；方向要区分：实底交互态向黑混（`primary 85% + #000` 变深），浅底罩层向透明混（`primary 15% + transparent`）。
-- 好处：颜色 token 完整可读、alpha 语义化且跟随主色运行时覆盖；代价是 color-mix 需要 2023+ 浏览器。
+- 语义色按**强度档**组织：solid（全强度实底）/ muted（中间调）/ subtle（最浅罩层）/ inverse（深底反色前景）。颜色四档组服务实底组件，角色组（text/bg/border）服务面板/文字/边框语境。
+- 档位替混色：焦点环用 muted 档、ghost hover 用 subtle 档，不再走 alpha 混色（alpha 层已完整退役）。
+- 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%，规则集中人工维护在 semantic.derived.tokens.json，组件不内联。
+- color-mix 需要 2023+ 浏览器。
 
 ## 变体层用 CVA，className-only
 
@@ -40,9 +40,9 @@
 
 ## token 命名词汇取向：贴近常识词
 
-- 基元层只按「颜色名词」命名：`palette.indigo / purple / blue / green / orange / red / gray`；用途词（`primary / success / warning / danger / info`）一律不进基元，只存在于语义层，主色是语义化阶段才选择的对基元的引用。
+- 基元层只按「颜色名词」命名：`palette.indigo / purple / blue / green / orange / red / gray`；用途词（`info / error / warning / success`、`disabled`）只存在于语义层角色组中。
 - 色板名沿用 Figma 集合名（集合在 Figma 里同样按颜色名词命名）。
-- 背景等语义词优先 `default` / `overlay` 这类平实词，不用 `canvas` / `surface` / `elevated` / `scrim` 这类设计系统黑话（具体词表未最终对齐，随 token 一起定）。
+- 浮层背景用平实词 `bg.overlay`；不引入 `canvas` / `surface` / `elevated` / `scrim` 这类设计系统黑话。
 
 ## 组件尺寸样式内联在组件内，全局 mixin 只放通用工具
 

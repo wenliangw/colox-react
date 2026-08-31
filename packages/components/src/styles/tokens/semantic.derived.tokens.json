@@ -1,0 +1,36 @@
+{
+  "colox": {
+    "color": {
+      "indigo": {
+        "hover": {
+          "$value": "color-mix(in srgb, {colox.color.indigo.solid} 85%, #000)",
+          "$type": "color"
+        },
+        "active": {
+          "$value": "color-mix(in srgb, {colox.color.indigo.solid} 75%, #000)",
+          "$type": "color"
+        }
+      },
+      "gray": {
+        "hover": {
+          "$value": "color-mix(in srgb, {colox.color.gray.solid} 85%, #000)",
+          "$type": "color"
+        },
+        "active": {
+          "$value": "color-mix(in srgb, {colox.color.gray.solid} 75%, #000)",
+          "$type": "color"
+        }
+      },
+      "red": {
+        "hover": {
+          "$value": "color-mix(in srgb, {colox.color.red.solid} 85%, #000)",
+          "$type": "color"
+        },
+        "active": {
+          "$value": "color-mix(in srgb, {colox.color.red.solid} 75%, #000)",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

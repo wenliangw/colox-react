@@ -1,44 +1,39 @@
 .colox-input {
   display: block;
   width: 100%;
-  border: 1px solid var(--colox-color-border-default);
-  border-radius: var(--colox-radius-md);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
   font-family: var(--colox-font-family);
   line-height: 1.4;
   color: inherit;
-  background-color: var(--colox-color-bg-default);
+  background-color: var(--colox-color-bg-solid);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 
   &::placeholder {
-    color: var(--colox-color-text-placeholder);
+    color: var(--colox-color-text-subtle);
   }
 
   &:focus-visible {
     outline: none;
-    border-color: var(--colox-color-action-primary);
-    box-shadow: 0 0 0 2px var(--colox-color-focus-ring);
+    border-color: var(--colox-color-indigo-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-indigo-muted);
   }
 
   &:disabled {
     cursor: not-allowed;
     color: var(--colox-color-text-disabled);
-    background-color: var(--colox-color-bg-muted);
-    border-color: var(--colox-color-border-subtle);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
   }
 
   &--invalid {
-    border-color: var(--colox-color-status-danger-fill);
+    border-color: var(--colox-color-red-solid);
 
     &:focus-visible {
-      border-color: var(--colox-color-status-danger-fill);
-      box-shadow: 0 0 0 2px
-        color-mix(
-          in srgb,
-          var(--colox-color-status-danger-fill) var(--colox-alpha-focus),
-          transparent
-        );
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
     }
   }
 }

@@ -4,7 +4,7 @@ Colox React 是一个**通用组件库**，不面向特定业务领域。它没�
 
 - 组件 API 设计以可访问性（正确 ARIA 属性、focus 态）为前提；设计语言以可主题化为硬需求。
 - 产品需求：支持**用户自定义主题**（官方仅提供 light/dark 两个基准主题，用户以自定义 CSS 定义同名语义变量换肤）与**暗色模式**（混合驱动：跟随系统 + 手动覆盖）。
-- 设计语言单一来源：W3C DTCG JSON + Style Dictionary v4（已决定，待 Figma 设计稿落地实施）。
+- 设计语言单一来源已落地：Figma variables 导出四文件（color / semantic-color / typography / size）→ `figma-to-tokens.mjs` 转换 → Style Dictionary v4 → `themes/light.css`（101 变量）。语义契约定版：强度四档（solid/muted/subtle/inverse）+ 角色组（text/bg/border），详见 tastes/styling。dark 主题待后续。
 - 组件通过 Storybook 预览、通过 Docusaurus 文档向使用者展示用法。
 
 无其他业务规则。

@@ -1,14 +1,14 @@
 .colox-input--sm {
   padding: var(--colox-spacing-1) var(--colox-spacing-3);
-  font-size: var(--colox-font-size-sm);
+  font-size: var(--colox-font-size-xs);
 }
 
 .colox-input--md {
   padding: var(--colox-spacing-2) var(--colox-spacing-4);
-  font-size: var(--colox-font-size-md);
+  font-size: var(--colox-font-size-sm);
 }
 
 .colox-input--lg {
   padding: var(--colox-spacing-3) var(--colox-spacing-4);
-  font-size: var(--colox-font-size-lg);
+  font-size: var(--colox-font-size-md);
 }

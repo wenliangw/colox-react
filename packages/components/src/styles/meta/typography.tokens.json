@@ -1,0 +1,111 @@
+{
+  "fontSize": {
+    "xs": {
+      "$type": "number",
+      "$value": 12,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:118",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "sm": {
+      "$type": "number",
+      "$value": 14,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:119",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "md": {
+      "$type": "number",
+      "$value": 16,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:120",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "lg": {
+      "$type": "number",
+      "$value": 18,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:121",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "xl": {
+      "$type": "number",
+      "$value": 20,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:122",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "2xl": {
+      "$type": "number",
+      "$value": 24,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:123",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "3xl": {
+      "$type": "number",
+      "$value": 28,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:124",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "4xl": {
+      "$type": "number",
+      "$value": 32,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:125",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "5xl": {
+      "$type": "number",
+      "$value": 36,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:126",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "6xl": {
+      "$type": "number",
+      "$value": 40,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:127",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "7xl": {
+      "$type": "number",
+      "$value": 48,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:128",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "8xl": {
+      "$type": "number",
+      "$value": 56,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:129",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "9xl": {
+      "$type": "number",
+      "$value": 64,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:17:130",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Mode 1"
+  }
+}

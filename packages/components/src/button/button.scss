@@ -4,7 +4,7 @@
   justify-content: center;
   gap: var(--colox-spacing-2);
   border: 1px solid transparent;
-  border-radius: var(--colox-radius-md);
+  border-radius: var(--colox-radius-lg);
   font-family: var(--colox-font-family);
   font-weight: 600;
   line-height: 1.4;
@@ -16,10 +16,10 @@
     color 0.2s ease,
     box-shadow 0.2s ease;
   padding: var(--colox-spacing-2) var(--colox-spacing-4);
-  font-size: var(--colox-font-size-md);
+  font-size: var(--colox-font-size-sm);
 
   &:focus-visible {
-    outline: 2px solid var(--colox-color-focus-ring);
+    outline: 2px solid var(--colox-color-indigo-muted);
     outline-offset: 2px;
   }
 
@@ -30,61 +30,59 @@
 
   &--sm {
     padding: var(--colox-spacing-1) var(--colox-spacing-3);
-    font-size: var(--colox-font-size-sm);
+    font-size: var(--colox-font-size-xs);
   }
 
   &--lg {
     padding: var(--colox-spacing-3) var(--colox-spacing-4);
-    font-size: var(--colox-font-size-lg);
+    font-size: var(--colox-font-size-md);
   }
 
   &--primary {
-    background-color: var(--colox-color-action-primary);
+    background-color: var(--colox-color-indigo-solid);
     color: var(--colox-color-text-inverse);
 
     &:hover:not(:disabled) {
-      background-color: var(--colox-color-action-primary-hover);
+      background-color: var(--colox-color-indigo-hover);
     }
 
     &:active:not(:disabled) {
-      background-color: var(--colox-color-action-primary-active);
+      background-color: var(--colox-color-indigo-active);
     }
   }
 
   &--secondary {
-    background-color: var(--colox-color-action-secondary);
+    background-color: var(--colox-color-gray-solid);
     color: var(--colox-color-text-inverse);
 
     &:hover:not(:disabled) {
-      background-color: var(--colox-color-action-secondary-hover);
+      background-color: var(--colox-color-gray-hover);
     }
 
     &:active:not(:disabled) {
-      background-color: var(--colox-color-action-secondary-active);
+      background-color: var(--colox-color-gray-active);
     }
   }
 
   &--ghost {
     background-color: transparent;
-    color: var(--colox-color-action-primary);
+    color: var(--colox-color-indigo-solid);
 
     &:hover:not(:disabled) {
-      background-color: var(--colox-color-action-subtle-hover);
+      background-color: var(--colox-color-indigo-subtle);
     }
   }
 
   &--danger {
-    background-color: var(--colox-color-status-danger-fill);
+    background-color: var(--colox-color-red-solid);
     color: var(--colox-color-text-inverse);
 
-    // 状态实底交互态在组件层按「向黑混 15%/25%」派生规则内联生成，
-    // 不必扩语义契约（与 action.* 派生规则一致）。
     &:hover:not(:disabled) {
-      background-color: color-mix(in srgb, var(--colox-color-status-danger-fill) 85%, #000);
+      background-color: var(--colox-color-red-hover);
     }
 
     &:active:not(:disabled) {
-      background-color: color-mix(in srgb, var(--colox-color-status-danger-fill) 75%, #000);
+      background-color: var(--colox-color-red-active);
     }
   }
 

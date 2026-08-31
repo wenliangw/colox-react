@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "vite build && pnpm run build:tokens",
-    "build:tokens": "style-dictionary build --config sd.config.mjs",
+    "build:tokens": "pnpm run tokens:sync && style-dictionary build --config sd.config.mjs",
+    "tokens:sync": "node scripts/figma-to-tokens.mjs",
     "build:watch": "vite build --watch",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
