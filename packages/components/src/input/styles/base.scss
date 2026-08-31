@@ -3,13 +3,13 @@
   width: 100%;
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
-  font-family: var(--colox-font-family);
-  line-height: 1.4;
+  font-family: var(--colox-font-sans);
+  line-height: 1.4; // TODO(design-tokens): 待 Figma lineHeight 导出后换 token
   color: inherit;
   background-color: var(--colox-color-bg-solid);
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 
   &::placeholder {
     color: var(--colox-color-text-subtle);

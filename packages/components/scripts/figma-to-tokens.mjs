@@ -5,12 +5,14 @@
  * File -> namespace mapping (under top-level "colox"):
  * - color.tokens.json            -> colox.palette.<hue>.<step>
  * - semantic-color.tokens.json   -> colox.color.<group>.<tier>
- * - typography.tokens.json       -> colox.fontSize.<step>
+ * - typography.tokens.json       -> colox.fontSize.<step> / colox.fontWeight.<step>
+ *                                  / colox.lineHeight.<step>
  * - size.tokens.json             -> colox.radius.<step> / colox.spacing.<step>
  *
  * Value rules:
  * - colors: keep the readable hex, drop Figma's numeric component arrays
  * - dimensions: Figma exports unit-less numbers; append "px"
+ * - fontWeight: plain number passthrough (400/500/600/700)
  * - keys: "_" -> "-" (e.g. spacing "0_5" -> "0-5")
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
@@ -27,22 +29,23 @@ const OUT_DIR = 'src/styles/tokens';
 const SPECS = {
   color: {
     namespace: (group) => ['palette', group],
-    type: 'color',
+    type: () => 'color',
     value: (token) => token.$value.hex.toUpperCase(),
   },
   'semantic-color': {
     namespace: (group) => ['color', group],
-    type: 'color',
+    type: () => 'color',
     value: (token) => token.$value.hex.toUpperCase(),
   },
   typography: {
-    namespace: () => ['fontSize'],
-    type: 'dimension',
-    value: (token) => `${token.$value}px`,
+    namespace: (group) =>
+      ({ fontSize: ['fontSize'], fontWeight: ['fontWeight'], lineHeight: ['lineHeight'] })[group],
+    type: (group) => (group === 'fontWeight' ? 'fontWeight' : 'dimension'),
+    value: (token, group) => (group === 'fontWeight' ? token.$value : `${token.$value}px`),
   },
   size: {
     namespace: (group) => ({ radii: ['radius'], spacing: ['spacing'] })[group],
-    type: 'dimension',
+    type: () => 'dimension',
     value: (token) => `${token.$value}px`,
   },
 };
@@ -67,8 +70,8 @@ function convert(figmaJson, spec) {
     for (const part of namespace) cursor = cursor[part] ??= {};
     for (const [leafName, token] of Object.entries(group)) {
       const converted = {
-        $value: spec.value(token),
-        $type: spec.type,
+        $value: spec.value(token, groupName),
+        $type: spec.type(groupName),
       };
       const extensions = normalizeExtensions(token.$extensions);
       if (extensions) converted.$extensions = extensions;
