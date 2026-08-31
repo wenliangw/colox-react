@@ -18,7 +18,7 @@
 - 变体映射：primary → `indigo.solid` + 派生 `indigo.hover/-active`；secondary → `gray.solid` + 派生 `gray.hover/-active`；ghost → `indigo.solid` 文字 + `indigo.subtle` 浅底 hover；danger → `red.solid` + 派生 `red.hover/-active`。
 - 实底白字统一 `text.inverse`；focus 环用 `indigo.muted` 档（outline 2px 形态）。
 - disabled 保留 `opacity: 0.6`（实底禁用无显式语义 token，组件层惯例）。
-- 字号：默认 `fontSize.sm`（14px），sm/lg 变体用 xs/md；圆角 `radius.lg`（8px）。
+- 字号/行高同名配档：默认 `fontSize.sm` + `lineHeight.sm`，sm 用 xs、lg 用 md；字重 `fontWeight.semibold`；圆角 `radius.lg`（8px）；控件高度落像素网格（sm 26 / md 36 / lg 48px）。
 
 ## 调用关系
 

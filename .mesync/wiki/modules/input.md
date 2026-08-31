@@ -35,6 +35,7 @@ input/
 - `invalid` 时设 `aria-invalid={true}`，其余属性透传。
 - 样式全部消费语义层 CSS 变量（`--colox-color-*`）：border-muted / bg-solid / text-subtle（占位符）/ indigo-solid + indigo-muted（焦点边框+环）/ disabled 显式三件 text/bg/border.disabled / red-solid（非法态强描边，满足 WCAG 1.4.11 3:1 对比）+ red-muted（非法焦点环）。
 - 档位替混色：焦点环/非法环直接消费 muted 档，组件层不内联 color-mix。
+- 字号/行高同名配档（size.scss 的 sm/lg 配 xs/md，md 默认继承 base 的 sm）；控件高度落像素网格（sm 26 / md 36 / lg 48px）。
 
 ## 调用关系
 
