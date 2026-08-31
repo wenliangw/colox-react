@@ -35,6 +35,12 @@
         "in": { "$value": "cubic-bezier(0.4, 0, 1, 1)", "$type": "cubicBezier" },
         "in-out": { "$value": "cubic-bezier(0.4, 0, 0.2, 1)", "$type": "cubicBezier" }
       }
+    },
+    "breakpoint": {
+      "sm": { "$value": "640px", "$type": "dimension" },
+      "md": { "$value": "768px", "$type": "dimension" },
+      "lg": { "$value": "1024px", "$type": "dimension" },
+      "xl": { "$value": "1280px", "$type": "dimension" }
     }
   }
 }

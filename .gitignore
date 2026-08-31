@@ -18,6 +18,7 @@ storybook-static
 packages/components/src/styles/tokens/*.tokens.json
 !packages/components/src/styles/tokens/semantic.derived.tokens.json
 !packages/components/src/styles/tokens/base.tokens.json
+packages/components/src/styles/tokens/_breakpoints.scss
 
 # logs
 *.log
