@@ -14,6 +14,10 @@ storybook-static
 .docusaurus
 *.tsbuildinfo
 
+# generated token sources (regenerated from styles/meta via tokens:sync)
+packages/components/src/styles/tokens/*.tokens.json
+!packages/components/src/styles/tokens/semantic.derived.tokens.json
+
 # logs
 *.log
 npm-debug.log*
