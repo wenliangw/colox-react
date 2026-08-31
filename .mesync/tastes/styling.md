@@ -33,6 +33,17 @@
 - 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%，规则集中人工维护在 semantic.derived.tokens.json，组件不内联。
 - color-mix 需要 2023+ 浏览器。
 
+## token 归属：Figma 承载视觉值，工程侧承载实现值
+
+- Figma variables 承载：color / semantic-color / fontSize / fontWeight / lineHeight / radii / spacing（导出 → 转换 → SD 生成）。
+- 工程侧人工维护（tokens/base.tokens.json + semantic.derived.tokens.json）：fontFamily（sans/mono 系统栈）、shadow（sm/md/lg）、motion（duration fast/normal/slow + easing out/in/in-out）、实底 hover/active 派生混色。
+- 原因：Figma variables 对字体族、复合阴影、缓动曲线等实现类值支持不佳，用户拍板归属工程侧。
+
+## 行高用绝对 px，与字号同名配档
+
+- lineHeight 拒绝 unitless 比率：行盒 = 字号×比率，控件总高 = 行盒+padding+border 会产生小数、落出像素网格，高度不可控。
+- 采用与 fontSize 同名的绝对 px 档位（lineHeight.md 配 fontSize.md，13 档 1:1），控件高度推导完全确定。
+
 ## 变体层用 CVA，className-only
 
 - variant/size 等变体用 `cva()` 定义，只拼 className、零运行时 CSS；类名沿用 `colox-` BEM 前缀。
