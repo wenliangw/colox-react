@@ -30,12 +30,12 @@ const SPECS = {
   color: {
     namespace: (group) => ['palette', group],
     type: () => 'color',
-    value: (token) => token.$value.hex.toUpperCase(),
+    value: colorValue,
   },
   'semantic-color': {
     namespace: (group) => ['color', group],
     type: () => 'color',
-    value: (token) => token.$value.hex.toUpperCase(),
+    value: colorValue,
   },
   typography: {
     namespace: (group) =>
@@ -52,6 +52,24 @@ const SPECS = {
 
 function cleanKey(key) {
   return key.replaceAll('_', '-');
+}
+
+/**
+ * Figma resolves the RGB color into `$value.hex` and carries the opacity
+ * separately in `$value.alpha`. Merge both into CSS hex notation so
+ * translucent palette steps (white/50..900, black/50..900 — used for
+ * masks and box-shadows) survive the conversion instead of silently
+ * becoming opaque.
+ */
+function colorValue(token) {
+  const { hex, alpha } = token.$value;
+  const rgb = hex.toUpperCase();
+  if (alpha === undefined || alpha >= 1) return rgb;
+  const byte = Math.round(alpha * 255)
+    .toString(16)
+    .toUpperCase()
+    .padStart(2, '0');
+  return `${rgb}${byte}`;
 }
 
 function normalizeExtensions($extensions) {
