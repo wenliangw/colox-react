@@ -1,15 +1,17 @@
 /**
  * Colox dark theme generation (Style Dictionary v4).
  *
- * The dark theme is a delta: same variable names as light, only the ~40
- * tokens whose dark value differs, scoped to [data-colox-theme='dark'].
- * Palette tokens are theme-independent and stay in light.css.
+ * A theme is a COMPLETE assignment of the same variable names. dark.css
+ * therefore outputs every semantic color token (colox.color.* — the 58
+ * tokens from the role groups, color tiers and derived rules), scoped to
+ * [data-colox-theme='dark']. Palette tokens are theme-independent and
+ * stay in light.css only.
  *
- * The light sources are loaded here on purpose: dark values collide with
- * them by path, and because the dark file comes last, dark wins. The
- * collision log is the build-time proof that every dark override maps to
- * an existing light variable (no orphan names). Output keeps only the
- * dark-file tokens via the filePath filter.
+ * The dark overrides (semantic-color.dark.tokens.json) come last in the
+ * source list, so path collisions resolve to dark values; the collision
+ * log is the build-time proof that every override maps to an existing
+ * light variable (no orphan names). Tokens without a dark override fall
+ * through with their light value, making the assignment complete.
  */
 export default {
   source: [
@@ -29,7 +31,7 @@ export default {
         {
           destination: 'dark.css',
           format: 'css/variables',
-          filter: (token) => token.filePath.endsWith('semantic-color.dark.tokens.json'),
+          filter: (token) => token.path[1] === 'color',
           options: {
             selector: "[data-colox-theme='dark']",
             outputReferences: false,
