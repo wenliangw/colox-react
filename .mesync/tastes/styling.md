@@ -8,8 +8,10 @@
 
 ## 换肤机制：选择器作用域 + 混合暗色
 
-- 主题块 = 同名语义变量在 `:root` / `@media (prefers-color-scheme: dark)` / `[data-theme]` 作用域下的多组值；组件零感知。
-- 暗色混合驱动：无显式选择时跟随系统，`[data-theme='light'|'dark']` 手动覆盖。
+- 主题块 = 同名语义变量在 `:root` / `[data-colox-theme='light'|'dark']` 作用域下的多组值；组件零感知。
+- 暗色混合驱动：无显式选择时跟随系统，`[data-colox-theme='light'|'dark']` 手动覆盖（将来由 ColoxTheme 属性开关点亮）。
+- light.css 为全量赋值（133 变量，:root）；dark.css 为 **delta 覆盖**（只输出与 light 不同的变量，作用域 `[data-colox-theme='dark']`，覆盖靠属性选择器特异性 + 加载顺序）。
+- 主题文件按需显式引入（`themes/light.css` + `themes/dark.css`），入口不自动注入。
 
 ## 主题模型：用户自定义主题，官方只给基准
 
@@ -21,6 +23,15 @@
 - 产物拆分：组件结构样式（不含主题值）+ `themes/light.css` + `themes/dark.css`；入口不自动注入主题。
 - 未引入的主题文件不进用户打包体积；自定义主题只需定义同名语义变量。
 
+## dark 主题推导约定（工程侧首版，Figma dark 变量落地后可替换）
+
+- 前提：**palette 与主题无关**，dark 只重映射语义层（40 个 delta 变量，手维护在 semantic-color.dark.tokens.json；将来 Figma 变量做 dark modes 后由导出接管，工程侧版本退役）。
+- 中性色阶梯：画布 bg.solid = gray/900（#191919），raise 序列 subtle #1F1F1F → muted #262626；文本 solid 近白 #E8E8E8、muted #A3A3A3、subtle #707070；边框阶梯 solid #3D3D3D > muted #333333 > subtle #2A2A2A。
+- 状态色三通道各自反演：text 档 600/700/800 → 300（亮阶文字在暗底可读）、border 档 300 → 500（比文字暗一档的可见色边）、bg 档 50 → 900（暗色洗底）。
+- 色槽 tier：solid / muted / inverse 跨主题不变（实底主色与前景反色本就主题无关；muted 粉彩阶做焦点环在暗底反而更清晰）；subtle 档 50 → 900（ghost hover 洗底从亮洗变暗洗）。
+- inverse 语义互换：bg.inverse 暗色下翻为白、text.inverse 翻为近黑；border.inverse（#747474）与色槽 inverse（#FFF）跨主题保持（数值对称性论证后保留原值）。
+- dark.css 是 delta 而非全量：加载在 light.css 之后 + 属性选择器特异性覆盖；SD 暗色构建故意保留冲突日志——它证明每个 dark 覆盖都对应一个既有 light 变量（无孤儿变量名）。
+
 ## token 可读性优先，拒绝 RGB 通道三元组
 
 - 颜色 token 保持完整色值（如 `#4f46e5`），保证可预览、可读。
@@ -30,7 +41,8 @@
 
 - 语义色按**强度档**组织：solid（全强度实底）/ muted（中间调）/ subtle（最浅罩层）/ inverse（深底反色前景）。颜色四档组服务实底组件，角色组（text/bg/border）服务面板/文字/边框语境。
 - 档位替混色：焦点环用 muted 档、ghost hover 用 subtle 档，不再走 alpha 混色（alpha 层已完整退役）。
-- 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%，规则集中人工维护在 semantic.derived.tokens.json，组件不内联。
+- 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%（light）/ 向白混 85%/75%（dark，实底控件在暗色下 hover 变亮），规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic-color.dark.tokens.json（dark），组件不内联。
+- 派生混色的 authored 形态用 `var(--colox-color-*-solid)` 字面串（SD 原样透传、浏览器运行时解析）而非 `{token}` 引用——保证运行时重映射 solid（如未来 brand 换色）时 hover/active 自动跟随。
 - color-mix 需要 2023+ 浏览器。
 
 ## token 归属：Figma 承载视觉值，工程侧承载实现值
