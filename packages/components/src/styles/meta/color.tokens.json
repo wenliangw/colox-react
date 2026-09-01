@@ -504,9 +504,9 @@
       "$type": "color",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.6039215922355652, 0.6039215922355652, 0.6039215922355652],
+        "components": [0.6196078658103943, 0.6196078658103943, 0.6196078658103943],
         "alpha": 1,
-        "hex": "#9A9A9A"
+        "hex": "#9E9E9E"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:1:74",
@@ -517,12 +517,25 @@
       "$type": "color",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.45490196347236633, 0.45490196347236633, 0.45490196347236633],
+        "components": [0.43921568989753723, 0.43921568989753723, 0.43921568989753723],
         "alpha": 1,
-        "hex": "#747474"
+        "hex": "#707070"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:1:75",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "750": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3686274588108063, 0.3686274588108063, 0.3686274588108063],
+        "alpha": 1,
+        "hex": "#5E5E5E"
+      },
+      "$extensions": {
+        "com.figma.variableId": "VariableID:31:24",
         "com.figma.scopes": ["ALL_SCOPES"]
       }
     },
@@ -530,12 +543,25 @@
       "$type": "color",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.21960784494876862, 0.21960784494876862, 0.21960784494876862],
+        "components": [0.239215686917305, 0.239215686917305, 0.239215686917305],
         "alpha": 1,
-        "hex": "#383838"
+        "hex": "#3D3D3D"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:1:76",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
+    "850": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.14901961386203766, 0.14901961386203766, 0.14901961386203766],
+        "alpha": 1,
+        "hex": "#262626"
+      },
+      "$extensions": {
+        "com.figma.variableId": "VariableID:31:25",
         "com.figma.scopes": ["ALL_SCOPES"]
       }
     },

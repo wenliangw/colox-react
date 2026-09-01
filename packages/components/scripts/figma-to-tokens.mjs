@@ -3,10 +3,11 @@
  * engineering token source consumed by Style Dictionary (styles/tokens/).
  *
  * File -> namespace mapping (under top-level "colox"):
- * - color.tokens.json            -> colox.palette.<hue>.<step>
- * - semantic-color.tokens.json   -> colox.color.<group>.<tier>
- * - typography.tokens.json       -> colox.fontSize.<step> / colox.fontWeight.<step>
- *                                  / colox.lineHeight.<step>
+ * - color.tokens.json                    -> colox.palette.<hue>.<step>
+ * - semantic-colors.light.tokens.json    -> colox.color.<group>.<tier>
+ * - semantic-colors.dark.tokens.json     -> colox.color.<group>.<tier>
+ * - typography.tokens.json               -> colox.fontSize.<step> / colox.fontWeight.<step>
+ *                                          / colox.lineHeight.<step>
  * - size.tokens.json             -> colox.radius.<step> / colox.spacing.<step>
  *
  * Value rules:
@@ -32,7 +33,12 @@ const SPECS = {
     type: () => 'color',
     value: colorValue,
   },
-  'semantic-color': {
+  'semantic-colors.light': {
+    namespace: (group) => ['color', group],
+    type: () => 'color',
+    value: colorValue,
+  },
+  'semantic-colors.dark': {
     namespace: (group) => ['color', group],
     type: () => 'color',
     value: colorValue,
