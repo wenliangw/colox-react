@@ -33,7 +33,7 @@
 - dark.css 输出全部 colox.color.* 语义变量（完整赋值，与 light 色变量 58=58 名称对位；对位校验在生成后人工核对），light/dark 两个导出由转换器分别落成 colox.color.*。
 - **white/black alpha 阶的用途已由用户纠偏**：它们是**遮罩（scrim）与 box-shadow 的原语**（palette 层 `white/0..900`、`black/0..900`，8 位 hex 已透传），**不是**给语义表面/文本做合成用的。dark 语义坚持**实色**。
 - **已定案（方案 B，12 步 gray 单尺双用）**：新增 `gray/750 #5E5E5E`（dark text.disabled）、`gray/850 #262626`（dark 表面/次级边框）；微调 `gray/600 #9A→#9E9E9E`（双主题 text.muted 共用）、`gray/700 #74→#707070`（light border.inverse 与 dark text.subtle 共用）、`gray/800 #38→#3D3D3D`（dark border.solid）；light 语义把 bg.solid/bg.overlay/text.inverse/tier inverse 重 alias 到 white/0。代价取舍：dark 表面 subtle/muted 合并、border.subtle/muted 合并（v1 中本就只差 0.01-0.03），换「不新增过多中间色阶」。待用户在 Figma 落地并重导出后，dark 文件改为 palette 引用。
-- **待用户定夺**：dark `bg.solid` 用户在 Figma 里 alias 的是 black/900（生成值 `#000000E5`，90% 半透明黑），而 B 方案对齐表定的 gray/900 `#191919`——两者在白色宿主页上几乎同色，但半透明画布违反「语义层实色」约定，等用户确认是否改回 gray/900。
+- **已解决**：dark `bg.solid` 曾短暂 alias 到 black/900（半透明黑）——用户确认是引用错误，已改回 **gray/900 #191919**（语义层画布保持实色，与「语义层永远实色」约定一致）。
 
 ## token 可读性优先，拒绝 RGB 通道三元组
 

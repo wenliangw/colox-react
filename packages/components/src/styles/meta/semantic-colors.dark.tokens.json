@@ -350,16 +350,16 @@
       "$type": "color",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0, 0, 0],
-        "alpha": 0.8999999761581421,
-        "hex": "#000000"
+        "components": [0.09803921729326248, 0.09803921729326248, 0.09803921729326248],
+        "alpha": 1,
+        "hex": "#191919"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:13:36",
         "com.figma.scopes": ["ALL_SCOPES"],
         "com.figma.aliasData": {
-          "targetVariableId": "VariableID:1e611811fe3548f83cc1e2516747cb67d62595b1/-1:-1",
-          "targetVariableName": "black/900",
+          "targetVariableId": "VariableID:588c93ecf948c3ce027f8eeb9fb86d4213be9151/-1:-1",
+          "targetVariableName": "gray/900",
           "targetVariableSetId": "VariableCollectionId:f6722184ba5a1974889f4b447b9c424dfc0bd12c/-1:-1",
           "targetVariableSetName": "Colors"
         }
