@@ -5,9 +5,9 @@
  *   colox theme build -c ./colox.theme.json
  *
  * Compiles the user's colox.theme.json into complete-assignment CSS:
- * a palette-axis file ([data-colox-palette='<name>']) and, when the
- * config declares themes, one semantic file per theme
- * ([data-colox-theme='<name>']).
+ * a palette-axis file (:root[data-colox-palette='<name>']) and, when
+ * the config declares themes, one semantic file per theme
+ * (:root[data-colox-theme='<name>']).
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';

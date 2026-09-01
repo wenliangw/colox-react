@@ -31,7 +31,7 @@
 
 - 命名为 `colox.theme.json`（用户从 `colox.palette.json` 改拍为 theme：配置表达的是主题层而非仅是色板）。
 - 编译模型走**变量链**（runtime var() 引用，非烘焙）：palette 导出为 CSS 变量、语义层引用 palette；配置编译产物是完整赋值的色板轴文件，双主题自动跟随；被用户认可的点：轻量支持多主题。
-- palette 并进 light/dark 两文件（用户否决三文件），由此 dark.css 依赖 light.css 先加载（仅 palette 声明居住地依赖，语义段仍是完整赋值）。
+- palette 并进 light/dark 两文件（用户否决三文件）；属性轴选择器补 `:root` 前缀（`:root[data-colox-theme='dark']`、`:root[data-colox-palette='…']`，特异性 0,2,0 稳压 `:root` 基线的 0,1,0）→ **文件加载顺序无关**；残余约束仅是「存在约束」：dark.css 引用 palette 声明（palette 只住在 light.css），只载 dark 而不载 light 仍会整体失效——等 dark-only 部署真出现再议（三文件或重复声明块）。
 - 语义覆盖值语法定死两种：字面量 hex 或 `{ "palette": "gray/900" }` 引用（用户否决裸字符串自动识别）。
 - 主题产物永远是完整赋值；覆盖在编译期合入。语义覆盖只到「语义槽」，派生靠 var 链自动重算。
 - **brand = 独立语义组且动态**：编译期由种子生成器产出 brand 阶（写进定制色板轴），语义层 brand.* 是工程侧静态引用链（Figma 不拥有）；ColoxTheme 的 palette 轴切换整体替换 brand 阶变量 → 双主题全链重派生。默认 brand 阶是 indigo 阶的引用链（零视觉漂移）。组件层后续改吃 brand.*（Button primary 从 indigo 换出）。种子生成器保留。

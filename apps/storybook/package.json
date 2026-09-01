@@ -8,6 +8,7 @@
     "dev": "storybook dev -p 6006",
     "prestorybook": "pnpm --filter @colox/react run build:tokens",
     "storybook": "storybook dev -p 6006",
+    "themes:demo": "pnpm --filter @colox/react run build:tokens && colox theme build -c ./colox.theme.json",
     "build-storybook": "pnpm --filter @colox/react build && storybook build"
   },
   "devDependencies": {

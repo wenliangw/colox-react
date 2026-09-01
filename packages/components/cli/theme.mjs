@@ -5,15 +5,17 @@
  * pre-digested library defaults (dist/cli-data.json).
  *
  * Outputs (all COMPLETE assignments — never runtime delta files):
- * - a palette-axis file scoped to [data-colox-palette='<name>'] with
- *   every colox.palette.* var (brand ramp generated from the seed when
- *   given, other ramps merged over defaults)
+ * - a palette-axis file scoped to :root[data-colox-palette='<name>']
+ *   with every colox.palette.* var (brand ramp generated from the seed
+ *   when given, other ramps merged over defaults)
  * - one file per configured theme scoped to
- *   [data-colox-theme='<name>'] with every colox.color.* var, splicing
- *   in the configured semantic overrides
+ *   :root[data-colox-theme='<name>'] with every colox.color.* var,
+ *   splicing in the configured semantic overrides
  *
- * The runtime stays var()-chained: theme vars reference palette vars,
- * so a palette-axis swap re-derives every theme without recompiling.
+ * The :root prefix raises each axis to (0,2,0) so it beats the light.css
+ * baseline without depending on stylesheet order. The runtime stays
+ * var()-chained: theme vars reference palette vars, so a palette-axis
+ * swap re-derives every theme without recompiling.
  */
 
 const HEX_RE = /^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/;
@@ -226,7 +228,7 @@ export function buildPaletteCss(overrides, stepLists, defaults, scopeName) {
       ]);
     }
   }
-  return cssBlock(`[data-colox-palette='${scopeName}']`, declarations);
+  return cssBlock(`:root[data-colox-palette='${scopeName}']`, declarations);
 }
 
 /**
@@ -249,5 +251,5 @@ export function buildThemeCss(themeName, baseSemantics, overrides) {
     }
   }
   const declarations = Array.from(byName, ([key, value]) => [`colox-color-${key}`, value]);
-  return cssBlock(`[data-colox-theme='${themeName}']`, declarations);
+  return cssBlock(`:root[data-colox-theme='${themeName}']`, declarations);
 }

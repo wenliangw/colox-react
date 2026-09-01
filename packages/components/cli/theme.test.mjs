@@ -88,7 +88,7 @@ describe('validateConfig', () => {
 describe('buildPaletteCss', () => {
   it('emits a complete assignment scoped to the axis', () => {
     const css = buildPaletteCss({ brand: '#FF0000' }, STEP_LISTS, DEFAULTS, 'demo');
-    expect(css).toMatch(/^\[data-colox-palette='demo'\] \{/);
+    expect(css).toMatch(/^:root\[data-colox-palette='demo'\] \{/);
     expect(css).toContain('--colox-palette-brand-500: ');
     expect(css).toContain('--colox-palette-gray-850: #262626');
     expect(css).toContain('--colox-palette-white-0: #FFFFFF');
@@ -103,7 +103,7 @@ describe('buildThemeCss', () => {
 
   it('emits the complete semantic assignment', () => {
     const css = buildThemeCss('dark', base, {});
-    expect(css).toMatch(/^\[data-colox-theme='dark'\] \{/);
+    expect(css).toMatch(/^:root\[data-colox-theme='dark'\] \{/);
     expect(css).toContain('--colox-color-text-muted: var(--colox-palette-gray-600)');
     expect(css).toContain('--colox-color-bg-solid: var(--colox-palette-white-0)');
   });

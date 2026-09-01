@@ -1,4 +1,4 @@
-[data-colox-palette='demo'] {
+:root[data-colox-palette='demo'] {
   --colox-palette-white-0: #ffffff;
   --colox-palette-white-50: #ffffff0d;
   --colox-palette-white-100: #ffffff1a;

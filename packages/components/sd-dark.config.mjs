@@ -9,7 +9,11 @@
  *
  * Palette tokens are in the dictionary so references resolve, but are
  * filtered out of dark.css — the theme-independent palette block lives
- * in light.css only (dark.css must therefore load after light.css).
+ * in light.css only. dark.css references that block via var(); custom
+ * properties resolve at computed-value time, so file order does not
+ * matter as long as light.css is loaded at all. The selector uses the
+ * `:root` prefix so the attribute axis (0,2,0) beats light.css's :root
+ * baseline (0,1,0) regardless of stylesheet order.
  * The output is a COMPLETE assignment of the same variable names as
  * the light theme's color section (58 + 4 brand tokens).
  */
@@ -31,7 +35,7 @@ export default {
           format: 'css/variables',
           filter: (token) => token.path[1] === 'color',
           options: {
-            selector: "[data-colox-theme='dark']",
+            selector: ":root[data-colox-theme='dark']",
             outputReferences: true,
           },
         },

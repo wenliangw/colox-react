@@ -1,4 +1,4 @@
-[data-colox-theme='deep'] {
+:root[data-colox-theme='deep'] {
   --colox-color-bg-disabled: var(--colox-palette-gray-850);
   --colox-color-bg-error: var(--colox-palette-red-900);
   --colox-color-bg-info: var(--colox-palette-blue-900);
