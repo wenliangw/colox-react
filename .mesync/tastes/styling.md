@@ -32,7 +32,7 @@
 - inverse 语义互换：bg.inverse 暗色下翻为白、text.inverse 翻为近黑；border.inverse（#747474）与色槽 inverse（#FFF）跨主题保持（数值对称性论证后保留原值）。
 - dark.css 输出全部 colox.color.* 语义变量（含未重定义的档位，带 light 值补全），冲突日志证明每个 dark 覆盖对应既有 light 变量（无孤儿变量名）。
 - **white/black alpha 阶的用途已由用户纠偏**：它们是**遮罩（scrim）与 box-shadow 的原语**（palette 层 `white/0..900`、`black/0..900`，8 位 hex 已透传），**不是**给语义表面/文本做合成用的。dark 语义坚持**实色**。
-- **进行中的对齐**：dark 的实色全部来自 gray 单尺——「重排 gray 让一条阶同时喂 light 和 dark」。方案：现有 10 步值**零重调**，只新增 4 个近黑步（750 #5E5E5E / 825 #333333 / 850 #262626 / 875 #1F1F1F）承载 dark 的文本微弱档、三级边框、两级表面；light 侧仅把 bg.solid/bg.overlay/text.inverse/tier inverse 重 alias 到 white/0。等用户在 Figma 落地后，dark 文件全部改为 palette 引用。
+- **已定案（方案 B，12 步 gray 单尺双用）**：新增 `gray/750 #5E5E5E`（dark text.disabled）、`gray/850 #262626`（dark 表面/次级边框）；微调 `gray/600 #9A→#9E9E9E`（双主题 text.muted 共用）、`gray/700 #74→#707070`（light border.inverse 与 dark text.subtle 共用）、`gray/800 #38→#3D3D3D`（dark border.solid）；light 语义把 bg.solid/bg.overlay/text.inverse/tier inverse 重 alias 到 white/0。代价取舍：dark 表面 subtle/muted 合并、border.subtle/muted 合并（v1 中本就只差 0.01-0.03），换「不新增过多中间色阶」。待用户在 Figma 落地并重导出后，dark 文件改为 palette 引用。
 
 ## token 可读性优先，拒绝 RGB 通道三元组
 
