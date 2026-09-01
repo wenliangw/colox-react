@@ -25,14 +25,15 @@
 
 ## dark 主题推导约定（工程侧首版，Figma dark 变量落地后可替换）
 
-- 前提：**palette 与主题无关**，dark 只重映射语义层（40 个 delta 变量，手维护在 semantic-color.dark.tokens.json；将来 Figma 变量做 dark modes 后由导出接管，工程侧版本退役）。
+- 前提：**palette 与主题无关**，dark 只重映射语义层。首版为工程侧手维护的 delta 覆盖（semantic-color.dark.tokens.json）；**Figma 出 dark modes 后已由导出接管**：`semantic-colors.light.tokens.json` 与 `semantic-colors.dark.tokens.json` 两个全量导出（各 52 个语义 token，值随 mode 解析），工程侧手工 dark 文件退役。
 - 中性色阶梯：画布 bg.solid = gray/900（#191919），raise 序列 subtle #1F1F1F → muted #262626；文本 solid 近白 #E8E8E8、muted #A3A3A3、subtle #707070；边框阶梯 solid #3D3D3D > muted #333333 > subtle #2A2A2A。
 - 状态色三通道各自反演：text 档 600/700/800 → 300（亮阶文字在暗底可读）、border 档 300 → 500（比文字暗一档的可见色边）、bg 档 50 → 900（暗色洗底）。
 - 色槽 tier：solid / muted / inverse 跨主题不变（实底主色与前景反色本就主题无关；muted 粉彩阶做焦点环在暗底反而更清晰）；subtle 档 50 → 900（ghost hover 洗底从亮洗变暗洗）。
 - inverse 语义互换：bg.inverse 暗色下翻为白、text.inverse 翻为近黑；border.inverse（#747474）与色槽 inverse（#FFF）跨主题保持（数值对称性论证后保留原值）。
-- dark.css 输出全部 colox.color.* 语义变量（含未重定义的档位，带 light 值补全），冲突日志证明每个 dark 覆盖对应既有 light 变量（无孤儿变量名）。
+- dark.css 输出全部 colox.color.* 语义变量（完整赋值，与 light 色变量 58=58 名称对位；对位校验在生成后人工核对），light/dark 两个导出由转换器分别落成 colox.color.*。
 - **white/black alpha 阶的用途已由用户纠偏**：它们是**遮罩（scrim）与 box-shadow 的原语**（palette 层 `white/0..900`、`black/0..900`，8 位 hex 已透传），**不是**给语义表面/文本做合成用的。dark 语义坚持**实色**。
 - **已定案（方案 B，12 步 gray 单尺双用）**：新增 `gray/750 #5E5E5E`（dark text.disabled）、`gray/850 #262626`（dark 表面/次级边框）；微调 `gray/600 #9A→#9E9E9E`（双主题 text.muted 共用）、`gray/700 #74→#707070`（light border.inverse 与 dark text.subtle 共用）、`gray/800 #38→#3D3D3D`（dark border.solid）；light 语义把 bg.solid/bg.overlay/text.inverse/tier inverse 重 alias 到 white/0。代价取舍：dark 表面 subtle/muted 合并、border.subtle/muted 合并（v1 中本就只差 0.01-0.03），换「不新增过多中间色阶」。待用户在 Figma 落地并重导出后，dark 文件改为 palette 引用。
+- **待用户定夺**：dark `bg.solid` 用户在 Figma 里 alias 的是 black/900（生成值 `#000000E5`，90% 半透明黑），而 B 方案对齐表定的 gray/900 `#191919`——两者在白色宿主页上几乎同色，但半透明画布违反「语义层实色」约定，等用户确认是否改回 gray/900。
 
 ## token 可读性优先，拒绝 RGB 通道三元组
 
@@ -43,13 +44,13 @@
 
 - 语义色按**强度档**组织：solid（全强度实底）/ muted（中间调）/ subtle（最浅罩层）/ inverse（深底反色前景）。颜色四档组服务实底组件，角色组（text/bg/border）服务面板/文字/边框语境。
 - 档位替混色：焦点环用 muted 档、ghost hover 用 subtle 档，不再走 alpha 混色（alpha 层已完整退役）。
-- 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%（light）/ 向白混 85%/75%（dark，实底控件在暗色下 hover 变亮），规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic-color.dark.tokens.json（dark），组件不内联。
+- 仅实底交互态保留 color-mix 派生：hover/active = 基色向黑混 85%/75%（light）/ 向白混 85%/75%（dark，实底控件在暗色下 hover 变亮），规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic.derived.dark.tokens.json（dark），组件不内联。
 - 派生混色的 authored 形态用 `var(--colox-color-*-solid)` 字面串（SD 原样透传、浏览器运行时解析）而非 `{token}` 引用——保证运行时重映射 solid（如未来 brand 换色）时 hover/active 自动跟随。
 - color-mix 需要 2023+ 浏览器。
 
 ## token 归属：Figma 承载视觉值，工程侧承载实现值
 
-- Figma variables 承载：color / semantic-color / fontSize / fontWeight / lineHeight / radii / spacing（导出 → 转换 → SD 生成）。
+- Figma variables 承载：color / semantic-colors.light / semantic-colors.dark / fontSize / fontWeight / lineHeight / radii / spacing（导出 → 转换 → SD 生成）。
 - 工程侧人工维护（tokens/base.tokens.json + semantic.derived.tokens.json）：fontFamily（sans/mono 系统栈）、shadow（sm/md/lg）、motion（duration fast/normal/slow + easing out/in/in-out）、实底 hover/active 派生混色。
 - 原因：Figma variables 对字体族、复合阴影、缓动曲线等实现类值支持不佳，用户拍板归属工程侧。
 
