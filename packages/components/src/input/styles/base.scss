@@ -17,8 +17,8 @@
 
   &:focus-visible {
     outline: none;
-    border-color: var(--colox-color-indigo-solid);
-    box-shadow: 0 0 0 2px var(--colox-color-indigo-muted);
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
   }
 
   &:disabled {

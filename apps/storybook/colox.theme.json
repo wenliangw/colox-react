@@ -1,0 +1,19 @@
+{
+  "$schema": "../packages/components/schemas/theme.schema.json",
+  "palette": {
+    "brand": "#FF6B35"
+  },
+  "themes": {
+    "deep": {
+      "extends": "dark",
+      "semantic": {
+        "bg": { "solid": "#0B0D12", "muted": { "palette": "gray/800" } },
+        "text": { "muted": { "palette": "gray/600" } }
+      }
+    }
+  },
+  "output": {
+    "name": "demo",
+    "dir": "./.storybook/demo-themes"
+  }
+}

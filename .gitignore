@@ -18,6 +18,9 @@ storybook-static
 packages/components/src/styles/tokens/*.tokens.json
 !packages/components/src/styles/tokens/semantic.derived.tokens.json
 !packages/components/src/styles/tokens/semantic.derived.dark.tokens.json
+!packages/components/src/styles/tokens/semantic.brand.tokens.json
+!packages/components/src/styles/tokens/semantic.brand.dark.tokens.json
+!packages/components/src/styles/tokens/palette.brand.tokens.json
 !packages/components/src/styles/tokens/base.tokens.json
 packages/components/src/styles/tokens/breakpoints.ts
 

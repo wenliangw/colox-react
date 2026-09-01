@@ -1,0 +1,24 @@
+{
+  "colox": {
+    "color": {
+      "brand": {
+        "solid": {
+          "$value": "{colox.palette.brand.500}",
+          "$type": "color"
+        },
+        "muted": {
+          "$value": "{colox.palette.brand.200}",
+          "$type": "color"
+        },
+        "subtle": {
+          "$value": "{colox.palette.brand.50}",
+          "$type": "color"
+        },
+        "inverse": {
+          "$value": "#FFFFFF",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

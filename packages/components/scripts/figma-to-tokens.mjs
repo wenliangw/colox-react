@@ -36,12 +36,12 @@ const SPECS = {
   'semantic-colors.light': {
     namespace: (group) => ['color', group],
     type: () => 'color',
-    value: colorValue,
+    value: semanticValue,
   },
   'semantic-colors.dark': {
     namespace: (group) => ['color', group],
     type: () => 'color',
-    value: colorValue,
+    value: semanticValue,
   },
   typography: {
     namespace: (group) =>
@@ -76,6 +76,24 @@ function colorValue(token) {
     .toUpperCase()
     .padStart(2, '0');
   return `${rgb}${byte}`;
+}
+
+/**
+ * Semantics carry their palette lineage in com.figma.aliasData
+ * (targetVariableName like "gray/700" or "white/0"). Emit it as an
+ * SD reference so the theme CSS keeps the variable chain at runtime:
+ * semantic vars reference palette vars, and a palette-axis swap
+ * (data-colox-palette) re-derives both themes without recompiling.
+ * Tokens without an alias (tier inverse, constant white) keep their
+ * resolved hex.
+ */
+function semanticValue(token) {
+  const alias = token.$extensions?.['com.figma.aliasData'];
+  if (alias?.targetVariableName) {
+    const [hue, step] = alias.targetVariableName.split('/');
+    return `{colox.palette.${cleanKey(hue)}.${step}}`;
+  }
+  return colorValue(token);
 }
 
 function normalizeExtensions($extensions) {

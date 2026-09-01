@@ -1,0 +1,48 @@
+{
+  "colox": {
+    "palette": {
+      "brand": {
+        "50": {
+          "$value": "#E8E7FC",
+          "$type": "color"
+        },
+        "100": {
+          "$value": "#D7D5F9",
+          "$type": "color"
+        },
+        "200": {
+          "$value": "#B5B1F4",
+          "$type": "color"
+        },
+        "300": {
+          "$value": "#938EEF",
+          "$type": "color"
+        },
+        "400": {
+          "$value": "#716AEA",
+          "$type": "color"
+        },
+        "500": {
+          "$value": "#4F46E5",
+          "$type": "color"
+        },
+        "600": {
+          "$value": "#2920CF",
+          "$type": "color"
+        },
+        "700": {
+          "$value": "#231CA6",
+          "$type": "color"
+        },
+        "800": {
+          "$value": "#1C1877",
+          "$type": "color"
+        },
+        "900": {
+          "$value": "#15124E",
+          "$type": "color"
+        }
+      }
+    }
+  }
+}

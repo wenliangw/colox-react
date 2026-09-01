@@ -30,6 +30,16 @@
           "$value": "color-mix(in srgb, var(--colox-color-red-solid) 75%, #FFFFFF)",
           "$type": "color"
         }
+      },
+      "brand": {
+        "hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 85%, #FFFFFF)",
+          "$type": "color"
+        },
+        "active": {
+          "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 75%, #FFFFFF)",
+          "$type": "color"
+        }
       }
     }
   }

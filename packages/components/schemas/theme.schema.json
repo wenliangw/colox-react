@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://colox.dev/schemas/theme.schema.json",
+  "title": "ColoxThemeConfig",
+  "description": "User-side theme configuration for @colox/react, compiled by `colox theme build`.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "palette": {
+      "type": "object",
+      "description": "Palette customization applied to every theme. The brand ramp may be a seed hex or a full 50-900 object; other ramps require their full ladder.",
+      "additionalProperties": { "$ref": "#/definitions/ramp" }
+    },
+    "themes": {
+      "type": "object",
+      "description": "Per-theme configuration: enable/disable, extend another theme, and splice semantic overrides. Emitted as complete assignments.",
+      "additionalProperties": { "$ref": "#/definitions/theme" }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "dir": { "type": "string" }
+      }
+    }
+  },
+  "definitions": {
+    "ramp": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+          }
+        },
+        { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+      ]
+    },
+    "semanticValue": {
+      "oneOf": [
+        { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "palette": { "type": "string", "pattern": "^[a-z]+/[0-9]+$" }
+          },
+          "required": ["palette"]
+        }
+      ]
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "extends": { "type": "string" },
+        "semantic": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/definitions/semanticValue" }
+          }
+        }
+      }
+    }
+  }
+}

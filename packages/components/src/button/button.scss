@@ -19,7 +19,7 @@
   font-size: var(--colox-font-size-sm);
 
   &:focus-visible {
-    outline: 2px solid var(--colox-color-indigo-muted);
+    outline: 2px solid var(--colox-color-brand-muted);
     outline-offset: 2px;
   }
 
@@ -41,15 +41,15 @@
   }
 
   &--primary {
-    background-color: var(--colox-color-indigo-solid);
+    background-color: var(--colox-color-brand-solid);
     color: var(--colox-color-text-inverse);
 
     &:hover:not(:disabled) {
-      background-color: var(--colox-color-indigo-hover);
+      background-color: var(--colox-color-brand-hover);
     }
 
     &:active:not(:disabled) {
-      background-color: var(--colox-color-indigo-active);
+      background-color: var(--colox-color-brand-active);
     }
   }
 
@@ -68,10 +68,10 @@
 
   &--ghost {
     background-color: transparent;
-    color: var(--colox-color-indigo-solid);
+    color: var(--colox-color-brand-solid);
 
     &:hover:not(:disabled) {
-      background-color: var(--colox-color-indigo-subtle);
+      background-color: var(--colox-color-brand-subtle);
     }
   }
 
