@@ -27,6 +27,7 @@
       "require": "./dist/cjs/index.cjs"
     },
     "./style.css": "./dist/style.css",
+    "./themes/palette.css": "./dist/themes/palette.css",
     "./themes/light.css": "./dist/themes/light.css",
     "./themes/*": "./dist/themes/*",
     "./styles/*": "./src/styles/*",
@@ -35,7 +36,7 @@
   "scripts": {
     "build": "pnpm run tokens:sync && vite build && pnpm run emit:themes",
     "build:tokens": "pnpm run tokens:sync && pnpm run emit:themes",
-    "emit:themes": "style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs",
+    "emit:themes": "style-dictionary build --config sd-palette.config.mjs && style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs",
     "tokens:sync": "node scripts/figma-to-tokens.mjs",
     "build:watch": "pnpm run tokens:sync && vite build --watch",
     "typecheck": "pnpm run tokens:sync && tsc --noEmit -p tsconfig.json",

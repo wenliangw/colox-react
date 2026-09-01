@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react';
 import '../../../packages/components/src/styles/index.scss';
+import '../../../packages/components/dist/themes/palette.css';
 import '../../../packages/components/dist/themes/light.css';
 import '../../../packages/components/dist/themes/dark.css';
 // Demo of the user-side theme pipeline (apps/storybook/colox.theme.json,

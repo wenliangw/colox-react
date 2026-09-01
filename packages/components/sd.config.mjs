@@ -3,19 +3,21 @@
  *
  * Sources (src/styles/tokens/):
  * - generated from Figma exports via figma-to-tokens.mjs: color
- *   (palette), semantic-colors.light, typography, size
+ *   (palette, needed only so the semantic references resolve),
+ *   semantic-colors.light, typography, size
  * - hand-maintained: semantic.derived + semantic.brand (hover/active
- *   rules and the brand group's palette references), palette.brand
- *   (default brand ramp = the indigo values), base
+ *   rules and the brand group's palette references), base
  *
- * Output: dist/themes/light.css — flat runtime variables on :root.
- * Palette vars are exported and the semantic layer references them
- * (outputReferences), so a palette-axis swap (data-colox-palette)
- * re-derives the theme at runtime without recompiling.
+ * Output: dist/themes/light.css — the complete LIGHT assignment on
+ * :root: 64 semantic color vars (var()-chained into the palette) plus
+ * the theme-independent design tokens (typography/size/base). Palette
+ * declarations are NOT emitted here — they live in palette.css
+ * (sd-palette.config.mjs), so light.css cannot be loaded as a
+ * replacement for the palette baseline.
  *
  * The dark export must NOT be part of this pipeline: light.css carries
  * the complete light assignment (52 + 4 brand + 6 derived semantic
- * tokens) plus the theme-independent palette block.
+ * tokens), dark.css carries its own complete assignment.
  */
 export default {
   source: [
@@ -36,6 +38,7 @@ export default {
         {
           destination: 'light.css',
           format: 'css/variables',
+          filter: (token) => token.path[1] !== 'palette',
           options: {
             selector: ':root',
             outputReferences: true,
