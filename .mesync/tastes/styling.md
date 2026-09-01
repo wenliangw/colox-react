@@ -10,7 +10,7 @@
 
 - 主题块 = 同名语义变量在 `:root` / `[data-colox-theme='light'|'dark']` 作用域下的多组值；组件零感知。
 - 暗色混合驱动：无显式选择时跟随系统，`[data-colox-theme='light'|'dark']` 手动覆盖（将来由 ColoxTheme 属性开关点亮）。
-- light.css 为全量赋值（133 变量，:root）；dark.css 为 **delta 覆盖**（只输出与 light 不同的变量，作用域 `[data-colox-theme='dark']`，覆盖靠属性选择器特异性 + 加载顺序）。
+- light.css 为全量赋值（133 变量，:root）；dark.css 同为**全量赋值**（58 个语义色变量，作用域 `[data-colox-theme='dark']`），不依赖与 light.css 配对加载。这是用户拍板：主题 = 同名变量的多组**完整**赋值，delta 优化被否决。
 - 主题文件按需显式引入（`themes/light.css` + `themes/dark.css`），入口不自动注入。
 
 ## 主题模型：用户自定义主题，官方只给基准
@@ -30,7 +30,8 @@
 - 状态色三通道各自反演：text 档 600/700/800 → 300（亮阶文字在暗底可读）、border 档 300 → 500（比文字暗一档的可见色边）、bg 档 50 → 900（暗色洗底）。
 - 色槽 tier：solid / muted / inverse 跨主题不变（实底主色与前景反色本就主题无关；muted 粉彩阶做焦点环在暗底反而更清晰）；subtle 档 50 → 900（ghost hover 洗底从亮洗变暗洗）。
 - inverse 语义互换：bg.inverse 暗色下翻为白、text.inverse 翻为近黑；border.inverse（#747474）与色槽 inverse（#FFF）跨主题保持（数值对称性论证后保留原值）。
-- dark.css 是 delta 而非全量：加载在 light.css 之后 + 属性选择器特异性覆盖；SD 暗色构建故意保留冲突日志——它证明每个 dark 覆盖都对应一个既有 light 变量（无孤儿变量名）。
+- dark.css 输出全部 colox.color.* 语义变量（含未重定义的档位，带 light 值补全），冲突日志证明每个 dark 覆盖对应既有 light 变量（无孤儿变量名）。
+- **待用户定夺的悬案**：dark 的中性色值目前是工程侧手写 hex（#1F1F1F/#262626/#3D3D3D 等），未引用色板档位——用户在审视「dark 也应该从基础色板取值」（倾向：Figma Colors 补 gray/850、gray/875 等暗半区细档后，dark 文件全部改为 palette 引用）。
 
 ## token 可读性优先，拒绝 RGB 通道三元组
 
