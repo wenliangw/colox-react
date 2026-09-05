@@ -103,6 +103,7 @@
 
 - variant/size 等变体用 `cva()` 定义，只拼 className、零运行时 CSS；类名沿用 `colox-` BEM 前缀。
 - 不引入重型 css-in-js。
+- **变体扩展性是开放问题（用户两轮表态未接受封闭方案）**：用户不满足「closed union + 用户自写 CSS/包装函数」的扩展模式，期望 css-in-js 式「自由组合生成变体、样式自动注入」（如自制 `variant="link"`）。已对齐的代价认知：运行时 css-in-js 自由但背 SSR/运行时税；零运行时 in-js（Panda）把注入搬构建期、要求消费方跑 codegen，与「预编译 npm 包」交付互斥（Chakra v3/Park UI 均转为 snippet 交付）。信号确凿：样式自由度是用户在意的一等需求；方案未定，出方案时必须先厘清交付模型取舍，不可绕过。
 
 ## token 命名词汇取向：贴近常识词
 
