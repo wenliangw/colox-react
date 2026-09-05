@@ -20,3 +20,4 @@
 - 命名 = 目录名即 frontmatter name（stack/doctrine/style，无前缀；撞名警察等生态成熟再上）；`references/` 用复数（dsh 与 Claude 的共同拼写，dsh watcher 视其为 bundle 资源、按需加载）。
 - 测试纪律：doctrine 测试直接打真实 `@colox/wiki` 内容（内容坏了测试红）；server 测试走 InMemoryTransport 全链路；构建后以真实 stdio JSON-RPC 握手冒烟。
 - 版本机制（用户定调）：changesets 移除 linked——改为纪律型「前两位一致」；react 有 pending minor 时（如 Input、心法首版）wiki 以 minor 顺位同发。
+- mcp 随 wiki 发版自动 patch（用户确认：mcp 依赖的 wiki 版本变了就该跟着发）——机制即 `updateInternalDependencies: patch`，无需手工开 changeset，也不收紧。

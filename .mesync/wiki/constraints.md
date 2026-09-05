@@ -15,6 +15,7 @@
 - `src/index.ts` 必须 `import './styles/index.scss'`，确保 token 层 `:root` 打进 `dist/style.css`。
 - 版本管理用 Changesets；`@colox/preview` 与 `@colox/docs` 被 `ignore`（不发布）。
 - 版本纪律：`@colox/react` 与 `@colox/wiki` 前两位版本号（major.minor）保持一致——react/theme 任何代码调整都必须评估 wiki 是否需同步；patch 位专归组件 bugfix，非 API 变更不动 wiki（changesets 不再用 linked 全位强制同版）。
+- wiki 发版时 `@colox/mcp` 随依赖刷新自动以 patch 位发版（`updateInternalDependencies: patch`），使发布依赖范围指向最新 wiki；这是设计行为，不手工开 changeset 也不移除该配置。
 
 ## 代码质量约束
 
