@@ -39,8 +39,8 @@ export function useThemeStorage(state: ThemeState, dispatch: Dispatch) {
       return;
     }
     try {
-      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
       window.localStorage.removeItem(PALETTE_STORAGE_KEY);
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
       if (palette !== undefined) {
         window.localStorage.setItem(PALETTE_STORAGE_KEY, palette);
       }

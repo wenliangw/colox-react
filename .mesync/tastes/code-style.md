@@ -45,7 +45,7 @@
 ## 控制流整洁：if 必带花括号 + guard 优先
 
 - **`if` 必须带 `{}`**：即使一行内容也要完整语句块（`if (x) {\n  return;\n}`），绝不写 `if (x) return;`。
-- **优先 guard clause（单 if + return/continue）**，不堆 switch 与 if-else：先处理边界/失效分支并提前返回，主逻辑保持平铺；`else` 能用「先置默认值，再单 if 覆盖」消解的就消解（如属性写入先 removeAttribute 再条件 setAttribute）。
+- **优先 guard clause（单 if + return/continue）**，不堆 switch 与 if-else：先处理边界/失效分支并提前返回，主逻辑保持平铺；`else` 能用「先置默认值，再单 if 覆盖」消解的就消解。多轴同构时**统一归零再统一写入**：所有 remove/重置提到前面整体执行，随后按条件 set 各偏差值（属性写入：先 removeAttribute 全部归零再条件 setAttribute；存储写穿同序），同一轴的 remove/set 不交错。
 - **switch 与 if-else 不禁止**，是整洁取舍：在合理场景仍用（状态机对可辨识联合的 exhaustive switch、校验器无后续检查时、三路分支各赋一值）；使用处分支统一带花括号。
 
 ## 注释克制：代码即注释

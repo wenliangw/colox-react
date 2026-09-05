@@ -8,21 +8,22 @@ import { resolveTheme, type ThemeState } from '../reducers/theme';
 
 /**
  * Writes the three axes from the state onto <html> — the single fact
- * source the theme CSS selectors read. Each axis starts from its default
- * state (attribute removed) and the value is written only when the state
- * deviates.
+ * source the theme CSS selectors read. The optional axes reset to their
+ * default state first (attributes removed), then every deviation is
+ * written conditionally; the theme itself has no default state and is
+ * always written.
  */
 export function applyThemeAttributes(state: ThemeState) {
   if (typeof document === 'undefined') {
     return;
   }
   const root = document.documentElement;
-  root.setAttribute(THEME_ATTRIBUTE, resolveTheme(state));
   root.removeAttribute(PALETTE_ATTRIBUTE);
+  root.removeAttribute(BREAKPOINT_ATTRIBUTE);
+  root.setAttribute(THEME_ATTRIBUTE, resolveTheme(state));
   if (state.palette !== undefined) {
     root.setAttribute(PALETTE_ATTRIBUTE, state.palette);
   }
-  root.removeAttribute(BREAKPOINT_ATTRIBUTE);
   if (state.breakpoint !== BASE_BREAKPOINT_NAME) {
     root.setAttribute(BREAKPOINT_ATTRIBUTE, state.breakpoint);
   }
