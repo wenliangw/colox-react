@@ -14,8 +14,14 @@ export default defineConfig({
       exclude: ['src/**/*.test.tsx', 'src/**/*.test.ts'],
     }),
   ],
+  resolve: {
+    alias: {
+      '@': resolve(import.meta.dirname, 'src'),
+    },
+  },
   build: {
-    // emit:themes 的 CSS/cli-data 产物与 JS 产物共存于 dist，vite 不得清空
+    // emit:themes CSS/cli-data artifacts coexist with the JS artifacts in
+    // dist, so vite must not empty the directory
     emptyOutDir: false,
     lib: {
       entry: resolve(import.meta.dirname, 'src/index.ts'),

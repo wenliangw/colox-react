@@ -1,7 +1,8 @@
 /**
- * jsdom 缺 matchMedia，这里给一个可控 mock：两个旋钮（视口宽度、系统
- * 主题偏好），查询结果随旋钮变化并派发 change 事件——形态对齐真实
- * MediaQueryList 的观察语义。
+ * jsdom has no matchMedia, so this controllable mock provides two knobs
+ * (viewport width, system theme preference); query results follow the
+ * knobs and dispatch change events — mimicking the observation semantics of
+ * a real MediaQueryList.
  */
 type MediaHandler = (event: { matches: boolean; media: string }) => void;
 
@@ -12,7 +13,7 @@ interface MockMQL {
   removeEventListener: (type: 'change', handler: MediaHandler) => void;
 }
 
-let viewportWidth = 1440; // 初始桌面宽度：无任何 max-width 命中 → 'base'
+let viewportWidth = 1440; // Initial desktop width: no max-width matches → 'base'
 let systemDark = false;
 const listenersByQuery = new Map<string, Set<MediaHandler>>();
 const mqls: MockMQL[] = [];
@@ -69,7 +70,7 @@ function reconcile() {
   }
 }
 
-/** 每环境只装一次；node 环境（无 window）自动跳过。 */
+/** Installed once per environment; the node environment (no window) is skipped. */
 export function installMatchMediaMock() {
   const win = typeof window !== 'undefined' ? window : null;
   if (!win || typeof win.matchMedia !== 'undefined') return;

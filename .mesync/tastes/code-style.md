@@ -25,6 +25,20 @@
 - 导出的组件/类型符号仍用 PascalCase（`Input`、`InputProps`），仅文件名小写。
 - SCSS 文件**不加下划线前缀**：partial 与普通文件同样命名（如 `base.scss`、`size.scss`），不用 Sass 惯用的 `_partial.scss` 约定。
 
+## 目录分类：能力文件夹 + 层内分组（2025 通用规范）
+
+- **能力文件夹用单数小写名词**：`context` / `hooks` / `types` / `utils` / `stores` / `constants` / `styles`，命名不进功能名——例如唯一的主题 context 就叫 `src/context/`，直接 `context/index.tsx`（不建 `ColoxTheme/` 这种 PascalCase 功能目录）。
+- **文件夹内不许同级平铺**：按能力分层，如 `src/context/index.tsx` + `src/context/types/index.ts`（types 单独一子目录）。文件组功能单元时放功能子文件（如 `context/parts.tsx`）。
+- **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（`test/context/`、`test/stores/`、`test/cli/`、`test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
+- **src 内引用一律 `@/` 别名**（tsconfig paths + vite/vitest alias 三处齐配），不用跨目录相对路径。
+
+## store / utils / constants 各司其职，消灭魔法值
+
+- `stores/` 只做状态管理；纯函数、纯工具放 `utils/`；常量/枚举放 `constants/`。
+- 代码里**不写魔法字符串/魔法数字**：attribute 名、localStorage 键、媒体查询、默认值、主题词汇等集中定义在 `constants/`。
+- **类型词汇与运行时常量同源**：字面量 union 用 `typeof` 从 `constants/` 派生（如 `ColoxThemeName = typeof LIGHT_THEME_NAME | ... `、`BreakpointKey = keyof typeof defaultBreakpoints`），改一处不会漂移。
+- 测试用例名（describe/it 文案）与源码注释同样遵守全英文约定。
+
 ## 命名用全拼，不用缩写
 
 - 标识符、DOM data 属性等一律全拼单词：`data-colox-breakpoint`（而非 `data-colox-bp`）、`variant`（而非 `vnt`）。

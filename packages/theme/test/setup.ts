@@ -1,9 +1,10 @@
-import { installMatchMediaMock } from './match-media';
+import { installMatchMediaMock } from './utils/match-media';
 
 installMatchMediaMock();
 
-// 本仓 vitest 版本的 jsdom 不给 window.localStorage（own property 值为
-// undefined），装内存版保证持久化测试确定可控。
+// The jsdom version used by this repo leaves window.localStorage as an own
+// property with value undefined, so an in-memory shim keeps persistence
+// tests deterministic.
 if (typeof window !== 'undefined' && !window.localStorage) {
   const entries = new Map<string, string>();
   const storage: Storage = {

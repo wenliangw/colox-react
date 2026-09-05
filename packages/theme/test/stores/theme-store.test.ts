@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 /**
- * 存储层单测：三轴属性写入、系统跟随/手动覆盖、断点观察、持久化恢复。
- * 单例状态在每条测试前归零（_resetColoxThemeStateForTests 只存在于
- * store 内部导出，不进发布类型面）。
+ * Store layer unit tests: axis attribute writes, system follow / manual
+ * override, breakpoint observation, persistence restore. The singleton
+ * state is reset before each test (_resetColoxThemeStateForTests only
+ * exists as an internal store export, never in the published type surface).
  */
 import { beforeEach, describe, expect, it } from 'vitest';
-import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../../test/match-media';
+import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../utils/match-media';
 import {
   _resetColoxThemeStateForTests,
   getColoxThemeSnapshot,
@@ -14,7 +15,7 @@ import {
   setColoxStorageEnabled,
   setColoxTheme,
   subscribeColoxTheme,
-} from './store';
+} from '@/stores/theme-store';
 
 const root = () => document.documentElement;
 const attr = (name: string) => root().getAttribute(name);
@@ -29,8 +30,8 @@ beforeEach(() => {
   window.localStorage.clear();
 });
 
-describe('system follow（跟随系统，零配置内建）', () => {
-  it('缺省即跟随：属性 = 系统实际值，isFollowSystem 恒 true', () => {
+describe('follow-system (built in, zero-config)', () => {
+  it('defaults to following: the attribute is the system value, isFollowSystem stays true', () => {
     attach();
     expect(attr('data-colox-theme')).toBe('light');
     expect(getColoxThemeSnapshot().isFollowSystem).toBe(true);
@@ -41,13 +42,13 @@ describe('system follow（跟随系统，零配置内建）', () => {
     expect(getColoxThemeSnapshot().theme).toBe('system');
   });
 
-  it("setTheme('deep') 脱离跟随；setTheme('system') 回到跟随", () => {
+  it("setTheme('deep') leaves follow; setTheme('system') returns to it", () => {
     attach();
     setColoxTheme('deep');
     expect(attr('data-colox-theme')).toBe('deep');
     expect(getColoxThemeSnapshot().isFollowSystem).toBe(false);
 
-    // 手动模式下系统切换不再影响属性
+    // In manual mode the system flips no longer touch the attribute
     setSystemPrefersDark(true);
     expect(attr('data-colox-theme')).toBe('deep');
     expect(getColoxThemeSnapshot().resolvedTheme).toBe('deep');
@@ -59,7 +60,7 @@ describe('system follow（跟随系统，零配置内建）', () => {
 });
 
 describe('palette axis', () => {
-  it('写/摘 color-palette 属性', () => {
+  it('writes / removes the data-colox-palette attribute', () => {
     attach();
     setColoxPalette('brand-2025');
     expect(attr('data-colox-palette')).toBe('brand-2025');
@@ -70,7 +71,7 @@ describe('palette axis', () => {
 });
 
 describe('breakpoints', () => {
-  it('matchMedia 命中写属性：最小命中档胜出', () => {
+  it('writes the attribute when matchMedia matches: the smallest matching segment wins', () => {
     attach();
     expect(root().hasAttribute('data-colox-breakpoint')).toBe(false);
     expect(getColoxThemeSnapshot().breakpoint).toBe('base');
@@ -85,7 +86,7 @@ describe('breakpoints', () => {
     expect(root().hasAttribute('data-colox-breakpoint')).toBe(false);
   });
 
-  it('值覆盖阈值，键名契约不变', () => {
+  it('overrides threshold values, keeping the contract keys fixed', () => {
     attach();
     setColoxBreakpoints({ md: '900px' });
     setViewportWidth(850);
@@ -96,7 +97,7 @@ describe('breakpoints', () => {
 });
 
 describe('persistence', () => {
-  it('storage 开启后 set 自动写回', () => {
+  it('writes through to localStorage once storage is enabled', () => {
     attach();
     setColoxStorageEnabled(true);
     setColoxTheme('dark');
@@ -105,7 +106,7 @@ describe('persistence', () => {
     expect(window.localStorage.getItem('colox:palette')).toBe('demo');
   });
 
-  it('开启 storage 即恢复（storage > default）', () => {
+  it('restores saved values the moment storage is enabled (storage > default)', () => {
     window.localStorage.setItem('colox:theme', 'dark');
     window.localStorage.setItem('colox:palette', 'demo');
     attach();

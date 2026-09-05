@@ -63,7 +63,7 @@ const preview: Preview = {
     },
   },
   decorators: [
-    // 狗粮：三轴属性交给 ColoxTheme parts 写，toolbar 选择直接映射成声明。
+    // Dogfood: the parts write the three axes; toolbar choices map straight to declarations.
     (Story, context) => (
       <ColoxTheme>
         <ColoxTheme.Theme name={context.globals.theme as ColoxThemeName} />

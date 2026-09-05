@@ -1,45 +1,60 @@
 /**
- * ColoxTheme 的全局存储层：theme / palette / breakpoint 三轴的唯一事实源。
+ * The ColoxTheme global store: the single source of truth for the theme /
+ * palette / breakpoint axes.
  *
- * 状态写向 <html> 的 data-colox-* 属性（CSS 选择器读同一处）；React 侧
- * （useColoxTheme / parts）只是这个存储层的订阅者与配置入口。存储层是
- * 模块级单例（每个 JS realm 一份，天然对应一个 document），SSR 安全：
- * 浏览器 API 都在 subscribe（提交阶段）里惰性接线——纯渲染路径不碰
- * window/document，首次交互/提交前不会有副作用。
+ * State is written to the data-colox-* attributes on <html> (CSS selectors
+ * read the same place); the React side (useColoxTheme / parts) is only a
+ * subscriber and config entry point into this store. The store is a
+ * module-level singleton (one per JS realm, naturally matching one
+ * document) and is SSR-safe: all browser APIs are wired lazily inside
+ * subscribe (the commit phase) — the pure render path never touches
+ * window/document, so there are no side effects before first interactivity
+ * or commit.
  *
- * 无 Provider 退化正是这个单例的副产品：useColoxTheme 不依赖 React
- * Context，任何地方调用都读到同一份 state。
+ * The no-provider degradation is a byproduct of this singleton:
+ * useColoxTheme does not depend on React Context, and reads the same state
+ * from anywhere.
  */
-import { defaultBreakpoints } from '../styles/tokens/breakpoints';
+import {
+  BASE_BREAKPOINT_NAME,
+  BREAKPOINT_ATTRIBUTE,
+  BREAKPOINT_KEYS,
+  COLOR_SCHEME_QUERY,
+  DARK_THEME_NAME,
+  LIGHT_THEME_NAME,
+  PALETTE_ATTRIBUTE,
+  PALETTE_STORAGE_KEY,
+  SYSTEM_THEME_NAME,
+  THEME_ATTRIBUTE,
+  THEME_STORAGE_KEY,
+} from '@/constants/theme';
 import type {
   BreakpointKey,
   BreakpointName,
   BreakpointOverrides,
+  ColoxSystemThemeName,
+  ColoxThemeConfigPatch,
   ColoxThemeName,
   ColoxThemeValue,
-} from './types';
+} from '@/context/types';
+import { defaultBreakpoints } from '@/styles/tokens/breakpoints';
 
 type Listener = () => void;
-
-const BREAKPOINT_KEYS: BreakpointKey[] = ['sm', 'md', 'lg', 'xl'];
-const SYSTEM_QUERY = '(prefers-color-scheme: dark)';
-const THEME_STORAGE_KEY = 'colox:theme';
-const PALETTE_STORAGE_KEY = 'colox:palette';
 
 interface StoreState {
   theme: ColoxThemeName;
   palette: string | undefined;
   breakpoint: BreakpointName;
-  systemTheme: 'light' | 'dark';
+  systemTheme: ColoxSystemThemeName;
 }
 
 let state: StoreState = {
-  theme: 'system',
+  theme: SYSTEM_THEME_NAME,
   palette: undefined,
-  breakpoint: 'base',
-  systemTheme: 'light',
+  breakpoint: BASE_BREAKPOINT_NAME,
+  systemTheme: LIGHT_THEME_NAME,
 };
-let defaultTheme: 'light' | 'dark' = 'light';
+let defaultTheme: ColoxSystemThemeName = LIGHT_THEME_NAME;
 let breakpointValues: Record<BreakpointKey, string> = { ...defaultBreakpoints };
 let storageEnabled = false;
 let wired = false;
@@ -49,14 +64,14 @@ const listeners = new Set<Listener>();
 let snapshot: ColoxThemeValue = buildSnapshot();
 
 function resolvedTheme(): string {
-  return state.theme === 'system' ? state.systemTheme : state.theme;
+  return state.theme === SYSTEM_THEME_NAME ? state.systemTheme : state.theme;
 }
 
 function buildSnapshot(): ColoxThemeValue {
   return {
     theme: state.theme,
     resolvedTheme: resolvedTheme(),
-    isFollowSystem: state.theme === 'system',
+    isFollowSystem: state.theme === SYSTEM_THEME_NAME,
     palette: state.palette,
     breakpoint: state.breakpoint,
     setTheme: setColoxTheme,
@@ -73,15 +88,15 @@ function emit() {
 function applyAttributes() {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  root.setAttribute('data-colox-theme', resolvedTheme());
-  if (state.palette === undefined) root.removeAttribute('data-colox-palette');
-  else root.setAttribute('data-colox-palette', state.palette);
-  if (state.breakpoint === 'base') root.removeAttribute('data-colox-breakpoint');
-  else root.setAttribute('data-colox-breakpoint', state.breakpoint);
+  root.setAttribute(THEME_ATTRIBUTE, resolvedTheme());
+  if (state.palette === undefined) root.removeAttribute(PALETTE_ATTRIBUTE);
+  else root.setAttribute(PALETTE_ATTRIBUTE, state.palette);
+  if (state.breakpoint === BASE_BREAKPOINT_NAME) root.removeAttribute(BREAKPOINT_ATTRIBUTE);
+  else root.setAttribute(BREAKPOINT_ATTRIBUTE, state.breakpoint);
 }
 
 function onSystemChange(event: MediaQueryListEvent) {
-  state = { ...state, systemTheme: event.matches ? 'dark' : 'light' };
+  state = { ...state, systemTheme: event.matches ? DARK_THEME_NAME : LIGHT_THEME_NAME };
   applyAttributes();
   emit();
 }
@@ -90,7 +105,7 @@ function computeBreakpoint(): BreakpointName {
   for (let i = 0; i < BREAKPOINT_KEYS.length; i += 1) {
     if (breakpointQueries[i].matches) return BREAKPOINT_KEYS[i];
   }
-  return 'base';
+  return BASE_BREAKPOINT_NAME;
 }
 
 function onBreakpointChange() {
@@ -110,14 +125,19 @@ function rebindBreakpointQueries() {
   state = { ...state, breakpoint: computeBreakpoint() };
 }
 
-/** 惰性接线：每个 realm 只做一次（幂等），subscribe 提交阶段触发。 */
+/** Lazy wiring: once per realm (idempotent), triggered from the subscribe commit phase. */
 function wire() {
   if (wired) return;
   wired = true;
   if (typeof window === 'undefined') return;
   if (typeof window.matchMedia === 'function') {
-    state = { ...state, systemTheme: window.matchMedia(SYSTEM_QUERY).matches ? 'dark' : 'light' };
-    themeQuery = window.matchMedia(SYSTEM_QUERY);
+    state = {
+      ...state,
+      systemTheme: window.matchMedia(COLOR_SCHEME_QUERY).matches
+        ? DARK_THEME_NAME
+        : LIGHT_THEME_NAME,
+    };
+    themeQuery = window.matchMedia(COLOR_SCHEME_QUERY);
     themeQuery.addEventListener('change', onSystemChange);
     rebindBreakpointQueries();
   } else {
@@ -128,16 +148,8 @@ function wire() {
 }
 
 /* ---------------------------------------------------------------- */
-/* 配置入口（parts / 高级用法）                                      */
+/* Config entry points (parts / advanced consumers)                  */
 /* ---------------------------------------------------------------- */
-
-export interface ColoxThemeConfigPatch {
-  theme?: ColoxThemeName;
-  defaultTheme?: 'light' | 'dark';
-  palette?: string | undefined;
-  breakpoints?: BreakpointOverrides;
-  storage?: boolean;
-}
 
 export function setColoxTheme(theme: ColoxThemeName) {
   if (theme === state.theme) return;
@@ -165,9 +177,10 @@ export function setColoxBreakpoints(values: BreakpointOverrides) {
   if (state.breakpoint !== before) emit();
 }
 
-export function setColoxDefaultTheme(value: 'light' | 'dark') {
+export function setColoxDefaultTheme(value: ColoxSystemThemeName) {
   defaultTheme = value;
-  // 只有系统传感器不可用时兜底值才进入状态；传感器在场时它只是 SSR 快照约定。
+  // The fallback only enters the state when the system sensor is unavailable;
+  // with a sensor present it is just the SSR snapshot convention.
   if (wired && typeof window.matchMedia !== 'function') {
     state = { ...state, systemTheme: value };
     applyAttributes();
@@ -178,7 +191,8 @@ export function setColoxDefaultTheme(value: 'light' | 'dark') {
 export function setColoxStorageEnabled(enabled: boolean) {
   if (storageEnabled === enabled) return;
   storageEnabled = enabled;
-  // 挂在配置应用的最后一步：恢复值覆盖 part 声明（storage > part > default）。
+  // Applied as the last fold step: restored values beat part declarations
+  // (storage > part > default).
   if (enabled) restoreFromStorage();
 }
 
@@ -200,7 +214,7 @@ function restoreFromStorage() {
       }
     }
   } catch {
-    // 私密模式等 storage 不可用场景：静默降级到 part/默认值。
+    // Storage unavailable (private mode etc.): degrade silently to part/defaults.
   }
   if (changed) {
     applyAttributes();
@@ -215,11 +229,11 @@ function persist() {
     if (state.palette === undefined) window.localStorage.removeItem(PALETTE_STORAGE_KEY);
     else window.localStorage.setItem(PALETTE_STORAGE_KEY, state.palette);
   } catch {
-    // storage 不可用：跳过，不影响内存态。
+    // Storage unavailable: skip, the in-memory state is unaffected.
   }
 }
 
-/** parts 折叠后的统一配置应用入口。 */
+/** The unified config application entry point for the folded parts. */
 export function applyColoxConfig(patch: ColoxThemeConfigPatch) {
   wire();
   if (patch.theme !== undefined) setColoxTheme(patch.theme);
@@ -230,13 +244,14 @@ export function applyColoxConfig(patch: ColoxThemeConfigPatch) {
 }
 
 /* ---------------------------------------------------------------- */
-/* 订阅面（useSyncExternalStore）                                    */
+/* Subscription surface (useSyncExternalStore)                       */
 /* ---------------------------------------------------------------- */
 
 export function subscribeColoxTheme(listener: Listener): () => void {
   const first = listeners.size === 0;
   listeners.add(listener);
-  // React 在提交阶段调用 subscribe，此时接线安全（首帧前属性已就位）。
+  // React calls subscribe in the commit phase, where wiring is safe
+  // (attributes are in place before the first paint).
   if (first) wire();
   return () => {
     listeners.delete(listener);
@@ -248,11 +263,11 @@ export function getColoxThemeSnapshot(): ColoxThemeValue {
 }
 
 const serverSnapshot: ColoxThemeValue = {
-  theme: 'system',
-  resolvedTheme: 'light',
+  theme: SYSTEM_THEME_NAME,
+  resolvedTheme: LIGHT_THEME_NAME,
   isFollowSystem: true,
   palette: undefined,
-  breakpoint: 'base',
+  breakpoint: BASE_BREAKPOINT_NAME,
   setTheme: setColoxTheme,
   setPalette: setColoxPalette,
   setBreakpoints: setColoxBreakpoints,
@@ -262,10 +277,15 @@ export function getColoxThemeServerSnapshot(): ColoxThemeValue {
   return serverSnapshot;
 }
 
-/** 测试专用：把单例状态归零（不从 index 导出，不进入发布类型面）。 */
+/** Test-only: resets the singleton state (not exported from index — stays out of published types). */
 export function _resetColoxThemeStateForTests() {
-  state = { theme: 'system', palette: undefined, breakpoint: 'base', systemTheme: 'light' };
-  defaultTheme = 'light';
+  state = {
+    theme: SYSTEM_THEME_NAME,
+    palette: undefined,
+    breakpoint: BASE_BREAKPOINT_NAME,
+    systemTheme: LIGHT_THEME_NAME,
+  };
+  defaultTheme = LIGHT_THEME_NAME;
   breakpointValues = { ...defaultBreakpoints };
   storageEnabled = false;
   wired = false;
@@ -274,7 +294,7 @@ export function _resetColoxThemeStateForTests() {
   listeners.clear();
   snapshot = buildSnapshot();
   if (typeof document !== 'undefined') {
-    for (const name of ['data-colox-theme', 'data-colox-palette', 'data-colox-breakpoint']) {
+    for (const name of [THEME_ATTRIBUTE, PALETTE_ATTRIBUTE, BREAKPOINT_ATTRIBUTE]) {
       document.documentElement.removeAttribute(name);
     }
   }

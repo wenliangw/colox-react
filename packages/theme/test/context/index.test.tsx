@@ -1,15 +1,16 @@
 // @vitest-environment jsdom
 /**
- * 组合式 API 集成测试：dot parts 声明施加/重应用/last-write-wins、
- * Storage 恢复优先级、hook 值一致性、无 Provider 退化。
+ * Composable API integration tests: dot parts apply / re-apply /
+ * last-write-wins, Storage restore priority, hook value consistency, and
+ * the no-provider degradation.
  */
 import { act, cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../../test/match-media';
-import { ColoxTheme } from './ColoxTheme';
-import { useColoxTheme } from './ColoxThemeContext';
-import { _resetColoxThemeStateForTests } from './store';
-import type { ColoxThemeValue } from './types';
+import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../utils/match-media';
+import { ColoxTheme } from '@/context';
+import { useColoxTheme } from '@/hooks/use-colox-theme';
+import { _resetColoxThemeStateForTests } from '@/stores/theme-store';
+import type { ColoxThemeValue } from '@/context/types';
 
 let captured: ColoxThemeValue | undefined;
 
@@ -30,8 +31,8 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-describe('组合式 parts → <html> 三轴', () => {
-  it('Theme/Palette declaration 施加到属性，hook 读到一致状态', () => {
+describe('composable parts → the three <html> axes', () => {
+  it('Theme/Palette declarations land on the attributes and the hook reads the same state', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Theme name="deep" />
@@ -47,7 +48,7 @@ describe('组合式 parts → <html> 三轴', () => {
     expect(captured?.palette).toBe('brand-2025');
   });
 
-  it('主题缺席 = 跟随系统，系统切换即生效（零配置）', () => {
+  it('theme part absent = follow the system; system flips take effect (zero-config)', () => {
     render(
       <ColoxTheme>
         <Probe />
@@ -63,7 +64,7 @@ describe('组合式 parts → <html> 三轴', () => {
     expect(captured?.isFollowSystem).toBe(true);
   });
 
-  it('name="system" 显式跟随；hook setTheme 用同一套词', () => {
+  it('name="system" follows explicitly; the hook setTheme speaks the same vocabulary', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Theme name="system" />
@@ -81,7 +82,7 @@ describe('组合式 parts → <html> 三轴', () => {
     expect(captured?.isFollowSystem).toBe(true);
   });
 
-  it('part props 变化即重新应用', () => {
+  it('part props changing re-applies the axis', () => {
     const { rerender } = render(
       <ColoxTheme>
         <ColoxTheme.Theme name="light" />
@@ -98,7 +99,7 @@ describe('组合式 parts → <html> 三轴', () => {
     expect(attr('data-colox-theme')).toBe('deep');
   });
 
-  it('同类 part 多实例 last-write-wins', () => {
+  it('multiple parts of the same kind are last-write-wins', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Palette name="first" />
@@ -109,7 +110,7 @@ describe('组合式 parts → <html> 三轴', () => {
     expect(attr('data-colox-palette')).toBe('second');
   });
 
-  it('Breakpoints part 覆盖阈值', () => {
+  it('Breakpoints part overrides the thresholds', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Breakpoints values={{ md: '900px' }} />
@@ -124,7 +125,7 @@ describe('组合式 parts → <html> 三轴', () => {
 });
 
 describe('Storage part', () => {
-  it('挂载时恢复覆盖 part 声明（storage > part > default）', () => {
+  it('restores saved values at mount, beating part declarations (storage > part > default)', () => {
     window.localStorage.setItem('colox:theme', 'dark');
     window.localStorage.setItem('colox:palette', 'brand-2025');
     render(
@@ -139,7 +140,7 @@ describe('Storage part', () => {
     expect(attr('data-colox-palette')).toBe('brand-2025');
   });
 
-  it('setTheme 写穿 localStorage', () => {
+  it('setTheme writes through to localStorage', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Storage />
@@ -153,8 +154,8 @@ describe('Storage part', () => {
   });
 });
 
-describe('无 Provider 退化', () => {
-  it('hook 直读全局 store 默认状态', () => {
+describe('no-provider degradation', () => {
+  it('the hook reads the global store defaults directly', () => {
     render(<Probe />);
     expect(captured?.theme).toBe('system');
     expect(captured?.resolvedTheme).toBe('light');

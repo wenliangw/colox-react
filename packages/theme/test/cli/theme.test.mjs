@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildPaletteCss, buildThemeCss, generateBrandRamp, validateConfig } from './theme.mjs';
+import {
+  buildPaletteCss,
+  buildThemeCss,
+  generateBrandRamp,
+  validateConfig,
+} from '../../cli/theme.mjs';
 
 const STEP_LISTS = {
   white: ['0', '50', '100'],

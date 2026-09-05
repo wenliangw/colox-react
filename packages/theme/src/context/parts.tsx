@@ -1,11 +1,14 @@
 /**
- * ColoxTheme 的四个正交配置面，各站一个纯声明组件（render null）。
- * 它们通过注册表把声明投递给根 <ColoxTheme>，根在 layout effect
- * （绘制前）折叠成最终配置施加到 store。part 的 props 变化即重新
- * 应用；同类多实例 last-write-wins。
+ * The four orthogonal config surfaces of ColoxTheme, each a declarative
+ * component that renders null. They hand their declarations to the root
+ * through the registry; the root folds them into the final config and
+ * applies it to the store in a layout effect (before paint). A part's props
+ * changing re-applies it; multiple parts of the same kind are
+ * last-write-wins.
  */
 import { useId, useLayoutEffect } from 'react';
-import { useColoxThemeRegistry } from './ColoxThemeContext';
+import { LIGHT_THEME_NAME, SYSTEM_THEME_NAME } from '@/constants/theme';
+import { useColoxThemeRegistry } from '@/hooks/use-colox-theme-registry';
 import type {
   ColoxThemeBreakpointsPartProps,
   ColoxThemePalettePartProps,
@@ -13,8 +16,8 @@ import type {
 } from './types';
 
 export const ColoxThemeThemePart = ({
-  name = 'system',
-  defaultTheme = 'light',
+  name = SYSTEM_THEME_NAME,
+  defaultTheme = LIGHT_THEME_NAME,
 }: ColoxThemeThemePartProps) => {
   const { register, unregister } = useColoxThemeRegistry();
   const id = useId();

@@ -7,12 +7,12 @@
  */
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
-import { buildPaletteCss, validateConfig } from '../cli/theme.mjs';
+import { buildPaletteCss, validateConfig } from '../../cli/theme.mjs';
 
 const [data, paletteCss, defaultsConfig] = await Promise.all([
-  readFile(new URL('../dist/cli-data.json', import.meta.url), 'utf8').then(JSON.parse),
-  readFile(new URL('../dist/themes/palette.css', import.meta.url), 'utf8'),
-  readFile(new URL('./theme.default.json', import.meta.url), 'utf8').then(JSON.parse),
+  readFile(new URL('../../dist/cli-data.json', import.meta.url), 'utf8').then(JSON.parse),
+  readFile(new URL('../../dist/themes/palette.css', import.meta.url), 'utf8'),
+  readFile(new URL('../../config/theme.default.json', import.meta.url), 'utf8').then(JSON.parse),
 ]);
 
 function parseVars(css) {
