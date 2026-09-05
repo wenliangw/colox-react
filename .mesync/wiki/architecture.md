@@ -44,7 +44,7 @@ apps/docs ───────┘
 - **聚合 CSS 入口 index.css**：`@colox/theme` 的 build 末尾把 base（box-sizing reset，源 `src/styles/base/reset.css`）+ palette/light/dark 主题件四段串联成自己的 `dist/index.css`（同一份声明零复制，供只用设计语言的人一行引入）；基础层随聚合入口注入（theme-only 用户可用 palette/light/dark 独立文件作粒度逃生舱）。`@colox/react` 构建时 `@import '@colox/theme/index.css'` 级联进 style.css 并复制出 index.css——组件使用方仍一行引入。拼接合法性：reset 声明零变量 + palette 与语义命名空间互斥 + 属性轴 `:root[...]` 特异性稳压基线，节序无关；CLI 编译的自定义主题/色板文件在其后加载即按源顺序覆盖同名声明。
 - **语义色档位制替代 alpha 混色**：语义层用强度四档（solid/muted/subtle/inverse）+ 角色组（text/bg/border）覆盖焦点环、hover 罩层等场景；仅实底 hover/active 保留派生 color-mix（hand-maintained `semantic.derived.tokens.json`，85%/75% 向黑混）。
 - **变体层用 CVA（class-variance-authority）**：`cva()` 只拼 className、零运行时 CSS、类型安全（`VariantProps` 推导变体类型）；类名沿用 `colox-` BEM。
-- **组件级样式随组件 import**：`src/index.ts` 顶部 `import './styles/index.scss'`（库样式入口＝仅 `@import '@colox/theme/index.css'` 级联装配，无自有规则——基础层/主题全部来自 theme）+ 每个组件 `import` 自己的样式汇总，`sideEffects` 声明保证样式打进 `dist/style.css`。
+- **组件级样式随组件 import**：`src/index.ts` 顶部 `import './styles/index.scss'`（库样式入口＝仅 `@import '@colox/theme/index.css'` 级联装配，无自有规则——基础层/主题全部来自 theme）+ 每个组件 `import` 自己的样式汇总，`sideEffects` 声明保证样式打进 `dist/style.css`。装配机制维持源文件 @import（曾评估 vite 插件装配：generateBundle 合并与虚拟模块注入两变体，构建魔法成本 > 一行源文件收益，否决）。
 - **`clsx` 做类名拼接**：用成熟库 `clsx`（对象语法 + falsy 忽略），用于状态类与外部 className，不自研拼接工具。
 - **React 19 + forwardRef**：组件用 `forwardRef` 暴露 DOM 节点，Props 继承原生 HTML 属性接口（如 `ButtonHTMLAttributes`）；组件用箭头函数 `const X = forwardRef<XRef, XProps>((props, ref) => ...)` 定义。
 
