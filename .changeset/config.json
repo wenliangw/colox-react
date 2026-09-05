@@ -3,9 +3,9 @@
   "changelog": ["@changesets/cli/changelog", { "repo": "colox/colox-react" }],
   "commit": false,
   "fixed": [],
-  "linked": [["@colox/react", "@colox/wiki"]],
+  "linked": [],
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": ["@colox/storybook", "@colox/docs"]
+  "ignore": ["@colox/preview", "@colox/docs"]
 }

@@ -12,8 +12,11 @@ for AI agents, in plain Markdown.
   skill catalogs
 - `skills/doctrine/` — read order + global rules
 
-Versioning: `@colox/wiki` releases are linked to `@colox/react` — the doctrine
-version always identifies the component version it documents.
+Versioning: `@colox/wiki` keeps its major.minor in lockstep with
+`@colox/react` — a component API change ships its doctrine update under the
+same first two digits. The patch digit belongs to component bugfixes alone:
+wiki does not change unless the API does, so `@colox/react` 0.1.3 and
+`@colox/wiki` 0.1.0 can coexist.
 
 ## Wire it up
 
