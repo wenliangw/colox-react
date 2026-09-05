@@ -30,7 +30,7 @@
 - **能力文件夹用单数小写名词**：`components` / `context` / `hooks` / `types` / `utils` / `stores` / `constants` / `styles`，命名不进功能名——例如唯一的主题 context 组件就是 `src/components/theme-context/`，直接 `theme-context/index.tsx`。
 - **组件是自持单元**：任何**只被该组件使用**的能力都要跟随组件目录（`theme-context/hooks/`、`theme-context/utils/`、`theme-context/stores/`、`theme-context/constants/`），不走全局 `src/hooks`/`src/utils`——「是哪个组件的能力就跟随组件本身的结构」，作用域边界必须清晰。全局能力目录只放真正跨组件共享的东西。
 - **子组件独立文件夹管理，统一收在 `children/`**：子组件不定义在父组件同一个文件里，即使代码量很少也要独立子目录；且所有子组件**统一放在父组件文件夹下的 `children/` 目录**，各子组件再各自独立子文件夹（`theme-context/children/storage/index.tsx`、`theme-context/children/breakpoints/index.tsx`）——与 hooks/utils 等能力目录平行分层，不混排。
-- **文件夹内不许同级平铺**：按能力分层，如 `theme-context/index.tsx` + `theme-context/types/index.ts`。
+- **文件夹内不许同级平铺**：按能力分层，组件根目录只保留组件入口 `index.tsx`；能力一律文件夹化（`theme-context/types/index.ts`、`theme-context/context/index.ts`、`theme-context/reducers/theme.ts`）。
 - **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（`test/theme-context/`、`test/stores/`、`test/cli/`、`test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
 - **src 内引用规范**：跨模块引用走 `@/` 别名（tsconfig paths + vite/vitest alias 三处齐配）；组件文件夹内部用相对路径（`./types`、`../constants/theme`，与 react 包组件一致）。
 
@@ -41,6 +41,12 @@
 - 代码里**不写魔法字符串/魔法数字**：attribute 名、localStorage 键、媒体查询、默认值、主题词汇等集中定义在 `constants/`。
 - **类型词汇与运行时常量同源**：字面量 union 用 `typeof` 从 `constants/` 派生（如 `ColoxThemeName = typeof LIGHT_THEME_NAME | ... `、`BreakpointKey = keyof typeof defaultBreakpoints`），改一处不会漂移。
 - 测试用例名（describe/it 文案）与源码注释同样遵守全英文约定。
+
+## 控制流整洁：if 必带花括号 + guard 优先
+
+- **`if` 必须带 `{}`**：即使一行内容也要完整语句块（`if (x) {\n  return;\n}`），绝不写 `if (x) return;`。
+- **优先 guard clause（单 if + return/continue）**，不堆 switch 与 if-else：先处理边界/失效分支并提前返回，主逻辑保持平铺；`else` 能用「先置默认值，再单 if 覆盖」消解的就消解（如属性写入先 removeAttribute 再条件 setAttribute）。
+- **switch 与 if-else 不禁止**，是整洁取舍：在合理场景仍用（状态机对可辨识联合的 exhaustive switch、校验器无后续检查时、三路分支各赋一值）；使用处分支统一带花括号。
 
 ## 注释克制：代码即注释
 

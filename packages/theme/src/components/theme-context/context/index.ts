@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import { BASE_BREAKPOINT_NAME, LIGHT_THEME_NAME, SYSTEM_THEME_NAME } from './constants/theme';
-import type { ColoxThemeContextValue } from './types';
+import { BASE_BREAKPOINT_NAME, LIGHT_THEME_NAME, SYSTEM_THEME_NAME } from '../constants/theme';
+import type { ColoxThemeContextValue } from '../types';
 
 const noop = (): undefined => undefined;
 

@@ -37,8 +37,12 @@ export function resetMedia() {
 
 function evaluate(media: string): boolean {
   const maxWidth = media.match(/^\(max-width: (\d+)px\)$/);
-  if (maxWidth) return viewportWidth <= Number(maxWidth[1]);
-  if (media === '(prefers-color-scheme: dark)') return systemDark;
+  if (maxWidth) {
+    return viewportWidth <= Number(maxWidth[1]);
+  }
+  if (media === '(prefers-color-scheme: dark)') {
+    return systemDark;
+  }
   return false;
 }
 
@@ -63,7 +67,9 @@ function reconcile() {
   for (const [media, listeners] of listenersByQuery) {
     const matches = evaluate(media);
     for (const mql of mqls) {
-      if (mql.media !== media || mql.matches === matches) continue;
+      if (mql.media !== media || mql.matches === matches) {
+        continue;
+      }
       mql.matches = matches;
       for (const handler of listeners) handler({ matches, media });
     }
@@ -73,6 +79,8 @@ function reconcile() {
 /** Installed once per environment; the node environment (no window) is skipped. */
 export function installMatchMediaMock() {
   const win = typeof window !== 'undefined' ? window : null;
-  if (!win || typeof win.matchMedia !== 'undefined') return;
+  if (!win || typeof win.matchMedia !== 'undefined') {
+    return;
+  }
   win.matchMedia = (media: string) => makeMql(media) as unknown as MediaQueryList;
 }

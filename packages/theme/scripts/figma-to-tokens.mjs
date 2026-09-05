@@ -70,7 +70,9 @@ function cleanKey(key) {
 function colorValue(token) {
   const { hex, alpha } = token.$value;
   const rgb = hex.toUpperCase();
-  if (alpha === undefined || alpha >= 1) return rgb;
+  if (alpha === undefined || alpha >= 1) {
+    return rgb;
+  }
   const byte = Math.round(alpha * 255)
     .toString(16)
     .toUpperCase()
@@ -97,7 +99,9 @@ function semanticValue(token) {
 }
 
 function normalizeExtensions($extensions) {
-  if (!$extensions || typeof $extensions !== 'object') return undefined;
+  if (!$extensions || typeof $extensions !== 'object') {
+    return undefined;
+  }
   const rest = { ...$extensions };
   delete rest.modeName; // modes live on the mode layer, not the token itself
   return Object.keys(rest).length > 0 ? rest : undefined;
@@ -106,7 +110,9 @@ function normalizeExtensions($extensions) {
 function convert(figmaJson, spec) {
   const out = { colox: {} };
   for (const [groupName, group] of Object.entries(figmaJson)) {
-    if (groupName === '$extensions') continue;
+    if (groupName === '$extensions') {
+      continue;
+    }
     const namespace = spec.namespace(cleanKey(groupName));
     let cursor = out.colox;
     for (const part of namespace) cursor = cursor[part] ??= {};
@@ -116,7 +122,9 @@ function convert(figmaJson, spec) {
         $type: spec.type(groupName),
       };
       const extensions = normalizeExtensions(token.$extensions);
-      if (extensions) converted.$extensions = extensions;
+      if (extensions) {
+        converted.$extensions = extensions;
+      }
       cursor[cleanKey(leafName)] = converted;
     }
   }

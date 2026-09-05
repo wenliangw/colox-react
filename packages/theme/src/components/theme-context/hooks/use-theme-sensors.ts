@@ -23,7 +23,9 @@ export function useThemeSensors(state: ThemeState, dispatch: Dispatch) {
   const { breakpointValues, defaultTheme } = state;
 
   useLayoutEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return;
+    }
     const query = window.matchMedia(COLOR_SCHEME_QUERY);
     dispatch({
       type: 'set-system-theme',
@@ -40,19 +42,25 @@ export function useThemeSensors(state: ThemeState, dispatch: Dispatch) {
   }, [dispatch]);
 
   useLayoutEffect(() => {
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') return;
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      return;
+    }
     // Without a sensor the fallback is the live system value.
     dispatch({ type: 'set-system-theme', systemTheme: defaultTheme });
   }, [defaultTheme, dispatch]);
 
   useLayoutEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return;
+    }
     const queries = BREAKPOINT_KEYS.map((key) =>
       window.matchMedia(`(max-width: ${breakpointValues[key]})`),
     );
     const compute = (): BreakpointName => {
       for (let i = 0; i < BREAKPOINT_KEYS.length; i += 1) {
-        if (queries[i].matches) return BREAKPOINT_KEYS[i];
+        if (queries[i].matches) {
+          return BREAKPOINT_KEYS[i];
+        }
       }
       return BASE_BREAKPOINT_NAME;
     };

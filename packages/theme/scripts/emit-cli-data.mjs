@@ -27,9 +27,13 @@ const kebab = (s) => s.replaceAll('_', '-');
 
 /** "{colox.palette.gray.600}" -> "var(--colox-palette-gray-600)" */
 function toCssValue(value) {
-  if (typeof value !== 'string') return value;
+  if (typeof value !== 'string') {
+    return value;
+  }
   const m = value.match(/^\{colox\.palette\.([a-z-]+)\.([a-z0-9-]+)\}$/i);
-  if (m) return `var(--colox-palette-${kebab(m[1])}-${kebab(m[2])})`;
+  if (m) {
+    return `var(--colox-palette-${kebab(m[1])}-${kebab(m[2])})`;
+  }
   return value;
 }
 

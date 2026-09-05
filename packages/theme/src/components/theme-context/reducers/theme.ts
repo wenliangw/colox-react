@@ -79,16 +79,21 @@ export function themeReducer(state: ThemeState, action: ThemeAction): ThemeState
     case 'apply-config': {
       let next = state;
       const { patch } = action;
-      if (patch.theme !== undefined)
+      if (patch.theme !== undefined) {
         next = themeReducer(next, { type: 'set-theme', theme: patch.theme });
-      if (patch.defaultTheme !== undefined)
+      }
+      if (patch.defaultTheme !== undefined) {
         next = themeReducer(next, { type: 'set-default-theme', defaultTheme: patch.defaultTheme });
-      if (patch.palette !== undefined)
+      }
+      if (patch.palette !== undefined) {
         next = themeReducer(next, { type: 'set-palette', palette: patch.palette });
-      if (patch.breakpoints !== undefined)
+      }
+      if (patch.breakpoints !== undefined) {
         next = themeReducer(next, { type: 'set-breakpoints', values: patch.breakpoints });
-      if (patch.storage !== undefined)
+      }
+      if (patch.storage !== undefined) {
         next = themeReducer(next, { type: 'set-storage-enabled', enabled: patch.storage });
+      }
       return next;
     }
   }

@@ -56,11 +56,21 @@ const BRAND_S = {
 };
 
 function hueToRgb(p, q, t) {
-  if (t < 0) t += 1;
-  if (t > 1) t -= 1;
-  if (t < 1 / 6) return p + (q - p) * 6 * t;
-  if (t < 1 / 2) return q;
-  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+  if (t < 0) {
+    t += 1;
+  }
+  if (t > 1) {
+    t -= 1;
+  }
+  if (t < 1 / 6) {
+    return p + (q - p) * 6 * t;
+  }
+  if (t < 1 / 2) {
+    return q;
+  }
+  if (t < 2 / 3) {
+    return p + (q - p) * (2 / 3 - t) * 6;
+  }
   return p;
 }
 
@@ -87,13 +97,19 @@ function hexToHsl(hex) {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const l = (max + min) / 2;
-  if (max === min) return { h: 0, s: 0, l };
+  if (max === min) {
+    return { h: 0, s: 0, l };
+  }
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
   let h;
-  if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
-  else if (max === g) h = (b - r) / d + 2;
-  else h = (r - g) / d + 4;
+  if (max === r) {
+    h = (g - b) / d + (g < b ? 6 : 0);
+  } else if (max === g) {
+    h = (b - r) / d + 2;
+  } else {
+    h = (r - g) / d + 4;
+  }
   return { h: h / 6, s, l };
 }
 
@@ -128,7 +144,9 @@ export function validateConfig(config, stepLists) {
       errors.push('output: must be an object');
     } else {
       for (const key of Object.keys(output)) {
-        if (!['name', 'dir'].includes(key)) errors.push(`output.${key}: unknown key`);
+        if (!['name', 'dir'].includes(key)) {
+          errors.push(`output.${key}: unknown key`);
+        }
       }
       if (
         output.name !== undefined &&
@@ -204,7 +222,9 @@ export function validateConfig(config, stepLists) {
           for (const [group, slots] of Object.entries(sem)) {
             for (const [slot, spec] of Object.entries(slots ?? {})) {
               const semanticName = `themes.${name}.semantic.${group}.${slot}`;
-              if (typeof spec === 'string' && HEX_RE.test(spec)) continue;
+              if (typeof spec === 'string' && HEX_RE.test(spec)) {
+                continue;
+              }
               if (typeof spec === 'object' && spec !== null && typeof spec.palette === 'string') {
                 const [hue, step] = spec.palette.split('/');
                 if (!(hue in stepLists) || !stepLists[hue].includes(step)) {
@@ -243,8 +263,11 @@ export function buildPaletteCss(overrides, stepLists, defaults, scopeName) {
     const override = overrides[hue];
     let values;
     if (hue === 'brand') {
-      if (typeof override === 'string') values = generateBrandRamp(override, steps);
-      else values = override ?? Object.fromEntries(steps.map((s) => [s, defaults[`brand.${s}`]]));
+      if (typeof override === 'string') {
+        values = generateBrandRamp(override, steps);
+      } else {
+        values = override ?? Object.fromEntries(steps.map((s) => [s, defaults[`brand.${s}`]]));
+      }
     } else if (override) {
       values = override;
     }
