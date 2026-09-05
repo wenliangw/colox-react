@@ -3,7 +3,7 @@ import {
   createInitialThemeState,
   resolveTheme,
   themeReducer,
-} from '@/components/theme-context/utils/reducer';
+} from '@/components/theme-context/reducers/theme';
 
 describe('theme reducer', () => {
   it('starts from the shipped defaults: follow system, base segment, storage off', () => {

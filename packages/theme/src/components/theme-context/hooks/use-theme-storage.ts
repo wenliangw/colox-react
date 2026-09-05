@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { PALETTE_STORAGE_KEY, THEME_STORAGE_KEY } from '../constants/theme';
 import type { ColoxThemeName } from '../types';
-import type { ThemeAction, ThemeState } from '../utils/reducer';
+import type { ThemeAction, ThemeState } from '../reducers/theme';
 
 type Dispatch = (action: ThemeAction) => void;
 

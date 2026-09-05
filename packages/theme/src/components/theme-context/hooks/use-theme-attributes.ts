@@ -1,6 +1,6 @@
 import { useInsertionEffect } from 'react';
 import { applyThemeAttributes } from '../utils/attributes';
-import type { ThemeState } from '../utils/reducer';
+import type { ThemeState } from '../reducers/theme';
 
 /**
  * Keeps the <html> data-colox-* attributes in sync with the state. Runs

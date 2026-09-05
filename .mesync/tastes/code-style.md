@@ -37,7 +37,7 @@
 ## store / utils / constants 各司其职，消灭魔法值
 
 - **状态必须走 React 存储模式**（用户明确习惯）：状态归组件或 Provider 持有（useReducer + context 下发），不写模块级 `let` 全局变量 + 手写订阅——那不符合 React 哲学。DOM 写入/传感器/持久化全是 effect 副作用。
-- `stores/` 目录只做状态管理（若无独立 store 层则状态进组件自身，纯转换函数放 `utils/`）；纯函数、纯工具放 `utils/`；常量/枚举放 `constants/`。
+- `stores/` 目录只做状态管理（若无独立 store 层则状态进组件自身）；**reducer（状态机 + 状态工厂 + 派生 selector）独立成 `reducers/` 文件夹**，不放 utils/——它是状态模型语义，不是工具函数；纯函数、纯工具放 `utils/`；常量/枚举放 `constants/`。
 - 代码里**不写魔法字符串/魔法数字**：attribute 名、localStorage 键、媒体查询、默认值、主题词汇等集中定义在 `constants/`。
 - **类型词汇与运行时常量同源**：字面量 union 用 `typeof` 从 `constants/` 派生（如 `ColoxThemeName = typeof LIGHT_THEME_NAME | ... `、`BreakpointKey = keyof typeof defaultBreakpoints`），改一处不会漂移。
 - 测试用例名（describe/it 文案）与源码注释同样遵守全英文约定。

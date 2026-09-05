@@ -4,7 +4,7 @@ import {
   PALETTE_ATTRIBUTE,
   THEME_ATTRIBUTE,
 } from '../constants/theme';
-import { resolveTheme, type ThemeState } from './reducer';
+import { resolveTheme, type ThemeState } from '../reducers/theme';
 
 /**
  * Writes the three axes from the state onto <html> — the single fact

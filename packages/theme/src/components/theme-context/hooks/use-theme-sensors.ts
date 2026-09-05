@@ -7,7 +7,7 @@ import {
   LIGHT_THEME_NAME,
 } from '../constants/theme';
 import type { BreakpointName } from '../types';
-import type { ThemeAction, ThemeState } from '../utils/reducer';
+import type { ThemeAction, ThemeState } from '../reducers/theme';
 
 type Dispatch = (action: ThemeAction) => void;
 

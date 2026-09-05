@@ -3,7 +3,7 @@ import { SYSTEM_THEME_NAME } from './constants/theme';
 import { useThemeAttributes } from './hooks/use-theme-attributes';
 import { useThemeSensors } from './hooks/use-theme-sensors';
 import { useThemeStorage } from './hooks/use-theme-storage';
-import { createInitialThemeState, resolveTheme, themeReducer } from './utils/reducer';
+import { createInitialThemeState, resolveTheme, themeReducer } from './reducers/theme';
 import { foldConfig } from './utils/registry';
 import { ColoxThemeBreakpoints } from './children/breakpoints';
 import { ColoxThemeStorage } from './children/storage';
