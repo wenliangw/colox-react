@@ -15,6 +15,7 @@
 ## 落地决定（已实现）
 
 - MCP 直上（用户定调：成本不高），官方 `@modelcontextprotocol/sdk`（v1.30，McpServer.registerTool + StdioServerTransport + InMemoryTransport 测试）。
-- 四工具面：search_doctrine（词频评分 + 命中文摘 + 读指引）/ get_rule / get_skill / get_component（无 name 即列表）；工具描述里写「何时调用」。
-- rule 文件名 `*.rule.md` 读取名剥后缀（`stack.rule.md` → 名字 `stack`）；文件名正则放行点号、禁斜杠防穿越。
+- **结构 = 主题 bundle**（用户定调）：`skills/<name>/SKILL.md` 配方本体精简（决策序 + 菜谱）+ `references/` 按需读（`rules.md` 条件规则、`component.md` API 参考）；`doctrine` bundle 载全局规则（读名 `global`）、`style` bundle 讲样式接线；根 `components.md` 为组件地图（职责+状态）。顶层平铺 rules/、components/ 目录撤除——一个主题一个包，拷走即全。
+- 四工具面：search_doctrine（词频评分 + 命中文摘 + 读指引，覆盖 bundle 本体与 references）/ get_rule（`global` 别名读 doctrine bundle 规则、其余读同名 bundle）/ get_skill（`name` + `reference` 参数读参考件）/ get_component（无参读组件地图、有参读 bundle 参考件）；工具描述里写「何时调用」。
+- 命名 = 目录名即 frontmatter name（stack/doctrine/style，无前缀；撞名警察等生态成熟再上）；`references/` 用复数（dsh 与 Claude 的共同拼写，dsh watcher 视其为 bundle 资源、按需加载）。
 - 测试纪律：doctrine 测试直接打真实 `@colox/wiki` 内容（内容坏了测试红）；server 测试走 InMemoryTransport 全链路；构建后以真实 stdio JSON-RPC 握手冒烟。

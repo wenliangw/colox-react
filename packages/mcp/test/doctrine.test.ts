@@ -6,45 +6,56 @@ import { WikiSource } from '../src/doctrine.js';
 const source = WikiSource.fromPackage();
 
 describe('WikiSource against the real @colox/wiki package', () => {
-  it('discovers the stack doctrine across all three layers', async () => {
-    const entries = await source.entries();
-    const byKind = (kind: string) =>
-      entries
-        .filter((entry) => entry.kind === kind)
-        .map((entry) => entry.name)
-        .sort();
-    expect(byKind('component')).toEqual(['stack']);
-    expect(byKind('rule')).toEqual(['global', 'stack']);
-    expect(byKind('skill')).toEqual(['stack']);
+  it('discovers the doctrine as bundles with references', async () => {
+    await expect(source.listSkills()).resolves.toEqual(['doctrine', 'stack', 'style']);
+    await expect(source.listRules()).resolves.toEqual(['global', 'stack']);
+    await expect(source.referencesOf('stack')).resolves.toEqual(['component', 'rules']);
   });
 
-  it('reads a component reference', async () => {
-    const entry = await source.read('component', 'stack');
-    expect(entry?.body).toContain('# Stack');
-    expect(entry?.body).toContain('Stack.Item');
-    expect(entry?.file).toBe('components/stack.md');
+  it('reads skill bodies and their references', async () => {
+    const skill = await source.readSkill('stack');
+    expect(skill?.body).toContain('# Composing layouts with Stack');
+    expect(skill?.file).toBe('skills/stack/SKILL.md');
+
+    const rules = await source.readReference('stack', 'rules');
+    expect(rules?.body).toContain('[condition]');
+    expect(rules?.file).toBe('skills/stack/references/rules.md');
+
+    const component = await source.readReference('stack', 'component');
+    expect(component?.body).toContain('Flexbox layout primitive');
   });
 
-  it('reads a skill bundle and a rule', async () => {
-    const skill = await source.read('skill', 'stack');
-    expect(skill?.body).toContain('## Recipes');
-    const rule = await source.read('rule', 'global');
-    expect(rule?.body).toContain('[condition]');
+  it('serves rules via the global alias and bundle names', async () => {
+    const global = await source.readRule('global');
+    expect(global?.body).toContain('style.css');
+    expect(global?.name).toBe('doctrine');
+
+    const stack = await source.readRule('stack');
+    expect(stack?.body).toContain('Stack.Item grow');
+  });
+
+  it('serves the component map and component references', async () => {
+    const overview = await source.readComponent('overview');
+    expect(overview?.body).toContain('Grid');
+    expect(overview?.file).toBe('components.md');
+
+    const stack = await source.readComponent('stack');
+    expect(stack?.body).toContain('# Stack');
   });
 
   it('rejects names that look like path traversal', async () => {
-    await expect(source.read('component', '../stack')).resolves.toBeUndefined();
-    await expect(source.read('component', 'Stack')).resolves.toBeUndefined();
-    await expect(source.read('component', 'stack/../etc')).resolves.toBeUndefined();
+    await expect(source.readSkill('../stack')).resolves.toBeUndefined();
+    await expect(source.readSkill('Stack')).resolves.toBeUndefined();
+    await expect(source.readReference('stack', '../rules')).resolves.toBeUndefined();
+    await expect(source.readComponent('stack/../etc')).resolves.toBeUndefined();
   });
 
   it('ranks doctrine hits for a composite query', async () => {
     const hits = await source.search('Stack.Item grow', { limit: 5 });
     expect(hits.length).toBeGreaterThanOrEqual(2);
-    expect(hits[0].name).toBe('stack');
+    expect(hits.some((hit) => hit.kind === 'rule' && hit.name === 'stack')).toBe(true);
+    expect(hits.some((hit) => hit.kind === 'skill' && hit.name === 'stack')).toBe(true);
     expect(hits[0].snippet.length).toBeGreaterThan(0);
-    expect(hits.some((hit) => hit.kind === 'rule')).toBe(true);
-    expect(hits.some((hit) => hit.kind === 'skill')).toBe(true);
   });
 
   it('returns no hits for gibberish', async () => {

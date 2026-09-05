@@ -1,11 +1,14 @@
 # Colox React — AI Agent Doctrine
 
-Colox is a token-driven React component library. This file is the compact doctrine
-for AI agents; the full sources live beside it:
+Colox is a token-driven React component library. This file is the compact
+doctrine digest for AI agents; the full sources live beside it:
 
-- `skills/<name>/SKILL.md` — procedural recipes (how to compose a feature)
-- `rules/<name>.rule.md` — conditional rules: condition → action → why
-- `components/<name>.md` — per-component reference (props, classes, mechanism)
+- `components.md` — component map (responsibility + status per primitive)
+- `skills/<name>/SKILL.md` — one bundle per topic: the procedural recipe in
+  the body, `references/` holding the layers read on demand
+  (`rules.md` = must/avoid, `component.md` = API reference)
+- `skills/doctrine/` — the doctrine's own manual (read order) + global rules
+- `skills/style/` — styling setup, token grid, theming, override discipline
 
 Rules are written as `[condition] → action` pairs with the reason attached. The
 reason is the part that generalizes: when the condition does not match your case
@@ -42,5 +45,7 @@ exactly, apply the reason, not the letter.
 - `[static layout]` → no `Stack.Responsive` "just in case".
   Why: capability is mountable, not default; a static Stack stays context-free.
 
-Full rules: `rules/stack.rule.md` · recipes: `skills/stack/SKILL.md` ·
-reference: `components/stack.md`
+Full sources: `skills/doctrine/SKILL.md` (read order) ·
+`skills/doctrine/references/rules.md` (global rules) ·
+`skills/stack/references/rules.md` (stack rules) ·
+`skills/stack/references/component.md` (stack reference)

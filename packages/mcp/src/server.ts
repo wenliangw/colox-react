@@ -1,25 +1,35 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import type { WikiSource, DoctrineEntry, SearchHit } from './doctrine.js';
+import type { WikiSource, DoctrineDocument, SearchHit } from './doctrine.js';
 
 export interface ServerMeta {
   name: string;
   version: string;
 }
 
-function renderEntry(entry: DoctrineEntry): string {
-  return `${entry.file}\n\n${entry.body}`;
+function renderDocument(doc: DoctrineDocument): string {
+  return `${doc.file}\n\n${doc.body}`;
 }
 
 function renderHits(hits: SearchHit[], query: string): string {
   if (hits.length === 0) {
-    return `No doctrine matches "${query}". Refine the keywords or list a kind with get_rule / get_skill / get_component without a name argument.`;
+    return `No doctrine matches "${query}". Refine the keywords or list a kind with get_rule / get_skill / get_component without arguments.`;
   }
   return hits
-    .map(
-      (hit, index) =>
-        `## ${index + 1}. ${hit.kind} "${hit.name}" (score ${hit.score})\n${hit.snippet}\n\nRead it: get_${hit.kind} with name "${hit.name}"`,
-    )
+    .map((hit, index) => {
+      const label = hit.reference ? `"${hit.name}/${hit.reference}"` : `"${hit.name}"`;
+      const howTo =
+        hit.kind === 'skill'
+          ? `get_skill with name "${hit.name}"`
+          : hit.kind === 'rule'
+            ? `get_rule with name "${hit.name === 'doctrine' ? 'global' : hit.name}"`
+            : hit.kind === 'component'
+              ? hit.name === 'overview'
+                ? 'get_component without a name'
+                : `get_component with name "${hit.name}"`
+              : `get_skill with name "${hit.name}" and reference "${hit.reference}"`;
+      return `## ${index + 1}. ${hit.kind} ${label} (score ${hit.score})\n${hit.snippet}\n\nRead it: ${howTo}`;
+    })
     .join('\n\n');
 }
 
@@ -31,8 +41,8 @@ function renderList(kind: string, names: string[]): string {
 
 /**
  * The Colox doctrine server: four deterministic tools over the local
- * @colox/wiki Markdown source. No network, no mutable state — the wiki
- * dependency version IS the knowledge version.
+ * @colox/wiki Markdown bundles (SKILL.md bodies + on-demand references).
+ * No network, no mutable state — the wiki dependency IS the knowledge version.
  */
 export function buildServer(source: WikiSource, meta: ServerMeta): McpServer {
   const server = new McpServer({ name: meta.name, version: meta.version });
@@ -64,34 +74,30 @@ export function buildServer(source: WikiSource, meta: ServerMeta): McpServer {
     {
       title: 'Read usage rules',
       description:
-        'Read the conditional usage rules for a topic ("stack", "global"). Rules are the ' +
-        'authoritative must/avoid list in [condition] → action + why form. Without a name, lists ' +
-        'the shipped rules. Call before coding against a component.',
+        'Read the conditional usage rules for a topic ("stack") or the global rules ("global"). ' +
+        'Rules are the authoritative must/avoid list in [condition] → action + why form. ' +
+        'Without a name, lists the shipped rule sets. Call before coding against a component.',
       inputSchema: {
-        name: z.string().optional().describe('Rule name, e.g. "stack". Omit to list.'),
+        name: z
+          .string()
+          .optional()
+          .describe('Rule set name, e.g. "stack" or "global". Omit to list.'),
       },
     },
     async ({ name }) => {
       if (name === undefined) {
-        const entries = await source.entries();
         return {
           content: [
-            {
-              type: 'text' as const,
-              text: renderList(
-                'rule',
-                entries.filter((entry) => entry.kind === 'rule').map((entry) => entry.name),
-              ),
-            },
+            { type: 'text' as const, text: renderList('rule set', await source.listRules()) },
           ],
         };
       }
-      const entry = await source.read('rule', name);
+      const doc = await source.readRule(name);
       return {
         content: [
           {
             type: 'text' as const,
-            text: entry ? renderEntry(entry) : `No rule named "${name}".`,
+            text: doc ? renderDocument(doc) : `No rule set named "${name}".`,
           },
         ],
       };
@@ -103,34 +109,65 @@ export function buildServer(source: WikiSource, meta: ServerMeta): McpServer {
     {
       title: 'Read a composition recipe',
       description:
-        'Read the procedural composition recipe for a task ("stack" covers rows, columns, ' +
-        'toolbars, spacers, responsive gaps). Skills show the canonical form end to end. ' +
-        'Without a name, lists the shipped skills.',
+        'Read a skill bundle: its procedural recipe in SKILL.md, or with a reference argument ' +
+        'one of its on-demand references ("rules" = the must/avoid list, "component" = the API ' +
+        'reference). Without a name, lists the shipped skills and their references.',
       inputSchema: {
         name: z.string().optional().describe('Skill name, e.g. "stack". Omit to list.'),
+        reference: z
+          .string()
+          .min(1)
+          .optional()
+          .describe('Reference file name, e.g. "rules" or "component". Requires a skill name.'),
       },
     },
-    async ({ name }) => {
+    async ({ name, reference }) => {
       if (name === undefined) {
-        const entries = await source.entries();
+        if (reference !== undefined) {
+          return {
+            content: [
+              {
+                type: 'text' as const,
+                text: 'The reference argument requires a skill name: get_skill with name and reference together.',
+              },
+            ],
+          };
+        }
+        const lines = [];
+        for (const skill of await source.listSkills()) {
+          const refs = await source.referencesOf(skill);
+          lines.push(
+            refs.length > 0 ? `- ${skill} (references: ${refs.join(', ')})` : `- ${skill}`,
+          );
+        }
         return {
           content: [
             {
               type: 'text' as const,
-              text: renderList(
-                'skill',
-                entries.filter((entry) => entry.kind === 'skill').map((entry) => entry.name),
-              ),
+              text:
+                `Shipped skills:\n${lines.join('\n')}\n\n` +
+                'Read a skill body with get_skill; append a reference (e.g. reference: "rules") for its details.',
             },
           ],
         };
       }
-      const entry = await source.read('skill', name);
+      if (reference !== undefined) {
+        const doc = await source.readReference(name, reference);
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: doc ? renderDocument(doc) : `No reference "${reference}" in skill "${name}".`,
+            },
+          ],
+        };
+      }
+      const doc = await source.readSkill(name);
       return {
         content: [
           {
             type: 'text' as const,
-            text: entry ? renderEntry(entry) : `No skill named "${name}".`,
+            text: doc ? renderDocument(doc) : `No skill named "${name}".`,
           },
         ],
       };
@@ -144,32 +181,32 @@ export function buildServer(source: WikiSource, meta: ServerMeta): McpServer {
       description:
         'Read the reference for a component ("stack"): full API, defaults, DOM classes and the ' +
         'mechanism behind it. Use after the rules/skill to confirm prop names. Without a name, ' +
-        'lists the shipped components.',
+        'returns the component map (responsibility + status of every primitive).',
       inputSchema: {
-        name: z.string().optional().describe('Component name, e.g. "stack". Omit to list.'),
+        name: z
+          .string()
+          .optional()
+          .describe('Component name, e.g. "stack". Omit for the component map.'),
       },
     },
     async ({ name }) => {
       if (name === undefined) {
-        const entries = await source.entries();
+        const overview = await source.readComponent('overview');
         return {
           content: [
             {
               type: 'text' as const,
-              text: renderList(
-                'component',
-                entries.filter((entry) => entry.kind === 'component').map((entry) => entry.name),
-              ),
+              text: overview ? renderDocument(overview) : 'No component map is shipped yet.',
             },
           ],
         };
       }
-      const entry = await source.read('component', name);
+      const doc = await source.readComponent(name);
       return {
         content: [
           {
             type: 'text' as const,
-            text: entry ? renderEntry(entry) : `No component named "${name}".`,
+            text: doc ? renderDocument(doc) : `No component named "${name}".`,
           },
         ],
       };

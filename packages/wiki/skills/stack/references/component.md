@@ -51,5 +51,5 @@ mounted instance wins (LWW) and unmounting restores the static `gap`.
 
 ## Related
 
-- Rules: `rules/stack.rule.md`
-- Recipe: `skills/stack/SKILL.md`
+- Rules: `references/rules.md`
+- Recipe: `../SKILL.md`

@@ -3,19 +3,36 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import type { Dirent } from 'node:fs';
 
-export const DOCTRINE_KINDS = ['skill', 'rule', 'component'] as const;
-export type DoctrineKind = (typeof DOCTRINE_KINDS)[number];
+export type DoctrineKind = 'skill' | 'rule' | 'component' | 'reference';
 
-/** Kebab-case + dots (rule files carry a `.rule` suffix): no slashes, no traversal. */
-const NAME_PATTERN = /^[a-z][a-z0-9.-]*$/;
+/** Kebab-case bundle/reference/branch names: no slashes, no traversal. */
+const NAME_PATTERN = /^[a-z][a-z0-9-]*$/;
 
-export interface DoctrineEntry {
+const SKILLS_DIR = 'skills';
+const SKILL_FILE = 'SKILL.md';
+const REFERENCES_DIR = 'references';
+const OVERVIEW_FILE = 'components.md';
+
+const RULES_REFERENCE = 'rules';
+const COMPONENT_REFERENCE = 'component';
+
+/** Rule names are readable topic names; storage always speaks bundle names. */
+const RULE_BUNDLES: Record<string, string> = { global: 'doctrine' };
+
+/**
+ * One doctrine document: a skill body, one of its reference files, or the
+ * root component overview. Rules and component references found as
+ * references/rules.md and references/component.md in a bundle surface as
+ * first-class kinds; other reference files stay generic references.
+ */
+export interface DoctrineDocument {
   kind: DoctrineKind;
-  /** Kebab-case entry name (skill folder name, file stem for rules/components). */
+  /** Bundle name the document belongs to; 'global' for the doctrine rules; 'overview' for the component map. */
   name: string;
+  /** Reference file stem, present on reference-origin documents (incl. rules/component). */
+  reference?: string;
   /** Path relative to the wiki package root (display only). */
   file: string;
-  /** Absolute path of the markdown file. */
   absPath: string;
   body: string;
 }
@@ -23,6 +40,7 @@ export interface DoctrineEntry {
 export interface SearchHit {
   kind: DoctrineKind;
   name: string;
+  reference?: string;
   file: string;
   snippet: string;
   score: number;
@@ -33,11 +51,10 @@ export interface SearchOptions {
   limit?: number;
 }
 
-const KIND_DIRS: Record<DoctrineKind, string> = {
-  skill: 'skills',
-  rule: 'rules',
-  component: 'components',
-};
+/** Display name of a rule document: the doctrine bundle reads as 'global'. */
+export function ruleName(bundle: string): string {
+  return bundle === 'doctrine' ? 'global' : bundle;
+}
 
 function firstHeading(body: string): string {
   const line = body.split('\n').find((candidate) => candidate.startsWith('# '));
@@ -67,9 +84,10 @@ function buildSnippet(body: string, terms: string[]): string {
 }
 
 /**
- * Local Markdown source of the Colox doctrine. Reads the installed
- * @colox/wiki package (symlinked into the workspace during development),
- * so dependencies pin the doctrine version, not network calls.
+ * Local Markdown source of the Colox doctrine: one bundle per topic under
+ * skills/, each carrying SKILL.md plus on-demand references/. Reads the
+ * installed @colox/wiki package (symlinked into the workspace during
+ * development), so the dependency version IS the doctrine version.
  */
 export class WikiSource {
   readonly root: string;
@@ -85,58 +103,118 @@ export class WikiSource {
     return new WikiSource(path.dirname(packageJson));
   }
 
-  async entries(): Promise<DoctrineEntry[]> {
-    const result: DoctrineEntry[] = [];
-    for (const kind of DOCTRINE_KINDS) {
-      const base = path.join(this.root, KIND_DIRS[kind]);
-      if (kind === 'skill') {
-        const bundles = await listDirs(base);
-        for (const bundle of bundles) {
-          if (!NAME_PATTERN.test(bundle.name)) {
-            continue;
-          }
-          const skillPath = path.join(base, bundle.name, 'SKILL.md');
-          const body = await readMarkdown(skillPath);
-          if (body !== undefined) {
-            result.push({
-              kind,
-              name: bundle.name,
-              file: `${KIND_DIRS[kind]}/${bundle.name}/SKILL.md`,
-              absPath: skillPath,
-              body,
-            });
-          }
+  /** Every doctrine document: the overview, skill bodies, their references. */
+  async documents(): Promise<DoctrineDocument[]> {
+    const result: DoctrineDocument[] = [];
+    const overviewBody = await readMarkdown(path.join(this.root, OVERVIEW_FILE));
+    if (overviewBody !== undefined) {
+      result.push({
+        kind: 'component',
+        name: 'overview',
+        file: OVERVIEW_FILE,
+        absPath: path.join(this.root, OVERVIEW_FILE),
+        body: overviewBody,
+      });
+    }
+    const skillsRoot = path.join(this.root, SKILLS_DIR);
+    for (const bundle of await listDirs(skillsRoot)) {
+      if (!NAME_PATTERN.test(bundle.name)) {
+        continue;
+      }
+      const bundleDir = path.join(skillsRoot, bundle.name);
+      const skillBody = await readMarkdown(path.join(bundleDir, SKILL_FILE));
+      if (skillBody !== undefined) {
+        result.push({
+          kind: 'skill',
+          name: bundle.name,
+          file: `${SKILLS_DIR}/${bundle.name}/${SKILL_FILE}`,
+          absPath: path.join(bundleDir, SKILL_FILE),
+          body: skillBody,
+        });
+      }
+      const refsDir = path.join(bundleDir, REFERENCES_DIR);
+      for (const ref of await listMarkdownFiles(refsDir)) {
+        const reference = ref.name.replace(/\.md$/, '');
+        if (!NAME_PATTERN.test(reference)) {
+          continue;
         }
-      } else {
-        const files = await listMarkdownFiles(base);
-        for (const file of files) {
-          const bare = file.name.replace(/\.md$/, '');
-          const name = kind === 'rule' ? bare.replace(/\.rule$/, '') : bare;
-          if (!NAME_PATTERN.test(name)) {
-            continue;
-          }
-          const body = await readMarkdown(path.join(base, file.name));
-          if (body !== undefined) {
-            result.push({
-              kind,
-              name,
-              file: `${KIND_DIRS[kind]}/${file.name}`,
-              absPath: path.join(base, file.name),
-              body,
-            });
-          }
+        const body = await readMarkdown(path.join(refsDir, ref.name));
+        if (body === undefined) {
+          continue;
         }
+        result.push({
+          kind:
+            reference === RULES_REFERENCE
+              ? 'rule'
+              : reference === COMPONENT_REFERENCE
+                ? 'component'
+                : 'reference',
+          name: bundle.name,
+          reference,
+          file: `${SKILLS_DIR}/${bundle.name}/${REFERENCES_DIR}/${ref.name}`,
+          absPath: path.join(refsDir, ref.name),
+          body,
+        });
       }
     }
     return result;
   }
 
-  async read(kind: DoctrineKind, name: string): Promise<DoctrineEntry | undefined> {
+  async listSkills(): Promise<string[]> {
+    const docs = await this.documents();
+    return docs
+      .filter((doc) => doc.kind === 'skill')
+      .map((doc) => doc.name)
+      .sort();
+  }
+
+  async referencesOf(bundle: string): Promise<string[]> {
+    const docs = await this.documents();
+    return docs
+      .filter((doc) => doc.reference !== undefined && doc.name === bundle)
+      .map((doc) => doc.reference as string)
+      .sort();
+  }
+
+  async readSkill(name: string): Promise<DoctrineDocument | undefined> {
     if (!NAME_PATTERN.test(name)) {
       return undefined;
     }
-    const entries = await this.entries();
-    return entries.find((entry) => entry.kind === kind && entry.name === name);
+    const docs = await this.documents();
+    return docs.find((doc) => doc.kind === 'skill' && doc.name === name);
+  }
+
+  async readReference(name: string, reference: string): Promise<DoctrineDocument | undefined> {
+    if (!NAME_PATTERN.test(name) || !NAME_PATTERN.test(reference)) {
+      return undefined;
+    }
+    const docs = await this.documents();
+    return docs.find((doc) => doc.reference === reference && doc.name === name);
+  }
+
+  async listRules(): Promise<string[]> {
+    const docs = await this.documents();
+    return docs
+      .filter((doc) => doc.kind === 'rule')
+      .map((doc) => ruleName(doc.name))
+      .sort();
+  }
+
+  async readRule(name: string): Promise<DoctrineDocument | undefined> {
+    if (!NAME_PATTERN.test(name)) {
+      return undefined;
+    }
+    const bundle = RULE_BUNDLES[name] ?? name;
+    const docs = await this.documents();
+    return docs.find((doc) => doc.kind === 'rule' && doc.name === bundle);
+  }
+
+  async readComponent(name: string): Promise<DoctrineDocument | undefined> {
+    if (!NAME_PATTERN.test(name)) {
+      return undefined;
+    }
+    const docs = await this.documents();
+    return docs.find((doc) => doc.kind === 'component' && doc.name === name);
   }
 
   async search(query: string, options: SearchOptions = {}): Promise<SearchHit[]> {
@@ -149,12 +227,12 @@ export class WikiSource {
     if (terms.length === 0) {
       return [];
     }
-    const entries = await this.entries();
+    const docs = await this.documents();
     const hits: SearchHit[] = [];
-    for (const entry of entries) {
-      const name = entry.name.toLowerCase();
-      const title = firstHeading(entry.body).toLowerCase();
-      const body = entry.body.toLowerCase();
+    for (const doc of docs) {
+      const name = doc.name.toLowerCase();
+      const title = firstHeading(doc.body).toLowerCase();
+      const body = doc.body.toLowerCase();
       let score = 0;
       for (const term of terms) {
         if (name.includes(term)) {
@@ -167,10 +245,11 @@ export class WikiSource {
       }
       if (score > 0) {
         hits.push({
-          kind: entry.kind,
-          name: entry.name,
-          file: entry.file,
-          snippet: buildSnippet(entry.body, terms),
+          kind: doc.kind,
+          name: doc.name,
+          reference: doc.reference,
+          file: doc.file,
+          snippet: buildSnippet(doc.body, terms),
           score,
         });
       }

@@ -10,13 +10,13 @@
   "files": [
     "AGENTS.md",
     "README.md",
-    "skills",
-    "rules",
-    "components"
+    "components.md",
+    "skills"
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./AGENTS.md": "./AGENTS.md"
+    "./AGENTS.md": "./AGENTS.md",
+    "./components.md": "./components.md"
   },
   "license": "MIT",
   "publishConfig": {

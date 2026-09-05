@@ -5,10 +5,12 @@ for AI agents, in plain Markdown.
 
 - `AGENTS.md` — compact doctrine digest (auto-read by dsh / Codex / Cursor;
   Claude reads `CLAUDE.md` — point it here or copy)
-- `rules/<name>.rule.md` — conditional rules: `[condition] → action. Why: reason.`
-- `skills/<name>/SKILL.md` — procedural composition recipes (Claude / Codex / dsh
-  all auto-discover the SKILL.md format)
-- `components/<name>.md` — per-component reference
+- `components.md` — component map (responsibility + status)
+- `skills/<name>/SKILL.md` — one bundle per topic: recipe in the body,
+  `references/rules.md` (must/avoid) and `references/component.md` (API) read
+  on demand; the SKILL.md format is auto-discovered by Claude / Codex / dsh
+  skill catalogs
+- `skills/doctrine/` — read order + global rules
 
 Versioning: `@colox/wiki` releases are linked to `@colox/react` — the doctrine
 version always identifies the component version it documents.

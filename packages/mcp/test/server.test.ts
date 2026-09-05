@@ -24,31 +24,55 @@ describe('colox MCP server over an in-memory transport', () => {
       'search_doctrine',
     ]);
 
+    const map = await client.callTool({ name: 'get_component', arguments: {} });
+    expect(textOf(map)).toContain('Grid');
+
     const component = await client.callTool({
       name: 'get_component',
       arguments: { name: 'stack' },
     });
     expect(textOf(component)).toContain('Flexbox layout primitive');
 
+    const missingComponent = await client.callTool({
+      name: 'get_component',
+      arguments: { name: 'nope' },
+    });
+    expect(textOf(missingComponent)).toContain('No component named');
+
     const ruleList = await client.callTool({ name: 'get_rule', arguments: {} });
     const ruleListText = textOf(ruleList);
-    expect(ruleListText).toContain('stack');
     expect(ruleListText).toContain('global');
+    expect(ruleListText).toContain('stack');
 
-    const rule = await client.callTool({ name: 'get_rule', arguments: { name: 'stack' } });
-    expect(textOf(rule)).toContain('Stack.Item grow');
+    const globalRule = await client.callTool({ name: 'get_rule', arguments: { name: 'global' } });
+    expect(textOf(globalRule)).toContain('style.css');
+
+    const stackRule = await client.callTool({ name: 'get_rule', arguments: { name: 'stack' } });
+    expect(textOf(stackRule)).toContain('Stack.Item grow');
 
     const skill = await client.callTool({ name: 'get_skill', arguments: { name: 'stack' } });
-    expect(textOf(skill)).toContain('## Recipes');
+    expect(textOf(skill)).toContain('## Reference files');
+
+    const skillRules = await client.callTool({
+      name: 'get_skill',
+      arguments: { name: 'stack', reference: 'rules' },
+    });
+    expect(textOf(skillRules)).toContain('[condition]');
+
+    const skillMissingRef = await client.callTool({
+      name: 'get_skill',
+      arguments: { name: 'stack', reference: 'nope' },
+    });
+    expect(textOf(skillMissingRef)).toContain('No reference "nope"');
+
+    const skillList = await client.callTool({ name: 'get_skill', arguments: {} });
+    expect(textOf(skillList)).toContain('(references:');
 
     const search = await client.callTool({
       name: 'search_doctrine',
       arguments: { query: 'responsive gap', limit: 3 },
     });
     expect(textOf(search)).toContain('stack');
-
-    const missing = await client.callTool({ name: 'get_component', arguments: { name: 'nope' } });
-    expect(textOf(missing)).toContain('No component named');
 
     await client.close();
     await server.close();
