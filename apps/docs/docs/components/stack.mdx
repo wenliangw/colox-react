@@ -68,6 +68,10 @@ result with the enclosing `Stack`. Values apply while the viewport fits the band
 max-width cap, so narrow bands win and `base` (the widest band) is the last fallback. A
 static `Stack` never touches the theme context.
 
+The responsive vocabulary ships from `@colox/theme` as `ResponsiveValue<T>` and
+`resolveResponsiveValue`, so every future primitive (Grid, Positioner, Container) reuses
+the same band semantics instead of re-deriving them.
+
 ```mdx
 <Stack gap="4">
   <Stack.Responsive gap={{ base: '2', lg: '8' }} />

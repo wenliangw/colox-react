@@ -7,9 +7,13 @@ const { mockBreakpoint } = vi.hoisted(() => ({
   mockBreakpoint: { value: 'base' as BreakpointName },
 }));
 
-vi.mock('@colox/theme', () => ({
-  useColoxTheme: () => ({ breakpoint: mockBreakpoint.value }),
-}));
+vi.mock('@colox/theme', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@colox/theme')>();
+  return {
+    ...actual,
+    useColoxTheme: () => ({ breakpoint: mockBreakpoint.value }),
+  };
+});
 
 describe('Stack', () => {
   afterEach(() => {

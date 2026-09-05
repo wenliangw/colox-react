@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import type { BreakpointName } from '@colox/theme';
+import type { ResponsiveValue } from '@colox/theme';
 import type { StackVariants } from '../variants';
 
 /** Main axis of the stack; row is the CSS-faithful default. */
@@ -9,13 +9,17 @@ export type StackGap = NonNullable<StackVariants['gap']>;
 export type StackAlign = NonNullable<StackVariants['align']>;
 export type StackJustify = NonNullable<StackVariants['justify']>;
 
+/** Per-breakpoint gap overrides for `Stack.Responsive` (theme vocabulary). */
+export type StackResponsiveGap = ResponsiveValue<StackGap>;
+
 /**
- * Per-breakpoint gap overrides for `Stack.Responsive`. Keys are the
- * theme runtime breakpoint names; a value applies whenever the viewport
- * fits the band's max-width cap, so narrow bands override wide ones and
- * `base` (the widest band) is the last fallback.
+ * The channel between <Stack> and its parts. The root owns the
+ * resolved gap; parts only push values through it (last mounted
+ * writer wins, unmounting restores the static gap prop).
  */
-export type StackResponsiveGap = Partial<Record<BreakpointName, StackGap>>;
+export interface StackContextValue {
+  registerResponsiveGap: (gap: StackGap | undefined) => void;
+}
 
 export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   /**

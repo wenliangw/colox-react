@@ -6,7 +6,7 @@
 
 - **`Stack`**：`colox-stack` 根类（`display: flex`），轴 = direction（row/column/row-reverse/column-reverse，默认 row）+ gap + align + justify + wrap；CSS 忠实默认（row/stretch/start/无 gap/不 wrap）
 - **`Stack.Item`**（dot part）：`colox-stack-item`，`grow` 吸收主轴剩余空间（Spacer 语义）
-- **`Stack.Responsive`**（dot part）：挂载式响应 gap——读 theme context 断点名解析 `{ base?, sm?, md?, lg?, xl? }` 配置（max-width 帽语义：当前带向外第一个已配置值，兜底 base），注册结果给父 Stack；卸载还原静态 gap；渲染 null。**只有挂载件碰 theme context，静态 Stack 零 context**
+- **`Stack.Responsive`**（dot part）：挂载式响应 gap——读 theme context 断点名解析 `{ base?, sm?, md?, lg?, xl? }` 配置（max-width 帽语义：当前带向外第一个已配置值，兜底 base；解析器 = @colox/theme 公共出口 `resolveResponsiveValue`），注册结果给父 Stack；卸载还原静态 gap；渲染 null。**只有挂载件碰 theme context，静态 Stack 零 context**
 
 ## 修饰类
 
@@ -24,4 +24,4 @@
 
 ## 文件
 
-`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`）、`children/{item,responsive}/index.tsx`（dot-part 子件）、`context/index.ts`（StackContext + 默认 no-op 值 + `resolveResponsiveGap` 工具方法，工具住 context 不散落）、`hooks/use-stack-context.ts`（受保护出口：无根挂载 warn + no-op 降级）、`stack.tsx`（根组件 + Object.assign 挂载）、`styles/index.scss`、`index.ts` 出口（useStackContext 进 barrel、StackContext 不进）；测试 `_tests/{stack,resolve}.test.tsx` 17 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、无根 warn 降级、解析器 6 例；theme hook 在测试内 mock 以控制断点）。
+`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`=ResponsiveValue<StackGap> + `StackContextValue`）、`children/{item,responsive}/index.tsx`（dot-part 子件）、`context/index.ts`（仅 createContext + 默认 no-op 值）、`hooks/use-stack-context.ts`（受保护出口：无根挂载 warn + no-op 降级）、`stack.tsx`（根组件 + Object.assign 挂载）、`styles/index.scss`、`index.ts` 出口（useStackContext 进 barrel、StackContext 不进）；无组件私有 utils（响应式解析已上提 theme）。测试：`_tests/stack.test.tsx` 11 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、无根 warn 降级；theme hook 在测试内 mock 以控制断点），解析器测试随 `resolveResponsiveValue` 上提至 theme 包 8 例。

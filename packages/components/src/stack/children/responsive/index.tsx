@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useColoxTheme } from '@colox/theme';
-import { resolveResponsiveGap } from '../../context';
+import { resolveResponsiveValue, useColoxTheme } from '@colox/theme';
 import { useStackContext } from '../../hooks/use-stack-context';
 import type { StackResponsiveProps } from '../../types';
 
@@ -14,7 +13,7 @@ import type { StackResponsiveProps } from '../../types';
 export const StackResponsive = ({ gap }: StackResponsiveProps) => {
   const { registerResponsiveGap } = useStackContext();
   const { breakpoint } = useColoxTheme();
-  const resolvedGap = resolveResponsiveGap(gap, breakpoint);
+  const resolvedGap = resolveResponsiveValue(gap, breakpoint);
 
   useEffect(() => {
     registerResponsiveGap(resolvedGap);

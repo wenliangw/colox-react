@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
-import { defaultStackContextValue, StackContext, type StackContextValue } from '../context';
+import { defaultStackContextValue, StackContext } from '../context';
+import type { StackContextValue } from '../types';
 
 /**
  * The single protected outlet for the Stack context: parts read the

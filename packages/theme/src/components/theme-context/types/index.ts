@@ -36,6 +36,15 @@ export type BreakpointName = typeof BASE_BREAKPOINT_NAME | BreakpointKey;
 /** Breakpoint overrides: values only — the keys are the CSS contract. */
 export type BreakpointOverrides = Partial<Record<BreakpointKey, string>>;
 
+/**
+ * A value that responds to the breakpoint axis: the plain value applies
+ * everywhere, or an object maps per-band values by breakpoint name.
+ * Band semantics follow the max-width cap ladder (see
+ * resolveResponsiveValue). T is expected to be a scalar vocabulary type
+ * (spacing keys, counts, etc.).
+ */
+export type ResponsiveValue<T> = T | Partial<Record<BreakpointName, T>>;
+
 /** The live snapshot the useColoxTheme hook exposes. */
 export interface ColoxThemeValue {
   /** The configured theme; 'system' means follow the OS preference. */
