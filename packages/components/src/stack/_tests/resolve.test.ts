@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveResponsiveGap } from '../resolve';
+import { resolveResponsiveGap } from '../context';
 
 describe('resolveResponsiveGap', () => {
   it('serves the base value outside any capped band', () => {

@@ -1,8 +1,8 @@
 import { forwardRef, useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { StackContext } from './context';
-import { StackItem } from './item';
-import { StackResponsive } from './responsive';
+import { StackItem } from './children/item';
+import { StackResponsive } from './children/responsive';
 import type { StackGap, StackProps } from './types';
 import { stackVariants } from './variants';
 

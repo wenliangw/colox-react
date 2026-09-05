@@ -1,8 +1,8 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useColoxTheme } from '@colox/theme';
-import { StackContext } from './context';
-import { resolveResponsiveGap } from './resolve';
-import type { StackResponsiveProps } from './types';
+import { resolveResponsiveGap } from '../../context';
+import { useStackContext } from '../../hooks/use-stack-context';
+import type { StackResponsiveProps } from '../../types';
 
 /**
  * Mounted capability for `Stack`: resolves the per-breakpoint gap
@@ -12,14 +12,14 @@ import type { StackResponsiveProps } from './types';
  * last mounted instance wins and unmounting restores the static gap.
  */
 export const StackResponsive = ({ gap }: StackResponsiveProps) => {
-  const context = useContext(StackContext);
+  const { registerResponsiveGap } = useStackContext();
   const { breakpoint } = useColoxTheme();
   const resolvedGap = resolveResponsiveGap(gap, breakpoint);
 
   useEffect(() => {
-    context?.registerResponsiveGap(resolvedGap);
-    return () => context?.registerResponsiveGap(undefined);
-  }, [context, resolvedGap]);
+    registerResponsiveGap(resolvedGap);
+    return () => registerResponsiveGap(undefined);
+  }, [registerResponsiveGap, resolvedGap]);
 
   return null;
 };

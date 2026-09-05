@@ -12,6 +12,7 @@
 4. **测试**：`_tests/` 覆盖默认修饰组、各轴映射、透传/className 合并。
 5. **外围放行**：`apps/docs/docs/components/<name>.mdx`（sidebar_position 递增）引用组件前先 import（Button 漏 import 的前科）；`apps/preview/src/<name>/` 故事；eslint/prettier/组件与 app 构建全绿。
 6. **mesync 落盘**：[wiki/modules/<name>.md](wiki/modules/stack.md) + overview 模块索引 + 决策/品味节点（涉 API 取舍时）。
+7. **组合式组件走组合规范**（含 dot-part 子件时）：`children/<part>/index.tsx` 逐件文件夹、`context/index.ts` 建 context（默认 no-op 值 + 关联工具方法）、`hooks/use-<name>-context.ts` 受保护出口；子件**不得**裸调 useContext、工具**不得**散落平铺文件（resolve.ts 前科）——开工前对照 tastes/composition.md 六条与 ColoxTheme/Stack 参考实现。
 
 ## 为什么
 

@@ -24,4 +24,4 @@
 
 ## 文件
 
-`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`）、`resolve.ts`（断点帽语义解析器）、`context.ts`（内部注册管道）、`stack.tsx`/`item.tsx`/`responsive.tsx`、`styles/index.scss`、`index.ts` 出口；测试 `_tests/{stack,resolve}.test.tsx` 14 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、解析器 6 例；theme hook 在测试内 mock 以控制断点）。
+`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`）、`children/{item,responsive}/index.tsx`（dot-part 子件）、`context/index.ts`（StackContext + 默认 no-op 值 + `resolveResponsiveGap` 工具方法，工具住 context 不散落）、`hooks/use-stack-context.ts`（受保护出口：无根挂载 warn + no-op 降级）、`stack.tsx`（根组件 + Object.assign 挂载）、`styles/index.scss`、`index.ts` 出口（useStackContext 进 barrel、StackContext 不进）；测试 `_tests/{stack,resolve}.test.tsx` 17 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、无根 warn 降级、解析器 6 例；theme hook 在测试内 mock 以控制断点）。

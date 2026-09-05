@@ -134,4 +134,13 @@ describe('Stack.Responsive', () => {
     );
     expect(screen.getByText('content')).toHaveClass('colox-stack--gap-2');
   });
+
+  it('warns when mounted outside a Stack and degrades to a no-op', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    render(<Stack.Responsive gap={{ base: '2' }} />);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('useStackContext must be used within a <Stack>'),
+    );
+    warn.mockRestore();
+  });
 });
