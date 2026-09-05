@@ -37,10 +37,25 @@ const preview: Preview = {
         showName: true,
       },
     },
+    motion: {
+      name: 'Colox Motion',
+      description: 'Toggle the data-colox-motion axis via the ColoxTheme motion prop',
+      toolbar: {
+        icon: 'play',
+        items: [
+          { value: 'system', title: 'System', icon: 'mirror' },
+          { value: 'on', title: 'On', icon: 'play' },
+          { value: 'off', title: 'Off', icon: 'stop' },
+        ],
+        dynamicTitle: true,
+        showName: true,
+      },
+    },
   },
   initialGlobals: {
     theme: 'system',
     palette: 'default',
+    motion: 'system',
   },
   parameters: {
     controls: {
@@ -64,7 +79,7 @@ const preview: Preview = {
       <ColoxTheme
         theme={context.globals.theme as ColoxThemeName}
         palette={context.globals.palette === 'demo' ? 'demo' : undefined}
-        motion
+        motion={context.globals.motion === 'system' ? 'system' : context.globals.motion === 'on'}
       >
         <Story />
       </ColoxTheme>
