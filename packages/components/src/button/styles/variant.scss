@@ -51,3 +51,15 @@
     color: var(--colox-color-text-disabled);
   }
 }
+
+// Press-wave tints (the ::before mechanics live in base.scss):
+// solid reads a sheen of the inverse (a highlight on the filled
+// surface), while the transparent variants intensify their wash.
+.colox-button--solid::before {
+  background: color-mix(in srgb, var(--colox-button-intent-inverse) 16%, transparent);
+}
+
+.colox-button--outline::before,
+.colox-button--ghost::before {
+  background: color-mix(in srgb, var(--colox-button-intent-solid) 14%, transparent);
+}
