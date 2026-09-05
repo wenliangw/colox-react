@@ -1,21 +1,23 @@
 /**
  * Concatenate the aggregate stylesheet dist/index.css:
- * base reset + palette baseline + light + dark.
+ * base reset + palette baseline + light + dark + motion gate.
  *
  * The granular files stay the single source of truth; this is only
  * the one-import convenience surface. Concatenation is structurally
- * safe: the reset declares no variables, the palette/semantic variable
- * names are disjoint, and the attribute axes (:root[data-colox-theme='…']
- * / :root[data-colox-palette='…']) beat the :root baselines by
- * specificity, so the order of sections is irrelevant.
+ * safe: the reset and the motion gate declare no variables, the
+ * palette/semantic variable names are disjoint, and the attribute axes
+ * (:root[data-colox-theme='…'] / :root[data-colox-palette='…'] /
+ * [data-colox-motion='…']) beat the :root baselines by specificity, so
+ * the order of sections is irrelevant.
  *
  * @colox/react pulls this aggregate into its own style entry, restoring
  * the single-import surface for component consumers. Component styles
  * themselves live in @colox/react, not here.
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 
 const base = 'src/styles/base/reset.css';
+const motion = 'src/styles/base/motion.css';
 const parts = ['dist/themes/palette.css', 'dist/themes/light.css', 'dist/themes/dark.css'];
 
 const banner = `/**
@@ -25,6 +27,7 @@ const banner = `/**
  *   1. base layer (box-sizing reset)
  *   2. palette baseline (always loaded)
  *   3. light + dark theme assignments (complete, disjoint names)
+ *   4. motion gate (global micro-motion kill switch)
  *
  * Order within this file does not matter: the attribute axes beat the
  * :root baselines by specificity. Custom files compiled from
@@ -42,5 +45,11 @@ for (const part of parts) {
   out += await readFile(part, 'utf8');
   out += '\n';
 }
+out += `/* ---- ${motion} ---- */\n`;
+out += await readFile(motion, 'utf8');
+out += '\n';
 await writeFile('dist/index.css', out);
-console.log(`[ok] index.css (${(out.length / 1024).toFixed(1)} KB, ${parts.length + 1} sections)`);
+// Ship the motion gate standalone too: CSS-only consumers loading the
+// granular palette/light/dark files must not miss the accessibility gate.
+await copyFile(motion, 'dist/themes/motion.css');
+console.log(`[ok] index.css (${(out.length / 1024).toFixed(1)} KB, ${parts.length + 2} sections)`);

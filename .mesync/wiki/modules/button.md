@@ -6,7 +6,7 @@
 
 ## 功能逻辑
 
-- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'outline' | 'ghost'`，默认 `solid`）、`intent`（`'primary' | 'neutral' | 'danger' | 'warning' | 'success'`，默认 `primary`，映射语义色组 primary→brand / neutral→gray / danger→red / warning→orange / success→green——API 用用途词，theme 变量仍随 Figma 的 brand 色组——brand 是**动态品牌主色**（用户 palette 定制可整体覆盖，见 architecture「brand 组」））、`size`（`'xs' | 'sm' | 'md' | 'lg'`，默认 `md`）。
+- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'outline' | 'ghost'`，默认 `solid`）、`intent`（`'primary' | 'neutral' | 'danger' | 'warning' | 'success'`，默认 `primary`，映射语义色组 primary→brand / neutral→gray / danger→red / warning→orange / success→green——API 用用途词，theme 变量仍随 Figma 的 brand 色组——brand 是**动态品牌主色**（用户 palette 定制可整体覆盖，见 architecture「brand 组」））、`size`（`'xs' | 'sm' | 'md' | 'lg'`，默认 `md`）、`shadow`（`boolean`，默认 `false`——投影装饰轴：常态 `--colox-shadow-md`、hover 升 `--colox-shadow-lg`，三形态通吃，值零硬编码）。
 - `forwardRef` 暴露 `ButtonRef = HTMLButtonElement`；`type` 默认 `'button'`（可用 props 覆盖，不沿原生 submit 默认值）。
 - 类名 = `cva('colox-button')` 三轴变体 + `clsx` 拼接透传 `className`。
 

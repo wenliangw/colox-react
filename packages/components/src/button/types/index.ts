@@ -21,6 +21,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    * @default 'primary'
    */
   intent?: ButtonIntent;
+  /**
+   * Adds a theme shadow (shadow-md, lifting to shadow-lg on hover).
+   * @default false
+   */
+  shadow?: boolean;
 }
 
 export type ButtonRef = HTMLButtonElement;

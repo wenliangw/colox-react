@@ -64,6 +64,7 @@ const preview: Preview = {
       <ColoxTheme
         theme={context.globals.theme as ColoxThemeName}
         palette={context.globals.palette === 'demo' ? 'demo' : undefined}
+        motion
       >
         <Story />
       </ColoxTheme>

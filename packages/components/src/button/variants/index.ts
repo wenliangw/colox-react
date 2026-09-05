@@ -8,6 +8,9 @@ export const buttonVariants = cva('colox-button', {
     size: buttonSizeStyles,
     variant: buttonVariantStyles,
     intent: buttonIntentStyles,
+    shadow: {
+      true: 'colox-button--shadow',
+    },
   },
   defaultVariants: {
     size: 'md',

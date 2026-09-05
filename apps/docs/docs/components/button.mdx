@@ -25,6 +25,13 @@ Buttons trigger user actions.
 <Button size="xs">Tiny</Button> <Button size="sm">Small</Button> <Button size="md">Medium</Button>
 <Button size="lg">Large</Button>
 
+## Shadow
+
+<Button shadow>Elevated</Button> <Button>Flat</Button>
+
+The `shadow` prop uses the theme shadow tokens (`md` at rest, lifting to `lg` on hover) and
+respects the motion gate like every other transition.
+
 ## Props
 
 | Prop    | Type                                                           | Default     |
@@ -32,5 +39,6 @@ Buttons trigger user actions.
 | variant | `'solid' \| 'outline' \| 'ghost'`                              | `'solid'`   |
 | intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'primary'` |
 | size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                 | `'md'`      |
+| shadow  | `boolean`                                                      | `false`     |
 
 It also accepts all native `<button>` attributes; `type` defaults to `'button'`.

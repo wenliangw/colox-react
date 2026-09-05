@@ -10,4 +10,5 @@ export type {
   ColoxThemeProps,
   ColoxThemeStorageProps,
   ColoxThemeValue,
+  MotionPreference,
 } from '@/components/theme-context/types';

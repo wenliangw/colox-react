@@ -18,6 +18,12 @@ export type ColoxThemeName =
 export type ColoxSystemThemeName = typeof LIGHT_THEME_NAME | typeof DARK_THEME_NAME;
 
 /**
+ * Micro-motion gate vocabulary: true/false force the axis, 'system'
+ * follows the prefers-reduced-motion media query natively.
+ */
+export type MotionPreference = boolean | 'system';
+
+/**
  * Responsive breakpoint keys, bound to the component CSS contract
  * (`[data-colox-breakpoint='…']` selectors) and sourced from the generated
  * design tokens.
@@ -68,6 +74,12 @@ export interface ColoxThemeProps {
    * undefined = the shipped default.
    */
   palette?: string;
+  /**
+   * Micro-motion gate: true forces motion on, false forces it off,
+   * 'system' follows the OS reduced-motion preference (CSS-native).
+   * @default 'system'
+   */
+  motion?: MotionPreference;
 }
 
 /**

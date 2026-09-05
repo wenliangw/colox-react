@@ -1,0 +1,7 @@
+.colox-button--shadow {
+  box-shadow: var(--colox-shadow-md);
+
+  &:hover {
+    box-shadow: var(--colox-shadow-lg);
+  }
+}

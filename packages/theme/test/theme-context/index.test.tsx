@@ -17,7 +17,12 @@ function Probe() {
 const root = () => document.documentElement;
 const attr = (name: string) => root().getAttribute(name);
 const removeAttrs = () => {
-  for (const name of ['data-colox-theme', 'data-colox-palette', 'data-colox-breakpoint']) {
+  for (const name of [
+    'data-colox-theme',
+    'data-colox-palette',
+    'data-colox-breakpoint',
+    'data-colox-motion',
+  ]) {
     root().removeAttribute(name);
   }
 };
@@ -91,6 +96,40 @@ describe('ColoxTheme props → the three <html> axes', () => {
       </ColoxTheme>,
     );
     expect(attr('data-colox-theme')).toBe('deep');
+  });
+});
+
+describe('Motion axis', () => {
+  it('motion=true/false land on the attribute; system/absent remove it', () => {
+    const { rerender } = render(
+      <ColoxTheme motion>
+        <Probe />
+      </ColoxTheme>,
+    );
+    expect(attr('data-colox-motion')).toBe('on');
+
+    rerender(
+      <ColoxTheme motion={false}>
+        <Probe />
+      </ColoxTheme>,
+    );
+    expect(attr('data-colox-motion')).toBe('off');
+
+    rerender(
+      <ColoxTheme motion="system">
+        <Probe />
+      </ColoxTheme>,
+    );
+    expect(root().hasAttribute('data-colox-motion')).toBe(false);
+  });
+
+  it('absent motion prop = no attribute (CSS media query follows)', () => {
+    render(
+      <ColoxTheme>
+        <Probe />
+      </ColoxTheme>,
+    );
+    expect(root().hasAttribute('data-colox-motion')).toBe(false);
   });
 });
 

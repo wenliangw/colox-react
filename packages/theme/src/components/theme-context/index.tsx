@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useReducer, useState, type FC } from 'react';
 import { SYSTEM_THEME_NAME } from './constants/theme';
 import { useThemeAttributes } from './hooks/use-theme-attributes';
+import { useMotionAttribute } from './hooks/use-motion-attribute';
 import { useThemeSensors } from './hooks/use-theme-sensors';
 import { useThemeStorage } from './hooks/use-theme-storage';
 import { createInitialThemeState, resolveTheme, themeReducer } from './reducers/theme';
@@ -16,7 +17,7 @@ import type {
   ColoxThemeRegistryEntry,
 } from './types';
 
-const ColoxThemeRoot = ({ children, theme, defaultTheme, palette }: ColoxThemeProps) => {
+const ColoxThemeRoot = ({ children, theme, defaultTheme, palette, motion }: ColoxThemeProps) => {
   const [state, dispatch] = useReducer(themeReducer, undefined, createInitialThemeState);
   const [entries, setEntries] = useState<ColoxThemeRegistryEntry[]>([]);
 
@@ -28,6 +29,7 @@ const ColoxThemeRoot = ({ children, theme, defaultTheme, palette }: ColoxThemePr
   }, [entries, theme, defaultTheme, palette]);
 
   useThemeAttributes(state);
+  useMotionAttribute(motion);
   useThemeSensors(state, dispatch);
   useThemeStorage(state, dispatch);
 

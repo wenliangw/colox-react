@@ -28,7 +28,12 @@ export const BREAKPOINT_KEYS = Object.keys(defaultBreakpoints) as Array<
 /** The segment when no max-width query matches (attribute removed). */
 export const BASE_BREAKPOINT_NAME = 'base' as const;
 
-/** The three axes as <html> data-* attributes (the CSS selector contract). */
+/** The axes as <html> data-* attributes (the CSS selector contract). */
 export const THEME_ATTRIBUTE = 'data-colox-theme';
 export const PALETTE_ATTRIBUTE = 'data-colox-palette';
 export const BREAKPOINT_ATTRIBUTE = 'data-colox-breakpoint';
+export const MOTION_ATTRIBUTE = 'data-colox-motion';
+
+/** The motion axis values; 'system' writes no attribute (CSS media query follows). */
+export const MOTION_ON_VALUE = 'on' as const;
+export const MOTION_OFF_VALUE = 'off' as const;

@@ -1,0 +1,38 @@
+/**
+ * Colox motion gate — the micro-motion kill switch.
+ *
+ * This file declares no variables and owns one job: globally silencing
+ * transitions and animations when the motion axis says so. Components
+ * never branch on the switch themselves; they declare transitions
+ * freely and this layer neutralizes them.
+ *
+ * Axis contract (the <html> attributes, managed by <ColoxTheme motion>):
+ * - no attribute / data-colox-motion never set by us = "system":
+ *   the prefers-reduced-motion media query below does the following
+ *   natively, re-evaluated live by the browser
+ * - data-colox-motion="on"  = force motion on, media query excluded
+ * - data-colox-motion="off" = force motion off, unconditionally
+ */
+[data-colox-motion='off'] *,
+[data-colox-motion='off'] *::before,
+[data-colox-motion='off'] *::after {
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+  animation-duration: 0.01ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-colox-motion='on']) *,
+  :root:not([data-colox-motion='on']) *::before,
+  :root:not([data-colox-motion='on']) *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
