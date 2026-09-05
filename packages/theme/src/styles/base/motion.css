@@ -4,11 +4,11 @@
  *
  * Scope: this file ONLY gates library-owned motion: it re-assigns the
  * --colox-motion-duration-* tokens and drops the library press-scale
- * transform and press-wave sweep. It never touches consumer-owned
- * elements, properties or styles. Colox components declare their
- * transitions through these tokens (a review-enforced discipline), so
- * zeroing the tokens stops every library micro-motion while the host
- * app's own transitions/animations keep working untouched.
+ * transform. It never touches consumer-owned elements, properties or
+ * styles. Colox components declare their transitions through these
+ * tokens (a review-enforced discipline), so zeroing the tokens stops
+ * every library micro-motion while the host app's own
+ * transitions/animations keep working untouched.
  *
  * Axis contract (the <html> attributes, managed by <ColoxTheme motion>):
  * - no attribute = "system": the media query below follows
@@ -18,11 +18,9 @@
  *
  * The :root-scoped selectors beat the component and baseline
  * declarations by specificity, so section order stays irrelevant.
- * The press-scale and press-wave removals go beyond zeroing
- * durations: an instant size jump or expanding sweep would still
- * count as interaction-triggered motion, so the transforms themselves
- * are dropped when motion is gated. The wave's opacity state is kept
- * (a stateless tint like the wash tiers), only its movement is gone.
+ * The press-scale removal goes beyond zeroing durations: an instant
+ * size jump would still count as interaction-triggered motion, so the
+ * transform itself is dropped when motion is gated.
  */
 :root[data-colox-motion='off'] {
   --colox-motion-duration-fast: 0.01ms;
@@ -34,10 +32,6 @@
   transform: none;
 }
 
-:root[data-colox-motion='off'] .colox-button:active:not(:disabled)::before {
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-colox-motion='on']) {
     --colox-motion-duration-fast: 0.01ms;
@@ -46,10 +40,6 @@
   }
 
   :root:not([data-colox-motion='on']) .colox-button:active:not(:disabled) {
-    transform: none;
-  }
-
-  :root:not([data-colox-motion='on']) .colox-button:active:not(:disabled)::before {
     transform: none;
   }
 }

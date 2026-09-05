@@ -12,10 +12,6 @@
       "lg": {
         "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.60), 0 4px 6px -4px rgba(0, 0, 0, 0.50)",
         "$type": "shadow"
-      },
-      "inset": {
-        "$value": "0 1px 3px rgba(0, 0, 0, 0.50)",
-        "$type": "shadow"
       }
     }
   }
