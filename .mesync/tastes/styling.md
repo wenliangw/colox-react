@@ -78,6 +78,14 @@
 - 组件里一切空隙（gap、margin、padding）都消费 spacing 档位，不为个别用途另设 grid-gap 类 token。
 - 控件高度现在由「行高 + 间距」组合自然落入像素网格（sm 26 / md 36 / lg 48px），不额外引入 control-height token。
 
+## 尺寸基准：界面尺寸走 4 的倍数
+
+- 用户偏好以 **4 的倍数** 进行设计（控件高度等尺寸落到 8px 格点：24/32/40/48……）；8 格点是 4 倍数的子集，两者兼容。
+- 按钮宽度 = 内容 + padding（不设固定宽，全行业共识）。
+- **spacing 只做间距，不承载尺寸**：gap/margin/padding 消费 spacing，控件的高度等尺寸消费独立的 **size 设计语言**（用户纠正：拿 spacing 当高度是职责越界；参照 Chakra `sizes` 与 `space` 分家）。
+- **size 设计语言 = 纯数值变量，Figma 承载**：sizes 由用户从 Figma 重导出后接入；全局**不定义** sm/md/lg 语义档位（组件 size 维度各异：Button 是高、Modal 是宽，全局语义命名必生二义性）——组件 size prop 是组件自己解析语义，内部引用数值 size 变量。
+- Button 高度四档 24/32/40/48（xs/sm/md/lg，默认 md=40）已定，值源=size 变量；Input 现阶梯（26/36/48）本轮不动。
+
 ## 组件 size prop 属组件私有变体，不进全局 token
 
 - Card/Avatar/Dialog 这类 `size: sm|md|lg` 的具体尺寸是各组件自己的 CVA 变体（内部可组合 spacing/fontSize 等全局 token），彼此无关联、无复用价值，不做全局 size 文件。
