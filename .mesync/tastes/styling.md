@@ -83,8 +83,8 @@
 - 用户偏好以 **4 的倍数** 进行设计（控件高度等尺寸落到 8px 格点：24/32/40/48……）；8 格点是 4 倍数的子集，两者兼容。
 - 按钮宽度 = 内容 + padding（不设固定宽，全行业共识）。
 - **spacing 只做间距，不承载尺寸**：gap/margin/padding 消费 spacing，控件的高度等尺寸消费独立的 **size 设计语言**（用户纠正：拿 spacing 当高度是职责越界；参照 Chakra `sizes` 与 `space` 分家）。
-- **size 设计语言 = 纯数值变量，Figma 承载**：sizes 集合已从 Figma 导出接入（`--colox-size-*`：整数格 4px×N（1~~14/16 = 4~~64px）+ 半格档 0-5..4-5）；全局**不定义** sm/md/lg 语义档位（组件 size 维度各异：Button 是高、Modal 是宽，全局语义命名必生二义性）——组件 size prop 是组件自己解析语义，内部引用数值 size 变量。
-- **大尺寸档（20~~360 单位 = 80~~1440px）不进 size 语言**：图内已标 `hiddenFromPublishing`（容器/大元素域），用户定案由 Figma 侧拆分出 sizes 集合（另建 container 类集合）；converter 的 hiddenFromPublishing 过滤仅作守门，拆分后自然零命中。
+- **size 设计语言 = 纯数值变量，Figma 承载**：sizes 集合已从 Figma 导出接入（`--colox-size-*`：整数格 4px×N（档 1 至 14 及 16）+ 半格档 0-5..4-5）；全局**不定义** sm/md/lg 语义档位（组件 size 维度各异：Button 是高、Modal 是宽，全局语义命名必生二义性）——组件 size prop 是组件自己解析语义，内部引用数值 size 变量。
+- **80px 以上的大尺寸档不进 size 语言**：已在 Figma 侧拆出独立集合 `large_size`（80px 至 1440px 域，暂不发布）；converter 对未映射组整体跳过并告警，`hiddenFromPublishing` 过滤保留做守门。将来容器/大元素域要发布时，再为 `large_size` 立独立命名空间。
 - **半格档（0_5..4_5 = 2/6/10/14/18px）是半格微距值**：命名沿用图内 `N_5` → CSS `N-5`（读「N 点五」）；控件尺寸只消费整数格（4 的倍数），半格留给微距（2px 分隔线、6px 内距等）。否决「CSS 名带小数点（--size-1.5）」——点号在 CSS 变量/SCSS 链上要转义，得不偿失。
 - Button 高度四档已落地：xs/sm/md/lg = 24/32/40/48 = `var(--colox-size-6/8/10/12)`，padding-inline 走 spacing-2/3/4/6；Input 现阶梯（26/36/48）本轮不动。
 

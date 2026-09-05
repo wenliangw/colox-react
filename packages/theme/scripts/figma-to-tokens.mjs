@@ -16,8 +16,10 @@
  * - dimensions: Figma exports unit-less numbers; append "px"
  * - fontWeight: plain number passthrough (400/500/600/700)
  * - keys: "_" -> "-" (e.g. spacing "0_5" -> "0-5")
- * - skips: tokens flagged com.figma.hiddenFromPublishing, and leaf keys
- *   containing whitespace (Figma duplicate-collection artifacts)
+ * - skips: tokens flagged com.figma.hiddenFromPublishing, leaf keys
+ *   containing whitespace (Figma duplicate-collection artifacts), and
+ *   whole groups without a namespace mapping (e.g. the large_size
+ *   collection stays out of the published size language)
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
  *
@@ -117,6 +119,10 @@ function convert(figmaJson, spec) {
       continue;
     }
     const namespace = spec.namespace(cleanKey(groupName));
+    if (!namespace) {
+      console.warn(`[skip] group "${groupName}": no namespace mapping`);
+      continue;
+    }
     let cursor = out.colox;
     for (const part of namespace) cursor = cursor[part] ??= {};
     for (const [leafName, token] of Object.entries(group)) {
