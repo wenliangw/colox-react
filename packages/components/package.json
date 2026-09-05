@@ -20,6 +20,21 @@
       "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.cjs"
     },
+    "./button": {
+      "types": "./dist/types/button/index.d.ts",
+      "import": "./dist/es/button.js",
+      "require": "./dist/cjs/button.cjs"
+    },
+    "./input": {
+      "types": "./dist/types/input/index.d.ts",
+      "import": "./dist/es/input.js",
+      "require": "./dist/cjs/input.cjs"
+    },
+    "./stack": {
+      "types": "./dist/types/stack/index.d.ts",
+      "import": "./dist/es/stack.js",
+      "require": "./dist/cjs/stack.cjs"
+    },
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },

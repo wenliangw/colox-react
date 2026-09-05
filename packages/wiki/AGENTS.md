@@ -21,6 +21,10 @@ exactly, apply the reason, not the letter.
   Why: the token grid is the theming contract; hand values break re-theming.
 - `[app root]` → `import '@colox/react/style.css'` exactly once.
   Why: the package CSS is self-contained (theme cascade included).
+- `[bundle size matters]` → import components per-entry
+  (`@colox/react/button`, `/input`, `/stack`) instead of the barrel.
+  Why: each component is its own build entry, so bundlers drop the rest;
+  `style.css` stays the single import either way.
 - `[theme]` → wrap only in `<ColoxTheme>` when the app customizes
   theme/palette/breakpoints. Why: static defaults work provider-free.
 - `[div-shaped child]` → `<Stack.Item>` is the blessed div replacement.

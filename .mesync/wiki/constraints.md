@@ -8,7 +8,7 @@
 
 ## 构建与发布约束
 
-- 组件库构建产物：ESM `dist/es/index.js`、CJS `dist/cjs/index.cjs`、类型 `dist/types/`、CSS `dist/style.css`（`cssCodeSplit: false`，CSS 汇总为一个文件）。
+- 组件库构建产物：ESM `dist/es/{index,button,input,stack}.js`、CJS `dist/cjs/*.cjs`、类型 `dist/types/`、CSS 单一 `dist/style.css`（`cssCodeSplit: false`，token 级联 + 全部组件，一行引入）；`exports` 提供 `@colox/react/button` 等子路径（types/import/require 三映射齐全），组件新增时同步加 entry 与 exports。构建能力优先 Vite 原生配置（多入口、css 合并）；自写构建插件仅在原生与现成都表达不了时引入。CSS 分包推迟：待组件样式膨胀再启用 cssCodeSplit + 现成接线（vite-plugin-lib-inject-css）。
 - `rollupOptions.external` 排除 `react`、`react-dom`、`react/jsx-runtime`；`class-variance-authority` 是 runtime dependency（会随包安装）。
 - `files` 仅发布 `dist` 与 `src/styles`。
 - `sideEffects` 声明 `**/*.css` 和 `**/*.scss`，避免 tree-shaking 误删样式。

@@ -15,6 +15,19 @@ import '@colox/react/style.css';
 Exactly once, at the app root: the package CSS bundles the theme cascade, so
 one line covers components + theme.
 
+## Tree-shaking
+
+Import components per-entry when the bundle budget matters:
+
+```ts
+import { Button } from '@colox/react/button';
+import { Stack } from '@colox/react/stack';
+```
+
+Each component is its own build entry (`@colox/react/button`, `/input`,
+`/stack`), so the bundler drops everything else. `style.css` stays the single
+import either way — the package CSS is one full bundle by design.
+
 ## Token grid
 
 Spacing, color and radii come from `--colox-*` CSS variables
