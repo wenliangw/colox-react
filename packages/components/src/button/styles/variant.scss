@@ -52,14 +52,25 @@
   }
 }
 
-// Press-wave tints (the ::before mechanics live in base.scss):
-// solid reads a sheen of the inverse (a highlight on the filled
-// surface), while the transparent variants intensify their wash.
+// Press-wave tints (the ::before mechanics live in base.scss): soft
+// radial blooms fading to transparent — no hard edge, so the press
+// reads as a lit surface instead of a smaller rectangle. Solid shows
+// a sheen of the inverse; the transparent variants intensify their wash.
 .colox-button--solid::before {
-  background: color-mix(in srgb, var(--colox-button-intent-inverse) 16%, transparent);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--colox-button-intent-inverse) 20%, transparent) 0%,
+    color-mix(in srgb, var(--colox-button-intent-inverse) 7%, transparent) 55%,
+    transparent 100%
+  );
 }
 
 .colox-button--outline::before,
 .colox-button--ghost::before {
-  background: color-mix(in srgb, var(--colox-button-intent-solid) 14%, transparent);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--colox-button-intent-solid) 18%, transparent) 0%,
+    color-mix(in srgb, var(--colox-button-intent-solid) 6%, transparent) 55%,
+    transparent 100%
+  );
 }
