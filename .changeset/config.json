@@ -3,7 +3,7 @@
   "changelog": ["@changesets/cli/changelog", { "repo": "colox/colox-react" }],
   "commit": false,
   "fixed": [],
-  "linked": [],
+  "linked": [["@colox/react", "@colox/wiki"]],
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",

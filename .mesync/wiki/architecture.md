@@ -32,6 +32,7 @@ apps/docs ───────┘
 ## 模块依赖关系
 
 - `@colox/react` 构建期依赖 `@colox/theme`（workspace devDep，build 时吞其 dist 级联；运行时无代码 import，纯 CSS 契约）；`apps/preview`（Storybook 预览环境）与 `apps/docs` 均依赖 `@colox/react`，二者互不依赖；preview 的 demo 主题通过 `colox` bin（来自 @colox/theme）编译。
+- **AI 心法双包（@colox/wiki + @colox/mcp）**：`@colox/wiki`（packages/wiki）是心法唯一事实源——AGENTS.md 总纲（harness 自动读）+ skills/<name>/SKILL.md（跨 harness 自动发现格式）+ rules/*.rule.md（条件→动作→原因）+ components/<name>.md（参考层）；纯 markdown 无构建，changesets 与 @colox/react **linked 同版本**（心法版本即所文档化的组件版本）。`@colox/mcp`（packages/mcp）是官方本地 stdio MCP server（@modelcontextprotocol/sdk，tsc 构建产 dist，bin 即包名）：运行时读 @colox/wiki 依赖（开发态 workspace symlink → packages/wiki），四工具 search_doctrine / get_rule / get_skill / get_component（无参列表），工具描述承载「何时调用」；离线零网络。harness 适配矩阵（调研结论）：dsh 读 AGENTS.md/CLAUDE.md（dsh-agent-instructions）+ SKILL.md（dsh-skill-filesystem，扫描 .dsh/skills、.agents/skills、~~/.dsh/skills、~~/.agents/skills）+ cordis.yml 挂 dsh-mcp-client；Claude 读 CLAUDE.md + .claude/skills + .mcp.json；Codex 读 AGENTS.md + .agents/skills + config.toml [mcp_servers]；Cursor 读 .cursor/rules + AGENTS.md + .cursor/mcp.json。
 - 组件内部依赖 `clsx`（类名拼接）、`class-variance-authority`（变体）、组件自己的 `types/`、`styles/` 与 `variants/`，并依赖 `@colox/theme` 产出的 CSS 变量（token）与通用工具 mixin。
 - 组件之间互相独立，无跨组件依赖。
 
