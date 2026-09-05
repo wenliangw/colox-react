@@ -1,8 +1,8 @@
-import { useContext, useId, useLayoutEffect } from 'react';
-import { ColoxThemeContext } from '../../context';
+import { useId, useLayoutEffect } from 'react';
+import { useColoxTheme } from '../../hooks/use-colox-theme';
 
 export const ColoxThemeStorage = () => {
-  const { register, unregister } = useContext(ColoxThemeContext);
+  const { register, unregister } = useColoxTheme();
   const id = useId();
 
   useLayoutEffect(() => {

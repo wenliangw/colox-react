@@ -1,13 +1,15 @@
 import { useContext, useEffect } from 'react';
 import { ColoxThemeContext, defaultColoxThemeContextValue } from '../context';
-import type { ColoxThemeValue } from '../types';
+import type { ColoxThemeContextValue } from '../types';
 
 /**
- * Reads the live theme snapshot from the context. Outside a <ColoxTheme>
- * root it warns once per mount and serves static defaults — the
+ * The single protected outlet for the theme context: consumers read the
+ * snapshot fields, subcomponents use register / unregister — no code
+ * consumes ColoxThemeContext directly. Outside a <ColoxTheme> root it
+ * warns once per mount and serves static defaults, so registrations and
  * imperative setters become no-ops.
  */
-export const useColoxTheme = (): ColoxThemeValue => {
+export const useColoxTheme = (): ColoxThemeContextValue => {
   const context = useContext(ColoxThemeContext);
   useEffect(() => {
     if (context === defaultColoxThemeContextValue) {
@@ -16,5 +18,5 @@ export const useColoxTheme = (): ColoxThemeValue => {
       );
     }
   }, [context]);
-  return context.snapshot;
+  return context;
 };

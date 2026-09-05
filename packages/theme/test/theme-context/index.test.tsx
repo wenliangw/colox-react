@@ -167,4 +167,12 @@ describe('no-provider usage', () => {
     expect(warn).toHaveBeenCalledTimes(1);
     warn.mockRestore();
   });
+
+  it('subcomponents outside a root go through the same protected outlet', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    render(<ColoxTheme.Storage />);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(root().hasAttribute('data-colox-theme')).toBe(false);
+    warn.mockRestore();
+  });
 });

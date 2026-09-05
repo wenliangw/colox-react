@@ -57,16 +57,14 @@ const ColoxThemeRoot = ({ children, theme, defaultTheme, palette }: ColoxThemePr
 
   const contextValue = useMemo<ColoxThemeContextValue>(
     () => ({
-      snapshot: {
-        theme: state.theme,
-        resolvedTheme: resolveTheme(state),
-        isFollowSystem: state.theme === SYSTEM_THEME_NAME,
-        palette: state.palette,
-        breakpoint: state.breakpoint,
-        setTheme,
-        setPalette,
-        setBreakpoints,
-      },
+      theme: state.theme,
+      resolvedTheme: resolveTheme(state),
+      isFollowSystem: state.theme === SYSTEM_THEME_NAME,
+      palette: state.palette,
+      breakpoint: state.breakpoint,
+      setTheme,
+      setPalette,
+      setBreakpoints,
       register,
       unregister,
     }),
@@ -85,5 +83,3 @@ export const ColoxTheme: ColoxThemeComponent = Object.assign(ColoxThemeRoot, {
   Storage: ColoxThemeStorage,
   Breakpoints: ColoxThemeBreakpoints,
 });
-
-export { ColoxThemeContext } from './context';

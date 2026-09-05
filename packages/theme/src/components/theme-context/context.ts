@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 import { BASE_BREAKPOINT_NAME, LIGHT_THEME_NAME, SYSTEM_THEME_NAME } from './constants/theme';
-import type { ColoxThemeContextValue, ColoxThemeValue } from './types';
+import type { ColoxThemeContextValue } from './types';
 
 const noop = (): undefined => undefined;
 
 /** The static snapshot served when no <ColoxTheme> is mounted. */
-const defaultSnapshot: ColoxThemeValue = {
+export const defaultColoxThemeContextValue: ColoxThemeContextValue = {
   theme: SYSTEM_THEME_NAME,
   resolvedTheme: LIGHT_THEME_NAME,
   isFollowSystem: true,
@@ -14,15 +14,14 @@ const defaultSnapshot: ColoxThemeValue = {
   setTheme: noop,
   setPalette: noop,
   setBreakpoints: noop,
-};
-
-export const defaultColoxThemeContextValue: ColoxThemeContextValue = {
-  snapshot: defaultSnapshot,
   register: noop,
   unregister: noop,
 };
 
-/** Carries the live snapshot plus the subcomponent registry. */
+/**
+ * The context behind useColoxTheme, consumed only through that hook and
+ * provided only by the <ColoxTheme> root.
+ */
 export const ColoxThemeContext = createContext<ColoxThemeContextValue>(
   defaultColoxThemeContextValue,
 );

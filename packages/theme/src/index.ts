@@ -1,4 +1,4 @@
-export { ColoxTheme, ColoxThemeContext } from '@/components/theme-context';
+export { ColoxTheme } from '@/components/theme-context';
 export { useColoxTheme } from '@/components/theme-context/hooks/use-colox-theme';
 export { defaultBreakpoints } from '@/styles/tokens/breakpoints';
 export type {
