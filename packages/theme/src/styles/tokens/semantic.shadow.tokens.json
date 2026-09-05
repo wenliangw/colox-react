@@ -1,0 +1,22 @@
+{
+  "colox": {
+    "shadow": {
+      "sm": {
+        "$value": "0 1px 2px rgba(25, 25, 25, 0.06), 0 1px 3px rgba(25, 25, 25, 0.10)",
+        "$type": "shadow"
+      },
+      "md": {
+        "$value": "0 4px 6px -1px rgba(25, 25, 25, 0.10), 0 2px 4px -2px rgba(25, 25, 25, 0.06)",
+        "$type": "shadow"
+      },
+      "lg": {
+        "$value": "0 10px 15px -3px rgba(25, 25, 25, 0.10), 0 4px 6px -4px rgba(25, 25, 25, 0.06)",
+        "$type": "shadow"
+      },
+      "inset": {
+        "$value": "0 1px 3px rgba(25, 25, 25, 0.12)",
+        "$type": "shadow"
+      }
+    }
+  }
+}

@@ -22,6 +22,8 @@ packages/theme/src/styles/tokens/*.tokens.json
 !packages/theme/src/styles/tokens/semantic.brand.dark.tokens.json
 !packages/theme/src/styles/tokens/palette.brand.tokens.json
 !packages/theme/src/styles/tokens/base.tokens.json
+!packages/theme/src/styles/tokens/semantic.shadow.tokens.json
+!packages/theme/src/styles/tokens/semantic.shadow.dark.tokens.json
 packages/theme/src/styles/tokens/breakpoints.ts
 
 # logs
