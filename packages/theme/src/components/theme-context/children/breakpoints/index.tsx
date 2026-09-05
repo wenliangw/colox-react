@@ -1,6 +1,6 @@
 import { useContext, useId, useLayoutEffect } from 'react';
-import { ColoxThemeContext } from '../context';
-import type { ColoxThemeBreakpointsProps } from '../types';
+import { ColoxThemeContext } from '../../context';
+import type { ColoxThemeBreakpointsProps } from '../../types';
 
 export const ColoxThemeBreakpoints = ({ values }: ColoxThemeBreakpointsProps) => {
   const { register, unregister } = useContext(ColoxThemeContext);

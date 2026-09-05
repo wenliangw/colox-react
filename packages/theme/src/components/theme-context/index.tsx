@@ -5,8 +5,8 @@ import { useThemeSensors } from './hooks/use-theme-sensors';
 import { useThemeStorage } from './hooks/use-theme-storage';
 import { createInitialThemeState, resolveTheme, themeReducer } from './utils/reducer';
 import { foldConfig } from './utils/registry';
-import { ColoxThemeBreakpoints } from './breakpoints';
-import { ColoxThemeStorage } from './storage';
+import { ColoxThemeBreakpoints } from './children/breakpoints';
+import { ColoxThemeStorage } from './children/storage';
 import { ColoxThemeContext } from './context';
 import type {
   BreakpointOverrides,
