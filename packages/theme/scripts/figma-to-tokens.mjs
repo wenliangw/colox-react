@@ -9,12 +9,15 @@
  * - typography.tokens.json               -> colox.fontSize.<step> / colox.fontWeight.<step>
  *                                          / colox.lineHeight.<step>
  * - size.tokens.json             -> colox.radius.<step> / colox.spacing.<step>
+ *                                          / colox.size.<step>
  *
  * Value rules:
  * - colors: keep the readable hex, drop Figma's numeric component arrays
  * - dimensions: Figma exports unit-less numbers; append "px"
  * - fontWeight: plain number passthrough (400/500/600/700)
  * - keys: "_" -> "-" (e.g. spacing "0_5" -> "0-5")
+ * - skips: tokens flagged com.figma.hiddenFromPublishing, and leaf keys
+ *   containing whitespace (Figma duplicate-collection artifacts)
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
  *
@@ -50,7 +53,7 @@ const SPECS = {
     value: (token, group) => (group === 'fontWeight' ? token.$value : `${token.$value}px`),
   },
   size: {
-    namespace: (group) => ({ radii: ['radius'], spacing: ['spacing'] })[group],
+    namespace: (group) => ({ radii: ['radius'], spacing: ['spacing'], size: ['size'] })[group],
     type: () => 'dimension',
     value: (token) => `${token.$value}px`,
   },
@@ -117,6 +120,14 @@ function convert(figmaJson, spec) {
     let cursor = out.colox;
     for (const part of namespace) cursor = cursor[part] ??= {};
     for (const [leafName, token] of Object.entries(group)) {
+      if (token.$extensions?.['com.figma.hiddenFromPublishing']) {
+        console.warn(`[skip] ${groupName}/${leafName}: hiddenFromPublishing`);
+        continue;
+      }
+      if (/\s/.test(leafName)) {
+        console.warn(`[skip] ${groupName}/${leafName}: whitespace in key`);
+        continue;
+      }
       const converted = {
         $value: spec.value(token, groupName),
         $type: spec.type(groupName),

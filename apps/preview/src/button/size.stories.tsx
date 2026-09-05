@@ -13,6 +13,7 @@ type Story = StoryObj<typeof Button>;
 export const Size: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+      <Button size="xs">Tiny</Button>
       <Button size="sm">Small</Button>
       <Button size="md">Medium</Button>
       <Button size="lg">Large</Button>

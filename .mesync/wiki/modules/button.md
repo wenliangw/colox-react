@@ -6,7 +6,7 @@
 
 ## 功能逻辑
 
-- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'outline' | 'ghost'`，默认 `solid`）、`intent`（`'brand' | 'neutral' | 'danger'`，默认 `brand`，映射语义色组 brand/gray/red）、`size`（`'sm' | 'md' | 'lg'`，默认 `md`）。
+- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'outline' | 'ghost'`，默认 `solid`）、`intent`（`'brand' | 'neutral' | 'danger'`，默认 `brand`，映射语义色组 brand/gray/red）、`size`（`'xs' | 'sm' | 'md' | 'lg'`，默认 `md`）。
 - `forwardRef` 暴露 `ButtonRef = HTMLButtonElement`；`type` 默认 `'button'`（可用 props 覆盖，不沿原生 submit 默认值）。
 - 类名 = `cva('colox-button')` 三轴变体 + `clsx` 拼接透传 `className`。
 
@@ -24,7 +24,7 @@ button/
 │   ├── base.scss                    # 结构 + focus-visible + disabled 指针
 │   ├── intent.scss                  # intent → 主题色组局部变量映射
 │   ├── variant.scss                 # 形态轴规则（只读局部变量）
-│   ├── size.scss                    # 尺寸轴（同 Input 阶梯）
+│   ├── size.scss                    # 尺寸轴：高度消费 size 变量（24/32/40/48）
 │   └── index.scss                   # @use 汇总
 └── _tests/                          # state / variant / size
 ```
@@ -37,7 +37,7 @@ stories 已迁 `apps/preview/src/button/`（variant/intent/size/state 四页，�
 - 交互态全部消费 theme derived 双档 token：实底档 `solid-hover/active`（向黑混 85%/75%，dark 向白）与罩层档 `wash-hover/active`（向透明混 8%/15%）；outline/ghost 的 hover/active 用 wash 档浅底。
 - focus-visible：`outline:none` + intent solid 边框 + `0 0 0 2px intent-muted` 环（danger 轴自动跟 red 组）。
 - disabled：消费语义三件套 `text.disabled` / `bg.disabled`（solid）/ `border.disabled`（outline），弃 opacity 惯例。
-- 尺寸阶梯与 Input 对齐：sm = spacing-1/3 + fontSize.xs/lineHeight.xs，md = spacing-2/4 + fontSize.sm，lg = spacing-3/4 + fontSize.md/lineHeight.md。
+- 尺寸四档（8px 格点、4 的倍数基准）：xs/sm/md/lg = 24/32/40/48px，高度消费 `--colox-size-6/8/10/12`，padding-inline 走 spacing-2/3/4/6，字号 lineHeight 同名对位（fontSize.xs/sm/md/lg）；md=40 与 M3 单档基准对齐，sm=32 承接全球主流默认。Input 现阶梯（26/36/48）本轮未动，同格点对齐留待后续。
 
 ## 调用关系
 

@@ -1,16 +1,27 @@
-.colox-button--sm {
-  padding: var(--colox-spacing-1) var(--colox-spacing-3);
+.colox-button--xs {
+  height: var(--colox-size-6);
+  padding-inline: var(--colox-spacing-2);
   font-size: var(--colox-font-size-xs);
   line-height: var(--colox-line-height-xs);
 }
 
-.colox-button--md {
-  padding: var(--colox-spacing-2) var(--colox-spacing-4);
+.colox-button--sm {
+  height: var(--colox-size-8);
+  padding-inline: var(--colox-spacing-3);
   font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-button--md {
+  height: var(--colox-size-10);
+  padding-inline: var(--colox-spacing-4);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
 }
 
 .colox-button--lg {
-  padding: var(--colox-spacing-3) var(--colox-spacing-4);
-  font-size: var(--colox-font-size-md);
-  line-height: var(--colox-line-height-md);
+  height: var(--colox-size-12);
+  padding-inline: var(--colox-spacing-6);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
 }
