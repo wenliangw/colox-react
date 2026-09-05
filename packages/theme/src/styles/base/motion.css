@@ -2,12 +2,13 @@
  * Colox motion gate — silences library micro-motion by zeroing the
  * duration tokens.
  *
- * Scope: this file ONLY re-assigns the --colox-motion-duration-* tokens;
- * it never touches consumer-owned elements, properties or styles. Colox
- * components declare their transitions through these tokens (a review-
- * enforced discipline), so zeroing the tokens stops every library
- * micro-motion while the host app's own transitions/animations keep
- * working untouched.
+ * Scope: this file ONLY gates library-owned motion: it re-assigns the
+ * --colox-motion-duration-* tokens and drops the library press-scale
+ * transform. It never touches consumer-owned elements, properties or
+ * styles. Colox components declare their transitions through these
+ * tokens (a review-enforced discipline), so zeroing the tokens stops
+ * every library micro-motion while the host app's own
+ * transitions/animations keep working untouched.
  *
  * Axis contract (the <html> attributes, managed by <ColoxTheme motion>):
  * - no attribute = "system": the media query below follows
@@ -15,8 +16,11 @@
  * - data-colox-motion="on"  = force motion on, media query excluded
  * - data-colox-motion="off" = force motion off, unconditionally
  *
- * The :root[attr] selectors beat the :root declarations in light.css by
- * specificity (0,2,0 vs 0,1,0), so section order stays irrelevant.
+ * The :root-scoped selectors beat the component and baseline
+ * declarations by specificity, so section order stays irrelevant.
+ * The press-scale removal goes beyond zeroing durations: an instant
+ * size jump would still count as interaction-triggered motion, so the
+ * transform itself is dropped when motion is gated.
  */
 :root[data-colox-motion='off'] {
   --colox-motion-duration-fast: 0.01ms;
@@ -24,10 +28,18 @@
   --colox-motion-duration-slow: 0.01ms;
 }
 
+:root[data-colox-motion='off'] .colox-button:active:not(:disabled) {
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-colox-motion='on']) {
     --colox-motion-duration-fast: 0.01ms;
     --colox-motion-duration-normal: 0.01ms;
     --colox-motion-duration-slow: 0.01ms;
+  }
+
+  :root:not([data-colox-motion='on']) .colox-button:active:not(:disabled) {
+    transform: none;
   }
 }

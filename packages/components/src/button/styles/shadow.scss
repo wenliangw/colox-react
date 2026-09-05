@@ -4,4 +4,8 @@
   &:hover {
     box-shadow: var(--colox-shadow-lg);
   }
+
+  &:active:not(:disabled) {
+    box-shadow: var(--colox-shadow-sm);
+  }
 }

@@ -14,7 +14,20 @@
     background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
-    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    // Fast in, slow out: the press snaps down at the fast duration and the
+    // release bounces back on the normal one from the base transition list.
+    transition:
+      background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      border-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      box-shadow var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+  }
 
   &:focus-visible {
     outline: none;
