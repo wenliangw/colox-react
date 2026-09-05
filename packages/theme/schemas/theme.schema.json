@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://colox.dev/schemas/theme.schema.json",
   "title": "ColoxThemeConfig",
-  "description": "User-side theme configuration for @colox/react, compiled by `colox theme build`.",
+  "description": "User-side theme configuration for @colox/theme, compiled by `colox theme build`.",
   "type": "object",
   "additionalProperties": false,
   "properties": {

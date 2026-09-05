@@ -1,5 +1,10 @@
 # 样式与设计 token 品味
 
+## 样式/主题机器聚到 @colox/theme，组件包只读变量
+
+- 全部样式与主题机器（Figma token 管线、SD 配置、主题 CLI、Schema、标准配置模板、未来的 ColoxTheme 运行时/ThemeBuilder）归属 `@colox/theme` 一只包；`@colox/react` 只留组件代码与组件级样式，不 import 主题代码——依赖是纯运行时 CSS 契约（读 `var(--colox-*)`）。
+- 组件包的用后即走体验不降级：build 时 `@import '@colox/theme/index.css'` 级联进 style.css（自包含单行引入）。标准配置模板作为 CLI 身份回归测试输入（编译 == 官方存量），模板是使用方复制的起点也是编译器的对账单。
+
 ## 设计语言用 CSS 自定义属性承载，JSON + Style Dictionary 构建期生成
 
 - 单一来源已落地：W3C DTCG JSON + Style Dictionary v4；链路 = Figma 导出（styles/meta/*.tokens.json）→ figma-to-tokens.mjs 转换 → SD 生成 themes/light.css。

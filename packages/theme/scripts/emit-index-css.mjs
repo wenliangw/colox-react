@@ -1,6 +1,6 @@
 /**
  * Concatenate the aggregate stylesheet dist/index.css:
- * component styles + palette baseline + light + dark.
+ * palette baseline + light + dark.
  *
  * The granular files stay the single source of truth; this is only
  * the one-import convenience surface. Concatenation is structurally
@@ -9,24 +9,20 @@
  * palette='…']) beat the :root baselines by specificity, so the order
  * of sections is irrelevant.
  *
- * Ran after `vite build` + `emit:themes` at the end of `pnpm build`.
+ * @colox/react pulls this aggregate into its own style entry, restoring
+ * the single-import surface for component consumers. Component styles
+ * themselves live in @colox/react, not here.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 
-const parts = [
-  'dist/style.css',
-  'dist/themes/palette.css',
-  'dist/themes/light.css',
-  'dist/themes/dark.css',
-];
+const parts = ['dist/themes/palette.css', 'dist/themes/light.css', 'dist/themes/dark.css'];
 
 const banner = `/**
- * Colox aggregate stylesheet — generated, do not edit.
+ * Colox theme aggregate stylesheet — generated, do not edit.
  *
- * One-import surface for @colox/react:
- *   1. component styles
- *   2. palette baseline (always loaded)
- *   3. light + dark theme assignments (complete, disjoint names)
+ * One-import surface for @colox/theme:
+ *   1. palette baseline (always loaded)
+ *   2. light + dark theme assignments (complete, disjoint names)
  *
  * Order within this file does not matter: the attribute axes beat the
  * :root baselines by specificity. Custom files compiled from

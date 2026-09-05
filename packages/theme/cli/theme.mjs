@@ -114,6 +114,33 @@ export function generateBrandRamp(seedHex, steps) {
 
 export function validateConfig(config, stepLists) {
   const errors = [];
+  if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+    return ['config: must be an object'];
+  }
+  for (const key of Object.keys(config)) {
+    if (!['$schema', 'palette', 'themes', 'output'].includes(key)) {
+      errors.push(`unknown root key "${key}"`);
+    }
+  }
+  const output = config.output;
+  if (output !== undefined) {
+    if (typeof output !== 'object' || output === null || Array.isArray(output)) {
+      errors.push('output: must be an object');
+    } else {
+      for (const key of Object.keys(output)) {
+        if (!['name', 'dir'].includes(key)) errors.push(`output.${key}: unknown key`);
+      }
+      if (
+        output.name !== undefined &&
+        (typeof output.name !== 'string' || !/^[a-z][a-z0-9-]*$/.test(output.name))
+      ) {
+        errors.push('output.name: must match ^[a-z][a-z0-9-]*$');
+      }
+      if (output.dir !== undefined && typeof output.dir !== 'string') {
+        errors.push('output.dir: must be a string');
+      }
+    }
+  }
   const palette = config.palette ?? {};
 
   for (const [hue, value] of Object.entries(palette)) {

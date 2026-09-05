@@ -18,7 +18,7 @@
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
  *
- * Run from the package root (e.g. pnpm --filter @colox/react run tokens:sync).
+ * Run from the package root (e.g. pnpm --filter @colox/theme run tokens:sync).
  */
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';

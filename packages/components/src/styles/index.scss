@@ -1,6 +1,10 @@
-// Library entry styles: box-sizing reset only.
-// Theme values come from the build output themes/light.css (see sd.config.mjs),
-// which consumers import explicitly.
+// Library entry styles.
+//
+// The @colox/theme cascade (palette baseline + light/dark assignments)
+// is pulled in so @colox/react/style.css stays the single-import
+// surface for components. Re-declaring the same variables is idempotent;
+// custom files compiled from colox.theme.json load after this one.
+@import '@colox/theme/index.css';
 
 *,
 *::before,

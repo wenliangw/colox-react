@@ -34,7 +34,7 @@ let data;
 try {
   data = JSON.parse(await readFile(dataUrl, 'utf8'));
 } catch {
-  console.error('colox: dist/cli-data.json not found — run "pnpm build" in @colox/react first.');
+  console.error('colox: dist/cli-data.json not found — run "pnpm build" in @colox/theme first.');
   process.exit(1);
 }
 

@@ -83,6 +83,22 @@ describe('validateConfig', () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]).toMatch(/gray\/999/);
   });
+
+  it('rejects unknown root keys but tolerates $schema', () => {
+    expect(validateConfig({ palete: {} }, STEP_LISTS).join('\n')).toMatch(
+      /unknown root key "palete"/,
+    );
+    expect(validateConfig({ $schema: 'x', output: {} }, STEP_LISTS)).toEqual([]);
+  });
+
+  it('validates the output block', () => {
+    expect(validateConfig({ output: { name: 'My Axis' } }, STEP_LISTS).join('\n')).toMatch(
+      /output.name/,
+    );
+    expect(validateConfig({ output: { nope: 1 } }, STEP_LISTS).join('\n')).toMatch(
+      /output.nope: unknown key/,
+    );
+  });
 });
 
 describe('buildPaletteCss', () => {

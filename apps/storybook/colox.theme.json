@@ -1,5 +1,5 @@
 {
-  "$schema": "../packages/components/schemas/theme.schema.json",
+  "$schema": "../packages/theme/schemas/theme.schema.json",
   "palette": {
     "brand": "#FF6B35"
   },

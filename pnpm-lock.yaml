@@ -169,6 +169,9 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
     devDependencies:
+      '@colox/theme':
+        specifier: workspace:*
+        version: link:../theme
       '@storybook/react':
         specifier: ^8.6.0
         version: 8.6.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)
@@ -199,9 +202,6 @@ importers:
       sass:
         specifier: ^1.83.0
         version: 1.102.0
-      style-dictionary:
-        specifier: ^4.4.0
-        version: 4.4.0(tslib@2.8.1)
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -211,6 +211,15 @@ importers:
       vite-plugin-dts:
         specifier: ^4.5.0
         version: 4.5.4(@types/node@22.20.1)(rollup@4.62.3)(typescript@5.9.3)(vite@6.4.3(@types/node@22.20.1)(jiti@2.6.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.1)(jiti@2.6.1)(jsdom@25.0.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
+
+  packages/theme:
+    devDependencies:
+      style-dictionary:
+        specifier: ^4.4.0
+        version: 4.4.0(tslib@2.8.1)
       vitest:
         specifier: ^3.0.0
         version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.1)(jiti@2.6.1)(jsdom@25.0.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)

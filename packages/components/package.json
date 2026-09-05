@@ -9,17 +9,11 @@
     "**/*.scss"
   ],
   "files": [
-    "dist",
-    "src/styles",
-    "cli",
-    "schemas"
+    "dist"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "bin": {
-    "colox": "./cli/colox.mjs"
-  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -28,19 +22,12 @@
     },
     "./index.css": "./dist/index.css",
     "./style.css": "./dist/style.css",
-    "./themes/palette.css": "./dist/themes/palette.css",
-    "./themes/light.css": "./dist/themes/light.css",
-    "./themes/*": "./dist/themes/*",
-    "./styles/*": "./src/styles/*",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "pnpm run tokens:sync && vite build && pnpm run emit:themes && node scripts/emit-index-css.mjs",
-    "build:tokens": "pnpm run tokens:sync && pnpm run emit:themes",
-    "emit:themes": "style-dictionary build --config sd-palette.config.mjs && style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs",
-    "tokens:sync": "node scripts/figma-to-tokens.mjs",
-    "build:watch": "pnpm run tokens:sync && vite build --watch",
-    "typecheck": "pnpm run tokens:sync && tsc --noEmit -p tsconfig.json",
+    "build": "pnpm --filter @colox/theme run build && vite build && node scripts/copy-index-css.mjs",
+    "build:watch": "vite build --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -49,6 +36,7 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@colox/theme": "workspace:*",
     "@storybook/react": "^8.6.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -59,7 +47,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sass": "^1.83.0",
-    "style-dictionary": "^4.4.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.5.0",

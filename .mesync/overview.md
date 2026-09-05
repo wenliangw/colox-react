@@ -21,7 +21,8 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 
 ## 模块索引
 
-- **`@colox/react`**（`packages/components/`）：组件库本体，组件按目录组织，从 `src/index.ts` 统一导出。详见 [modules/button.md](wiki/modules/button.md)、[modules/input.md](wiki/modules/input.md)
+- **`@colox/theme`**（`packages/theme/`）：设计 & 主题系统——Figma token 管线（meta→tokens→Style Dictionary→`dist/themes/*.css`）、主题编译 CLI（`colox theme build`，bin `colox`）、JSON Schema、标准主题配置文件模板（`config/theme.default.json`）、ColoxTheme 运行时/ThemeBuilder 的归属地。详见 [wiki/architecture.md](wiki/architecture.md)
+- **`@colox/react`**（`packages/components/`）：组件库本体，组件按目录组织，从 `src/index.ts` 统一导出；构建时 `@import '@colox/theme/index.css'` 级联进 `style.css`，保持一行引入。详见 [modules/button.md](wiki/modules/button.md)、[modules/input.md](wiki/modules/input.md)
 - **`@colox/storybook`**（`apps/storybook/`）：组件预览环境，读取 `packages/components/src/**/*.stories.tsx`
 - **`@colox/docs`**（`apps/docs/`）：Docusaurus 官方文档站点，MDX 内嵌组件示例
 
@@ -29,9 +30,10 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 
 ```
 colox-react/
-├── packages/components/   # @colox/react — 组件库
-├── apps/storybook/        # Storybook 组件预览
-├── apps/docs/             # Docusaurus 文档站点
-├── .changeset/            # 版本管理配置
+├── packages/theme/         # @colox/theme — 设计&主题系统（token 管线 + CLI + Schema）
+├── packages/components/    # @colox/react — 组件库
+├── apps/storybook/         # Storybook 组件预览
+├── apps/docs/              # Docusaurus 文档站点
+├── .changeset/             # 版本管理配置
 └── 根目录配置              # eslint / prettier / commitlint / tsconfig
 ```

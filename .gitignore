@@ -15,14 +15,14 @@ storybook-static
 *.tsbuildinfo
 
 # generated token sources (regenerated from styles/meta via tokens:sync)
-packages/components/src/styles/tokens/*.tokens.json
-!packages/components/src/styles/tokens/semantic.derived.tokens.json
-!packages/components/src/styles/tokens/semantic.derived.dark.tokens.json
-!packages/components/src/styles/tokens/semantic.brand.tokens.json
-!packages/components/src/styles/tokens/semantic.brand.dark.tokens.json
-!packages/components/src/styles/tokens/palette.brand.tokens.json
-!packages/components/src/styles/tokens/base.tokens.json
-packages/components/src/styles/tokens/breakpoints.ts
+packages/theme/src/styles/tokens/*.tokens.json
+!packages/theme/src/styles/tokens/semantic.derived.tokens.json
+!packages/theme/src/styles/tokens/semantic.derived.dark.tokens.json
+!packages/theme/src/styles/tokens/semantic.brand.tokens.json
+!packages/theme/src/styles/tokens/semantic.brand.dark.tokens.json
+!packages/theme/src/styles/tokens/palette.brand.tokens.json
+!packages/theme/src/styles/tokens/base.tokens.json
+packages/theme/src/styles/tokens/breakpoints.ts
 
 # logs
 *.log

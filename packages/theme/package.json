@@ -1,0 +1,41 @@
+{
+  "name": "@colox/theme",
+  "version": "0.0.0",
+  "description": "Colox design & theme system: tokens, theme CSS, theme compiler CLI and theme runtime",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "files": [
+    "dist",
+    "src/styles",
+    "cli",
+    "schemas",
+    "config"
+  ],
+  "bin": {
+    "colox": "./cli/colox.mjs"
+  },
+  "exports": {
+    "./index.css": "./dist/index.css",
+    "./themes/palette.css": "./dist/themes/palette.css",
+    "./themes/light.css": "./dist/themes/light.css",
+    "./themes/*": "./dist/themes/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "pnpm run tokens:sync && pnpm run emit:themes",
+    "build:tokens": "pnpm run tokens:sync && pnpm run emit:themes",
+    "emit:themes": "style-dictionary build --config sd-palette.config.mjs && style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs && node scripts/emit-index-css.mjs",
+    "tokens:sync": "node scripts/figma-to-tokens.mjs",
+    "pretest": "pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.4.0",
+    "vitest": "^3.0.0"
+  }
+}

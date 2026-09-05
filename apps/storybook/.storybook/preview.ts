@@ -1,8 +1,8 @@
 import type { Preview } from '@storybook/react';
 import '../../../packages/components/src/styles/index.scss';
-import '../../../packages/components/dist/themes/palette.css';
-import '../../../packages/components/dist/themes/light.css';
-import '../../../packages/components/dist/themes/dark.css';
+import '../../../packages/theme/dist/themes/palette.css';
+import '../../../packages/theme/dist/themes/light.css';
+import '../../../packages/theme/dist/themes/dark.css';
 // Demo of the user-side theme pipeline (apps/storybook/colox.theme.json,
 // compiled with `colox theme build -c colox.theme.json`):
 // a complete-assignment palette axis and a config-extended theme.
