@@ -3,7 +3,7 @@
 ## 分层
 
 ```
-apps/storybook ──┐
+apps/preview ──┐
                  ├── 依赖 @colox/react（组件库）
 apps/docs ───────┘
         │
@@ -29,7 +29,7 @@ apps/docs ───────┘
 
 ## 模块依赖关系
 
-- `@colox/react` 构建期依赖 `@colox/theme`（workspace devDep，build 时吞其 dist 级联；运行时无代码 import，纯 CSS 契约）；`apps/storybook` 与 `apps/docs` 均依赖 `@colox/react`，二者互不依赖；storybook 的 demo 主题通过 `colox` bin（来自 @colox/theme）编译。
+- `@colox/react` 构建期依赖 `@colox/theme`（workspace devDep，build 时吞其 dist 级联；运行时无代码 import，纯 CSS 契约）；`apps/preview`（Storybook 预览环境）与 `apps/docs` 均依赖 `@colox/react`，二者互不依赖；preview 的 demo 主题通过 `colox` bin（来自 @colox/theme）编译。
 - 组件内部依赖 `clsx`（类名拼接）、`class-variance-authority`（变体）、组件自己的 `types/`、`styles/` 与 `variants/`，并依赖 `@colox/theme` 产出的 CSS 变量（token）与通用工具 mixin。
 - 组件之间互相独立，无跨组件依赖。
 

@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react';
 import { ColoxTheme, type ColoxThemeName } from '@colox/theme';
 import '../../../packages/components/src/styles/index.scss';
-// Demo of the user-side theme pipeline (apps/storybook/colox.theme.json,
+// Demo of the user-side theme pipeline (apps/preview/colox.theme.json,
 // compiled with `colox theme build -c colox.theme.json`):
 // a complete-assignment palette axis and a config-extended theme.
 import './demo-themes/demo.css';

@@ -13,7 +13,7 @@
 - `files` 仅发布 `dist` 与 `src/styles`。
 - `sideEffects` 声明 `**/*.css` 和 `**/*.scss`，避免 tree-shaking 误删样式。
 - `src/index.ts` 必须 `import './styles/index.scss'`，确保 token 层 `:root` 打进 `dist/style.css`。
-- 版本管理用 Changesets；`@colox/storybook` 与 `@colox/docs` 被 `ignore`（不发布）。
+- 版本管理用 Changesets；`@colox/preview` 与 `@colox/docs` 被 `ignore`（不发布）。
 
 ## 代码质量约束
 

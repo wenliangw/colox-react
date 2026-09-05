@@ -35,7 +35,7 @@ pnpm install
 pnpm --filter @colox/react build       # library build (regenerates design tokens)
 pnpm --filter @colox/react typecheck
 pnpm --filter @colox/react test
-pnpm --filter @colox/storybook dev     # component playground
+pnpm --filter @colox/preview dev     # component playground
 ```
 
 ## Design tokens

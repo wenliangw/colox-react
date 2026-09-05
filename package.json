@@ -6,9 +6,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @colox/storybook storybook",
-    "storybook": "pnpm --filter @colox/storybook storybook",
-    "build:storybook": "pnpm --filter @colox/storybook build-storybook",
+    "dev": "pnpm --filter @colox/preview dev",
+    "storybook": "pnpm --filter @colox/preview dev",
+    "build:storybook": "pnpm --filter @colox/preview build-storybook",
     "docs:dev": "pnpm --filter @colox/docs dev",
     "docs:build": "pnpm --filter @colox/docs build",
     "docs:serve": "pnpm --filter @colox/docs serve",
