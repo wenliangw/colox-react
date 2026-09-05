@@ -75,6 +75,18 @@
     transparent
   );
   --colox-color-gray-wash-hover: color-mix(in srgb, var(--colox-color-gray-solid) 8%, transparent);
+  --colox-color-green-solid-active: color-mix(in srgb, var(--colox-color-green-solid) 75%, #ffffff);
+  --colox-color-green-solid-hover: color-mix(in srgb, var(--colox-color-green-solid) 85%, #ffffff);
+  --colox-color-green-wash-active: color-mix(
+    in srgb,
+    var(--colox-color-green-solid) 15%,
+    transparent
+  );
+  --colox-color-green-wash-hover: color-mix(
+    in srgb,
+    var(--colox-color-green-solid) 8%,
+    transparent
+  );
   --colox-color-indigo-solid-active: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 75%,
@@ -93,6 +105,26 @@
   --colox-color-indigo-wash-hover: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 8%,
+    transparent
+  );
+  --colox-color-orange-solid-active: color-mix(
+    in srgb,
+    var(--colox-color-orange-solid) 75%,
+    #ffffff
+  );
+  --colox-color-orange-solid-hover: color-mix(
+    in srgb,
+    var(--colox-color-orange-solid) 85%,
+    #ffffff
+  );
+  --colox-color-orange-wash-active: color-mix(
+    in srgb,
+    var(--colox-color-orange-solid) 15%,
+    transparent
+  );
+  --colox-color-orange-wash-hover: color-mix(
+    in srgb,
+    var(--colox-color-orange-solid) 8%,
     transparent
   );
   --colox-color-red-solid-active: color-mix(in srgb, var(--colox-color-red-solid) 75%, #ffffff);

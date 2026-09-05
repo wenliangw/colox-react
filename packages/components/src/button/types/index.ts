@@ -18,7 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   /**
    * Semantic intent of the button.
-   * @default 'brand'
+   * @default 'primary'
    */
   intent?: ButtonIntent;
 }

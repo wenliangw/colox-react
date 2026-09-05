@@ -7,7 +7,7 @@ describe('Button state', () => {
     render(<Button>Save</Button>);
     const button = screen.getByRole('button', { name: /save/i });
     expect(button).toHaveAttribute('type', 'button');
-    expect(button).toHaveClass('colox-button--md', 'colox-button--solid', 'colox-button--brand');
+    expect(button).toHaveClass('colox-button--md', 'colox-button--solid', 'colox-button--primary');
   });
 
   it('disables interaction when disabled is set', () => {

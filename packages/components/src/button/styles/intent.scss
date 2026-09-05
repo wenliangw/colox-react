@@ -1,4 +1,4 @@
-.colox-button--brand {
+.colox-button--primary {
   --colox-button-intent-solid: var(--colox-color-brand-solid);
   --colox-button-intent-muted: var(--colox-color-brand-muted);
   --colox-button-intent-inverse: var(--colox-color-brand-inverse);
@@ -26,4 +26,24 @@
   --colox-button-intent-solid-active: var(--colox-color-red-solid-active);
   --colox-button-intent-wash-hover: var(--colox-color-red-wash-hover);
   --colox-button-intent-wash-active: var(--colox-color-red-wash-active);
+}
+
+.colox-button--warning {
+  --colox-button-intent-solid: var(--colox-color-orange-solid);
+  --colox-button-intent-muted: var(--colox-color-orange-muted);
+  --colox-button-intent-inverse: var(--colox-color-orange-inverse);
+  --colox-button-intent-solid-hover: var(--colox-color-orange-solid-hover);
+  --colox-button-intent-solid-active: var(--colox-color-orange-solid-active);
+  --colox-button-intent-wash-hover: var(--colox-color-orange-wash-hover);
+  --colox-button-intent-wash-active: var(--colox-color-orange-wash-active);
+}
+
+.colox-button--success {
+  --colox-button-intent-solid: var(--colox-color-green-solid);
+  --colox-button-intent-muted: var(--colox-color-green-muted);
+  --colox-button-intent-inverse: var(--colox-color-green-inverse);
+  --colox-button-intent-solid-hover: var(--colox-color-green-solid-hover);
+  --colox-button-intent-solid-active: var(--colox-color-green-solid-active);
+  --colox-button-intent-wash-hover: var(--colox-color-green-wash-hover);
+  --colox-button-intent-wash-active: var(--colox-color-green-wash-active);
 }

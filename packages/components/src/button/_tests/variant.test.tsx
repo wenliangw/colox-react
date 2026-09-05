@@ -18,9 +18,9 @@ describe('Button variants', () => {
     expect(screen.getByRole('button')).toHaveClass('colox-button--ghost');
   });
 
-  it('applies the brand intent class by default', () => {
+  it('applies the primary intent class by default', () => {
     render(<Button>Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--brand');
+    expect(screen.getByRole('button')).toHaveClass('colox-button--primary');
   });
 
   it('applies the neutral intent class', () => {
@@ -31,5 +31,15 @@ describe('Button variants', () => {
   it('applies the danger intent class', () => {
     render(<Button intent="danger">Save</Button>);
     expect(screen.getByRole('button')).toHaveClass('colox-button--danger');
+  });
+
+  it('applies the warning intent class', () => {
+    render(<Button intent="warning">Save</Button>);
+    expect(screen.getByRole('button')).toHaveClass('colox-button--warning');
+  });
+
+  it('applies the success intent class', () => {
+    render(<Button intent="success">Save</Button>);
+    expect(screen.getByRole('button')).toHaveClass('colox-button--success');
   });
 });

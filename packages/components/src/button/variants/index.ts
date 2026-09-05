@@ -12,7 +12,7 @@ export const buttonVariants = cva('colox-button', {
   defaultVariants: {
     size: 'md',
     variant: 'solid',
-    intent: 'brand',
+    intent: 'primary',
   },
 });
 
