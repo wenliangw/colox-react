@@ -9,9 +9,9 @@ const demoBox = {
 } as const;
 
 const Demo = ({ label }: { label: string }) => (
-  <div style={demoBox}>
+  <Stack.Item style={demoBox}>
     <span>{label}</span>
-  </div>
+  </Stack.Item>
 );
 
 const meta: Meta<typeof Stack> = {

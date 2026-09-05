@@ -28,6 +28,10 @@
 5. **注册管道**：根组件 `useCallback` 注册命令 + `useMemo` context value 下发；parts 经受保护 hook 拿命令；同类多实例 **LWW**，卸载必须还原（cleanup 里注册回 undefined/初始值）。
 6. **静态面纯净**：根组件不因「可能存在的能力挂载」而订阅 theme context 等；只有挂载件（parts）在需要时订阅。
 
+## 用法约定
+
+- **示例统一以子件宿主为 div 替身**：文档/故事中需要 div 形子项的，一律 `<Component.Item>` 代裸 div（同 DOM 层级、原生属性/事件/ref/className 全透传）；用户可基于 Item 封装自定义块（组合基底）。组件型子项（Button 等）直接放，不再裹 Item；裸 div 始终合法，但示例只展示 Item 形态。
+
 ## 演进史
 
 - ColoxTheme 初版四轴全 dot-part → 用户收口：props 主轴承重、可选能力留 dot-part（挂载即启用）。

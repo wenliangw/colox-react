@@ -29,14 +29,14 @@ re-themes for free.
 ```
 
 <Stack direction="column" gap="4">
-  <div>First block</div>
-  <div>Second block</div>
+  <Stack.Item>First block</Stack.Item>
+  <Stack.Item>Second block</Stack.Item>
 </Stack>
 
 ```mdx
 <Stack direction="column" gap="4">
-  <div>First block</div>
-  <div>Second block</div>
+  <Stack.Item>First block</Stack.Item>
+  <Stack.Item>Second block</Stack.Item>
 </Stack>
 ```
 
@@ -59,6 +59,11 @@ axis, pushing the neighbours apart:
 </Stack>
 ```
 
+`Stack.Item` doubles as the blessed child container: a plain `div` replacement with the
+full native surface (attributes, events, `className`, `ref`), so custom blocks can be
+composed on top of it without writing their own container. The examples use it for
+div-shaped children; components like `Button` go in directly.
+
 ## Responsive gap
 
 `Stack.Responsive` is the mounted capability for per-breakpoint gap overrides. The theme
@@ -75,8 +80,8 @@ the same band semantics instead of re-deriving them.
 ```mdx
 <Stack gap="4">
   <Stack.Responsive gap={{ base: '2', lg: '8' }} />
-  <div>gap 8 below 1024px, gap 2 beyond</div>
-  <div>and back to the static "4" if this part unmounts</div>
+  <Stack.Item>gap 8 below 1024px, gap 2 beyond</Stack.Item>
+  <Stack.Item>and back to the static "4" if this part unmounts</Stack.Item>
 </Stack>
 ```
 
