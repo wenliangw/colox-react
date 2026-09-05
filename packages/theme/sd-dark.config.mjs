@@ -5,7 +5,8 @@
  * complete Figma exports (52 tokens each, values resolved per mode and
  * emitted as palette references). The dark pipeline consumes the dark
  * export plus hand-maintained files: semantic.brand.dark (brand group
- * references) and semantic.derived.dark (hover/active color-mix rules).
+ * references), semantic.derived.dark (hover/active color-mix rules) and
+ * semantic.shadow.dark (dark shadow assignment).
  *
  * Palette tokens are in the dictionary so references resolve, but are
  * filtered out of dark.css — the shared palette baseline lives in
@@ -26,6 +27,7 @@ export default {
     'src/styles/tokens/semantic-colors.dark.tokens.json',
     'src/styles/tokens/semantic.brand.dark.tokens.json',
     'src/styles/tokens/semantic.derived.dark.tokens.json',
+    'src/styles/tokens/semantic.shadow.dark.tokens.json',
   ],
   platforms: {
     cssDark: {
@@ -35,7 +37,7 @@ export default {
         {
           destination: 'dark.css',
           format: 'css/variables',
-          filter: (token) => token.path[1] === 'color',
+          filter: (token) => token.path[1] === 'color' || token.path[1] === 'shadow',
           options: {
             selector: ":root[data-colox-theme='dark']",
             outputReferences: true,

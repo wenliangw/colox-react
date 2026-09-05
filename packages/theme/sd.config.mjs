@@ -6,11 +6,13 @@
  *   (palette, needed only so the semantic references resolve),
  *   semantic-colors.light, typography, size
  * - hand-maintained: semantic.derived + semantic.brand (hover/active
- *   rules and the brand group's palette references), base
+ *   rules and the brand group's palette references), semantic.shadow
+ *   (light shadow assignment), base
  *
  * Output: dist/themes/light.css — the complete LIGHT assignment on
- * :root: 64 semantic color vars (var()-chained into the palette) plus
- * the theme-independent design tokens (typography/size/base). Palette
+ * :root: 80 semantic color vars + 3 shadow vars (var()-chained into the
+ * palette where applicable) plus the theme-independent design tokens
+ * (typography/size/base). Palette
  * declarations are NOT emitted here — they live in palette.css
  * (sd-palette.config.mjs), so light.css cannot be loaded as a
  * replacement for the palette baseline.
@@ -27,6 +29,7 @@ export default {
     'src/styles/tokens/semantic-colors.light.tokens.json',
     'src/styles/tokens/semantic.brand.tokens.json',
     'src/styles/tokens/semantic.derived.tokens.json',
+    'src/styles/tokens/semantic.shadow.tokens.json',
     'src/styles/tokens/typography.tokens.json',
     'src/styles/tokens/size.tokens.json',
     'src/styles/tokens/base.tokens.json',

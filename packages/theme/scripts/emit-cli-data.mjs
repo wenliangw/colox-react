@@ -10,7 +10,7 @@
  * - stepLists: the exact step names expected per ramp (validation)
  * - semantics: light/dark complete semantic assignments as
  *   [{group, leaf, value}] — values already in CSS form
- *   (var(--colox-palette-*-) / color-mix() / #hex)
+ *   (var(--colox-palette-*-) / color-mix() / #hex / shadow literals)
  *
  * Run after tokens:sync inside the emit:themes chain.
  */
@@ -37,8 +37,8 @@ function toCssValue(value) {
   return value;
 }
 
-function flattenColor(file) {
-  const data = file.colox?.color ?? {};
+function flattenTokens(file, key = 'color') {
+  const data = file.colox?.[key] ?? {};
   const out = [];
   for (const [group, tokens] of Object.entries(data)) {
     for (const [leaf, token] of Object.entries(tokens)) {
@@ -47,6 +47,14 @@ function flattenColor(file) {
   }
   out.sort((a, b) => `${a.group}-${a.leaf}`.localeCompare(`${b.group}-${b.leaf}`));
   return out;
+}
+
+/** Shadow files are two-level (colox.shadow.<leaf> is the token). */
+function flattenLeaves(file, key) {
+  const data = file.colox?.[key] ?? {};
+  return Object.entries(data)
+    .map(([leaf, token]) => ({ group: key, leaf: kebab(leaf), value: toCssValue(token.$value) }))
+    .sort((a, b) => `${a.group}-${a.leaf}`.localeCompare(`${b.group}-${b.leaf}`));
 }
 
 const paletteSrc = await readJson('color.tokens.json');
@@ -70,14 +78,16 @@ stepLists.brand = Object.keys(brandSrc.colox.palette.brand)
 
 const semantics = {
   light: [
-    ...flattenColor(await readJson('semantic-colors.light.tokens.json')),
-    ...flattenColor(await readJson('semantic.brand.tokens.json')),
-    ...flattenColor(await readJson('semantic.derived.tokens.json')),
+    ...flattenTokens(await readJson('semantic-colors.light.tokens.json')),
+    ...flattenTokens(await readJson('semantic.brand.tokens.json')),
+    ...flattenTokens(await readJson('semantic.derived.tokens.json')),
+    ...flattenLeaves(await readJson('semantic.shadow.tokens.json'), 'shadow'),
   ],
   dark: [
-    ...flattenColor(await readJson('semantic-colors.dark.tokens.json')),
-    ...flattenColor(await readJson('semantic.brand.dark.tokens.json')),
-    ...flattenColor(await readJson('semantic.derived.dark.tokens.json')),
+    ...flattenTokens(await readJson('semantic-colors.dark.tokens.json')),
+    ...flattenTokens(await readJson('semantic.brand.dark.tokens.json')),
+    ...flattenTokens(await readJson('semantic.derived.dark.tokens.json')),
+    ...flattenLeaves(await readJson('semantic.shadow.dark.tokens.json'), 'shadow'),
   ],
 };
 

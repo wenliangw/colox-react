@@ -9,8 +9,9 @@
  *   with every colox.palette.* var (brand ramp generated from the seed
  *   when given, other ramps merged over defaults)
  * - one file per configured theme scoped to
- *   :root[data-colox-theme='<name>'] with every colox.color.* var,
- *   splicing in the configured semantic overrides
+ *   :root[data-colox-theme='<name>'] with every colox.color.* var plus
+ *   the colox.shadow.* triple, splicing in the configured color
+ *   semantic overrides
  *
  * The :root prefix raises each axis to (0,2,0) so it beats the light.css
  * baseline without depending on stylesheet order. The runtime stays
@@ -287,19 +288,21 @@ export function buildPaletteCss(overrides, stepLists, defaults, scopeName) {
  * Order follows cli-data (sorted by group-leaf).
  */
 export function buildThemeCss(themeName, baseSemantics, overrides) {
-  const byName = new Map(baseSemantics.map((t) => [`${t.group}-${t.leaf}`, t.value]));
+  const byName = new Map(baseSemantics.map((t) => [`${t.group}-${t.leaf}`, t]));
   for (const [group, slots] of Object.entries(overrides ?? {})) {
     for (const [leaf, spec] of Object.entries(slots)) {
       const key = `${group}-${leaf}`;
-      if (!byName.has(key)) {
+      const entry = byName.get(key);
+      if (!entry) {
         throw new Error(`themes.${themeName}.semantic.${key}: not a semantic token`);
       }
-      byName.set(
-        key,
-        typeof spec === 'string' ? spec : `var(--colox-palette-${spec.palette.replace('/', '-')})`,
-      );
+      entry.value =
+        typeof spec === 'string' ? spec : `var(--colox-palette-${spec.palette.replace('/', '-')})`;
     }
   }
-  const declarations = Array.from(byName, ([key, value]) => [`colox-color-${key}`, value]);
+  const declarations = Array.from(byName, ([, entry]) => {
+    const prefix = entry.group === 'shadow' ? 'colox-shadow' : `colox-color-${entry.group}`;
+    return [`${prefix}-${entry.leaf}`, entry.value];
+  });
   return cssBlock(`:root[data-colox-theme='${themeName}']`, declarations);
 }
