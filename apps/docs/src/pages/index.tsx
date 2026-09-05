@@ -1,5 +1,5 @@
 import { Button } from '@colox/react';
-import '@colox/react/index.css';
+import '@colox/react/style.css';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';

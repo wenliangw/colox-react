@@ -20,12 +20,11 @@
       "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.cjs"
     },
-    "./index.css": "./dist/index.css",
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "pnpm --filter @colox/theme run build && vite build && node scripts/copy-index-css.mjs",
+    "build": "pnpm --filter @colox/theme run build && vite build",
     "build:watch": "vite build --watch",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
