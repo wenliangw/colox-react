@@ -1,38 +1,33 @@
 /**
- * Colox motion gate — the micro-motion kill switch.
+ * Colox motion gate — silences library micro-motion by zeroing the
+ * duration tokens.
  *
- * This file declares no variables and owns one job: globally silencing
- * transitions and animations when the motion axis says so. Components
- * never branch on the switch themselves; they declare transitions
- * freely and this layer neutralizes them.
+ * Scope: this file ONLY re-assigns the --colox-motion-duration-* tokens;
+ * it never touches consumer-owned elements, properties or styles. Colox
+ * components declare their transitions through these tokens (a review-
+ * enforced discipline), so zeroing the tokens stops every library
+ * micro-motion while the host app's own transitions/animations keep
+ * working untouched.
  *
  * Axis contract (the <html> attributes, managed by <ColoxTheme motion>):
- * - no attribute / data-colox-motion never set by us = "system":
- *   the prefers-reduced-motion media query below does the following
- *   natively, re-evaluated live by the browser
+ * - no attribute = "system": the media query below follows
+ *   prefers-reduced-motion natively, re-evaluated live by the browser
  * - data-colox-motion="on"  = force motion on, media query excluded
  * - data-colox-motion="off" = force motion off, unconditionally
+ *
+ * The :root[attr] selectors beat the :root declarations in light.css by
+ * specificity (0,2,0 vs 0,1,0), so section order stays irrelevant.
  */
-[data-colox-motion='off'] *,
-[data-colox-motion='off'] *::before,
-[data-colox-motion='off'] *::after {
-  transition-duration: 0.01ms !important;
-  transition-delay: 0ms !important;
-  animation-duration: 0.01ms !important;
-  animation-delay: 0ms !important;
-  animation-iteration-count: 1 !important;
-  scroll-behavior: auto !important;
+:root[data-colox-motion='off'] {
+  --colox-motion-duration-fast: 0.01ms;
+  --colox-motion-duration-normal: 0.01ms;
+  --colox-motion-duration-slow: 0.01ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-colox-motion='on']) *,
-  :root:not([data-colox-motion='on']) *::before,
-  :root:not([data-colox-motion='on']) *::after {
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
-    animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
+  :root:not([data-colox-motion='on']) {
+    --colox-motion-duration-fast: 0.01ms;
+    --colox-motion-duration-normal: 0.01ms;
+    --colox-motion-duration-slow: 0.01ms;
   }
 }

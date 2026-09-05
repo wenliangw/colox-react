@@ -61,7 +61,7 @@
 - 交互态双档派生：实底档 `solid-hover/solid-active` = 基色向黑混 85%/75%（light）/ 向白混（dark，实底控件暗色下 hover 变亮）；罩层档 `wash-hover/wash-active` = 基色向透明混 8%/15%。档位与状态名按标准 kebab 单连字符拼接（`color.brand.solid-hover` 形态，不引入双连字符）；规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic.derived.dark.tokens.json（dark），组件不内联。命名沿用 SD 内置 name/kebab（行业公认规范）。
 - 派生混色的 authored 形态用 `var(--colox-color-*-solid)` 字面串（SD 原样透传、浏览器运行时解析）而非 `{token}` 引用——保证运行时重映射 solid（如未来 brand 换色）时 hover/active 自动跟随。
 - color-mix 需要 2023+ 浏览器。
-- **微动效只消费 motion token，门控集中一处**：组件声明 transition 一律用 `--colox-motion-duration-*`（fast 100ms/normal 200ms/slow 300ms）+ `--colox-motion-easing-*`（out/in/in-out），禁止自造时长缓动；全局开/关由 theme 的 motion.css 门控层统一执行（`data-colox-motion` 轴 + `prefers-reduced-motion`），组件零分支、风格天然一致。装饰投影（shadow）走独立 boolean 轴，常态 shadow-md、hover 升 shadow-lg（首个微动效实例）；shadow 是主题相关语义：light 灰淡投影、dark 加深纯黑投影（工程侧双档手维），自定义主题经 CLI `extends` 明暗链继承对应档值。
+- **微动效只消费 motion token，门控集中一处**：组件声明 transition 一律用 `--colox-motion-duration-*`（fast 100ms/normal 200ms/slow 300ms）+ `--colox-motion-easing-*`（out/in/in-out），**禁止自造时长缓动（硬约束）**——门控靠归零 duration token 生效，写死字面量时长会漏过开关；门控由 theme 的 motion.css 统一执行（`data-colox-motion` 轴 + `prefers-reduced-motion` 归零三 token），**只作用库内动效，不碰用户私有 transition/animation/scroll-behavior**（token 级门控定案，摈弃通配+!important 全站通杀），组件零分支、风格天然一致。装饰投影（shadow）走独立 boolean 轴，常态 shadow-md、hover 升 shadow-lg（首个微动效实例）；shadow 是主题相关语义：light 灰淡投影、dark 加深纯黑投影（工程侧双档手维），自定义主题经 CLI `extends` 明暗链继承对应档值。
 
 ## token 归属：Figma 承载视觉值，工程侧承载实现值
 
