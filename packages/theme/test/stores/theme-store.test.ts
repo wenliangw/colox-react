@@ -1,10 +1,4 @@
 // @vitest-environment jsdom
-/**
- * Store layer unit tests: axis attribute writes, system follow / manual
- * override, breakpoint observation, persistence restore. The singleton
- * state is reset before each test (_resetColoxThemeStateForTests only
- * exists as an internal store export, never in the published type surface).
- */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../utils/match-media';
 import {
@@ -15,7 +9,7 @@ import {
   setColoxStorageEnabled,
   setColoxTheme,
   subscribeColoxTheme,
-} from '@/stores/theme-store';
+} from '@/components/theme-context/stores/theme-store';
 
 const root = () => document.documentElement;
 const attr = (name: string) => root().getAttribute(name);

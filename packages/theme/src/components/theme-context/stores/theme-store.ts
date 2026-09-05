@@ -1,20 +1,3 @@
-/**
- * The ColoxTheme global store: the single source of truth for the theme /
- * palette / breakpoint axes.
- *
- * State is written to the data-colox-* attributes on <html> (CSS selectors
- * read the same place); the React side (useColoxTheme / parts) is only a
- * subscriber and config entry point into this store. The store is a
- * module-level singleton (one per JS realm, naturally matching one
- * document) and is SSR-safe: all browser APIs are wired lazily inside
- * subscribe (the commit phase) — the pure render path never touches
- * window/document, so there are no side effects before first interactivity
- * or commit.
- *
- * The no-provider degradation is a byproduct of this singleton:
- * useColoxTheme does not depend on React Context, and reads the same state
- * from anywhere.
- */
 import {
   BASE_BREAKPOINT_NAME,
   BREAKPOINT_ATTRIBUTE,
@@ -27,7 +10,7 @@ import {
   SYSTEM_THEME_NAME,
   THEME_ATTRIBUTE,
   THEME_STORAGE_KEY,
-} from '@/constants/theme';
+} from '../constants/theme';
 import type {
   BreakpointKey,
   BreakpointName,
@@ -36,7 +19,7 @@ import type {
   ColoxThemeConfigPatch,
   ColoxThemeName,
   ColoxThemeValue,
-} from '@/context/types';
+} from '../types';
 import { defaultBreakpoints } from '@/styles/tokens/breakpoints';
 
 type Listener = () => void;
@@ -48,6 +31,11 @@ interface StoreState {
   systemTheme: ColoxSystemThemeName;
 }
 
+/*
+ * Module-level singleton: one per JS realm, matching one document. Browser
+ * APIs are wired lazily inside subscribe (the commit phase), so the pure
+ * render path stays free of side effects.
+ */
 let state: StoreState = {
   theme: SYSTEM_THEME_NAME,
   palette: undefined,
@@ -125,7 +113,6 @@ function rebindBreakpointQueries() {
   state = { ...state, breakpoint: computeBreakpoint() };
 }
 
-/** Lazy wiring: once per realm (idempotent), triggered from the subscribe commit phase. */
 function wire() {
   if (wired) return;
   wired = true;
@@ -146,10 +133,6 @@ function wire() {
   applyAttributes();
   emit();
 }
-
-/* ---------------------------------------------------------------- */
-/* Config entry points (parts / advanced consumers)                  */
-/* ---------------------------------------------------------------- */
 
 export function setColoxTheme(theme: ColoxThemeName) {
   if (theme === state.theme) return;
@@ -179,8 +162,8 @@ export function setColoxBreakpoints(values: BreakpointOverrides) {
 
 export function setColoxDefaultTheme(value: ColoxSystemThemeName) {
   defaultTheme = value;
-  // The fallback only enters the state when the system sensor is unavailable;
-  // with a sensor present it is just the SSR snapshot convention.
+  // Without a system sensor the fallback is live state; with one it only
+  // feeds the SSR snapshot.
   if (wired && typeof window.matchMedia !== 'function') {
     state = { ...state, systemTheme: value };
     applyAttributes();
@@ -191,8 +174,7 @@ export function setColoxDefaultTheme(value: ColoxSystemThemeName) {
 export function setColoxStorageEnabled(enabled: boolean) {
   if (storageEnabled === enabled) return;
   storageEnabled = enabled;
-  // Applied as the last fold step: restored values beat part declarations
-  // (storage > part > default).
+  // Restore runs as the last fold step: storage > declaration > default.
   if (enabled) restoreFromStorage();
 }
 
@@ -214,7 +196,7 @@ function restoreFromStorage() {
       }
     }
   } catch {
-    // Storage unavailable (private mode etc.): degrade silently to part/defaults.
+    // Storage unavailable (private mode etc.): keep the in-memory state.
   }
   if (changed) {
     applyAttributes();
@@ -233,7 +215,10 @@ function persist() {
   }
 }
 
-/** The unified config application entry point for the folded parts. */
+/**
+ * Applies a folded config patch: props axes first, then the filtered
+ * subcomponent entries (order inside the patch mirrors the fold order).
+ */
 export function applyColoxConfig(patch: ColoxThemeConfigPatch) {
   wire();
   if (patch.theme !== undefined) setColoxTheme(patch.theme);
@@ -243,15 +228,10 @@ export function applyColoxConfig(patch: ColoxThemeConfigPatch) {
   if (patch.storage !== undefined) setColoxStorageEnabled(patch.storage);
 }
 
-/* ---------------------------------------------------------------- */
-/* Subscription surface (useSyncExternalStore)                       */
-/* ---------------------------------------------------------------- */
-
 export function subscribeColoxTheme(listener: Listener): () => void {
   const first = listeners.size === 0;
   listeners.add(listener);
-  // React calls subscribe in the commit phase, where wiring is safe
-  // (attributes are in place before the first paint).
+  // React subscribes in the commit phase, where wiring is safe.
   if (first) wire();
   return () => {
     listeners.delete(listener);
@@ -277,7 +257,7 @@ export function getColoxThemeServerSnapshot(): ColoxThemeValue {
   return serverSnapshot;
 }
 
-/** Test-only: resets the singleton state (not exported from index — stays out of published types). */
+/** Test-only: resets the singleton (never exported from the package index). */
 export function _resetColoxThemeStateForTests() {
   state = {
     theme: SYSTEM_THEME_NAME,

@@ -27,10 +27,12 @@
 
 ## 目录分类：能力文件夹 + 层内分组（2025 通用规范）
 
-- **能力文件夹用单数小写名词**：`context` / `hooks` / `types` / `utils` / `stores` / `constants` / `styles`，命名不进功能名——例如唯一的主题 context 就叫 `src/context/`，直接 `context/index.tsx`（不建 `ColoxTheme/` 这种 PascalCase 功能目录）。
-- **文件夹内不许同级平铺**：按能力分层，如 `src/context/index.tsx` + `src/context/types/index.ts`（types 单独一子目录）。文件组功能单元时放功能子文件（如 `context/parts.tsx`）。
-- **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（`test/context/`、`test/stores/`、`test/cli/`、`test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
-- **src 内引用一律 `@/` 别名**（tsconfig paths + vite/vitest alias 三处齐配），不用跨目录相对路径。
+- **能力文件夹用单数小写名词**：`components` / `context` / `hooks` / `types` / `utils` / `stores` / `constants` / `styles`，命名不进功能名——例如唯一的主题 context 组件就是 `src/components/theme-context/`，直接 `theme-context/index.tsx`。
+- **组件是自持单元**：任何**只被该组件使用**的能力都要跟随组件目录（`theme-context/hooks/`、`theme-context/utils/`、`theme-context/stores/`、`theme-context/constants/`），不走全局 `src/hooks`/`src/utils`——「是哪个组件的能力就跟随组件本身的结构」，作用域边界必须清晰。全局能力目录只放真正跨组件共享的东西。
+- **子组件独立文件夹管理**：子组件不定义在父组件同一个文件里，即使代码量很少也要在父组件文件夹下建独立子目录（`theme-context/storage/index.tsx`、`theme-context/breakpoints/index.tsx`）。
+- **文件夹内不许同级平铺**：按能力分层，如 `theme-context/index.tsx` + `theme-context/types/index.ts`。
+- **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（`test/theme-context/`、`test/stores/`、`test/cli/`、`test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
+- **src 内引用规范**：跨模块引用走 `@/` 别名（tsconfig paths + vite/vitest alias 三处齐配）；组件文件夹内部用相对路径（`./types`、`../constants/theme`，与 react 包组件一致）。
 
 ## store / utils / constants 各司其职，消灭魔法值
 
@@ -38,6 +40,13 @@
 - 代码里**不写魔法字符串/魔法数字**：attribute 名、localStorage 键、媒体查询、默认值、主题词汇等集中定义在 `constants/`。
 - **类型词汇与运行时常量同源**：字面量 union 用 `typeof` 从 `constants/` 派生（如 `ColoxThemeName = typeof LIGHT_THEME_NAME | ... `、`BreakpointKey = keyof typeof defaultBreakpoints`），改一处不会漂移。
 - 测试用例名（describe/it 文案）与源码注释同样遵守全英文约定。
+
+## 注释克制：代码即注释
+
+- **文件开头不写长篇注释**（模块用途大论文一律删除），文件首部保持干净的 import。
+- 只留解释「为什么」的必要注释；能自我说明的代码不注释（自解释代码 > 注释）。
+- 工具方法与类型**都要写多行注释**，简洁说明作用即可（`/** … */` 多行形式，可带 `@default`；本条目即「props 注释放多行」的泛化）。
+- 无用/无意义注释宁缺毋滥；注释遗产随重构清理——一旦某文件被重构，注释必须同步瘦身。
 
 ## 命名用全拼，不用缩写
 
@@ -63,6 +72,7 @@
 
 - 推崇自解释代码；注释解释 why 不解释 what。
 - 不加无意义、啰嗦的注释；必要说明（构建链路、契约来源等）保留。
+- 文件开头不写长篇大论（合并入「注释克制：代码即注释」节）。
 
 ## JSDoc 多行书写
 

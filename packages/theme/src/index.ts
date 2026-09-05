@@ -1,15 +1,13 @@
-export { ColoxTheme, ColoxThemeContext } from '@/context';
-export { useColoxTheme } from '@/hooks/use-colox-theme';
+export { ColoxTheme, ColoxThemeContext } from '@/components/theme-context';
+export { useColoxTheme } from '@/components/theme-context/hooks/use-colox-theme';
 export { defaultBreakpoints } from '@/styles/tokens/breakpoints';
 export type {
   BreakpointKey,
   BreakpointName,
   BreakpointOverrides,
-  ColoxThemeBreakpointsPartProps,
+  ColoxThemeBreakpointsProps,
   ColoxThemeName,
-  ColoxThemePalettePartProps,
   ColoxThemeProps,
-  ColoxThemeStoragePartProps,
-  ColoxThemeThemePartProps,
+  ColoxThemeStorageProps,
   ColoxThemeValue,
-} from '@/context/types';
+} from '@/components/theme-context/types';

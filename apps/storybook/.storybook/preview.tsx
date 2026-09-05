@@ -14,7 +14,7 @@ const preview: Preview = {
   globalTypes: {
     theme: {
       name: 'Colox Theme',
-      description: 'Toggle the data-colox-theme axis via <ColoxTheme.Theme>',
+      description: 'Toggle the data-colox-theme axis via the ColoxTheme theme prop',
       toolbar: {
         icon: 'circlehollow',
         items: [
@@ -29,7 +29,7 @@ const preview: Preview = {
     },
     palette: {
       name: 'Colox Palette',
-      description: 'Toggle the data-colox-palette axis via <ColoxTheme.Palette>',
+      description: 'Toggle the data-colox-palette axis via the ColoxTheme palette prop',
       toolbar: {
         icon: 'paintbrush',
         items: [
@@ -63,11 +63,11 @@ const preview: Preview = {
     },
   },
   decorators: [
-    // Dogfood: the parts write the three axes; toolbar choices map straight to declarations.
     (Story, context) => (
-      <ColoxTheme>
-        <ColoxTheme.Theme name={context.globals.theme as ColoxThemeName} />
-        <ColoxTheme.Palette name={context.globals.palette === 'demo' ? 'demo' : undefined} />
+      <ColoxTheme
+        theme={context.globals.theme as ColoxThemeName}
+        palette={context.globals.palette === 'demo' ? 'demo' : undefined}
+      >
         <Story />
       </ColoxTheme>
     ),

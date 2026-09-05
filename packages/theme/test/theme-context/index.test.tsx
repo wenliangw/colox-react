@@ -1,16 +1,11 @@
 // @vitest-environment jsdom
-/**
- * Composable API integration tests: dot parts apply / re-apply /
- * last-write-wins, Storage restore priority, hook value consistency, and
- * the no-provider degradation.
- */
 import { act, cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../utils/match-media';
-import { ColoxTheme } from '@/context';
-import { useColoxTheme } from '@/hooks/use-colox-theme';
-import { _resetColoxThemeStateForTests } from '@/stores/theme-store';
-import type { ColoxThemeValue } from '@/context/types';
+import { ColoxTheme } from '@/components/theme-context';
+import { useColoxTheme } from '@/components/theme-context/hooks/use-colox-theme';
+import { _resetColoxThemeStateForTests } from '@/components/theme-context/stores/theme-store';
+import type { ColoxThemeValue } from '@/components/theme-context/types';
 
 let captured: ColoxThemeValue | undefined;
 
@@ -31,12 +26,10 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
-describe('composable parts → the three <html> axes', () => {
-  it('Theme/Palette declarations land on the attributes and the hook reads the same state', () => {
+describe('ColoxTheme props → the three <html> axes', () => {
+  it('theme/palette props land on the attributes and the hook reads the same state', () => {
     render(
-      <ColoxTheme>
-        <ColoxTheme.Theme name="deep" />
-        <ColoxTheme.Palette name="brand-2025" />
+      <ColoxTheme theme="deep" palette="brand-2025">
         <Probe />
       </ColoxTheme>,
     );
@@ -48,7 +41,7 @@ describe('composable parts → the three <html> axes', () => {
     expect(captured?.palette).toBe('brand-2025');
   });
 
-  it('theme part absent = follow the system; system flips take effect (zero-config)', () => {
+  it('theme prop absent = follow the system; system flips take effect (zero-config)', () => {
     render(
       <ColoxTheme>
         <Probe />
@@ -64,10 +57,9 @@ describe('composable parts → the three <html> axes', () => {
     expect(captured?.isFollowSystem).toBe(true);
   });
 
-  it('name="system" follows explicitly; the hook setTheme speaks the same vocabulary', () => {
+  it('theme="system" follows explicitly; the hook setTheme speaks the same vocabulary', () => {
     render(
-      <ColoxTheme>
-        <ColoxTheme.Theme name="system" />
+      <ColoxTheme theme="system">
         <Probe />
       </ColoxTheme>,
     );
@@ -82,35 +74,22 @@ describe('composable parts → the three <html> axes', () => {
     expect(captured?.isFollowSystem).toBe(true);
   });
 
-  it('part props changing re-applies the axis', () => {
+  it('prop changes re-apply the axes on rerender', () => {
     const { rerender } = render(
-      <ColoxTheme>
-        <ColoxTheme.Theme name="light" />
+      <ColoxTheme theme="light">
         <Probe />
       </ColoxTheme>,
     );
     expect(attr('data-colox-theme')).toBe('light');
     rerender(
-      <ColoxTheme>
-        <ColoxTheme.Theme name="deep" />
+      <ColoxTheme theme="deep">
         <Probe />
       </ColoxTheme>,
     );
     expect(attr('data-colox-theme')).toBe('deep');
   });
 
-  it('multiple parts of the same kind are last-write-wins', () => {
-    render(
-      <ColoxTheme>
-        <ColoxTheme.Palette name="first" />
-        <ColoxTheme.Palette name="second" />
-        <Probe />
-      </ColoxTheme>,
-    );
-    expect(attr('data-colox-palette')).toBe('second');
-  });
-
-  it('Breakpoints part overrides the thresholds', () => {
+  it('Breakpoints subcomponent overrides the thresholds', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Breakpoints values={{ md: '900px' }} />
@@ -124,15 +103,28 @@ describe('composable parts → the three <html> axes', () => {
   });
 });
 
-describe('Storage part', () => {
-  it('restores saved values at mount, beating part declarations (storage > part > default)', () => {
+describe('Breakpoints subcomponent', () => {
+  it('multiple instances are last-write-wins', () => {
+    render(
+      <ColoxTheme>
+        <ColoxTheme.Breakpoints values={{ md: '700px' }} />
+        <ColoxTheme.Breakpoints values={{ md: '900px' }} />
+        <Probe />
+      </ColoxTheme>,
+    );
+    act(() => setViewportWidth(800));
+    expect(attr('data-colox-breakpoint')).toBe('md');
+    expect(captured?.breakpoint).toBe('md');
+  });
+});
+
+describe('Storage subcomponent', () => {
+  it('restores saved values at mount, beating props (storage > props > default)', () => {
     window.localStorage.setItem('colox:theme', 'dark');
     window.localStorage.setItem('colox:palette', 'brand-2025');
     render(
-      <ColoxTheme>
+      <ColoxTheme theme="light" palette="other">
         <ColoxTheme.Storage />
-        <ColoxTheme.Theme name="light" />
-        <ColoxTheme.Palette name="other" />
         <Probe />
       </ColoxTheme>,
     );
