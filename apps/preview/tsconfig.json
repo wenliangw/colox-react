@@ -2,8 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@colox/react": ["../../packages/components/src/index.ts"]
+    }
   },
-  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx"],
+  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
 }

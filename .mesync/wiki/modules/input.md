@@ -10,7 +10,7 @@
 input/
 ├── input.tsx            # 组件本体（文件名小写）：forwardRef + inputVariants + clsx
 ├── index.ts             # 出口：Input + inputVariants 类型
-├── _stories/            # Storybook（下划线前缀，非源码）；每个关注点一个页面，同屏对比
+├── _stories/            # 【过渡】Storybook（下划线前缀，非源码）；重写时迁至 apps/preview/src/input/
 │   ├── size.stories.tsx   # Size 页面：sm/md/lg 同屏展示
 │   └── state.stories.tsx  # State 页面：default/invalid/disabled 同屏展示
 ├── _tests/              # Vitest（下划线前缀，非源码）

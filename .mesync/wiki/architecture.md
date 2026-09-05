@@ -13,13 +13,15 @@ apps/docs ───────┘
               └── src/index.ts       统一导出入口（含全局 token 层 import）
 ```
 
+组件示例（stories）归属预览应用：`apps/preview/src/<Component>/`（示例是应用内容，不混入库源码）。示例一律以消费方视角书写（`import ... from '@colox/react'`）；preview 的 viteFinal 将 `@colox/react` alias 到组件源码（`packages/components/src/index.ts`），dev 下示例热更新、无需先 build 包；tsconfig paths 同步映射。Button/Input 重写时故事从组件目录迁出，过渡期 stories glob 双路径并存。
+
 ### 组件目录结构（约定）
 
 ```
 <component>/
 ├── <Component>.tsx       # 组件本体：forwardRef + useXxx(预留) + xVariants
 ├── index.ts              # 对外出口
-├── _stories/             # Storybook 用例（按关注点拆分）
+├── _stories/             # 【过渡】旧 Storybook 用例位置；新示例归 apps/preview/src/<Component>/
 ├── _tests/               # Vitest 用例（按关注点拆分）
 ├── types/                # props/ref 类型（显式类型化，禁止 any）
 ├── styles/               # 组件样式（base / 各轴 / index 汇总）
@@ -36,7 +38,7 @@ apps/docs ───────┘
 ## 关键技术选型及理由
 
 - **Vite library mode + vite-plugin-dts**：一次构建产出 ESM(`dist/es/index.js`)、CJS(`dist/cjs/index.cjs`)、类型声明(`dist/types/`)和打包 CSS(`dist/style.css`)，`exports` 字段映射到 `@colox/react` 与 `@colox/react/style.css`。
-- **双包拆分（@colox/theme + @colox/react）**：`@colox/theme`（packages/theme）拥有样式与主题系统全部机器——Figma token 管线（meta/tokens/scripts/sd 三配置）、主题编译 CLI（colox bin）、JSON Schema、`config/theme.default.json` 标准配置模板、dist 主题件、ColoxTheme React 运行时（组合式 API，vite 产 ES/CJS+dts）；将来 ThemeBuilder（`builder` 子路径）也在此。`@colox/react` 只剩组件（代码/scss/stories/tests），构建时 `@import '@colox/theme/index.css'` 把主题级联打进 style.css（自包含单行引入，重声明同值幂等）；build 链「theme 先行」。组件只读 `var(--colox-*)`、不 import theme 代码——依赖是纯运行时 CSS 契约。标准配置模板做 CLI 身份回归测试（编译空配置 == 官方存量 palette 基线，锁死编译器与 SD 管线同步）。
+- **双包拆分（@colox/theme + @colox/react）**：`@colox/theme`（packages/theme）拥有样式与主题系统全部机器——Figma token 管线（meta/tokens/scripts/sd 三配置）、主题编译 CLI（colox bin）、JSON Schema、`config/theme.default.json` 标准配置模板、dist 主题件、ColoxTheme React 运行时（组合式 API，vite 产 ES/CJS+dts）；将来 ThemeBuilder（`builder` 子路径）也在此。`@colox/react` 只剩组件（代码/scss/tests/示例迁至 apps/preview/src），构建时 `@import '@colox/theme/index.css'` 把主题级联打进 style.css（自包含单行引入，重声明同值幂等）；build 链「theme 先行」。组件只读 `var(--colox-*)`、不 import theme 代码——依赖是纯运行时 CSS 契约。标准配置模板做 CLI 身份回归测试（编译空配置 == 官方存量 palette 基线，锁死编译器与 SD 管线同步）。
 - **设计 token：Figma 导出为源 → SD 产出 CSS 自定义属性（变量链形态）**：`styles/meta/*.tokens.json`（Figma）→ `figma-to-tokens.mjs`（语义 alias `targetVariableName` 转 `{colox.palette.*}` SD 引用）→ `styles/tokens/*.tokens.json` → Style Dictionary v4 → **三文件**：`dist/themes/palette.css`（`:root` 的 104 个 palette 基线变量，主题无关）+ `dist/themes/light.css`（`:root` 完整 light 赋值 139 个：语义色 64 + 排版/尺寸/基础 75 个）+ `dist/themes/dark.css`（同名语义色全量赋值 64 个，作用域 `:root[data-colox-theme='dark']`）。**SD `outputReferences: true`**：语义层是 palette 的 var() 引用链（`--colox-color-text-muted: var(--colox-palette-gray-600)`），palette 因此暴露为运行时变量；换色板轴 = 换 palette 变量 → 双主题全链重派生，无需重编译。palette 独立为基线文件使主题文件各自自包含（只载 dark 不载 light、只要 palette.css 在场即工作）；axis 选择器带 `:root` 前缀（0,2,0）稳压基线（0,1,0），**加载顺序无关**（CSS 变量计算期解析，palette 引用不构成顺序依赖）。fontFamily/shadow/motion/breakpoint 人工维护在 `base.tokens.json`；hover/active 派生规则人工维护在 `semantic.derived.tokens.json`（light）与 `semantic.derived.dark.tokens.json`（dark），其余语义色由 Figma 全量导出（`semantic-colors.light/dark.tokens.json`）。
 - **三 SD 配置**：sd-palette.config.mjs（palette 基线文件，只输出 `colox.palette.*`）；sd.config.mjs（light，加 palette 源仅作引用解析、输出排除 palette，含完整 light 赋值）；sd-dark.config.mjs（只吃 dark 语义导出 + brand + derived，palette 源仅供引用解析、输出 filter 只留 `colox.color.*`）。两主题文件为平行全量赋值；dark 构建的 "filtered out token references" 警告是预期（引用指向 palette.css 中的声明）。
 - **brand 组（工程侧手维）**：`tokens/palette.brand.tokens.json`（默认 brand 阶 = indigo 阶的实色数值，零视觉漂移）+ `tokens/semantic.brand(.dark).tokens.json`（solid→500/muted→200/subtle→50（dark 900）/inverse→#FFF，引用链到 palette.brand）；brand hover/active 在 derived 文件里 color-mix。组件层消费 `brand.*`（Button 全变体、Input focus 环），indigo 退为普通色相槽。动态换品牌 = `data-colox-palette` 轴替换 brand 阶变量（编译期种子生成器产出定制阶，escape hatch 是运行时直接改 `--colox-palette-brand-*`）。
