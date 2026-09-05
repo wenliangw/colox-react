@@ -16,9 +16,10 @@
 ## API 形状
 
 - 双组件直白语义（用户选型）：`HStackProps`/`VStackProps` 继承原生 `HTMLAttributes<HTMLDivElement>`（属性与事件全透传）+ `forwardRef`
+- **variants 层与 Button 同构**：`variants/` = gap/align/justify 三个 per-axis `as const` 类映射 + `index.ts` 导出 `hstackVariants`/`vstackVariants` 双 cva（wrap 仅 hstack 轴）与 VariantProps；默认值（gap 2/4、align stretch、justify start）住 `defaultVariants`；axis 联合类型从 VariantProps `NonNullable` 派生（不手写联合）
 - `gap` 只收 spacing 键（token 纯度，不收任意数字/px）；`align justify` 收语义词不收 flexbox 值
 - 不依赖 theme context——纯 token 消费，无响应式 prop（留二期与断点感知一起评估）
 
 ## 文件
 
-`types/index.ts`（含全刻度类型）、`hstack.tsx`/`vstack.tsx`（各自动引用 `styles/index.scss`）、`index.ts` 出口；测试 `_tests/{hstack,vstack}.test.tsx` 8 例（默认修饰组、gap/align/justify/wrap 映射、半档键、className 合并、事件透传）。
+`variants/{gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + @default JSDoc）、`hstack.tsx`/`vstack.tsx`（clsx(cva(…), className)，各自动引用 `styles/index.scss`）、`index.ts` 出口；测试 `_tests/{hstack,vstack}.test.tsx` 8 例（默认修饰组、gap/align/justify/wrap 映射、半档键、className 合并、事件透传）。

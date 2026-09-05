@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
 import type { HStackProps } from './types';
+import { hstackVariants } from './variants';
 
 import './styles/index.scss';
 
@@ -9,26 +10,12 @@ import './styles/index.scss';
  * (`--colox-spacing-*`), so children spacing stays in the token grid.
  */
 export const HStack = forwardRef<HTMLDivElement, HStackProps>((props, ref) => {
-  const {
-    gap = '2',
-    align = 'stretch',
-    justify = 'start',
-    wrap = false,
-    className,
-    ...rest
-  } = props;
+  const { gap, align, justify, wrap, className, ...rest } = props;
 
   return (
     <div
       ref={ref}
-      className={clsx(
-        'colox-hstack',
-        `colox-stack--gap-${gap}`,
-        `colox-stack--align-${align}`,
-        `colox-stack--justify-${justify}`,
-        wrap && 'colox-hstack--wrap',
-        className,
-      )}
+      className={clsx(hstackVariants({ gap, align, justify, wrap }), className)}
       {...rest}
     />
   );

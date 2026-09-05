@@ -1,50 +1,50 @@
 import type { HTMLAttributes } from 'react';
+import type { HStackVariants } from '../variants';
 
-/**
- * The spacing scale keys (the `--colox-spacing-*` theme tokens): full
- * 4px steps from 1 through 14 and 16 plus the 2px half steps.
- */
-export type StackGap =
-  | '0-5'
-  | '1'
-  | '1-5'
-  | '2'
-  | '2-5'
-  | '3'
-  | '3-5'
-  | '4'
-  | '4-5'
-  | '5'
-  | '6'
-  | '7'
-  | '8'
-  | '9'
-  | '10'
-  | '11'
-  | '12'
-  | '13'
-  | '14'
-  | '16';
+/** Spacing scale keys (the `--colox-spacing-*` theme tokens).
+ * Gap/align/justify share the HStack axis tables, so a single anchor
+ * types them for both components. */
+export type StackGap = NonNullable<HStackVariants['gap']>;
+export type StackAlign = NonNullable<HStackVariants['align']>;
+export type StackJustify = NonNullable<HStackVariants['justify']>;
 
-export type StackAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
-
-export type StackJustify = 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
-
-interface StackProps extends HTMLAttributes<HTMLDivElement> {
-  /** Cross-axis alignment (align-items). Defaults to the CSS-faithful `'stretch'`. */
-  align?: StackAlign;
-  /** Main-axis distribution (justify-content). Defaults to `'start'`. */
-  justify?: StackJustify;
-}
-
-export interface HStackProps extends StackProps {
-  /** Spacing between children. Defaults to `'2'` (8px), the inline-pairing step. */
+export interface HStackProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Spacing between children (spacing token key).
+   * @default '2'
+   */
   gap?: StackGap;
-  /** Allow the row to wrap onto multiple lines. */
+  /**
+   * Cross-axis alignment (align-items).
+   * @default 'stretch'
+   */
+  align?: StackAlign;
+  /**
+   * Main-axis distribution (justify-content).
+   * @default 'start'
+   */
+  justify?: StackJustify;
+  /**
+   * Allow the row to wrap onto multiple lines.
+   * @default false
+   */
   wrap?: boolean;
 }
 
-export interface VStackProps extends StackProps {
-  /** Spacing between children. Defaults to `'4'` (16px), the block-stacking step. */
+export interface VStackProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Spacing between children (spacing token key).
+   * @default '4'
+   */
   gap?: StackGap;
+  /**
+   * Cross-axis alignment (align-items).
+   * @default 'stretch'
+   */
+  align?: StackAlign;
+  /**
+   * Main-axis distribution (justify-content).
+   * @default 'start'
+   */
+  justify?: StackJustify;
 }
