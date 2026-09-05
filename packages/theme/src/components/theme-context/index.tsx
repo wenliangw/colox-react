@@ -1,13 +1,35 @@
-import { useCallback, useLayoutEffect, useMemo, useState, type FC } from 'react';
-import { applyColoxConfig } from './stores/theme-store';
+import { useCallback, useLayoutEffect, useMemo, useReducer, useState, type FC } from 'react';
+import { SYSTEM_THEME_NAME } from './constants/theme';
+import { useThemeAttributes } from './hooks/use-theme-attributes';
+import { useThemeSensors } from './hooks/use-theme-sensors';
+import { useThemeStorage } from './hooks/use-theme-storage';
+import { createInitialThemeState, resolveTheme, themeReducer } from './utils/reducer';
 import { foldConfig } from './utils/registry';
 import { ColoxThemeBreakpoints } from './breakpoints';
 import { ColoxThemeStorage } from './storage';
 import { ColoxThemeContext } from './context';
-import type { ColoxThemeProps, ColoxThemeRegistryEntry } from './types';
+import type {
+  BreakpointOverrides,
+  ColoxThemeContextValue,
+  ColoxThemeName,
+  ColoxThemeProps,
+  ColoxThemeRegistryEntry,
+} from './types';
 
 const ColoxThemeRoot = ({ children, theme, defaultTheme, palette }: ColoxThemeProps) => {
+  const [state, dispatch] = useReducer(themeReducer, undefined, createInitialThemeState);
   const [entries, setEntries] = useState<ColoxThemeRegistryEntry[]>([]);
+
+  useLayoutEffect(() => {
+    dispatch({
+      type: 'apply-config',
+      patch: { theme, defaultTheme, palette, ...foldConfig(entries) },
+    });
+  }, [entries, theme, defaultTheme, palette]);
+
+  useThemeAttributes(state);
+  useThemeSensors(state, dispatch);
+  useThemeStorage(state, dispatch);
 
   const register = useCallback((entry: ColoxThemeRegistryEntry) => {
     setEntries((prev) => [...prev.filter((item) => item.id !== entry.id), entry]);
@@ -20,13 +42,38 @@ const ColoxThemeRoot = ({ children, theme, defaultTheme, palette }: ColoxThemePr
     });
   }, []);
 
-  const registry = useMemo(() => ({ register, unregister }), [register, unregister]);
+  const setTheme = useCallback(
+    (value: ColoxThemeName) => dispatch({ type: 'set-theme', theme: value }),
+    [],
+  );
+  const setPalette = useCallback(
+    (value: string | undefined) => dispatch({ type: 'set-palette', palette: value }),
+    [],
+  );
+  const setBreakpoints = useCallback(
+    (values: BreakpointOverrides) => dispatch({ type: 'set-breakpoints', values }),
+    [],
+  );
 
-  useLayoutEffect(() => {
-    applyColoxConfig({ theme, defaultTheme, palette, ...foldConfig(entries) });
-  }, [entries, theme, defaultTheme, palette]);
+  const contextValue = useMemo<ColoxThemeContextValue>(
+    () => ({
+      snapshot: {
+        theme: state.theme,
+        resolvedTheme: resolveTheme(state),
+        isFollowSystem: state.theme === SYSTEM_THEME_NAME,
+        palette: state.palette,
+        breakpoint: state.breakpoint,
+        setTheme,
+        setPalette,
+        setBreakpoints,
+      },
+      register,
+      unregister,
+    }),
+    [state, setTheme, setPalette, setBreakpoints, register, unregister],
+  );
 
-  return <ColoxThemeContext.Provider value={registry}>{children}</ColoxThemeContext.Provider>;
+  return <ColoxThemeContext.Provider value={contextValue}>{children}</ColoxThemeContext.Provider>;
 };
 
 type ColoxThemeComponent = FC<ColoxThemeProps> & {

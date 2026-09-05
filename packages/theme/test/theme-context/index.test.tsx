@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
 import { act, cleanup, render } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetMedia, setSystemPrefersDark, setViewportWidth } from '../utils/match-media';
 import { ColoxTheme } from '@/components/theme-context';
 import { useColoxTheme } from '@/components/theme-context/hooks/use-colox-theme';
-import { _resetColoxThemeStateForTests } from '@/components/theme-context/stores/theme-store';
 import type { ColoxThemeValue } from '@/components/theme-context/types';
 
 let captured: ColoxThemeValue | undefined;
@@ -17,12 +16,17 @@ function Probe() {
 
 const root = () => document.documentElement;
 const attr = (name: string) => root().getAttribute(name);
+const removeAttrs = () => {
+  for (const name of ['data-colox-theme', 'data-colox-palette', 'data-colox-breakpoint']) {
+    root().removeAttribute(name);
+  }
+};
 
 beforeEach(() => {
-  _resetColoxThemeStateForTests();
   resetMedia();
   window.localStorage.clear();
   captured = undefined;
+  removeAttrs();
 });
 afterEach(cleanup);
 
@@ -88,23 +92,10 @@ describe('ColoxTheme props → the three <html> axes', () => {
     );
     expect(attr('data-colox-theme')).toBe('deep');
   });
-
-  it('Breakpoints subcomponent overrides the thresholds', () => {
-    render(
-      <ColoxTheme>
-        <ColoxTheme.Breakpoints values={{ md: '900px' }} />
-        <Probe />
-      </ColoxTheme>,
-    );
-    act(() => setViewportWidth(850));
-    expect(attr('data-colox-breakpoint')).toBe('md');
-    act(() => setViewportWidth(950));
-    expect(attr('data-colox-breakpoint')).toBe('lg');
-  });
 });
 
 describe('Breakpoints subcomponent', () => {
-  it('multiple instances are last-write-wins', () => {
+  it('overrides the thresholds and multiple instances are last-write-wins', () => {
     render(
       <ColoxTheme>
         <ColoxTheme.Breakpoints values={{ md: '700px' }} />
@@ -113,8 +104,22 @@ describe('Breakpoints subcomponent', () => {
       </ColoxTheme>,
     );
     act(() => setViewportWidth(800));
-    expect(attr('data-colox-breakpoint')).toBe('md');
     expect(captured?.breakpoint).toBe('md');
+    act(() => setViewportWidth(950));
+    expect(captured?.breakpoint).toBe('lg');
+  });
+
+  it('writes the current segment onto <html> and removes it at base', () => {
+    render(
+      <ColoxTheme>
+        <ColoxTheme.Breakpoints values={{ md: '900px' }} />
+        <Probe />
+      </ColoxTheme>,
+    );
+    act(() => setViewportWidth(850));
+    expect(attr('data-colox-breakpoint')).toBe('md');
+    act(() => setViewportWidth(2000));
+    expect(root().hasAttribute('data-colox-breakpoint')).toBe(false);
   });
 });
 
@@ -146,11 +151,20 @@ describe('Storage subcomponent', () => {
   });
 });
 
-describe('no-provider degradation', () => {
-  it('the hook reads the global store defaults directly', () => {
+describe('no-provider usage', () => {
+  it('warns and serves static defaults; the imperative setters are no-ops', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     render(<Probe />);
     expect(captured?.theme).toBe('system');
     expect(captured?.resolvedTheme).toBe('light');
-    expect(attr('data-colox-theme')).toBe('light');
+    expect(captured?.isFollowSystem).toBe(true);
+    expect(root().hasAttribute('data-colox-theme')).toBe(false);
+
+    act(() => captured?.setTheme('dark'));
+    expect(captured?.theme).toBe('system');
+    expect(root().hasAttribute('data-colox-theme')).toBe(false);
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
   });
 });

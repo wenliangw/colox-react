@@ -1,14 +1,28 @@
 import { createContext } from 'react';
-import type { ColoxThemeRegistry } from './types';
+import { BASE_BREAKPOINT_NAME, LIGHT_THEME_NAME, SYSTEM_THEME_NAME } from './constants/theme';
+import type { ColoxThemeContextValue, ColoxThemeValue } from './types';
 
-const inertRegistry: ColoxThemeRegistry = {
-  register: () => undefined,
-  unregister: () => undefined,
+const noop = (): undefined => undefined;
+
+/** The static snapshot served when no <ColoxTheme> is mounted. */
+const defaultSnapshot: ColoxThemeValue = {
+  theme: SYSTEM_THEME_NAME,
+  resolvedTheme: LIGHT_THEME_NAME,
+  isFollowSystem: true,
+  palette: undefined,
+  breakpoint: BASE_BREAKPOINT_NAME,
+  setTheme: noop,
+  setPalette: noop,
+  setBreakpoints: noop,
 };
 
-/*
- * Only the registry flows through context; theme state comes from the
- * store subscription. The default value keeps subcomponents safe outside
- * a <ColoxTheme> root — their registrations become no-ops.
- */
-export const ColoxThemeContext = createContext<ColoxThemeRegistry>(inertRegistry);
+export const defaultColoxThemeContextValue: ColoxThemeContextValue = {
+  snapshot: defaultSnapshot,
+  register: noop,
+  unregister: noop,
+};
+
+/** Carries the live snapshot plus the subcomponent registry. */
+export const ColoxThemeContext = createContext<ColoxThemeContextValue>(
+  defaultColoxThemeContextValue,
+);

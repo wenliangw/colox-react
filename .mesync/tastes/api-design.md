@@ -46,4 +46,4 @@
 - 子组件通过 ColoxThemeContext 注册到根（context 直接提供注册能力，不设独立 hook），同类多实例 last-write-wins（和 CSS 源顺序覆盖同一直觉）。
 - 回调不设（变化响应 = 订阅 context/store 值）；`'system'` 词汇进主题值域（声明与 setTheme 命令同词），跟随系统的状态机由 context 内部控制，使用方零实现。
 - 运行时不做配置文件接线（colox.theme.json 纯编译期）：文件管编译产物、代码管运行接线。palette prop 的值即 output.name 轴名——人肉对齐的漂移风险已知并接受。
-- 三轴事实源是 `<html>` 属性，React 层只做写入者+订阅器（模块级单例 store + useSyncExternalStore），不建平行状态。
+- 三轴事实源是 `<html>` 属性，React 层只做写入者+订阅器，不建平行状态。**存储模型 = React 状态流**：`<ColoxTheme>` 根持 useReducer 状态 + context 下发（snapshot + 命令）；属性写入是 useInsertionEffect 副作用，matchMedia 传感器/存储恢复在 layout/普通 effect 里接线并自动清理；无模块级全局变量。无 Provider 时 useColoxTheme `console.warn` + 静态默认值（命令式 setter 变 no-op）。

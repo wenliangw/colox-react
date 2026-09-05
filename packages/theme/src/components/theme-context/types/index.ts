@@ -102,8 +102,14 @@ export interface ColoxThemeStorageEntry {
 
 export type ColoxThemeRegistryEntry = ColoxThemeBreakpointsEntry | ColoxThemeStorageEntry;
 
-/** Registry capabilites the root hands to its subcomponents via context. */
-export interface ColoxThemeRegistry {
+/**
+ * What ColoxThemeContext hands out: the live snapshot for the hook, plus
+ * the registry capabilities for the subcomponents. The context's default
+ * value is a static snapshot with inert registrations, which keeps both
+ * consumers safe outside a <ColoxTheme> root.
+ */
+export interface ColoxThemeContextValue {
+  snapshot: ColoxThemeValue;
   register: (entry: ColoxThemeRegistryEntry) => void;
   unregister: (id: string) => void;
 }

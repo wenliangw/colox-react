@@ -31,8 +31,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "pnpm run tokens:sync && pnpm run emit:themes && vite build",
+    "build": "pnpm run tokens:sync && pnpm run emit:themes && pnpm run clean:js && vite build",
     "build:tokens": "pnpm run tokens:sync && pnpm run emit:themes",
+    "clean:js": "node scripts/clean-dist.mjs",
     "emit:themes": "style-dictionary build --config sd-palette.config.mjs && style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs && node scripts/emit-index-css.mjs",
     "tokens:sync": "node scripts/figma-to-tokens.mjs",
     "typecheck": "pnpm run tokens:sync && tsc --noEmit -p tsconfig.json",
