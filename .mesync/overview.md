@@ -22,7 +22,7 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 ## 模块索引
 
 - **`@colox/theme`**（`packages/theme/`）：设计 & 主题系统——Figma token 管线（meta→tokens→Style Dictionary→`dist/themes/*.css`）、主题编译 CLI（`colox theme build`，bin `colox`）、JSON Schema、标准主题配置文件模板（`config/theme.default.json`）、ColoxTheme 组合式 React 运行时（`<ColoxTheme>` + `.Theme/.Palette/.Breakpoints/.Storage` + `useColoxTheme`）。详见 [wiki/architecture.md](wiki/architecture.md)
-- **`@colox/react`**（`packages/components/`）：组件库本体，组件按目录组织，从 `src/index.ts` 统一导出；构建时 `@import '@colox/theme/index.css'` 级联进 `style.css`，保持一行引入。详见 [modules/button.md](wiki/modules/button.md)、[modules/input.md](wiki/modules/input.md)
+- **`@colox/react`**（`packages/components/`）：组件库本体，组件按目录组织，从 `src/index.ts` 统一导出；构建时 `@import '@colox/theme/index.css'` 级联进 `style.css`，保持一行引入。详见 [modules/button.md](wiki/modules/button.md)、[modules/input.md](wiki/modules/input.md)、[modules/stack.md](wiki/modules/stack.md)
 - **`@colox/preview`**（`apps/preview/`）：组件预览环境（Storybook），组件示例按组件分类存于 `apps/preview/src/<Component>/`（示例归应用、不混入组件包源码；过渡期兼容组件目录内旧 stories）
 - **`@colox/docs`**（`apps/docs/`）：Docusaurus 官方文档站点，MDX 内嵌组件示例
 

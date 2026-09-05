@@ -1,0 +1,57 @@
+---
+sidebar_position: 4
+---
+
+import { Button, HStack, VStack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Stack
+
+`HStack` and `VStack` are the gap-driven layout primitives. Spacing between children rides
+the theme's spacing scale (`--colox-spacing-*`: 4px steps with 2px half steps), so stacked
+content always lands on the token grid and re-themes for free.
+
+## HStack
+
+<HStack gap="2">
+  <Button>Save</Button>
+  <Button variant="outline">Cancel</Button>
+</HStack>
+
+```mdx
+<HStack gap="2">
+  <Button>Save</Button>
+  <Button variant="outline">Cancel</Button>
+</HStack>
+```
+
+## VStack
+
+<VStack gap="4">
+  <div>First block</div>
+  <div>Second block</div>
+</VStack>
+
+```mdx
+<VStack gap="4">
+  <div>First block</div>
+  <div>Second block</div>
+</VStack>
+```
+
+## Gap scale
+
+`gap` accepts the spacing keys: `1`–`14`, `16` (16px–64px steps of 4px) and the half
+steps `0-5`–`4-5` (6px–18px). Defaults follow the pairing they serve: `2` (8px) for the
+inline `HStack`, `4` (16px) for the block `VStack`.
+
+## Props
+
+| Prop    | Type                                                                | Default     | Notes           |
+| ------- | ------------------------------------------------------------------- | ----------- | --------------- |
+| gap     | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`)                         | `'2'`/`'4'` | per direction   |
+| align   | `'start' \| 'center' \| 'end' \| 'stretch' \| 'baseline'`           | `'stretch'` | align-items     |
+| justify | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | `'start'`   | justify-content |
+| wrap    | `boolean` (HStack only)                                             | `false`     | flex-wrap: wrap |
+
+Both accept all native `<div>` attributes and forward refs.

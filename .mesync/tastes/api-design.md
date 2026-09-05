@@ -48,6 +48,13 @@
 
 来源：Button props 收口时用户确认「事件不用特别补充」。
 
+## Layout 组件：组件对直白语义，token 键锁 prop
+
+- 布局件用户偏好**成对组件**（HStack/VStack）而不是单组件 direction 轴——调用点语义直白优先（与 Button 的「单组件+轴」策略相反，布局是高频显式调用面）。注：两组件共享底层修饰类（`colox-stack--*`），只在根类与默认值上分化。
+- `gap` 只收 spacing token 键（20 键全刻度），不收任意数字/px——间距永远落在主题网格上；`align`/`justify` 收语义词（start/center/between…）不收 flexbox 裸值。
+- 默认值按配对服务区分：HStack 默认 gap `2`（8px，行内贴排）、VStack 默认 `4`（16px，块级堆叠）；align 默认 `stretch`（CSS 忠实默认）。
+- 修饰类（gap/align/justify 档）**始终全量输出**（含默认档，同 Button CVA 惯例），组件为纯 token 消费方、不依赖 theme context（响应式 prop 留二期与断点感知一起评估）。
+
 ## ColoxTheme 运行时：组合式 API，props 不堆 Provider
 
 - 形态：`<ColoxTheme>` 根组件，props 直接承载**单属主轴**（`theme` / `defaultTheme` / `palette`），仅**可选子组件**保留为 dot 形式：`<ColoxTheme.Storage />`、`<ColoxTheme.Breakpoints values={…} />`。

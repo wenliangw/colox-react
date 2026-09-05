@@ -1,0 +1,56 @@
+.colox-hstack,
+.colox-vstack {
+  display: flex;
+}
+
+.colox-hstack {
+  flex-direction: row;
+}
+
+.colox-vstack {
+  flex-direction: column;
+}
+
+$stack-gap-keys:
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, '0-5', '1-5', '2-5', '3-5', '4-5';
+
+@each $key in $stack-gap-keys {
+  .colox-stack--gap-#{$key} {
+    gap: var(--colox-spacing-#{$key});
+  }
+}
+
+@each $name,
+  $value
+    in (
+      'start': flex-start,
+      'end': flex-end,
+      'center': center,
+      'stretch': stretch,
+      'baseline': baseline
+    )
+{
+  .colox-stack--align-#{$name} {
+    align-items: $value;
+  }
+}
+
+@each $name,
+  $value
+    in (
+      'start': flex-start,
+      'end': flex-end,
+      'center': center,
+      'between': space-between,
+      'around': space-around,
+      'evenly': space-evenly
+    )
+{
+  .colox-stack--justify-#{$name} {
+    justify-content: $value;
+  }
+}
+
+.colox-hstack--wrap {
+  flex-wrap: wrap;
+}
