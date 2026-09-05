@@ -1,13 +1,5 @@
-// Library entry styles.
-//
-// The @colox/theme cascade (palette baseline + light/dark assignments)
-// is pulled in so @colox/react/style.css stays the single-import
-// surface for components. Re-declaring the same variables is idempotent;
-// custom files compiled from colox.theme.json load after this one.
+// Library style entry: the @colox/theme aggregate (base reset + palette
+// baseline + light/dark assignments) is cascaded in so
+// @colox/react/style.css stays the single-import surface. Custom files
+// compiled from colox.theme.json load after this one.
 @import '@colox/theme/index.css';
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}

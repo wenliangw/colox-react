@@ -1,0 +1,8 @@
+/* Base layer: normalize box sizing for every element, so component
+ * paddings and borders are predictable. Ships inside the aggregate
+ * stylesheet and applies before the token sections. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
