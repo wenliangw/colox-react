@@ -1,36 +1,33 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { stackAlignStyles } from './align';
+import { stackDirectionStyles } from './direction';
 import { stackGapStyles } from './gap';
 import { stackJustifyStyles } from './justify';
 
-export const hstackVariants = cva('colox-hstack', {
+export const stackVariants = cva('colox-stack', {
   variants: {
+    direction: stackDirectionStyles,
     gap: stackGapStyles,
     align: stackAlignStyles,
     justify: stackJustifyStyles,
     wrap: {
-      true: 'colox-hstack--wrap',
+      true: 'colox-stack--wrap',
     },
   },
   defaultVariants: {
-    gap: '2',
+    direction: 'row',
     align: 'stretch',
     justify: 'start',
   },
 });
 
-export const vstackVariants = cva('colox-vstack', {
+export const stackItemVariants = cva('colox-stack-item', {
   variants: {
-    gap: stackGapStyles,
-    align: stackAlignStyles,
-    justify: stackJustifyStyles,
-  },
-  defaultVariants: {
-    gap: '4',
-    align: 'stretch',
-    justify: 'start',
+    grow: {
+      true: 'colox-stack-item--grow',
+    },
   },
 });
 
-export type HStackVariants = VariantProps<typeof hstackVariants>;
-export type VStackVariants = VariantProps<typeof vstackVariants>;
+export type StackVariants = VariantProps<typeof stackVariants>;
+export type StackItemVariants = VariantProps<typeof stackItemVariants>;

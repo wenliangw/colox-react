@@ -1,17 +1,30 @@
 import type { HTMLAttributes } from 'react';
-import type { HStackVariants } from '../variants';
+import type { BreakpointName } from '@colox/theme';
+import type { StackVariants } from '../variants';
 
-/** Spacing scale keys (the `--colox-spacing-*` theme tokens).
- * Gap/align/justify share the HStack axis tables, so a single anchor
- * types them for both components. */
-export type StackGap = NonNullable<HStackVariants['gap']>;
-export type StackAlign = NonNullable<HStackVariants['align']>;
-export type StackJustify = NonNullable<HStackVariants['justify']>;
+/** Main axis of the stack; row is the CSS-faithful default. */
+export type StackDirection = NonNullable<StackVariants['direction']>;
+/** Spacing scale keys (the `--colox-spacing-*` theme tokens). */
+export type StackGap = NonNullable<StackVariants['gap']>;
+export type StackAlign = NonNullable<StackVariants['align']>;
+export type StackJustify = NonNullable<StackVariants['justify']>;
 
-export interface HStackProps extends HTMLAttributes<HTMLDivElement> {
+/**
+ * Per-breakpoint gap overrides for `Stack.Responsive`. Keys are the
+ * theme runtime breakpoint names; a value applies whenever the viewport
+ * fits the band's max-width cap, so narrow bands override wide ones and
+ * `base` (the widest band) is the last fallback.
+ */
+export type StackResponsiveGap = Partial<Record<BreakpointName, StackGap>>;
+
+export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * Spacing between children (spacing token key).
-   * @default '2'
+   * Main axis direction.
+   * @default 'row'
+   */
+  direction?: StackDirection;
+  /**
+   * Spacing between children (spacing token key). No gap unless set.
    */
   gap?: StackGap;
   /**
@@ -25,26 +38,24 @@ export interface HStackProps extends HTMLAttributes<HTMLDivElement> {
    */
   justify?: StackJustify;
   /**
-   * Allow the row to wrap onto multiple lines.
+   * Allow wrapping onto multiple lines.
    * @default false
    */
   wrap?: boolean;
 }
 
-export interface VStackProps extends HTMLAttributes<HTMLDivElement> {
+export interface StackItemProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * Spacing between children (spacing token key).
-   * @default '4'
+   * Absorb the free space along the main axis (Spacer semantics).
+   * @default false
    */
-  gap?: StackGap;
+  grow?: boolean;
+}
+
+export interface StackResponsiveProps {
   /**
-   * Cross-axis alignment (align-items).
-   * @default 'stretch'
+   * Per-breakpoint gap overrides. The resolved value wins over the
+   * Stack `gap` prop while this part is mounted.
    */
-  align?: StackAlign;
-  /**
-   * Main-axis distribution (justify-content).
-   * @default 'start'
-   */
-  justify?: StackJustify;
+  gap: StackResponsiveGap;
 }

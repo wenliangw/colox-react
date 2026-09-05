@@ -1,14 +1,25 @@
-.colox-hstack,
-.colox-vstack {
+.colox-stack {
   display: flex;
-}
 
-.colox-hstack {
-  flex-direction: row;
-}
+  &--row {
+    flex-direction: row;
+  }
 
-.colox-vstack {
-  flex-direction: column;
+  &--column {
+    flex-direction: column;
+  }
+
+  &--row-reverse {
+    flex-direction: row-reverse;
+  }
+
+  &--column-reverse {
+    flex-direction: column-reverse;
+  }
+
+  &--wrap {
+    flex-wrap: wrap;
+  }
 }
 
 $stack-gap-keys:
@@ -51,6 +62,8 @@ $stack-gap-keys:
   }
 }
 
-.colox-hstack--wrap {
-  flex-wrap: wrap;
+.colox-stack-item {
+  &--grow {
+    flex-grow: 1;
+  }
 }

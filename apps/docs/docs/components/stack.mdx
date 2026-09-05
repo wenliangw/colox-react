@@ -2,56 +2,109 @@
 sidebar_position: 4
 ---
 
-import { Button, HStack, VStack } from '@colox/react';
+import { Button, Stack } from '@colox/react';
 import '@colox/react/style.css';
 
 # Stack
 
-`HStack` and `VStack` are the gap-driven layout primitives. Spacing between children rides
-the theme's spacing scale (`--colox-spacing-*`: 4px steps with 2px half steps), so stacked
-content always lands on the token grid and re-themes for free.
+`Stack` is the flexbox layout primitive: one mechanism, semantic props that ride the theme
+token grid. Spacing keys come from the theme's spacing scale (`--colox-spacing-*`: 4px
+steps with 2px half steps), so stacked content always lands on the token grid and
+re-themes for free.
 
-## HStack
+## Main axis
 
-<HStack gap="2">
+`direction` sets the flex direction; `gap` sets the spacing between children.
+
+<Stack direction="row" gap="2">
   <Button>Save</Button>
   <Button variant="outline">Cancel</Button>
-</HStack>
+</Stack>
 
 ```mdx
-<HStack gap="2">
+<Stack direction="row" gap="2">
   <Button>Save</Button>
   <Button variant="outline">Cancel</Button>
-</HStack>
+</Stack>
 ```
 
-## VStack
-
-<VStack gap="4">
+<Stack direction="column" gap="4">
   <div>First block</div>
   <div>Second block</div>
-</VStack>
+</Stack>
 
 ```mdx
-<VStack gap="4">
+<Stack direction="column" gap="4">
   <div>First block</div>
   <div>Second block</div>
-</VStack>
+</Stack>
+```
+
+## Item and the spacer semantics
+
+`Stack.Item` participates in the layout; `grow` absorbs the free space along the main
+axis, pushing the neighbours apart:
+
+<Stack gap="2">
+  <Button variant="outline">Back</Button>
+  <Stack.Item grow />
+  <Button>Next</Button>
+</Stack>
+
+```mdx
+<Stack gap="2">
+  <Button variant="outline">Back</Button>
+  <Stack.Item grow />
+  <Button>Next</Button>
+</Stack>
+```
+
+## Responsive gap
+
+`Stack.Responsive` is the mounted capability for per-breakpoint gap overrides. The theme
+runtime publishes its breakpoint band on `<html data-colox-breakpoint>`; `Stack.Responsive`
+resolves the config against the current band via the theme context and registers the
+result with the enclosing `Stack`. Values apply while the viewport fits the band's
+max-width cap, so narrow bands win and `base` (the widest band) is the last fallback. A
+static `Stack` never touches the theme context.
+
+```mdx
+<Stack gap="4">
+  <Stack.Responsive gap={{ base: '2', lg: '8' }} />
+  <div>gap 8 below 1024px, gap 2 beyond</div>
+  <div>and back to the static "4" if this part unmounts</div>
+</Stack>
 ```
 
 ## Gap scale
 
-`gap` accepts the spacing keys: `1`–`14`, `16` (16px–64px steps of 4px) and the half
-steps `0-5`–`4-5` (6px–18px). Defaults follow the pairing they serve: `2` (8px) for the
-inline `HStack`, `4` (16px) for the block `VStack`.
+`gap` accepts the spacing keys: `1`–`14`, `16` (16px–64px in 4px steps) and the half
+steps `0-5`–`4-5` (6px–18px). Without a `gap` prop the stack inherits the CSS-default gap
+of `0`.
 
 ## Props
 
-| Prop    | Type                                                                | Default     | Notes           |
-| ------- | ------------------------------------------------------------------- | ----------- | --------------- |
-| gap     | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`)                         | `'2'`/`'4'` | per direction   |
-| align   | `'start' \| 'center' \| 'end' \| 'stretch' \| 'baseline'`           | `'stretch'` | align-items     |
-| justify | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | `'start'`   | justify-content |
-| wrap    | `boolean` (HStack only)                                             | `false`     | flex-wrap: wrap |
+### Stack
 
-Both accept all native `<div>` attributes and forward refs.
+| Prop      | Type                                                                | Default     | Notes           |
+| --------- | ------------------------------------------------------------------- | ----------- | --------------- |
+| direction | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'`            | `'row'`     | flex-direction  |
+| gap       | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`)                         | —           | gap: 0          |
+| align     | `'start' \| 'center' \| 'end' \| 'stretch' \| 'baseline'`           | `'stretch'` | align-items     |
+| justify   | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | `'start'`   | justify-content |
+| wrap      | `boolean`                                                           | `false`     | flex-wrap: wrap |
+
+### Stack.Item
+
+| Prop | Type      | Default | Notes        |
+| ---- | --------- | ------- | ------------ |
+| grow | `boolean` | `false` | flex-grow: 1 |
+
+### Stack.Responsive
+
+| Prop | Type                                            | Notes                                        |
+| ---- | ----------------------------------------------- | -------------------------------------------- |
+| gap  | `{ base?, sm?, md?, lg?, xl? }` of spacing keys | resolves against the current breakpoint band |
+
+`Stack` and `Stack.Item` accept all native `<div>` attributes and forward refs.
+`Stack.Responsive` must be mounted inside a `Stack` and renders nothing itself.

@@ -50,12 +50,13 @@
 
 来源：Button props 收口时用户确认「事件不用特别补充」。
 
-## Layout 组件：组件对直白语义，token 键锁 prop
+## Layout 组件：机制最小化，token 键锁 prop
 
-- 布局件用户偏好**成对组件**（HStack/VStack）而不是单组件 direction 轴——调用点语义直白优先（与 Button 的「单组件+轴」策略相反，布局是高频显式调用面）。注：两组件共享底层修饰类（`colox-stack--*`），只在根类与默认值上分化。
-- `gap` 只收 spacing token 键（20 键全刻度），不收任意数字/px——间距永远落在主题网格上；`align`/`justify` 收语义词（start/center/between…）不收 flexbox 裸值。
-- 默认值按配对服务区分：HStack 默认 gap `2`（8px，行内贴排）、VStack 默认 `4`（16px，块级堆叠）；align 默认 `stretch`（CSS 忠实默认）。
-- 修饰类（gap/align/justify 档）**始终全量输出**（含默认档，同 Button CVA 惯例），组件为纯 token 消费方、不依赖 theme context（响应式 prop 留二期与断点感知一起评估）。
+- 演进史：初版走成对组件（HStack/VStack，「调用点直白语义」）；后用户为收紧布局心智负担改定**三机制件路线**（flexbox/grid/absolute 三种正交内核，预设壳是 Chakra 丰产哲学的产物、与本部定位不符），成对组件缩减为**单 `Stack` 机制件**（direction 轴承载全部 flexbox）并删除 HStack/VStack。未来 Grid、Positioner 同此路线，Container 保留为唯一语义壳。
+- 可选能力走 **dot part 挂载即启用**（`<Stack.Responsive gap={{ base, md, … }} />`）：静态组件零 theme context，只有挂载件读 context（断点名解析，数值只活在 theme 运行时的 matchMedia 传感器）；与 ColoxTheme.Storage/Breakpoints 同惯例，内部注册 LWW、卸载还原。
+- 组件名描述**容器职责**：绝对定位容器定名 Positioner 而非 Absolute（absolute 是子件行为，容器只提供定位上下文）。
+- `gap` 只收 spacing token 键（20 键全刻度），不收任意数字/px——间距永远落在主题网格上；`align`/`justify` 收语义词（start/center/between…）不收 flexbox 裸值；direction 含反向值。
+- 修饰类（direction/gap/align/justify 档）**始终全量输出**（含默认档，同 Button CVA 惯例）；CSS 忠实默认（方向 row、对齐 stretch、分布 start、gap 无类即 0）。
 
 ## ColoxTheme 运行时：组合式 API，props 不堆 Provider
 
