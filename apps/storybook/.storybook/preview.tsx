@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react';
+import { ColoxTheme, type ColoxThemeName } from '@colox/theme';
 import '../../../packages/components/src/styles/index.scss';
 import '../../../packages/theme/dist/themes/palette.css';
 import '../../../packages/theme/dist/themes/light.css';
@@ -13,10 +14,11 @@ const preview: Preview = {
   globalTypes: {
     theme: {
       name: 'Colox Theme',
-      description: 'Toggle the data-colox-theme attribute (light/dark/deep)',
+      description: 'Toggle the data-colox-theme axis via <ColoxTheme.Theme>',
       toolbar: {
         icon: 'circlehollow',
         items: [
+          { value: 'system', title: 'System', icon: 'mirror' },
           { value: 'light', title: 'Light', icon: 'sun' },
           { value: 'dark', title: 'Dark', icon: 'moon' },
           { value: 'deep', title: 'Deep', icon: 'star' },
@@ -27,7 +29,7 @@ const preview: Preview = {
     },
     palette: {
       name: 'Colox Palette',
-      description: 'Toggle the data-colox-palette axis (default / demo custom)',
+      description: 'Toggle the data-colox-palette axis via <ColoxTheme.Palette>',
       toolbar: {
         icon: 'paintbrush',
         items: [
@@ -40,7 +42,7 @@ const preview: Preview = {
     },
   },
   initialGlobals: {
-    theme: 'light',
+    theme: 'system',
     palette: 'default',
   },
   parameters: {
@@ -61,15 +63,14 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, context) => {
-      document.documentElement.setAttribute('data-colox-theme', context.globals.theme ?? 'light');
-      if (context.globals.palette === 'demo') {
-        document.documentElement.setAttribute('data-colox-palette', 'demo');
-      } else {
-        document.documentElement.removeAttribute('data-colox-palette');
-      }
-      return Story();
-    },
+    // 狗粮：三轴属性交给 ColoxTheme parts 写，toolbar 选择直接映射成声明。
+    (Story, context) => (
+      <ColoxTheme>
+        <ColoxTheme.Theme name={context.globals.theme as ColoxThemeName} />
+        <ColoxTheme.Palette name={context.globals.palette === 'demo' ? 'demo' : undefined} />
+        <Story />
+      </ColoxTheme>
+    ),
   ],
 };
 

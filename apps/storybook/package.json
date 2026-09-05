@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@colox/react": "workspace:*",
+    "@colox/theme": "workspace:*",
     "@storybook/addon-essentials": "^8.6.0",
     "@storybook/addon-interactions": "^8.6.0",
     "@storybook/blocks": "^8.6.0",
