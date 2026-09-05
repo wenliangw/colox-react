@@ -5,6 +5,15 @@
 - 全部样式与主题机器（Figma token 管线、SD 配置、主题 CLI、Schema、标准配置模板、未来的 ColoxTheme 运行时/ThemeBuilder）归属 `@colox/theme` 一只包；`@colox/react` 只留组件代码与组件级样式，不 import 主题代码——依赖是纯运行时 CSS 契约（读 `var(--colox-*)`）。
 - 组件包的用后即走体验不降级：build 时 `@import '@colox/theme/index.css'` 级联进 style.css（自包含单行引入）。标准配置模板作为 CLI 身份回归测试输入（编译 == 官方存量），模板是使用方复制的起点也是编译器的对账单。
 
+## 主题 CSS 用显式 import 引入，不做 JS 运行时注入
+
+- 使用方两行引入：`import '@colox/react'`（组件代码）+ `import '@colox/react/index.css'`（样式，已吞 theme 级联——所以 css 仍是**一行**而不是三行）。构建期级联只合并样式内部，不把 JS 与 CSS 绑定。
+- 显式引入不是「没做自动注入」的欠账，而是主题库契约的三个支点，哪个都不能让：
+  1. **覆盖顺序**：CLI 定制主题文件靠「同名选择器、源顺序后者胜」替换官方块——静态 css 的 link 顺序由使用方控制（定制放最后）；JS 运行时注入的 `<style>` 恒在静态 link 之后，官方主题反而覆盖定制文件，覆盖契约失效。
+  2. **文件级颗粒自由**：dark-only 部署、只装 @colox/theme 自建组件等按文件挑选的能力。
+  3. **零 FOUC**：css 先于内容到达，首帧即正确主题。
+- JS 内联注入（vite-plugin-css-injected-by-js 类）只在「运行时生成主题」的库（MUI/antd v5 型）里划算；colox 卖编译期产物 + 源顺序覆盖，别手痒去「优化」掉这一行。
+
 ## 设计语言用 CSS 自定义属性承载，JSON + Style Dictionary 构建期生成
 
 - 单一来源已落地：W3C DTCG JSON + Style Dictionary v4；链路 = Figma 导出（styles/meta/*.tokens.json）→ figma-to-tokens.mjs 转换 → SD 生成 themes/light.css。
