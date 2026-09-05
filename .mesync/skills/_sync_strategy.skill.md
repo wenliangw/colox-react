@@ -6,7 +6,7 @@ mesync 是运行在 DeepSeek Harness (dsh) 里的项目级记忆插件。它的�
 
 ## 记忆模型：三块内容，各管一件事
 
-**文件位置约定（重要）**：mesync 的所有文件都存放在**当前 workspace 根目录下的 `.mesync/` 目录**里。下文提到的 `skills/xxx.md`、`rules/xxx.md`、`tastes/xxx.md`，完整路径分别是 `.mesync/skills/xxx.md`、`.mesync/rules/xxx.md`、`.mesync/tastes/xxx.md`（相对 workspace 根目录）。用 `read` 工具读这些文件时，请用完整的 `.mesync/` 前缀路径，不要在服务器上全盘搜索。
+**文件位置约定（重要）**：mesync 的所有文件都存放在**当前 workspace 根目录下的 `.mesync/` 目录**里。下文提到的 `skills/xxx.md`、`rules/xxx.md`、`tastes/xxx.md`、`corrections/xxx.md`，完整路径分别是 `.mesync/skills/xxx.md`、`.mesync/rules/xxx.md`、`.mesync/tastes/xxx.md`、`.mesync/corrections/xxx.md`（相对 workspace 根目录）。用 `read` 工具读这些文件时，请用完整的 `.mesync/` 前缀路径，不要在服务器上全盘搜索。
 
 mesync 的记忆由三部分组成。**判断一条信息属于哪块，用各自的「判断标准」，三者不互斥——一条信息可以同时属于多块，不要三选一。**
 
@@ -62,10 +62,11 @@ mesync 的记忆由三部分组成。**判断一条信息属于哪块，用各�
 
 ## 纠错（Correction）：行为 → 关联检查清单
 
-- **判断**：需要防止将来相同/类似行为漏处理的经验 = 纠错，落 `.mesync/corrections.md`；**它不是品味**，不进 `tastes/`（tastes 只收用户对代码的偏好）。
-- **形态**：条目主干是「改这里 → 必须检查哪里」；错误本身（时间、经过）不记录——记录错误的出发点不是复盘，而是防漏。允许一行「为什么」做锚。
-- **触发**：用户指出错误、故障定位后顺手落/更新一条；动手前若任务属高风险操作（改名、契约变更、多包联动），先 `read .mesync/corrections.md` 对照检查，再动手。
+- **判断**：需要防止将来相同/类似行为漏处理的经验 = 纠错，**不是品味**，不进 `tastes/`；按行为分类落 `.mesync/corrections/<分类>.md`（一类一个文件，防止单文件膨胀）。规则与心法分别见 `.mesync/rules/correction.rule.md` + `.mesync/skills/correction.skill.md`。
+- **形态**：条目主干是「改这里 → 必须检查哪里」，语言简洁、清单式；错误本身（时间、经过）不记录——出发点不是复盘，而是防漏。允许一行「为什么」做锚。
+- **触发**：用户指出错误、故障定位后顺手落/更新一条；动手前若任务属高风险操作（改名、契约变更、多包联动），先 `read .mesync/corrections/` 对应分类对照检查，再动手。
 - **诚实纪律**：对用户声明的「已验证 / 已入库 / 已修复」必须是真实执行过、可指出证据的结论；被追问「写到哪里了」时，先承认未落盘再补齐，不狡辩。
+- **命名**：`_` 下划线开头是 mesync 内置内容；新增的 skill/rule 文件不以 `_` 开头（如 `correction.rule.md`）。
 
 ## 时序（重要，务必遵守）
 
