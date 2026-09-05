@@ -19,12 +19,8 @@
  * the complete light assignment (52 + 4 brand + 6 derived semantic
  * tokens), dark.css carries its own complete assignment.
  */
-import { nameTransforms } from './scripts/sd-shared.mjs';
 
 export default {
-  hooks: {
-    transforms: nameTransforms,
-  },
   source: [
     'src/styles/tokens/color.tokens.json',
     'src/styles/tokens/palette.brand.tokens.json',
@@ -37,7 +33,7 @@ export default {
   ],
   platforms: {
     css: {
-      transforms: ['name/path-kebab'],
+      transforms: ['name/kebab'],
       buildPath: 'dist/themes/',
       files: [
         {

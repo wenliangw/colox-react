@@ -58,7 +58,7 @@
 
 - 语义色按**强度档**组织：solid（全强度实底）/ muted（中间调）/ subtle（最浅罩层）/ inverse（深底反色前景）。颜色四档组服务实底组件，角色组（text/bg/border）服务面板/文字/边框语境。
 - 档位替混色：焦点环用 muted 档；罩层态（outline/ghost 的 hover/active）用 wash 档 token——subtle/muted/solid 静态档位只承载静止态，交互态一律走派生。
-- 交互态双档派生：实底档 `solid--hover/solid--active` = 基色向黑混 85%/75%（light）/ 向白混（dark，实底控件暗色下 hover 变亮）；罩层档 `wash--hover/wash--active` = 基色向透明混 8%/15%。档位与状态名用 `--` 连接（`color.brand.solid--hover` 形态），规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic.derived.dark.tokens.json（dark），组件不内联。SD 内置 name/kebab 会把 `--` 压平，已用自定义 `name/path-kebab`（按路径拼接、保留段内 `--`）替代。
+- 交互态双档派生：实底档 `solid-hover/solid-active` = 基色向黑混 85%/75%（light）/ 向白混（dark，实底控件暗色下 hover 变亮）；罩层档 `wash-hover/wash-active` = 基色向透明混 8%/15%。档位与状态名按标准 kebab 单连字符拼接（`color.brand.solid-hover` 形态，不引入双连字符）；规则集中人工维护在 semantic.derived.tokens.json（light）与 semantic.derived.dark.tokens.json（dark），组件不内联。命名沿用 SD 内置 name/kebab（行业公认规范）。
 - 派生混色的 authored 形态用 `var(--colox-color-*-solid)` 字面串（SD 原样透传、浏览器运行时解析）而非 `{token}` 引用——保证运行时重映射 solid（如未来 brand 换色）时 hover/active 自动跟随。
 - color-mix 需要 2023+ 浏览器。
 

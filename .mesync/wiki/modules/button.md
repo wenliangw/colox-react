@@ -33,8 +33,8 @@ stories 已迁 `apps/preview/src/button/`（variant/intent/size/state 四页，�
 
 ## 样式
 
-- **组件零硬编码颜色、零内联派生**：intent 轴把主题色组映射为组件局部变量（`--colox-button-intent-solid/muted/inverse` + 交互态 `solid--/wash--hover/active`），variant 轴只读这些局部变量；换肤只换主题层色组。
-- 交互态全部消费 theme derived 双档 token：实底档 `solid--hover/active`（向黑混 85%/75%，dark 向白）与罩层档 `wash--hover/active`（向透明混 8%/15%）；outline/ghost 的 hover/active 用 wash 档浅底。
+- **组件零硬编码颜色、零内联派生**：intent 轴把主题色组映射为组件局部变量（`--colox-button-intent-solid/muted/inverse` + 交互态 `solid-/wash-hover/active`），variant 轴只读这些局部变量；换肤只换主题层色组。
+- 交互态全部消费 theme derived 双档 token：实底档 `solid-hover/active`（向黑混 85%/75%，dark 向白）与罩层档 `wash-hover/active`（向透明混 8%/15%）；outline/ghost 的 hover/active 用 wash 档浅底。
 - focus-visible：`outline:none` + intent solid 边框 + `0 0 0 2px intent-muted` 环（danger 轴自动跟 red 组）。
 - disabled：消费语义三件套 `text.disabled` / `bg.disabled`（solid）/ `border.disabled`（outline），弃 opacity 惯例。
 - 尺寸阶梯与 Input 对齐：sm = spacing-1/3 + fontSize.xs/lineHeight.xs，md = spacing-2/4 + fontSize.sm，lg = spacing-3/4 + fontSize.md/lineHeight.md。

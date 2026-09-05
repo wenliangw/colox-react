@@ -3,11 +3,11 @@
   color: var(--colox-button-intent-inverse);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-solid--hover);
+    background-color: var(--colox-button-intent-solid-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-solid--active);
+    background-color: var(--colox-button-intent-solid-active);
   }
 
   &:disabled {
@@ -22,11 +22,11 @@
   color: var(--colox-button-intent-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-wash--hover);
+    background-color: var(--colox-button-intent-wash-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-wash--active);
+    background-color: var(--colox-button-intent-wash-active);
   }
 
   &:disabled {
@@ -40,11 +40,11 @@
   color: var(--colox-button-intent-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-wash--hover);
+    background-color: var(--colox-button-intent-wash-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-wash--active);
+    background-color: var(--colox-button-intent-wash-active);
   }
 
   &:disabled {

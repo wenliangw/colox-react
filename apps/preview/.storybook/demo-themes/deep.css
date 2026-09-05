@@ -55,52 +55,48 @@
   --colox-color-brand-muted: var(--colox-palette-brand-200);
   --colox-color-brand-solid: var(--colox-palette-brand-500);
   --colox-color-brand-subtle: var(--colox-palette-brand-900);
-  --colox-color-brand-solid--active: color-mix(
-    in srgb,
-    var(--colox-color-brand-solid) 75%,
-    #ffffff
-  );
-  --colox-color-brand-solid--hover: color-mix(in srgb, var(--colox-color-brand-solid) 85%, #ffffff);
-  --colox-color-brand-wash--active: color-mix(
+  --colox-color-brand-solid-active: color-mix(in srgb, var(--colox-color-brand-solid) 75%, #ffffff);
+  --colox-color-brand-solid-hover: color-mix(in srgb, var(--colox-color-brand-solid) 85%, #ffffff);
+  --colox-color-brand-wash-active: color-mix(
     in srgb,
     var(--colox-color-brand-solid) 15%,
     transparent
   );
-  --colox-color-brand-wash--hover: color-mix(
+  --colox-color-brand-wash-hover: color-mix(
     in srgb,
     var(--colox-color-brand-solid) 8%,
     transparent
   );
-  --colox-color-gray-solid--active: color-mix(in srgb, var(--colox-color-gray-solid) 75%, #ffffff);
-  --colox-color-gray-solid--hover: color-mix(in srgb, var(--colox-color-gray-solid) 85%, #ffffff);
-  --colox-color-gray-wash--active: color-mix(
+  --colox-color-gray-solid-active: color-mix(in srgb, var(--colox-color-gray-solid) 75%, #ffffff);
+  --colox-color-gray-solid-hover: color-mix(in srgb, var(--colox-color-gray-solid) 85%, #ffffff);
+  --colox-color-gray-wash-active: color-mix(
     in srgb,
     var(--colox-color-gray-solid) 15%,
     transparent
   );
-  --colox-color-gray-wash--hover: color-mix(in srgb, var(--colox-color-gray-solid) 8%, transparent);
-  --colox-color-indigo-solid--active: color-mix(
+  --colox-color-gray-wash-hover: color-mix(in srgb, var(--colox-color-gray-solid) 8%, transparent);
+  --colox-color-indigo-solid-active: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 75%,
     #ffffff
   );
-  --colox-color-indigo-solid--hover: color-mix(
+  --colox-color-indigo-solid-hover: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 85%,
     #ffffff
   );
-  --colox-color-indigo-wash--active: color-mix(
+  --colox-color-indigo-wash-active: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 15%,
     transparent
   );
-  --colox-color-indigo-wash--hover: color-mix(
+  --colox-color-indigo-wash-hover: color-mix(
     in srgb,
     var(--colox-color-indigo-solid) 8%,
     transparent
   );
-  --colox-color-red-solid--active: color-mix(in srgb, var(--colox-color-red-solid) 75%, #ffffff);
-  --colox-color-red-solid--hover: color-mix(in srgb, var(--colox-color-red-solid) 85%, #ffffff);
-  --colox-color-red-wash--active: color-mix(in srgb, var(--colox-color-red-solid) 15%, transparent);
-  --colox-color-red-wash--hover: color-mix(in srgb, var(--colox-color-red-solid) 8%, transparent);
+  --colox-color-red-solid-active: color-mix(in srgb, var(--colox-color-red-solid) 75%, #ffffff);
+  --colox-color-red-solid-hover: color-mix(in srgb, var(--colox-color-red-solid) 85%, #ffffff);
+  --colox-color-red-wash-active: color-mix(in srgb, var(--colox-color-red-solid) 15%, transparent);
+  --colox-color-red-wash-hover: color-mix(in srgb, var(--colox-color-red-solid) 8%, transparent);
 }
