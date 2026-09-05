@@ -1,55 +1,19 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import clsx from 'clsx';
+import type { ButtonProps, ButtonRef } from './types';
+import { buttonVariants } from './variants';
 
-import './button.scss';
+import './styles/index.scss';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Visual style of the button.
-   * @default 'primary'
-   */
-  variant?: ButtonVariant;
-  /**
-   * Size of the button.
-   * @default 'md'
-   */
-  size?: ButtonSize;
-  /**
-   * Shows a spinner and disables interaction.
-   * @default false
-   */
-  loading?: boolean;
-}
-
-/**
- * A versatile button component with variants, sizes and a loading state.
- */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  const {
-    variant = 'primary',
-    size = 'md',
-    loading = false,
-    className,
-    disabled,
-    children,
-    ...rest
-  } = props;
-
-  const classes = clsx('colox-btn', `colox-btn--${variant}`, `colox-btn--${size}`, className);
+export const Button = forwardRef<ButtonRef, ButtonProps>((props, ref) => {
+  const { size, variant, intent, className, type = 'button', ...rest } = props;
 
   return (
     <button
       ref={ref}
-      className={classes}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
+      type={type}
+      className={clsx(buttonVariants({ size, variant, intent }), className)}
       {...rest}
-    >
-      {loading ? <span className="colox-btn__spinner" aria-hidden="true" /> : null}
-      <span className="colox-btn__content">{children}</span>
-    </button>
+    />
   );
 });

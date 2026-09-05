@@ -2,42 +2,74 @@
   "colox": {
     "color": {
       "indigo": {
-        "hover": {
+        "solid--hover": {
           "$value": "color-mix(in srgb, var(--colox-color-indigo-solid) 85%, #FFFFFF)",
           "$type": "color"
         },
-        "active": {
+        "solid--active": {
           "$value": "color-mix(in srgb, var(--colox-color-indigo-solid) 75%, #FFFFFF)",
+          "$type": "color"
+        },
+        "wash--hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-indigo-solid) 8%, transparent)",
+          "$type": "color"
+        },
+        "wash--active": {
+          "$value": "color-mix(in srgb, var(--colox-color-indigo-solid) 15%, transparent)",
           "$type": "color"
         }
       },
       "gray": {
-        "hover": {
+        "solid--hover": {
           "$value": "color-mix(in srgb, var(--colox-color-gray-solid) 85%, #FFFFFF)",
           "$type": "color"
         },
-        "active": {
+        "solid--active": {
           "$value": "color-mix(in srgb, var(--colox-color-gray-solid) 75%, #FFFFFF)",
+          "$type": "color"
+        },
+        "wash--hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-gray-solid) 8%, transparent)",
+          "$type": "color"
+        },
+        "wash--active": {
+          "$value": "color-mix(in srgb, var(--colox-color-gray-solid) 15%, transparent)",
           "$type": "color"
         }
       },
       "red": {
-        "hover": {
+        "solid--hover": {
           "$value": "color-mix(in srgb, var(--colox-color-red-solid) 85%, #FFFFFF)",
           "$type": "color"
         },
-        "active": {
+        "solid--active": {
           "$value": "color-mix(in srgb, var(--colox-color-red-solid) 75%, #FFFFFF)",
+          "$type": "color"
+        },
+        "wash--hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-red-solid) 8%, transparent)",
+          "$type": "color"
+        },
+        "wash--active": {
+          "$value": "color-mix(in srgb, var(--colox-color-red-solid) 15%, transparent)",
           "$type": "color"
         }
       },
       "brand": {
-        "hover": {
+        "solid--hover": {
           "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 85%, #FFFFFF)",
           "$type": "color"
         },
-        "active": {
+        "solid--active": {
           "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 75%, #FFFFFF)",
+          "$type": "color"
+        },
+        "wash--hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 8%, transparent)",
+          "$type": "color"
+        },
+        "wash--active": {
+          "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 15%, transparent)",
           "$type": "color"
         }
       }

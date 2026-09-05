@@ -12,7 +12,7 @@ export default function Home() {
         <h1 className={styles.title}>{siteConfig.title}</h1>
         <p className={styles.tagline}>{siteConfig.tagline}</p>
         <div className={styles.actions}>
-          <Button variant="primary" size="lg">
+          <Button variant="solid" size="lg">
             Get Started
           </Button>
           <Button variant="ghost" size="lg">

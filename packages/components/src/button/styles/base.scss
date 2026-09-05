@@ -1,0 +1,28 @@
+.colox-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--colox-spacing-2);
+  border: 1px solid transparent;
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  font-weight: var(--colox-font-weight-semibold);
+  line-height: var(--colox-line-height-sm);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--colox-button-intent-solid);
+    box-shadow: 0 0 0 2px var(--colox-button-intent-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

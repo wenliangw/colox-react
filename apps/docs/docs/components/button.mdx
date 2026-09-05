@@ -11,23 +11,24 @@ Buttons trigger user actions.
 
 ## Variants
 
-<Button variant="primary">Primary</Button> <Button variant="secondary">Secondary</Button>
-<Button variant="ghost">Ghost</Button> <Button variant="danger">Danger</Button>
+<Button variant="solid">Solid</Button> <Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+
+## Intents
+
+<Button intent="brand">Brand</Button> <Button intent="neutral">Neutral</Button>
+<Button intent="danger">Danger</Button>
 
 ## Sizes
 
 <Button size="sm">Small</Button> <Button size="md">Medium</Button> <Button size="lg">Large</Button>
 
-## Loading
-
-<Button loading>Loading</Button>
-
 ## Props
 
-| Prop    | Type                                              | Default     |
-| ------- | ------------------------------------------------- | ----------- |
-| variant | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | `'primary'` |
-| size    | `'sm' \| 'md' \| 'lg'`                            | `'md'`      |
-| loading | `boolean`                                         | `false`     |
+| Prop    | Type                               | Default   |
+| ------- | ---------------------------------- | --------- |
+| variant | `'solid' \| 'outline' \| 'ghost'`  | `'solid'` |
+| intent  | `'brand' \| 'neutral' \| 'danger'` | `'brand'` |
+| size    | `'sm' \| 'md' \| 'lg'`             | `'md'`    |
 
-It also accepts all native `<button>` attributes.
+It also accepts all native `<button>` attributes; `type` defaults to `'button'`.

@@ -12,11 +12,16 @@
  * are overwritten by the :root[data-colox-palette='…'] axis files
  * (0,2,0) from the colox CLI regardless of stylesheet order.
  */
+import { nameTransforms } from './scripts/sd-shared.mjs';
+
 export default {
+  hooks: {
+    transforms: nameTransforms,
+  },
   source: ['src/styles/tokens/color.tokens.json', 'src/styles/tokens/palette.brand.tokens.json'],
   platforms: {
     cssPalette: {
-      transforms: ['name/kebab'],
+      transforms: ['name/path-kebab'],
       buildPath: 'dist/themes/',
       files: [
         {

@@ -1,0 +1,53 @@
+.colox-button--solid {
+  background-color: var(--colox-button-intent-solid);
+  color: var(--colox-button-intent-inverse);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-button-intent-solid--hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-button-intent-solid--active);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+.colox-button--outline {
+  border-color: var(--colox-button-intent-solid);
+  background-color: transparent;
+  color: var(--colox-button-intent-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-button-intent-wash--hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-button-intent-wash--active);
+  }
+
+  &:disabled {
+    border-color: var(--colox-color-border-disabled);
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+.colox-button--ghost {
+  background-color: transparent;
+  color: var(--colox-button-intent-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-button-intent-wash--hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-button-intent-wash--active);
+  }
+
+  &:disabled {
+    color: var(--colox-color-text-disabled);
+  }
+}

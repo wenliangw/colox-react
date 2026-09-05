@@ -18,7 +18,12 @@
  * The output is a COMPLETE assignment of the same variable names as
  * the light theme's color section (58 + 4 brand tokens).
  */
+import { nameTransforms } from './scripts/sd-shared.mjs';
+
 export default {
+  hooks: {
+    transforms: nameTransforms,
+  },
   source: [
     'src/styles/tokens/color.tokens.json',
     'src/styles/tokens/palette.brand.tokens.json',
@@ -28,7 +33,7 @@ export default {
   ],
   platforms: {
     cssDark: {
-      transforms: ['name/kebab'],
+      transforms: ['name/path-kebab'],
       buildPath: 'dist/themes/',
       files: [
         {

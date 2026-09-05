@@ -26,7 +26,7 @@ import { Button } from '@colox/react';
 import '@colox/react/style.css';
 
 function App() {
-  return <Button variant="primary">Click me</Button>;
+  return <Button variant="solid">Click me</Button>;
 }
 ```
 
