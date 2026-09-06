@@ -5,7 +5,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/colox/colox-react.git",
+    "url": "https://github.com/wenliangw/colox-react.git",
     "directory": "packages/mcp"
   },
   "bin": {

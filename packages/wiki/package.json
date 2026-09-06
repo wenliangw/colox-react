@@ -4,7 +4,7 @@
   "description": "Colox AI doctrine: usage rules, composition skills and component reference for AI agents.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/colox/colox-react.git",
+    "url": "https://github.com/wenliangw/colox-react.git",
     "directory": "packages/wiki"
   },
   "files": [

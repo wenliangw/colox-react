@@ -21,7 +21,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/colox/colox-react/tree/master/apps/docs/',
+          editUrl: 'https://github.com/wenliangw/colox-react/tree/master/apps/docs/',
         },
         blog: false,
         theme: {
@@ -93,7 +93,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/colox/colox-react',
+          href: 'https://github.com/wenliangw/colox-react',
           label: 'GitHub',
           position: 'right',
         },
