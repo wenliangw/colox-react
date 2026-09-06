@@ -23,7 +23,7 @@ A modular, accessible React component library monorepo built with **Vite + TypeS
 colox-react/
 ├── packages/
 │   ├── components/        # @colox/react — the component library
-│   ├── theme/             # @colox/theme — theme runtime + packaged stock css
+│   ├── theme/             # @colox/theme — theme runtime + packaged builtin css
 │   ├── theme-builder/     # @colox/theme-builder — design-language
 │   │                      #   compiler (bin colox): Figma tokens → theme css
 │   ├── wiki/              # @colox/wiki — AI agent doctrine data package
@@ -48,7 +48,9 @@ pnpm install
 pnpm dev
 ```
 
-Storybook reads stories co-located with components in `packages/components/src/**/*.stories.tsx`, with full source-level HMR.
+Storybook reads stories from `apps/preview/src/<Component>/` (co-located
+legacy stories under `packages/components/src` stay readable during the
+transition), with full source-level HMR.
 
 ### Develop docs (Docusaurus)
 
@@ -60,17 +62,17 @@ This builds `@colox/react` once, then watches it while Docusaurus runs, so MDX l
 
 ## Scripts
 
-| Script                              | Description                                  |
-| ----------------------------------- | -------------------------------------------- |
-| `pnpm dev`                          | Start Storybook                              |
-| `pnpm build`                        | Build the component library (`@colox/react`) |
-| `pnpm build:storybook`              | Build static Storybook                       |
-| `pnpm docs:dev` / `pnpm docs:build` | Run / build Docusaurus docs                  |
-| `pnpm lint` / `pnpm lint:fix`       | Lint the monorepo                            |
-| `pnpm format` / `pnpm format:check` | Format / check formatting                    |
-| `pnpm typecheck`                    | Type-check all packages                      |
-| `pnpm test`                         | Run unit tests                               |
-| `pnpm changeset`                    | Add a changeset                              |
+| Script                              | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| `pnpm dev`                          | Start Storybook                      |
+| `pnpm build`                        | Build all packages (workspace order) |
+| `pnpm build:storybook`              | Build static Storybook               |
+| `pnpm docs:dev` / `pnpm docs:build` | Run / build Docusaurus docs          |
+| `pnpm lint` / `pnpm lint:fix`       | Lint the monorepo                    |
+| `pnpm format` / `pnpm format:check` | Format / check formatting            |
+| `pnpm typecheck`                    | Type-check all packages              |
+| `pnpm test`                         | Run unit tests                       |
+| `pnpm changeset`                    | Add a changeset                      |
 
 ## Consuming the library
 
