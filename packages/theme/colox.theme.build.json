@@ -1,4 +1,8 @@
 {
-  "meta": "stock",
-  "outDir": "dist"
+  "tokens": "node_modules/@colox/theme-builder/src/styles/meta",
+  "outDir": "dist",
+  "runtime": {
+    "type": "ts",
+    "output": "src/styles/tokens/breakpoints.ts"
+  }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@colox/theme-builder",
   "version": "0.0.0",
-  "description": "Compile the Colox design language: turn Figma token sources (or the stock design language) into theme CSS, and a colox.theme.json into brand/custom theme CSS",
+  "description": "Compile the Colox design language: turn token sources (Figma exports; shipped builtin language included) into theme CSS plus runtime token artifacts, and a colox.theme.json into brand/custom theme CSS",
   "license": "MIT",
   "bin": {
     "colox": "./cli/colox.mjs"

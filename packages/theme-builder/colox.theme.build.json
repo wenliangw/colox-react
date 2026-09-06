@@ -1,4 +1,4 @@
 {
-  "meta": "stock",
+  "tokens": "./src/styles/meta",
   "outDir": "dist"
 }

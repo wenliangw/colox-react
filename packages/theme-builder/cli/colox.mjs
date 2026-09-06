@@ -8,13 +8,18 @@
  * colox.theme.build.json, discovered by walking up from the cwd:
  *
  *   {
- *     "theme": "./colox.theme.json",  // mode A: brand/custom-theme
- *                                     //   config compiled over the
- *                                     //   Colox design language
- *     "meta": "stock" | "./figma-meta", // mode B: full design-language
- *                                     //   compile (Figma sources; "stock"
- *                                     //   = the shipped design language)
- *     "outDir": "./dist"              // REQUIRED — css output directory
+ *     "tokens": "./token-sources",     // full design-language compile:
+ *                                      // a token source directory (Figma
+ *                                      // exports conforming to the Colox
+ *                                      // design language)
+ *     "theme": "./colox.theme.json",   // custom-theme compile: a
+ *                                      // colox.theme.json compiled over
+ *                                      // the Colox design language
+ *     "outDir": "./dist",              // REQUIRED — css output directory
+ *     "runtime": {                     // OPTIONAL — requires "tokens":
+ *       "type": "ts",                  //   runtime token artifacts
+ *       "output": "./src/tokens/runtime.ts"
+ *     }
  *   }
  *
  * Resolution order for the custom-theme config: the `-c` flag beats the
@@ -25,17 +30,17 @@
  * `colox theme build` compiles the default config into ./colox.
  *
  * Both modes emit COMPLETE assignments:
- * - mode B: palette/light/dark css suite + index.css aggregate — replaces
- *   the @colox/theme/index.css import wholesale
- * - mode A: a palette-axis file (:root[data-colox-palette='<name>']) and
- *   one file per configured theme (:root[data-colox-theme='<name>']),
- *   loaded after the shipped aggregate so same name + same selector
- *   overrides by source order
+ * - the tokens mode produces the palette/light/dark css suite + index.css
+ *   aggregate — replaces the @colox/theme/index.css import wholesale
+ * - the theme mode produces a palette-axis file
+ *   (:root[data-colox-palette='<name>']) and one file per configured
+ *   theme (:root[data-colox-theme='<name>']), loaded after the shipped
+ *   aggregate so same name + same selector overrides by source order
  */
 import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildDesignLanguage } from '../scripts/stock-build.mjs';
+import { buildDesignLanguage } from '../scripts/build.mjs';
 import { validateConfig, buildPaletteCss, buildThemeCss } from './theme.mjs';
 
 const BUILDER_ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -164,37 +169,62 @@ if (typeof buildConfig.outDir !== 'string' || buildConfig.outDir.length === 0) {
   console.error(`colox: ${buildConfigPath}: "outDir" is required (css output directory).`);
   process.exit(1);
 }
+
+if (buildConfig.runtime && !buildConfig.tokens) {
+  console.error(
+    `colox: ${buildConfigPath}: "runtime" requires a "tokens" design-language compile.`,
+  );
+  process.exit(1);
+}
+
 const outDir = path.resolve(buildConfigDir, buildConfig.outDir);
 
-if (buildConfig.meta) {
-  let meta;
-  if (buildConfig.meta === 'stock') {
-    meta = 'stock';
-  } else {
-    meta = path.resolve(buildConfigDir, buildConfig.meta);
-    let info;
-    try {
-      info = await stat(meta);
-    } catch {
-      console.error(`colox: ${buildConfigPath}: meta directory "${buildConfig.meta}" not found.`);
-      process.exit(1);
-    }
-    if (!info.isDirectory()) {
-      console.error(`colox: ${buildConfigPath}: meta "${buildConfig.meta}" is not a directory.`);
-      process.exit(1);
-    }
-  }
+if (buildConfig.tokens) {
+  const tokenDir = path.resolve(buildConfigDir, buildConfig.tokens);
+  let info;
   try {
-    await buildDesignLanguage({ meta, outDir });
+    info = await stat(tokenDir);
+  } catch {
+    console.error(`colox: ${buildConfigPath}: tokens directory "${buildConfig.tokens}" not found.`);
+    process.exit(1);
+  }
+  if (!info.isDirectory()) {
+    console.error(`colox: ${buildConfigPath}: tokens "${buildConfig.tokens}" is not a directory.`);
+    process.exit(1);
+  }
+
+  let runtime;
+  if (buildConfig.runtime) {
+    if (buildConfig.runtime.type !== 'ts') {
+      console.error(
+        `colox: ${buildConfigPath}: runtime.type "${buildConfig.runtime.type}" is not supported (only "ts").`,
+      );
+      process.exit(1);
+    }
+    if (typeof buildConfig.runtime.output !== 'string' || buildConfig.runtime.output.length === 0) {
+      console.error(
+        `colox: ${buildConfigPath}: runtime.output is required (absolute or config-relative path).`,
+      );
+      process.exit(1);
+    }
+    runtime = {
+      type: 'ts',
+      output: path.resolve(buildConfigDir, buildConfig.runtime.output),
+    };
+  }
+
+  try {
+    await buildDesignLanguage({ tokens: tokenDir, outDir, runtime });
   } catch (err) {
     console.error(`colox: design-language compile failed: ${err.message}`);
     process.exit(1);
   }
 }
 
-// Mode A runs alongside mode B when the contract or the flag names a
-// theme config; an outDir-only contract compiles the default config.
-if (configFlag || buildConfig.theme || !buildConfig.meta) {
+// The custom-theme compile runs alongside the tokens compile when the
+// contract or the flag names a theme config; an outDir-only contract
+// compiles the default config.
+if (configFlag || buildConfig.theme || !buildConfig.tokens) {
   const themeConfig = configFlag
     ? path.resolve(configFlag)
     : buildConfig.theme

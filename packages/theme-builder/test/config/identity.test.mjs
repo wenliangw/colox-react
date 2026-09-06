@@ -3,7 +3,7 @@
  * (config/theme.default.json) must reproduce the shipped palette
  * baseline exactly — the CLI and the SD pipeline digest the same
  * token source and must stay in lockstep. This pins the compiler to
- * the official stock output.
+ * the official builtin output.
  */
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';

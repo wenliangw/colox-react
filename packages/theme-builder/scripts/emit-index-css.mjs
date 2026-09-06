@@ -14,9 +14,8 @@
  * the single-import surface for component consumers. Component styles
  * themselves live in @colox/react, not here.
  *
- * Target directory comes from COLox_CSS_OUT (set by
- * scripts/stock-build.mjs); defaults to the builder's own dist so the
- * package stays self-hosted.
+ * Target directory comes from COLox_CSS_OUT (set by scripts/build.mjs);
+ * defaults to the builder's own dist so the package stays self-hosted.
  */
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';

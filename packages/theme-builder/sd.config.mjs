@@ -24,7 +24,7 @@
 
 import path from 'node:path';
 
-// Paths are driven by scripts/stock-build.mjs through env; defaults keep
+// Paths are driven by scripts/build.mjs through env; defaults keep
 // the builder package self-hosted (running from the package root).
 const tokens = (file) =>
   path.join(process.env.COLox_TOKENS_DIR ?? path.join(process.cwd(), 'src/styles/tokens'), file);

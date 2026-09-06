@@ -12,10 +12,10 @@
  *   [{group, leaf, value}] — values already in CSS form
  *   (var(--colox-palette-*-) / color-mix() / #hex / shadow literals)
  *
- * Run after the stock design-language compile (scripts/stock-build.mjs
- * or the builder's own `pnpm build`); paths default to the builder
- * package root and can be redirected through COLox_TOKENS_DIR /
- * COLox_DIST when compiling a custom design-language workspace.
+ * Run after the design-language compile (scripts/build.mjs or the
+ * builder's own `pnpm build`); paths default to the builder package
+ * root and can be redirected through COLox_TOKENS_DIR / COLox_DIST
+ * when compiling a custom design-language workspace.
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';

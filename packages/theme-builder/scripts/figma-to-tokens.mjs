@@ -23,16 +23,16 @@
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
  *
- * Paths come from env (set by scripts/stock-build.mjs):
- * - COLox_META_DIR   Figma export directory to read
- * - COLox_TOKENS_DIR token workspace to write the generated subset into
+ * Paths come from env (set by scripts/build.mjs):
+ * - COLox_TOKENS_SRC  Figma export directory to read
+ * - COLox_TOKENS_DIR  token workspace to write the generated subset into
  */
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const builderRoot = fileURLToPath(new URL('../', import.meta.url));
-const META_DIR = process.env.COLox_META_DIR ?? path.join(builderRoot, 'src/styles/meta');
+const META_DIR = process.env.COLox_TOKENS_SRC ?? path.join(builderRoot, 'src/styles/meta');
 const OUT_DIR = process.env.COLox_TOKENS_DIR ?? path.join(builderRoot, 'src/styles/tokens');
 
 // file basename (without .tokens.json) => converter spec

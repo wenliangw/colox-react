@@ -52,11 +52,19 @@ Figma exports (packages/theme-builder/src/styles/meta/*.tokens.json)
 ```
 
 The whole chain runs through `colox theme build`, driven by each
-package's `colox.theme.build.json` (`{ "meta": "stock", "outDir": "dist" }`
-for both `@colox/theme-builder` and `@colox/theme`). `@colox/theme`
-additionally syncs its runtime breakpoint constants
-(`src/styles/tokens/breakpoints.ts`) from the builder's
-`base.tokens.json` via `scripts/sync-breakpoints.mjs`.
+package's `colox.theme.build.json`:
+
+- `@colox/theme-builder`:
+  `{ "tokens": "./src/styles/meta", "outDir": "dist" }` — compiles the
+  builtin design language into its own dist (the CLI digest needed by
+  custom-theme compiles).
+- `@colox/theme`:
+  `{ "tokens": "node_modules/@colox/theme-builder/src/styles/meta", "outDir": "dist",
+"runtime": { "type": "ts", "output": "src/styles/tokens/breakpoints.ts" } }`
+  — compiles the builder's shipped sources into the runtime package, and
+  the `runtime` block emits the breakpoint constants the runtime consumes
+  in JS (emitted by the builder inside the compile chain, before vite
+  builds the runtime).
 
 Hand-maintained sources live in
 `packages/theme-builder/src/styles/tokens/base.tokens.json` (font

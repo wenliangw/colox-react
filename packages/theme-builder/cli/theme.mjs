@@ -283,7 +283,7 @@ export function buildPaletteCss(overrides, stepLists, defaults, scopeName) {
 }
 
 /**
- * Complete semantic assignment for one theme: the stock assignments
+ * Complete semantic assignment for one theme: the builtin assignments
  * (var()-chained or literals) with the configured overrides spliced in.
  * Order follows cli-data (sorted by group-leaf).
  */
