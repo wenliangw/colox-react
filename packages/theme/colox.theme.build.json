@@ -3,6 +3,6 @@
   "outDir": "dist",
   "runtime": {
     "type": "ts",
-    "output": "src/styles/tokens/breakpoints.ts"
+    "output": "src/styles/tokens"
   }
 }

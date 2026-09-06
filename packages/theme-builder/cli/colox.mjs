@@ -18,7 +18,9 @@
  *     "outDir": "./dist",              // REQUIRED — css output directory
  *     "runtime": {                     // OPTIONAL — requires "tokens":
  *       "type": "ts",                  //   runtime token artifacts
- *       "output": "./src/tokens/runtime.ts"
+ *       "output": "./src/tokens"       //   output DIRECTORY; file names
+ *                                      //   inside are builder-decision
+ *                                      //   (breakpoints.ts today)
  *     }
  *   }
  *
@@ -202,15 +204,24 @@ if (buildConfig.tokens) {
       process.exit(1);
     }
     if (typeof buildConfig.runtime.output !== 'string' || buildConfig.runtime.output.length === 0) {
-      console.error(
-        `colox: ${buildConfigPath}: runtime.output is required (absolute or config-relative path).`,
-      );
+      console.error(`colox: ${buildConfigPath}: runtime.output is required (a directory path).`);
       process.exit(1);
     }
     runtime = {
       type: 'ts',
       output: path.resolve(buildConfigDir, buildConfig.runtime.output),
     };
+    try {
+      const info = await stat(runtime.output);
+      if (!info.isDirectory()) {
+        console.error(
+          `colox: ${buildConfigPath}: runtime.output "${buildConfig.runtime.output}" is not a directory.`,
+        );
+        process.exit(1);
+      }
+    } catch {
+      /* absent — emit-runtime creates it */
+    }
   }
 
   try {

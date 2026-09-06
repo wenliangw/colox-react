@@ -60,11 +60,11 @@ package's `colox.theme.build.json`:
   custom-theme compiles).
 - `@colox/theme`:
   `{ "tokens": "node_modules/@colox/theme-builder/src/styles/meta", "outDir": "dist",
-"runtime": { "type": "ts", "output": "src/styles/tokens/breakpoints.ts" } }`
+"runtime": { "type": "ts", "output": "src/styles/tokens" } }`
   — compiles the builder's shipped sources into the runtime package, and
-  the `runtime` block emits the breakpoint constants the runtime consumes
-  in JS (emitted by the builder inside the compile chain, before vite
-  builds the runtime).
+  the `runtime` block emits the runtime token artifacts into the output
+  directory (file names are builder decisions — `breakpoints.ts` today;
+  emitted inside the compile chain, before vite builds the runtime).
 
 Hand-maintained sources live in
 `packages/theme-builder/src/styles/tokens/base.tokens.json` (font

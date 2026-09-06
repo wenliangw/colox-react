@@ -69,7 +69,8 @@ function runScript(script, env) {
  *            conforming to the Colox design language)
  *   outDir   absolute css output directory
  *   runtime  optional runtime-token emission target: type 'ts' writes
- *            TS constants (breakpoints today, extensible) to `output`
+ *            TS constants (breakpoints today, extensible) into the
+ *            `output` directory — file names are builder decisions
  */
 export async function buildDesignLanguage({ tokens, outDir, runtime }) {
   const isBuiltin = realpathSync(tokens) === realpathSync(builtinSources);
