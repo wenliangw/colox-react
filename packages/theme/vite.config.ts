@@ -20,8 +20,8 @@ export default defineConfig({
     },
   },
   build: {
-    // emit:themes CSS/cli-data artifacts coexist with the JS artifacts in
-    // dist, so vite must not empty the directory
+    // build:css (design-language css suite) coexists with the JS
+    // artifacts in dist, so vite must not empty the directory
     emptyOutDir: false,
     lib: {
       entry: resolve(import.meta.dirname, 'src/index.ts'),

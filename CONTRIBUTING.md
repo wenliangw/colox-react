@@ -40,21 +40,32 @@ pnpm --filter @colox/preview dev     # component playground
 
 ## Design tokens
 
-Tokens are generated artifacts:
+Tokens are generated artifacts owned by **`@colox/theme-builder`** (the
+compile-time package; `@colox/theme` keeps the runtime + packaged css):
 
 ```
-Figma exports (src/styles/meta/*.tokens.json)
-  → figma-to-tokens.mjs (`pnpm tokens:sync`)
-  → src/styles/tokens/* (generated, gitignored)
-  → Style Dictionary v4 (`pnpm emit:themes`)
-  → dist/themes/light.css (runtime CSS variables)
+Figma exports (packages/theme-builder/src/styles/meta/*.tokens.json)
+  → figma-to-tokens.mjs
+  → token workspace (packages/theme-builder/src/styles/tokens)
+  → Style Dictionary v4
+  → <outDir>/themes/{palette,light,dark}.css + index.css aggregate
 ```
 
-Hand-maintained sources live in `src/styles/tokens/base.tokens.json`
-(font family / shadow / motion / breakpoints) and
-`semantic.derived.tokens.json` (solid hover/active color-mix rules). Every
-entry script (`build`, `typecheck`, storybook `predev`) regenerates tokens
-first, so a fresh clone never needs a manual generation step.
+The whole chain runs through `colox theme build`, driven by each
+package's `colox.theme.build.json` (`{ "meta": "stock", "outDir": "dist" }`
+for both `@colox/theme-builder` and `@colox/theme`). `@colox/theme`
+additionally syncs its runtime breakpoint constants
+(`src/styles/tokens/breakpoints.ts`) from the builder's
+`base.tokens.json` via `scripts/sync-breakpoints.mjs`.
+
+Hand-maintained sources live in
+`packages/theme-builder/src/styles/tokens/base.tokens.json` (font
+family / shadow / motion / breakpoints) and
+`semantic.derived.tokens.json` (solid hover/active color-mix rules). The
+`build` script of each package regenerates everything on every run, so a
+fresh clone never needs a manual generation step; `typecheck` presumes
+the generated artifacts and therefore runs after `build` in the test
+chain.
 
 ## Component conventions
 

@@ -14,16 +14,17 @@ storybook-static
 .docusaurus
 *.tsbuildinfo
 
-# generated token sources (regenerated from styles/meta via tokens:sync)
-packages/theme/src/styles/tokens/*.tokens.json
-!packages/theme/src/styles/tokens/semantic.derived.tokens.json
-!packages/theme/src/styles/tokens/semantic.derived.dark.tokens.json
-!packages/theme/src/styles/tokens/semantic.brand.tokens.json
-!packages/theme/src/styles/tokens/semantic.brand.dark.tokens.json
-!packages/theme/src/styles/tokens/palette.brand.tokens.json
-!packages/theme/src/styles/tokens/base.tokens.json
-!packages/theme/src/styles/tokens/semantic.shadow.tokens.json
-!packages/theme/src/styles/tokens/semantic.shadow.dark.tokens.json
+# generated token sources (regenerated from styles/meta via the
+# @colox/theme-builder stock pipeline)
+packages/theme-builder/src/styles/tokens/*.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.derived.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.derived.dark.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.brand.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.brand.dark.tokens.json
+!packages/theme-builder/src/styles/tokens/palette.brand.tokens.json
+!packages/theme-builder/src/styles/tokens/base.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.shadow.tokens.json
+!packages/theme-builder/src/styles/tokens/semantic.shadow.dark.tokens.json
 packages/theme/src/styles/tokens/breakpoints.ts
 
 # logs

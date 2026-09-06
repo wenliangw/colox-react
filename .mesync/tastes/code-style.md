@@ -31,7 +31,7 @@
 - **组件是自持单元**：任何**只被该组件使用**的能力都要跟随组件目录（`theme-context/hooks/`、`theme-context/utils/`、`theme-context/stores/`、`theme-context/constants/`），不走全局 `src/hooks`/`src/utils`——「是哪个组件的能力就跟随组件本身的结构」，作用域边界必须清晰。全局能力目录只放真正跨组件共享的东西。
 - **子组件独立文件夹管理，统一收在 `children/`**：子组件不定义在父组件同一个文件里，即使代码量很少也要独立子目录；且所有子组件**统一放在父组件文件夹下的 `children/` 目录**，各子组件再各自独立子文件夹（`theme-context/children/storage/index.tsx`、`theme-context/children/breakpoints/index.tsx`）——与 hooks/utils 等能力目录平行分层，不混排。
 - **文件夹内不许同级平铺**：按能力分层，组件根目录只保留组件入口 `index.tsx`；能力一律文件夹化（`theme-context/types/index.ts`、`theme-context/context/index.ts`、`theme-context/reducers/theme.ts`）。
-- **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（`test/theme-context/`、`test/stores/`、`test/cli/`、`test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
+- **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（theme：`test/theme-context/`；theme-builder：`test/cli/` + `test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
 - **src 内引用规范**：跨模块引用走 `@/` 别名（tsconfig paths + vite/vitest alias 三处齐配）；组件文件夹内部用相对路径（`./types`、`../constants/theme`，与 react 包组件一致）。
 
 ## store / utils / constants 各司其职，消灭魔法值

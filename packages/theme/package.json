@@ -1,7 +1,7 @@
 {
   "name": "@colox/theme",
   "version": "0.0.0",
-  "description": "Colox design & theme system: tokens, theme CSS, theme compiler CLI and theme runtime",
+  "description": "Colox theme runtime (ColoxTheme provider + responsive system) and the packaged stock theme CSS",
   "type": "module",
   "license": "MIT",
   "sideEffects": [
@@ -9,15 +9,8 @@
     "**/*.scss"
   ],
   "files": [
-    "dist",
-    "src/styles",
-    "cli",
-    "schemas",
-    "config"
+    "dist"
   ],
-  "bin": {
-    "colox": "./cli/colox.mjs"
-  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -31,12 +24,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "pnpm run tokens:sync && pnpm run emit:themes && pnpm run clean:js && vite build",
-    "build:tokens": "pnpm run tokens:sync && pnpm run emit:themes",
+    "build": "pnpm run build:css && node scripts/sync-breakpoints.mjs && pnpm run clean:js && vite build",
+    "build:css": "colox theme build",
     "clean:js": "node scripts/clean-dist.mjs",
-    "emit:themes": "style-dictionary build --config sd-palette.config.mjs && style-dictionary build --config sd.config.mjs && style-dictionary build --config sd-dark.config.mjs && node scripts/emit-cli-data.mjs && node scripts/emit-index-css.mjs",
-    "tokens:sync": "node scripts/figma-to-tokens.mjs",
-    "typecheck": "pnpm run tokens:sync && tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "pretest": "pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -46,6 +37,7 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@colox/theme-builder": "workspace:*",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -53,7 +45,6 @@
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "style-dictionary": "^4.4.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.5.0",

@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@colox/theme/schemas/theme.schema.json",
+  "$schema": "../schemas/theme.schema.json",
   "palette": {},
   "themes": {},
   "output": {

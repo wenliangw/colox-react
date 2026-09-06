@@ -16,7 +16,7 @@
 
 ## 设计语言用 CSS 自定义属性承载，JSON + Style Dictionary 构建期生成
 
-- 单一来源已落地：W3C DTCG JSON + Style Dictionary v4；链路 = Figma 导出（styles/meta/*.tokens.json）→ figma-to-tokens.mjs 转换 → SD 生成 themes/light.css。
+- 单一来源已落地：W3C DTCG JSON + Style Dictionary v4；链路 = Figma 导出（theme-builder 的 styles/meta/*.tokens.json）→ figma-to-tokens.mjs 转换 → SD 生成 themes/light.css。管线整体属于 `@colox/theme-builder`（编译期包），`@colox/theme` 只持有运行时 + 打包好的 stock css。
 - 三层 token：基元层（palette 色阶）→ 语义层（角色组 text/bg/border + 颜色四档组，组件唯一消费的稳定 API）→ 组件层（按需）。
 - 主题 = 语义层的多组映射：换主题 = 换语义层赋值，基元与组件都不动。
 
@@ -97,7 +97,7 @@
 ## 断点：工程侧常量 + 运行时 JS 消费
 
 - 断点归属 base.tokens.json，Desktop 优先（sm 640 / md 768 / lg 1024 / xl 1280，max-width 向下语义）。
-- 媒体查询不能读 CSS 变量、响应式走运行时 `data-colox-breakpoint` 属性机制，断点值注入 JS 层：tokens:sync 从 base.tokens.json 生成 `tokens/breakpoints.ts` 的 `defaultBreakpoints`（供 ColoxThemeContext 默认值与 head 引导脚本）；light.css 的 CSS 变量副本仅保留供读。
+- 媒体查询不能读 CSS 变量、响应式走运行时 `data-colox-breakpoint` 属性机制，断点值注入 JS 层：theme 的 `scripts/sync-breakpoints.mjs` 从 theme-builder 的 base.tokens.json 生成 `src/styles/tokens/breakpoints.ts` 的 `defaultBreakpoints`（供 ColoxThemeContext 默认值与 head 引导脚本）；light.css 的 CSS 变量副本仅保留供读。改动断点只需改 base.tokens.json + 重跑 theme build；消费方改断点不走重编译，用运行时 breakpoints 覆盖。
 
 ## 变体层用 CVA，className-only
 

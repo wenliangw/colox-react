@@ -1,0 +1,36 @@
+{
+  "name": "@colox/theme-builder",
+  "version": "0.0.0",
+  "description": "Compile the Colox design language: turn Figma token sources (or the stock design language) into theme CSS, and a colox.theme.json into brand/custom theme CSS",
+  "license": "MIT",
+  "bin": {
+    "colox": "./cli/colox.mjs"
+  },
+  "files": [
+    "cli",
+    "dist",
+    "schemas",
+    "config",
+    "src/styles",
+    "scripts",
+    "sd.config.mjs",
+    "sd-dark.config.mjs",
+    "sd-palette.config.mjs",
+    "colox.theme.build.json"
+  ],
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node cli/colox.mjs theme build && node scripts/emit-cli-data.mjs",
+    "pretest": "pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "style-dictionary": "^4.4.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}

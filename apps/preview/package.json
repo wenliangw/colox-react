@@ -8,12 +8,13 @@
     "dev": "storybook dev -p 6006",
     "prestorybook": "pnpm --filter @colox/theme run build",
     "storybook": "storybook dev -p 6006",
-    "themes:demo": "pnpm --filter @colox/theme run build && colox theme build -c ./colox.theme.json",
+    "themes:demo": "pnpm --filter @colox/theme-builder run build && colox theme build -c ./colox.theme.json",
     "build-storybook": "pnpm --filter @colox/react build && storybook build"
   },
   "devDependencies": {
     "@colox/react": "workspace:*",
     "@colox/theme": "workspace:*",
+    "@colox/theme-builder": "workspace:*",
     "@storybook/addon-essentials": "^8.6.0",
     "@storybook/addon-interactions": "^8.6.0",
     "@storybook/blocks": "^8.6.0",

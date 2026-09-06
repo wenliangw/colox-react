@@ -22,9 +22,14 @@ A modular, accessible React component library monorepo built with **Vite + TypeS
 ```
 colox-react/
 ├── packages/
-│   └── components/        # @colox/react — the component library
+│   ├── components/        # @colox/react — the component library
+│   ├── theme/             # @colox/theme — theme runtime + packaged stock css
+│   ├── theme-builder/     # @colox/theme-builder — design-language
+│   │                      #   compiler (bin colox): Figma tokens → theme css
+│   ├── wiki/              # @colox/wiki — AI agent doctrine data package
+│   └── mcp/               # @colox/mcp — local stdio MCP server (reads wiki)
 ├── apps/
-│   ├── storybook/         # component preview (dev environment)
+│   ├── preview/           # component preview (Storybook)
 │   └── docs/              # Docusaurus official documentation site
 ├── .changeset/            # versioning config
 ├── .husky/                # git hooks

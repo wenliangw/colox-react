@@ -34,6 +34,12 @@
 - 为什么：React context 的 provider/consumer 靠对象身份匹配，两份拷贝 = 两个不相交的 context；这是语义正确性，不是包体积取舍，体积让位。
 - 升级场景（另一方向）：凡「消费者可能自己也安装/使用」的运行时包，一律 external；内联会造成多实例、状态不一致。
 
+## 包构建脚本自调用 CLI → 必须检查 bin 是否在自身 PATH
+
+- **改这里**：`package.json#bin` 包的构建脚本里想直接用自己的 bin 名时（如 builder 的 `build` 里跑 `colox theme build`）。
+- **必须检查那里**：pnpm/npm 不给包自己的 bin 注入自己脚本的 PATH（`sh: colox: not found`，实测）；改成相对直调 `node cli/colox.mjs theme build`。下游包用依赖的 bin 正常（theme 的 `build:css` 跑 `colox` 没问题——bin 来自 devDep builder）。
+- 为什么：脚本 PATH 由依赖的 .bin 目录构成，自身不在其列。
+
 ## 每次构建改动后的三件套验证
 
 - [ ] node 冒烟：`/tmp/colox-resolve` 里 ESM `import('@colox/react/button')` + CJS `require('@colox/react')` + `require.resolve('@colox/react/style.css')` 全通

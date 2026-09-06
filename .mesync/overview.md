@@ -21,7 +21,8 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 
 ## 模块索引
 
-- **`@colox/theme`**（`packages/theme/`）：设计 & 主题系统——Figma token 管线（meta→tokens→Style Dictionary→`dist/themes/*.css`）、主题编译 CLI（`colox theme build`，bin `colox`）、JSON Schema、标准主题配置文件模板（`config/theme.default.json`）、ColoxTheme 组合式 React 运行时（`<ColoxTheme>` + `.Theme/.Palette/.Breakpoints/.Storage` + `useColoxTheme`）。详见 [wiki/architecture.md](wiki/architecture.md)
+- **`@colox/theme`**（`packages/theme/`）：主题运行时 + 自带打包 css——ColoxTheme 组合式 React 运行时（`<ColoxTheme>` + `.Theme/.Palette/.Breakpoints/.Storage` + `useColoxTheme`）、默认断点常量（`defaultBreakpoints`，从 builder 的 base.tokens.json 同步生成）、vite 产 ES/CJS+dts；`dist/index.css` 聚合样式与 `dist/themes/*.css` 由构建期调用 theme-builder 的 stock 管线产出。**不再持有** token 管线/CLI/Schema。详见 [wiki/architecture.md](wiki/architecture.md)
+- **`@colox/theme-builder`**（`packages/theme-builder/`）：编译期工具包（bin `colox`）——Figma token 管线（meta→tokens→Style Dictionary→css 套件 + `cli-data.json` 编译数据）、主题编译 CLI（`colox theme build`，由项目内 `colox.theme.build.json` 驱动：`meta` = 完整设计语言源 / `stock` = 内置设计语言 → `outDir`；无该文件时 `-c colox.theme.json` 走旧行为）、JSON Schema、`config/theme.default.json`。零 JS 运行时依赖（style-dictionary 是构建期 dependency）。详见 [wiki/architecture.md](wiki/architecture.md)
 - **`@colox/react`**（`packages/components/`）：组件库本体，组件按目录组织；构建按组件切入口（`index`/`button`/`input`/`stack` 多 entry + `exports` 子路径 `@colox/react/button` 等）做 JS 级树摇；`@import '@colox/theme/index.css'` 级联进单一 `style.css`（`cssCodeSplit: false`），保持一行引入。详见 [modules/button.md](wiki/modules/button.md)、[modules/input.md](wiki/modules/input.md)、[modules/stack.md](wiki/modules/stack.md)
 - **`@colox/wiki`**（`packages/wiki/`）：AI 使用心法数据包——`AGENTS.md`（各家 harness 自动读的用法总纲）+ `components.md`（组件地图：职责+状态）+ `skills/<name>/` 主题 bundle（`SKILL.md` 配方本体 + `references/` 按需读：`rules.md` 条件规则、`component.md` API 参考；doctrine bundle 载全局规则、style bundle 讲样式接线；SKILL.md 为 Claude/Codex/dsh 三方自动发现格式）；纯 markdown、无构建，版本纪律：前两位（major.minor）与 `@colox/react` 一致、patch 位留给组件 bugfix、API 变更才随版本更新。详见 [wiki/architecture.md](wiki/architecture.md)
 - **`@colox/mcp`**（`packages/mcp/`）：官方 MCP server（本地 stdio、官方 `@modelcontextprotocol/sdk`，tsc 构建产 `dist`，bin 即包名——各家一行 `npx -y @colox/mcp` 注册）；读 `@colox/wiki` 依赖（workspace symlink 开发态 / npm 安装态）提供四工具：`search_doctrine`（全文搜索+评分+摘要+读指引，覆盖 bundle 与 references）/ `get_rule`（`global` 别名）/ `get_skill`（`reference` 参数读参考件）/ `get_component`（无参读组件地图）；离线、零网络、版本=wiki 依赖版本。详见 [wiki/architecture.md](wiki/architecture.md)
@@ -32,7 +33,8 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 
 ```
 colox-react/
-├── packages/theme/         # @colox/theme — 设计&主题系统（token 管线 + CLI + Schema）
+├── packages/theme/         # @colox/theme — 主题运行时 + 打包 css
+├── packages/theme-builder/ # @colox/theme-builder — token 管线 + 主题编译 CLI（bin colox）
 ├── packages/components/    # @colox/react — 组件库
 ├── packages/wiki/          # @colox/wiki — AI 使用心法数据包（AGENTS.md + skills/rules/components）
 ├── packages/mcp/           # @colox/mcp — 本地 stdio MCP server（四工具读 wiki 数据）

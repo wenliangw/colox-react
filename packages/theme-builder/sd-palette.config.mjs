@@ -7,18 +7,25 @@
  * reference these vars through the variable chain; both semantics are
  * complete assignments on top of this shared baseline.
  *
- * Output: dist/themes/palette.css — always load this file wherever a
+ * Output: <outDir>/themes/palette.css — always load this file wherever a
  * theme file is loaded. Order is irrelevant: plain :root declarations
  * are overwritten by the :root[data-colox-palette='…'] axis files
  * (0,2,0) from the colox CLI regardless of stylesheet order.
  */
 
+import path from 'node:path';
+
+// Paths are driven by scripts/stock-build.mjs through env; defaults keep
+// the builder package self-hosted (running from the package root).
+const tokens = (file) =>
+  path.join(process.env.COLox_TOKENS_DIR ?? path.join(process.cwd(), 'src/styles/tokens'), file);
+
 export default {
-  source: ['src/styles/tokens/color.tokens.json', 'src/styles/tokens/palette.brand.tokens.json'],
+  source: [tokens('color.tokens.json'), tokens('palette.brand.tokens.json')],
   platforms: {
     cssPalette: {
       transforms: ['name/kebab'],
-      buildPath: 'dist/themes/',
+      buildPath: process.env.COLox_THEMES_OUT ?? 'dist/themes/',
       files: [
         {
           destination: 'palette.css',

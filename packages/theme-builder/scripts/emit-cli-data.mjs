@@ -12,12 +12,18 @@
  *   [{group, leaf, value}] — values already in CSS form
  *   (var(--colox-palette-*-) / color-mix() / #hex / shadow literals)
  *
- * Run after tokens:sync inside the emit:themes chain.
+ * Run after the stock design-language compile (scripts/stock-build.mjs
+ * or the builder's own `pnpm build`); paths default to the builder
+ * package root and can be redirected through COLox_TOKENS_DIR /
+ * COLox_DIST when compiling a custom design-language workspace.
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const TOKENS = 'src/styles/tokens';
+const builderRoot = fileURLToPath(new URL('../', import.meta.url));
+const TOKENS = process.env.COLox_TOKENS_DIR ?? path.join(builderRoot, 'src/styles/tokens');
+const DIST = process.env.COLox_DIST ?? path.join(builderRoot, 'dist');
 
 async function readJson(file) {
   return JSON.parse(await readFile(path.join(TOKENS, file), 'utf8'));
@@ -92,8 +98,8 @@ const semantics = {
 };
 
 const out = { palette, stepLists, semantics };
-await mkdir('dist', { recursive: true });
-await writeFile(path.join('dist', 'cli-data.json'), JSON.stringify(out, null, 2) + '\n');
+await mkdir(DIST, { recursive: true });
+await writeFile(path.join(DIST, 'cli-data.json'), JSON.stringify(out, null, 2) + '\n');
 console.log(
   `[ok] cli-data.json (${Object.keys(palette).length} palette vars, ` +
     `light ${semantics.light.length} / dark ${semantics.dark.length} semantic vars)`,

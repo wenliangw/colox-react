@@ -13,12 +13,28 @@
  * @colox/react pulls this aggregate into its own style entry, restoring
  * the single-import surface for component consumers. Component styles
  * themselves live in @colox/react, not here.
+ *
+ * Target directory comes from COLox_CSS_OUT (set by
+ * scripts/stock-build.mjs); defaults to the builder's own dist so the
+ * package stays self-hosted.
  */
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const base = 'src/styles/base/reset.css';
-const motion = 'src/styles/base/motion.css';
-const parts = ['dist/themes/palette.css', 'dist/themes/light.css', 'dist/themes/dark.css'];
+const builderRoot = fileURLToPath(new URL('../', import.meta.url));
+const OUT = process.env.COLox_CSS_OUT ?? path.join(builderRoot, 'dist');
+const base = path.join(builderRoot, 'src/styles/base/reset.css');
+const baseLabel = 'src/styles/base/reset.css';
+const motion = path.join(builderRoot, 'src/styles/base/motion.css');
+const motionLabel = 'src/styles/base/motion.css';
+// [absolute source, stable display label] — labels stay relative so the
+// emitted block headers are placement-independent.
+const parts = [
+  [path.join(OUT, 'themes/palette.css'), 'dist/themes/palette.css'],
+  [path.join(OUT, 'themes/light.css'), 'dist/themes/light.css'],
+  [path.join(OUT, 'themes/dark.css'), 'dist/themes/dark.css'],
+];
 
 const banner = `/**
  * Colox theme aggregate stylesheet — generated, do not edit.
@@ -37,19 +53,19 @@ const banner = `/**
 `;
 
 let out = banner;
-out += `/* ---- ${base} ---- */\n`;
+out += `/* ---- ${baseLabel} ---- */\n`;
 out += await readFile(base, 'utf8');
 out += '\n';
-for (const part of parts) {
-  out += `/* ---- ${part} ---- */\n`;
+for (const [part, label] of parts) {
+  out += `/* ---- ${label} ---- */\n`;
   out += await readFile(part, 'utf8');
   out += '\n';
 }
-out += `/* ---- ${motion} ---- */\n`;
+out += `/* ---- ${motionLabel} ---- */\n`;
 out += await readFile(motion, 'utf8');
 out += '\n';
-await writeFile('dist/index.css', out);
+await writeFile(path.join(OUT, 'index.css'), out);
 // Ship the motion gate standalone too: CSS-only consumers loading the
 // granular palette/light/dark files must not miss the accessibility gate.
-await copyFile(motion, 'dist/themes/motion.css');
+await copyFile(motion, path.join(OUT, 'themes/motion.css'));
 console.log(`[ok] index.css (${(out.length / 1024).toFixed(1)} KB, ${parts.length + 2} sections)`);

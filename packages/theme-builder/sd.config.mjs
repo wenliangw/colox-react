@@ -1,7 +1,7 @@
 /**
  * Colox light theme generation (Style Dictionary v4).
  *
- * Sources (src/styles/tokens/):
+ * Sources (token workspace, default src/styles/tokens/):
  * - generated from Figma exports via figma-to-tokens.mjs: color
  *   (palette, needed only so the semantic references resolve),
  *   semantic-colors.light, typography, size
@@ -9,7 +9,7 @@
  *   rules and the brand group's palette references), semantic.shadow
  *   (light shadow assignment), base
  *
- * Output: dist/themes/light.css — the complete LIGHT assignment on
+ * Output: <outDir>/themes/light.css — the complete LIGHT assignment on
  * :root: 80 semantic color vars + 3 shadow vars (var()-chained into the
  * palette where applicable) plus the theme-independent design tokens
  * (typography/size/base). Palette
@@ -22,22 +22,29 @@
  * tokens), dark.css carries its own complete assignment.
  */
 
+import path from 'node:path';
+
+// Paths are driven by scripts/stock-build.mjs through env; defaults keep
+// the builder package self-hosted (running from the package root).
+const tokens = (file) =>
+  path.join(process.env.COLox_TOKENS_DIR ?? path.join(process.cwd(), 'src/styles/tokens'), file);
+
 export default {
   source: [
-    'src/styles/tokens/color.tokens.json',
-    'src/styles/tokens/palette.brand.tokens.json',
-    'src/styles/tokens/semantic-colors.light.tokens.json',
-    'src/styles/tokens/semantic.brand.tokens.json',
-    'src/styles/tokens/semantic.derived.tokens.json',
-    'src/styles/tokens/semantic.shadow.tokens.json',
-    'src/styles/tokens/typography.tokens.json',
-    'src/styles/tokens/size.tokens.json',
-    'src/styles/tokens/base.tokens.json',
+    tokens('color.tokens.json'),
+    tokens('palette.brand.tokens.json'),
+    tokens('semantic-colors.light.tokens.json'),
+    tokens('semantic.brand.tokens.json'),
+    tokens('semantic.derived.tokens.json'),
+    tokens('semantic.shadow.tokens.json'),
+    tokens('typography.tokens.json'),
+    tokens('size.tokens.json'),
+    tokens('base.tokens.json'),
   ],
   platforms: {
     css: {
       transforms: ['name/kebab'],
-      buildPath: 'dist/themes/',
+      buildPath: process.env.COLox_THEMES_OUT ?? 'dist/themes/',
       files: [
         {
           destination: 'light.css',
