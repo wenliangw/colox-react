@@ -39,12 +39,17 @@ export default defineConfig({
       entry: entries,
       formats: ['es', 'cjs'],
       fileName: (format, entryName) =>
-        format === 'es' ? `es/${entryName}.js` : `cjs/${entryName}.cjs`,
+        format === 'es' ? `es/${entryName}/index.js` : `cjs/${entryName}/index.cjs`,
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
         exports: 'named',
+        // Shared modules (clsx/cva) become hashed chunks at the dist root
+        // with format-correct extensions (.js for es, .cjs for cjs) — keep
+        // Vite's default naming: a custom chunkFileNames cannot tell formats
+        // apart and would emit .js chunks for CJS, which breaks under the
+        // package's `"type": "module"`.
         assetFileNames: 'style.[ext]',
       },
     },
