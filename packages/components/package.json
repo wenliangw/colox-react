@@ -4,6 +4,11 @@
   "description": "Colox React component library",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenliangw/colox-react.git",
+    "directory": "packages/components"
+  },
   "sideEffects": [
     "**/*.css",
     "**/*.scss"

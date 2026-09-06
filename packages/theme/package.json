@@ -4,6 +4,11 @@
   "description": "Colox theme runtime (ColoxTheme provider + responsive system) and the packaged builtin theme CSS",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenliangw/colox-react.git",
+    "directory": "packages/theme"
+  },
   "sideEffects": [
     "**/*.css",
     "**/*.scss"

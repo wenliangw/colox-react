@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "description": "Compile the Colox design language: turn token sources (Figma exports; shipped builtin language included) into theme CSS plus runtime token artifacts, and a colox.theme.json into brand/custom theme CSS",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenliangw/colox-react.git",
+    "directory": "packages/theme-builder"
+  },
   "bin": {
     "colox": "./cli/colox.mjs"
   },
