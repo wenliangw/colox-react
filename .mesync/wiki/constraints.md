@@ -8,7 +8,7 @@
 
 ## 构建与发布约束
 
-- 组件库构建产物：ESM `dist/es/{entry}/index.js`、CJS `dist/cjs/{entry}/index.cjs`（每组件一文件夹）、类型 `dist/types/`、CSS 单一 `dist/style.css`（`cssCodeSplit: false`，token 级联 + 全部组件，一行引入）；`exports` 提供 `@colox/react/button` 等子路径（types/import/require 三映射齐全），组件新增时同步加 entry 与 exports。共享模块（clsx/cva）在 dist 根目录成带 hash 的双格式 chunk（.js/.cjs 扩展名正确），不可移入子目录（chunkFileNames 回调拿不到 format，CJS 会丢 .cjs 后缀、`type: module` 下被误当 ESM）。构建能力优先 Vite 原生配置（多入口、css 合并）；自写构建插件仅在原生与现成都表达不了时引入。CSS 分包推迟：待组件样式膨胀再启用 cssCodeSplit + 现成接线（vite-plugin-lib-inject-css）。
+- 组件库构建产物（rollup preserveModules 文件级形态，antd es/lib 式）：ESM `dist/es/` 每源模块一文件（入口 `dist/es/{index,button,input,stack}.js` 为轻量 facade，实现落 `dist/es/{component}/{component}.js` 等）、CJS `dist/cjs/` 全 `.cjs`（`"type": "module"` 下格式正确）、类型 `dist/types/` 随源码目录、CSS 单一 `dist/style.css`（`cssCodeSplit: false`，token 级联 + 全部组件，一行引入）；`exports` 提供 `@colox/react/button` 等子路径（types/import/require 三映射齐全），组件新增时同步加 entry 与 exports。dist 零散 hash 文件零残留：clsx/cva 保留 `dependencies`（一行安装不断）+ 外部化（消费端统一装载）。两条 vite/rollup 硬约束已踩实，改动构建配置前先读：① rollup 校验的是 **input 层** `preserveEntrySignatures`，vite 应用构建强注入 `false` 与 preserveModules 冲突——必须在 `rollupOptions` 顶层显式设 `'exports-only'`（output 层设置无效，实测确认）；② assetFileNames 禁相对路径（`../`）逃出输出目录——双格式共用根 dir + `entryFileNames` 前缀（`es/`、`cjs/`）才让 style.css 落在根。构建能力优先 Vite 原生配置；自写构建插件仅在原生与现成都表达不了时引入。CSS 分包推迟：待组件样式膨胀再启用 cssCodeSplit + 现成接线（vite-plugin-lib-inject-css）。
 - `rollupOptions.external` 排除 `react`、`react-dom`、`react/jsx-runtime`；`class-variance-authority` 是 runtime dependency（会随包安装）。
 - `files` 仅发布 `dist` 与 `src/styles`。
 - `sideEffects` 声明 `**/*.css` 和 `**/*.scss`，避免 tree-shaking 误删样式。

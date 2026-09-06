@@ -13,6 +13,11 @@ const entries = {
   stack: resolve(import.meta.dirname, 'src/stack/index.ts'),
 };
 
+// Runtime deps stay in `dependencies` (installed transitively, one-line
+// install preserved) and are externalized here so consumers bundle a single
+// copy. React is a peer dependency and always external.
+const externals = ['react', 'react-dom', 'react/jsx-runtime', 'clsx', 'class-variance-authority'];
+
 export default defineConfig({
   plugins: [
     react(),
@@ -31,27 +36,43 @@ export default defineConfig({
   },
   build: {
     // Single css bundle: the one-line import contract
-    // (`import '@colox/react/style.css'`) stays as the token cascade plus all
+    // (`import '@colox/react/style.css') stays as the token cascade plus all
     // components. Per-component css splitting is a later step once component
     // styles grow large enough to pay for the assembly logic.
     cssCodeSplit: false,
-    lib: {
-      entry: entries,
-      formats: ['es', 'cjs'],
-      fileName: (format, entryName) =>
-        format === 'es' ? `es/${entryName}/index.js` : `cjs/${entryName}/index.cjs`,
-    },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
-      output: {
-        exports: 'named',
-        // Shared modules (clsx/cva) become hashed chunks at the dist root
-        // with format-correct extensions (.js for es, .cjs for cjs) — keep
-        // Vite's default naming: a custom chunkFileNames cannot tell formats
-        // apart and would emit .js chunks for CJS, which breaks under the
-        // package's `"type": "module"`.
-        assetFileNames: 'style.[ext]',
-      },
+      input: entries,
+      external: externals,
+      // Input-level preserveEntrySignatures: vite injects `false` here for app
+      // builds (before spreading user config), and rollup rejects input-level
+      // `false` under preserveModules. Override it at the level vite reads.
+      preserveEntrySignatures: 'exports-only',
+      // A raw rollup output array replaces `lib.formats`/`fileName`: per-format
+      // naming is the only way to keep .js (ESM) and .cjs (CJS) extensions
+      // correct under "type": "module". preserveModules emits one file per
+      // source module (antd es/lib shape): no hashed chunks, component folders
+      // keep their source layout.
+      output: [
+        {
+          format: 'es',
+          dir: 'dist',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+          entryFileNames: 'es/[name].js',
+          // The css asset is emitted by both outputs with identical content;
+          // a plain root-relative name makes dist/style.css the single public
+          // css file no matter which output is written last.
+          assetFileNames: 'style[extname]',
+        },
+        {
+          format: 'cjs',
+          dir: 'dist',
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+          entryFileNames: 'cjs/[name].cjs',
+          assetFileNames: 'style[extname]',
+        },
+      ],
     },
   },
 });

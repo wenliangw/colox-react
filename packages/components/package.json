@@ -11,29 +11,29 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/cjs/index/index.cjs",
-  "module": "./dist/es/index/index.js",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/es/index/index.js",
-      "require": "./dist/cjs/index/index.cjs"
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.cjs"
     },
     "./button": {
       "types": "./dist/types/button/index.d.ts",
-      "import": "./dist/es/button/index.js",
-      "require": "./dist/cjs/button/index.cjs"
+      "import": "./dist/es/button.js",
+      "require": "./dist/cjs/button.cjs"
     },
     "./input": {
       "types": "./dist/types/input/index.d.ts",
-      "import": "./dist/es/input/index.js",
-      "require": "./dist/cjs/input/index.cjs"
+      "import": "./dist/es/input.js",
+      "require": "./dist/cjs/input.cjs"
     },
     "./stack": {
       "types": "./dist/types/stack/index.d.ts",
-      "import": "./dist/es/stack/index.js",
-      "require": "./dist/cjs/stack/index.cjs"
+      "import": "./dist/es/stack.js",
+      "require": "./dist/cjs/stack.cjs"
     },
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
