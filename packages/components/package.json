@@ -50,7 +50,6 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "@colox/theme": "workspace:*",
     "@storybook/react": "^8.6.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -67,6 +66,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "@colox/theme": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1"
   }

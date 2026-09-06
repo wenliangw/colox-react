@@ -16,7 +16,17 @@ const entries = {
 // Runtime deps stay in `dependencies` (installed transitively, one-line
 // install preserved) and are externalized here so consumers bundle a single
 // copy. React is a peer dependency and always external.
-const externals = ['react', 'react-dom', 'react/jsx-runtime', 'clsx', 'class-variance-authority'];
+const externals = [
+  'react',
+  'react-dom',
+  'react/jsx-runtime',
+  'clsx',
+  'class-variance-authority',
+  // Theme runtime must stay external (never inlined): useColoxTheme relies on
+  // a shared React context, and an inlined copy would split context identity
+  // from the consumer's `<ColoxTheme>`, silently dropping theme overrides.
+  '@colox/theme',
+];
 
 export default defineConfig({
   plugins: [
