@@ -56,6 +56,7 @@
 - 可选能力走 **dot part 挂载即启用**（`<Stack.Responsive gap={{ base, md, … }} />`）：静态组件零 theme context，只有挂载件读 context（断点名解析，数值只活在 theme 运行时的 matchMedia 传感器）；与 ColoxTheme.Storage/Breakpoints 同惯例，内部注册 LWW、卸载还原。
 - 组件名描述**容器职责**：绝对定位容器定名 Positioner 而非 Absolute（absolute 是子件行为，容器只提供定位上下文）。
 - `gap` 只收 spacing token 键（20 键全刻度），不收任意数字/px——间距永远落在主题网格上；`align`/`justify` 收语义词（start/center/between…）不收 flexbox 裸值；direction 含反向值。
+- **对齐词一律 box-alignment 逻辑词族（start/center/end），禁物理 left/right**（RTL 下物理词镜像错位）。Container 的 `align` 与 Stack 的 `align` 同词族但不同职：Container 管壳自身行内轴放置（对标 align-self），Stack 管 flex 子项的交叉轴——文档写明区别，不换词。
 - 修饰类（direction/gap/align/justify 档）**始终全量输出**（含默认档，同 Button CVA 惯例）；CSS 忠实默认（方向 row、对齐 stretch、分布 start、gap 无类即 0）。
 
 ## ColoxTheme 运行时：组合式 API，props 不堆 Provider
