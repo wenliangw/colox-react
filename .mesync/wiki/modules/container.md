@@ -26,4 +26,5 @@
 
 - **响应宽度推 V2**：size/gutter 收 `ResponsiveValue` 要求主题 context（破零 context 卖点），机制选项待场景（挂载件 vs 受控解析，先例 = Stack.Responsive 权衡）；当前静态 size 换带用双 Container 显隐或样式逃生舱。
 - **宽度值 = 断点基准本身**：若设计语言将来新增独立容器宽变量（Figma 长出真材），scss 引用改指新 `var()` 即可，组件代码不动。
+- **定制断点的联动边界（V1 如实记录）**：`--colox-breakpoint-*` 是编译期常量（base.tokens.json → light.css），ColoxTheme `.Breakpoints values=` 运行时换断点只改 JS 与 data-* 属性、不回头写 CSS 变量——定制断点下容器宽度帽仍守内置基准（640/768/1024/1280），与带的划分脱钩。要联动需让运行时写断点 CSS 变量（跨面改动），等真实需求再议。
 - **布局边界的重议点**（「视图层对齐 vs 容器层隔离」的一半）：Container 已定视图层路径；容器层隔离（container queries）留待 Grid/嵌套容器场景再定。

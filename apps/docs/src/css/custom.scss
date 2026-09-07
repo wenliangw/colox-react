@@ -28,3 +28,13 @@
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
 }
+
+/* Component demo shells: showcase boxes that ride the token grid through
+   className + CSS variables. Inline style objects have no place in the
+   docs — the pages teach doctrine #1 by following it. */
+.container-demo {
+  background-color: var(--colox-color-bg-muted);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-sm);
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+}
