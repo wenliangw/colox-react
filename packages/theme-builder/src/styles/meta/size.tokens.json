@@ -702,6 +702,14 @@
         "com.figma.scopes": ["WIDTH_HEIGHT"]
       }
     },
+    "160": {
+      "$type": "number",
+      "$value": 640,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:44:3",
+        "com.figma.scopes": ["ALL_SCOPES"]
+      }
+    },
     "168": {
       "$type": "number",
       "$value": 672,

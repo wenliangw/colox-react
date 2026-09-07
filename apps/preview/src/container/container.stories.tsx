@@ -30,7 +30,7 @@ export const Sizes: Story = {
   render: () => (
     <Stack direction="column" gap="4">
       <Container size="sm">
-        <div style={demoFill}>size sm — 576px cap</div>
+        <div style={demoFill}>size sm — 640px cap</div>
       </Container>
       <Container size="md">
         <div style={demoFill}>size md — 768px cap</div>

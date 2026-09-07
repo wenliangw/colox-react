@@ -52,7 +52,7 @@ exactly, apply the reason, not the letter.
 ## Container — quick rules
 
 - `[page width ceiling]` → `<Container>`: `size`/`gutter`/`align`. Each size cap is a
-  large-dimension design token (`--colox-size-*`): sm/md/lg/xl = 576/768/1024/1280px.
+  large-dimension design token (`--colox-size-*`): sm/md/lg/xl = 640/768/1024/1280px.
   No `size` prop = no cap (CSS default). Other defaults: no gutter, `center`.
 - `[layout]` → keep mechanisms separate: `<Container><Stack>…</Stack></Container>`,
   never flexbox/grid semantics inside Container. Why: Container owns only the
