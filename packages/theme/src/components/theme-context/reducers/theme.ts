@@ -7,7 +7,7 @@ import type {
   ColoxThemeConfigPatch,
   ColoxThemeName,
 } from '../types';
-import { defaultBreakpoints } from '@/styles/tokens/breakpoints';
+import { defaultBreakpoints } from '@/styles/tokens';
 
 export interface ThemeState {
   theme: ColoxThemeName;

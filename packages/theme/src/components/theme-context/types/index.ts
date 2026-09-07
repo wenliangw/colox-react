@@ -5,7 +5,7 @@ import type {
   LIGHT_THEME_NAME,
   SYSTEM_THEME_NAME,
 } from '../constants/theme';
-import { defaultBreakpoints } from '@/styles/tokens/breakpoints';
+import { defaultBreakpoints } from '@/styles/tokens';
 
 /**
  * Theme axis vocabulary: built-in light/dark plus 'system' (follow the OS)

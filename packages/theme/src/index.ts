@@ -1,9 +1,8 @@
 export { ColoxTheme } from '@/components/theme-context';
 export { useColoxTheme } from '@/components/theme-context/hooks/use-colox-theme';
 export { resolveResponsiveValue } from '@/components/theme-context/utils/resolve-responsive-value';
-export { defaultBreakpoints } from '@/styles/tokens/breakpoints';
-export { spacingKeys } from '@/styles/tokens/spacing';
-export type { SpacingKey } from '@/styles/tokens/spacing';
+export { defaultBreakpoints, spacingKeys } from '@/styles/tokens';
+export type { SpacingKey } from '@/styles/tokens';
 export type {
   BreakpointKey,
   BreakpointName,

@@ -1,4 +1,4 @@
-import { defaultBreakpoints } from '@/styles/tokens/breakpoints';
+import { defaultBreakpoints } from '@/styles/tokens';
 
 /*
  * Magic strings of the theme runtime live here. The type vocabulary derives
