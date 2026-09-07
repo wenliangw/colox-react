@@ -53,7 +53,9 @@ exactly, apply the reason, not the letter.
 
 - `[page width ceiling]` → `<Container>`: `size`/`gutter`/`align`. Each size cap is a
   large-dimension design token (`--colox-size-*`): sm/md/lg/xl = 640/768/1024/1280px.
-  No `size` prop = no cap (CSS default). Other defaults: no gutter, `center`.
+  Defaults: no `size` = no cap, no gutter, `align="center"`. `align` places the box
+  on the inline axis (`start`/`center`/`end` — box-alignment words, never physical
+  `left`/`right`).
 - `[layout]` → keep mechanisms separate: `<Container><Stack>…</Stack></Container>`,
   never flexbox/grid semantics inside Container. Why: Container owns only the
   width shell (one mechanism per component).

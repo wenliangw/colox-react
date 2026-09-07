@@ -44,22 +44,25 @@ padding of `0`.
 
 ## Alignment
 
-Centering is the shell semantic: the default places a constrained box in the middle of
-its parent. `align="start"` opts out and pins it to the inline start edge.
+`align` places the constrained box on the inline axis, in the box-alignment
+vocabulary (`start`/`center`/`end` — same words as CSS `align-self`; no
+physical `left`/`right`, so RTL text flows mirror correctly). Centering is the
+shell semantic — the default — and `start`/`end` pin the box to either edge of
+its parent.
 
 ```mdx
-<Container size="md" align="start">
+<Container size="md" align="end">
   …
 </Container>
 ```
 
 ## Props
 
-| Prop   | Type                                        | Default    | Notes                   |
-| ------ | ------------------------------------------- | ---------- | ----------------------- |
-| size   | `'sm' \| 'md' \| 'lg' \| 'xl'`              | —          | max-inline-size cap     |
-| gutter | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`) | —          | padding-inline: 0       |
-| align  | `'center' \| 'start'`                       | `'center'` | margin-inline placement |
+| Prop   | Type                                        | Default    | Notes                 |
+| ------ | ------------------------------------------- | ---------- | --------------------- |
+| size   | `'sm' \| 'md' \| 'lg' \| 'xl'`              | —          | max-inline-size cap   |
+| gutter | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`) | —          | padding-inline: 0     |
+| align  | `'center' \| 'start' \| 'end'`              | `'center'` | inline-axis placement |
 
 `Container` accepts all native `<div>` attributes and forwards refs. It is fully
 static: it reads no theme context at runtime, so it renders meaningfully without a

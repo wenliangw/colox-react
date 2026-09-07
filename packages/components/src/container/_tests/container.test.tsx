@@ -29,6 +29,12 @@ describe('Container', () => {
     expect(screen.getByText('content')).toHaveClass('colox-container--gutter-2-5');
   });
 
+  it('maps align end onto the inline-end modifier', () => {
+    render(<Container align="end">content</Container>);
+    expect(screen.getByText('content')).toHaveClass('colox-container--align-end');
+    expect(screen.getByText('content')).not.toHaveClass('colox-container--align-center');
+  });
+
   it('passes through native div attributes, handlers and className', () => {
     const onClick = vi.fn();
     render(

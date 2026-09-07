@@ -25,13 +25,18 @@
   }
 
   // Centering is the shell semantic; start renders the block's own
-  // default margins as an explicit opt-out.
+  // default margins as an explicit opt-out; end pins the box to the
+  // inline end (auto margin absorbs the leftover inline-start space).
   &--align-center {
     margin-inline: auto;
   }
 
   &--align-start {
     margin-inline: 0;
+  }
+
+  &--align-end {
+    margin-inline-start: auto;
   }
 }
 

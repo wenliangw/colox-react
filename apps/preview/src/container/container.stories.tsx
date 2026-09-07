@@ -68,8 +68,16 @@ export const Gutters: Story = {
 
 export const Alignment: Story = {
   render: () => (
-    <Container size="md" align="start">
-      <div style={demoFill}>align start — pinned to the inline start edge</div>
-    </Container>
+    <Stack direction="column" gap="4">
+      <Container size="md">
+        <div style={demoFill}>center — the default shell semantic</div>
+      </Container>
+      <Container size="md" align="start">
+        <div style={demoFill}>align start — pinned to the inline start edge</div>
+      </Container>
+      <Container size="md" align="end">
+        <div style={demoFill}>align end — pinned to the inline end edge</div>
+      </Container>
+    </Stack>
   ),
 };

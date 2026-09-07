@@ -26,7 +26,8 @@ export interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
    */
   gutter?: ContainerGutter;
   /**
-   * Horizontal placement of the constrained box.
+   * Inline-axis placement of the constrained box, in the box-alignment
+   * vocabulary: start | center | end.
    * @default 'center'
    */
   align?: ContainerAlign;
