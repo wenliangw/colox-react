@@ -11,7 +11,7 @@
 ## 修饰类
 
 - `--row/-column/-row-reverse/-column-reverse`：flex-direction；`--wrap`：flex-wrap
-- `--gap-{键}`：spacing 全刻度 20 键（`1..14`、`16`、`0-5..4-5` → `var(--colox-spacing-*)`），未设 gap 无类（CSS 默认 gap 0）
+- `--gap-{键}`：spacing 全刻度 20 键（`1..14`、`16`、`0-5..4-5` → `var(--colox-spacing-*)`），未设 gap 无类（CSS 默认 gap 0）。**键表单源**：键表不写在组件里——variants 层吃 theme 发射的 `spacingKeys`（TS），scss 吃 `@use '@colox/theme/variables'` 的 `$colox-spacing-keys`（SCSS 面），设计语言增删档组件自动跟上
 - `--align-{start|center|end|stretch|baseline}`、`--justify-{start|center|end|between|around|evenly}`：语义词 → flexbox 值映射
 - `colox-stack-item--grow`：flex-grow 1
 

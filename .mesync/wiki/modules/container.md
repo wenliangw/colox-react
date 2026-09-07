@@ -11,7 +11,7 @@
 - **size = 设计语言大尺寸 token**（sm/md/lg/xl → `--colox-size-160/192/256/320` = 640/768/1024/1280px）：值源是 Figma 导出的 `large_size` 组（80px–1440px 大刻度，经转换器映射进 size 命名空间编译为 CSS 变量；160=640 档由用户复查后补进 Figma）。**断点回归响应式独占，绝不参与宽度**——Container 不引用 `--colox-breakpoint-*`（教训：初稿借用断点变量，用户点破「breakpoint 不是给 width 用的」后改源）。
 - **不传 `size` = 无帽**（CSS 忠实默认、不产生任何 size 修饰类）；无 `fluid` 词汇值——缺省 prop 本身就是默认态（与 Stack gap/wrap 缺省同哲学）。
 - **align = 壳自身行内轴放置**（`start`/`center`/`end` 三件套，box-alignment 词族、与 Stack align 词同源；禁物理 `left`/`right`——RTL 镜像错位）；center 默认（壳语义：margin-inline auto），start 显式逃逸（块默认 margin: 0），end 钉行内端（margin-inline-start: auto 吸收剩余空间）。注意与 Stack 的 `align`（管 flex 子项交叉轴）同名不同职——文档写明清这个区别。
-- **gutter** = spacing 键（`--colox-spacing-*` 全 20 键），未设无 padding（CSS 默认）。
+- **gutter** = spacing 键（`--colox-spacing-*` 全 20 键），未设无 padding（CSS 默认）。**键表单源**：variants 层吃 theme 发射的 `spacingKeys`（TS），scss 吃 `@use '@colox/theme/variables'` 的 `$colox-spacing-keys`（SCSS 面）——键表不复制进组件，设计语言增删档自动跟上（同 Stack gap）。
 - 逻辑属性全家桶：`max-inline-size` / `margin-inline` / `padding-inline`。
 
 ## API 形状

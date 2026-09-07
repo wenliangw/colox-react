@@ -105,6 +105,11 @@
 - variant/size 等变体用 `cva()` 定义，只拼 className、零运行时 CSS；类名沿用 `colox-` BEM 前缀。
 - 不引入重型 css-in-js。
 
+## 键表是设计语言事实：由 pipeline 发射，组件不复制
+
+- spacing 键表（哪些刻度存在）由 theme build 发射成两份产物：`spacing.ts`（`spacingKeys`/`SpacingKey`，theme barrel 再导出）供组件 variants 层生成类映射；`dist/variables.scss`（经 exports `./variables` sass 条件）供组件 scss `@use` 后 `@each`。组件里不再出现手写的 `$xxx-keys` 枚举或 `as const` 键表（前科：Container gutter 与 Stack gap 各复制 20 键，用户指出「硬编码设计语言数值不合规范」后收编）。
+- 发射面随语言成长的扩展路径：新键表片段在 emit-runtime 的 artifacts 列表 + `variables.scss` 内追加块——文件名与内容归 builder，消费面只认入口。
+
 ## token 命名词汇取向：贴近常识词
 
 - 基元层只按「颜色名词」命名：`palette.indigo / purple / blue / green / orange / red / gray`；用途词（`info / error / warning / success`、`disabled`）只存在于语义层角色组中。
