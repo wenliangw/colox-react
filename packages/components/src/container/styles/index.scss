@@ -1,3 +1,5 @@
+@use '@colox/theme/variables' as tokens;
+
 // The base class is intentionally bare: a container is a plain block div
 // until a modifier narrows or centers it. Modifiers ride theme variables
 // only — the large-dimension scale for the width caps, the spacing scale
@@ -40,10 +42,7 @@
   }
 }
 
-$container-gutter-keys:
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, '0-5', '1-5', '2-5', '3-5', '4-5';
-
-@each $key in $container-gutter-keys {
+@each $key in tokens.$colox-spacing-keys {
   .colox-container--gutter-#{$key} {
     padding-inline: var(--colox-spacing-#{$key});
   }

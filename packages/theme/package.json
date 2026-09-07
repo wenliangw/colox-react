@@ -22,6 +22,10 @@
       "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.cjs"
     },
+    "./variables": {
+      "sass": "./dist/variables.scss",
+      "default": "./dist/variables.scss"
+    },
     "./index.css": "./dist/index.css",
     "./themes/palette.css": "./dist/themes/palette.css",
     "./themes/light.css": "./dist/themes/light.css",

@@ -1,22 +1,10 @@
-export const stackGapStyles = {
-  '1': 'colox-stack--gap-1',
-  '2': 'colox-stack--gap-2',
-  '3': 'colox-stack--gap-3',
-  '4': 'colox-stack--gap-4',
-  '5': 'colox-stack--gap-5',
-  '6': 'colox-stack--gap-6',
-  '7': 'colox-stack--gap-7',
-  '8': 'colox-stack--gap-8',
-  '9': 'colox-stack--gap-9',
-  '10': 'colox-stack--gap-10',
-  '11': 'colox-stack--gap-11',
-  '12': 'colox-stack--gap-12',
-  '13': 'colox-stack--gap-13',
-  '14': 'colox-stack--gap-14',
-  '16': 'colox-stack--gap-16',
-  '0-5': 'colox-stack--gap-0-5',
-  '1-5': 'colox-stack--gap-1-5',
-  '2-5': 'colox-stack--gap-2-5',
-  '3-5': 'colox-stack--gap-3-5',
-  '4-5': 'colox-stack--gap-4-5',
-} as const;
+import { spacingKeys, type SpacingKey } from '@colox/theme';
+
+/**
+ * Gap axis: the spacing scale keys, single-sourced from the design
+ * language via the theme's emitted token constants (`spacingKeys` — the
+ * key list lives in the pipeline, not in the component).
+ */
+export const stackGapStyles = Object.fromEntries(
+  spacingKeys.map((key) => [key, `colox-stack--gap-${key}`] as const),
+) as Record<SpacingKey, `colox-stack--gap-${SpacingKey}`>;

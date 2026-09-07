@@ -105,7 +105,9 @@ export async function buildDesignLanguage({ tokens, outDir, runtime }) {
     // 4. aggregate index.css + standalone motion gate
     runScript('emit-index-css.mjs', { COLox_CSS_OUT: outDir });
 
-    // 5. runtime token artifacts (values the runtime consumes in JS)
+    // 5. runtime token artifacts: TS constants for the runtime plus the
+    // SCSS surface next to the css suite (values the runtime consumes in
+    // JS; key lists the component build consumes in types and SCSS)
     if (runtime) {
       if (runtime.type !== 'ts') {
         throw new Error(`runtime.type "${runtime.type}" is not supported (only "ts")`);
@@ -113,6 +115,7 @@ export async function buildDesignLanguage({ tokens, outDir, runtime }) {
       runScript('emit-runtime.mjs', {
         COLox_TOKENS_DIR: workspace,
         COLox_RUNTIME_OUT: runtime.output,
+        COLox_CSS_OUT: outDir,
       });
     }
 
