@@ -10,4 +10,4 @@ topic bundle's `references/component.md`.
 | Input      | single-line text entry with focus ring and field states           | shipped | pending      |
 | Grid       | grid layout mechanism                                             | planned | —            |
 | Positioner | absolute positioning context                                      | planned | —            |
-| Container  | semantic width shell (breakpoint widths, centered)                | shipped | pending      |
+| Container  | semantic width shell (design-token widths, centered)              | shipped | pending      |

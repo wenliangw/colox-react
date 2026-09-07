@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import type { ContainerVariants } from '../variants';
 
-/** Max-width cap key — the breakpoint words, each cap = the band floor. */
+/** Max-width cap key — each cap IS a large-dimension design token. */
 export type ContainerSize = NonNullable<ContainerVariants['size']>;
 /** Inline gutter sized by the theme spacing scale. */
 export type ContainerGutter = NonNullable<ContainerVariants['gutter']>;
@@ -9,16 +9,15 @@ export type ContainerGutter = NonNullable<ContainerVariants['gutter']>;
 export type ContainerAlign = NonNullable<ContainerVariants['align']>;
 
 /**
- * The semantic width shell: caps content to a breakpoint-width ceiling,
- * centers it and pads it inline. Fully static — never touches the theme
- * context.
+ * The semantic width shell: caps content to a design-token width
+ * ceiling, centers it and pads it inline. Fully static — never touches
+ * the theme context.
  */
 export interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * Max-width cap. The keys are the breakpoint words and each cap equals
-   * the same-named breakpoint floor, so a `sm` container never exceeds
-   * the `sm` viewport band.
-   * @default 'fluid'
+   * Max-width cap. Each cap is a large-dimension design token
+   * (`--colox-size-*`): sm/md/lg/xl = 640/768/1024/1280px.
+   * @default undefined — no cap, the CSS-faithful default.
    */
   size?: ContainerSize;
   /**

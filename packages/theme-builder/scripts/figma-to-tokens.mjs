@@ -18,8 +18,10 @@
  * - keys: "_" -> "-" (e.g. spacing "0_5" -> "0-5")
  * - skips: tokens flagged com.figma.hiddenFromPublishing, leaf keys
  *   containing whitespace (Figma duplicate-collection artifacts), and
- *   whole groups without a namespace mapping (e.g. the large_size
- *   collection stays out of the published size language)
+ *   whole groups without a namespace mapping (with a warn — an unmapped
+ *   Figma collection silently stays out of the published language; the
+ *   large_size collection was once lost this way and is now mapped
+ *   through the size spec)
  *
  * Traceability: each token keeps com.figma.variableId in $extensions.
  *
@@ -59,7 +61,8 @@ const SPECS = {
     value: (token, group) => (group === 'fontWeight' ? token.$value : `${token.$value}px`),
   },
   size: {
-    namespace: (group) => ({ radii: ['radius'], spacing: ['spacing'], size: ['size'] })[group],
+    namespace: (group) =>
+      ({ radii: ['radius'], spacing: ['spacing'], size: ['size'], 'large-size': ['size'] })[group],
     type: () => 'dimension',
     value: (token) => `${token.$value}px`,
   },

@@ -2,21 +2,22 @@
 sidebar_position: 5
 ---
 
-import { Container, Stack } from '@colox/react';
+import { Container } from '@colox/react';
 import '@colox/react/style.css';
 
 # Container
 
-`Container` is the semantic width shell: it caps content to a breakpoint-width ceiling,
-centers it and pads it inline. Everything else belongs to the layout mechanisms
+`Container` is the semantic width shell: it caps content to a design-token width
+ceiling, centers it and pads it inline. Everything else belongs to the layout mechanisms
 (`Stack`, future `Grid` and `Positioner`); `Container` only owns the page-width
 semantic — no flexbox, no grid, no positioning.
 
 ## Size
 
-`size` keys are the breakpoint words, and each cap equals the same-named breakpoint
-floor (`--colox-breakpoint-*`), so a `sm` container never exceeds the `sm` viewport
-band. The default is `fluid`: no cap, the CSS default.
+`size` caps the width with a large-dimension design token: `sm`/`md`/`lg`/`xl` =
+576/768/1024/1280px (`--colox-size-144/192/256/320` from the Figma size language).
+Breakpoints stay where they belong — responsive logic — and never leak into width.
+Without a `size` prop the container keeps the CSS default: no cap, filling its parent.
 
 <Container size="md">
   <div className="container-demo">size md — 768px cap, centered</div>
@@ -26,8 +27,8 @@ band. The default is `fluid`: no cap, the CSS default.
 <Container size="md">…</Container>
 ```
 
-Each size references the breakpoint variable directly from the theme (`--colox-breakpoint-*`),
-never a hard-coded value — the widths stay single-sourced in the design language.
+Each size references the design token directly (`--colox-size-*`, single-sourced in
+the theme), never a hard-coded value.
 
 ## Gutter
 
@@ -56,7 +57,7 @@ its parent. `align="start"` opts out and pins it to the inline start edge.
 
 | Prop   | Type                                        | Default    | Notes                   |
 | ------ | ------------------------------------------- | ---------- | ----------------------- |
-| size   | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'fluid'`   | `'fluid'`  | max-inline-size cap     |
+| size   | `'sm' \| 'md' \| 'lg' \| 'xl'`              | —          | max-inline-size cap     |
 | gutter | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`) | —          | padding-inline: 0       |
 | align  | `'center' \| 'start'`                       | `'center'` | margin-inline placement |
 

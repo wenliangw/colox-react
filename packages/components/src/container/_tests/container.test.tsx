@@ -7,12 +7,8 @@ describe('Container', () => {
   it('renders the width-shell base class with the semantic defaults', () => {
     render(<Container>content</Container>);
     const el = screen.getByText('content');
-    expect(el).toHaveClass(
-      'colox-container',
-      'colox-container--size-fluid',
-      'colox-container--align-center',
-    );
-    expect(el.className).not.toMatch(/colox-container--gutter-/);
+    expect(el).toHaveClass('colox-container', 'colox-container--align-center');
+    expect(el.className).not.toMatch(/colox-container--(size|gutter)-/);
   });
 
   it('maps size, gutter and align onto the modifier classes', () => {
@@ -26,7 +22,6 @@ describe('Container', () => {
       'colox-container--gutter-4',
       'colox-container--align-start',
     );
-    expect(screen.getByText('content')).not.toHaveClass('colox-container--size-fluid');
   });
 
   it('supports the half-step gutter keys', () => {

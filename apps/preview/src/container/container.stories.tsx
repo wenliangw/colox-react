@@ -30,7 +30,7 @@ export const Sizes: Story = {
   render: () => (
     <Stack direction="column" gap="4">
       <Container size="sm">
-        <div style={demoFill}>size sm — 640px cap</div>
+        <div style={demoFill}>size sm — 576px cap</div>
       </Container>
       <Container size="md">
         <div style={demoFill}>size md — 768px cap</div>
@@ -45,10 +45,10 @@ export const Sizes: Story = {
   ),
 };
 
-export const Fluid: Story = {
+export const NoSize: Story = {
   render: () => (
     <Container>
-      <div style={demoFill}>fluid — no cap, fills the canvas</div>
+      <div style={demoFill}>no size — no cap, fills the canvas</div>
     </Container>
   ),
 };

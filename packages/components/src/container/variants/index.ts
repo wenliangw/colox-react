@@ -10,7 +10,6 @@ export const containerVariants = cva('colox-container', {
     align: containerAlignStyles,
   },
   defaultVariants: {
-    size: 'fluid',
     align: 'center',
   },
 });

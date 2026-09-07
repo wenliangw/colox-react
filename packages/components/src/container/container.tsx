@@ -6,11 +6,11 @@ import { containerVariants } from './variants';
 import './styles/index.scss';
 
 /**
- * The semantic width shell: caps content to a breakpoint-width ceiling,
- * centers it and pads it inline. Size keys are the breakpoint words and
- * each cap references the same-named `--colox-breakpoint-*` variable, so
- * the widths stay single-sourced in the design language. The component
- * is fully static — no theme context, no runtime resolution.
+ * The semantic width shell: caps content to a design-token width
+ * ceiling, centers it and pads it inline. Each size cap references a
+ * large-dimension `--colox-size-*` token, so the widths are proper
+ * design-language constants — breakpoints serve responsive logic only,
+ * never width. Fully static: no theme context, no runtime resolution.
  */
 export const Container = forwardRef<HTMLDivElement, ContainerProps>((props, ref) => {
   const { size, gutter, align, children, className, ...rest } = props;

@@ -1,30 +1,27 @@
 // The base class is intentionally bare: a container is a plain block div
 // until a modifier narrows or centers it. Modifiers ride theme variables
-// only — breakpoint floors for the width caps, the spacing scale for the
-// gutters — so a container re-themes for free.
+// only — the large-dimension scale for the width caps, the spacing scale
+// for the gutters — so a container re-themes for free.
 
 .colox-container {
-  // Width caps: each size key IS the same-named breakpoint floor
-  // (--colox-breakpoint-*), so a size-sm container never exceeds the sm
-  // viewport band. fluid renders the CSS default explicitly: no cap.
-  &--size-fluid {
-    max-inline-size: none;
-  }
-
+  // Width caps: each size IS a large-dimension design token
+  // (--colox-size-* from the Figma size language), so sm/md/lg/xl cap
+  // at 576/768/1024/1280px. No size prop renders no modifier — the
+  // CSS-faithful default of no cap.
   &--size-sm {
-    max-inline-size: var(--colox-breakpoint-sm);
+    max-inline-size: var(--colox-size-144);
   }
 
   &--size-md {
-    max-inline-size: var(--colox-breakpoint-md);
+    max-inline-size: var(--colox-size-192);
   }
 
   &--size-lg {
-    max-inline-size: var(--colox-breakpoint-lg);
+    max-inline-size: var(--colox-size-256);
   }
 
   &--size-xl {
-    max-inline-size: var(--colox-breakpoint-xl);
+    max-inline-size: var(--colox-size-320);
   }
 
   // Centering is the shell semantic; start renders the block's own
