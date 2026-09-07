@@ -98,7 +98,7 @@
 ## 断点：工程侧常量 + 运行时 JS 消费
 
 - 断点归属 base.tokens.json，Desktop 优先（sm 640 / md 768 / lg 1024 / xl 1280，max-width 向下语义）。
-- 媒体查询不能读 CSS 变量、响应式走运行时 `data-colox-breakpoint` 属性机制，断点值注入 JS 层：token 延伸出运行时变量的发射能力归 theme-builder（`scripts/emit-runtime.mjs`），theme 的 build 契约用 `runtime: {type: "ts", output}` 声明落点，从 token 工作区的 base.tokens.json 生成 `breakpoints.ts` 的 `defaultBreakpoints`（供 ColoxThemeContext 默认值与 head 引导脚本）；light.css 的 CSS 变量副本仅保留供读。改动断点只需改 base.tokens.json + 重跑 theme build；消费方改断点不走重编译，用运行时 breakpoints 覆盖。
+- 媒体查询不能读 CSS 变量、响应式走运行时 `data-colox-breakpoint` 属性机制，断点值注入 JS 层：token 延伸出运行时变量的发射能力归 theme-builder（`scripts/emit-runtime.mjs`），theme 的 build 契约用 `runtime: {type: "ts", output}` 声明落点，从 token 工作区的 base.tokens.json 生成 `tokens/index.ts`（聚合 `defaultBreakpoints` 与 spacing 键表常量；供 ColoxThemeContext 默认值与 head 引导脚本）；light.css 的 CSS 变量副本仅保留供读。改动断点只需改 base.tokens.json + 重跑 theme build；消费方改断点不走重编译，用运行时 breakpoints 覆盖。
 
 ## 变体层用 CVA，className-only
 
@@ -107,7 +107,7 @@
 
 ## 键表是设计语言事实：由 pipeline 发射，组件不复制
 
-- spacing 键表（哪些刻度存在）由 theme build 发射成两份产物：`spacing.ts`（`spacingKeys`/`SpacingKey`，theme barrel 再导出）供组件 variants 层生成类映射；`dist/variables.scss`（经 exports `./variables` sass 条件）供组件 scss `@use` 后 `@each`。组件里不再出现手写的 `$xxx-keys` 枚举或 `as const` 键表（前科：Container gutter 与 Stack gap 各复制 20 键，用户指出「硬编码设计语言数值不合规范」后收编）。
+- spacing 键表（哪些刻度存在）由 theme build 发射成两份产物：`tokens/index.ts`（聚合 `defaultBreakpoints` + `spacingKeys`/`SpacingKey`，theme barrel 再导出，引用路径 = 目录 `@/styles/tokens`）供组件 variants 层生成类映射；`dist/variables.scss`（经 exports `./variables` sass 条件）供组件 scss `@use` 后 `@each`。组件里不再出现手写的 `$xxx-keys` 枚举或 `as const` 键表（前科：Container gutter 与 Stack gap 各复制 20 键，用户指出「硬编码设计语言数值不合规范」后收编）。
 - 发射面随语言成长的扩展路径：新键表片段在 emit-runtime 的 artifacts 列表 + `variables.scss` 内追加块——文件名与内容归 builder，消费面只认入口。
 
 ## token 命名词汇取向：贴近常识词
