@@ -22,7 +22,7 @@ exactly, apply the reason, not the letter.
 - `[app root]` → `import '@colox/react/style.css'` exactly once.
   Why: the package CSS is self-contained (theme cascade included).
 - `[bundle size matters]` → import components per-entry
-  (`@colox/react/button`, `/input`, `/stack`) instead of the barrel.
+  (`@colox/react/button`, `/container`, `/input`, `/stack`) instead of the barrel.
   Why: each component is its own build entry, so bundlers drop the rest;
   `style.css` stays the single import either way.
 - `[theme]` → wrap only in `<ColoxTheme>` when the app customizes
@@ -48,6 +48,15 @@ exactly, apply the reason, not the letter.
   theme breakpoint bands (narrow bands win, `base` is the last fallback).
 - `[static layout]` → no `Stack.Responsive` "just in case".
   Why: capability is mountable, not default; a static Stack stays context-free.
+
+## Container — quick rules
+
+- `[page width ceiling]` → `<Container>`: `size`/`gutter`/`align`. Size keys are
+  the breakpoint words and each cap equals the same-named breakpoint floor
+  (`--colox-breakpoint-*`). Defaults: `fluid` (no cap), no gutter, `center`.
+- `[layout]` → keep mechanisms separate: `<Container><Stack>…</Stack></Container>`,
+  never flexbox/grid semantics inside Container. Why: Container owns only the
+  width shell (one mechanism per component).
 
 Full sources: `skills/doctrine/SKILL.md` (read order) ·
 `skills/doctrine/references/rules.md` (global rules) ·

@@ -1,0 +1,65 @@
+---
+sidebar_position: 5
+---
+
+import { Container, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Container
+
+`Container` is the semantic width shell: it caps content to a breakpoint-width ceiling,
+centers it and pads it inline. Everything else belongs to the layout mechanisms
+(`Stack`, future `Grid` and `Positioner`); `Container` only owns the page-width
+semantic — no flexbox, no grid, no positioning.
+
+## Size
+
+`size` keys are the breakpoint words, and each cap equals the same-named breakpoint
+floor (`--colox-breakpoint-*`), so a `sm` container never exceeds the `sm` viewport
+band. The default is `fluid`: no cap, the CSS default.
+
+<Container size="md" style={{ backgroundColor: 'var(--colox-color-bg-muted)' }}>
+  <div style={{ padding: 'var(--colox-spacing-4)' }}>size md — 768px cap, centered</div>
+</Container>
+
+```mdx
+<Container size="md">…</Container>
+```
+
+Each size references the breakpoint variable directly from the theme (`--colox-breakpoint-*`),
+never a hard-coded value — the widths stay single-sourced in the design language.
+
+## Gutter
+
+`gutter` sets the inline padding from the spacing scale (`--colox-spacing-*`: 4px steps
+with 2px half steps). Without a `gutter` prop the container inherits the CSS-default
+padding of `0`.
+
+```mdx
+<Container size="md" gutter="4">
+  …
+</Container>
+```
+
+## Alignment
+
+Centering is the shell semantic: the default places a constrained box in the middle of
+its parent. `align="start"` opts out and pins it to the inline start edge.
+
+```mdx
+<Container size="md" align="start">
+  …
+</Container>
+```
+
+## Props
+
+| Prop   | Type                                        | Default    | Notes                   |
+| ------ | ------------------------------------------- | ---------- | ----------------------- |
+| size   | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'fluid'`   | `'fluid'`  | max-inline-size cap     |
+| gutter | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`) | —          | padding-inline: 0       |
+| align  | `'center' \| 'start'`                       | `'center'` | margin-inline placement |
+
+`Container` accepts all native `<div>` attributes and forwards refs. It is fully
+static: it reads no theme context at runtime, so it renders meaningfully without a
+`<ColoxTheme>` provider.

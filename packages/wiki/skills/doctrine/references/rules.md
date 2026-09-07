@@ -13,7 +13,7 @@ Cross-component doctrine for @colox/react. Format:
    Why: static defaults are served provider-free, so the provider is opt-in.
 4. `[choosing a layout]` → pick the mechanism, not the look: flexbox = `Stack`,
    grid = `Grid` (when available), absolute positioning context = `Positioner` (when
-   available), semantic width shell = `Container` (when available).
+   available), semantic width shell = `Container`.
    Why: one component per layout mechanism keeps the API surface minimal.
 5. `[consumer composition]` → build app-level primitives on the library parts
    (`Stack.Item`, `Button`, ...) with `forwardRef` + `className` merge rather than

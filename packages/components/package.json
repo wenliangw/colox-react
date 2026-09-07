@@ -30,6 +30,11 @@
       "import": "./dist/es/button.js",
       "require": "./dist/cjs/button.cjs"
     },
+    "./container": {
+      "types": "./dist/types/container/index.d.ts",
+      "import": "./dist/es/container.js",
+      "require": "./dist/cjs/container.cjs"
+    },
     "./input": {
       "types": "./dist/types/input/index.d.ts",
       "import": "./dist/es/input.js",

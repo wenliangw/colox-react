@@ -74,8 +74,9 @@ max-width cap, so narrow bands win and `base` (the widest band) is the last fall
 static `Stack` never touches the theme context.
 
 The responsive vocabulary ships from `@colox/theme` as `ResponsiveValue<T>` and
-`resolveResponsiveValue`, so every future primitive (Grid, Positioner, Container) reuses
-the same band semantics instead of re-deriving them.
+`resolveResponsiveValue`, so `Grid` and `Positioner` — and a future responsive
+extension of `Container` — reuse the same band semantics instead of re-deriving
+them.
 
 ```mdx
 <Stack gap="4">
