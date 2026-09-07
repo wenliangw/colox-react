@@ -8,7 +8,7 @@
 
 ## 设计要点
 
-- **size = 设计语言大尺寸 token**（sm/md/lg/xl → `--colox-size-144/192/256/320` = 576/768/1024/1280px）：值源是 Figma 导出的 `large_size` 组（80px–1440px 大刻度，经转换器映射进 size 命名空间编译为 CSS 变量）。**断点回归响应式独占，绝不参与宽度**——Container 不引用 `--colox-breakpoint-*`（教训：初稿借用断点变量，用户点破「breakpoint 不是给 width 用的」后改源）。
+- **size = 设计语言大尺寸 token**（sm/md/lg/xl → `--colox-size-160/192/256/320` = 640/768/1024/1280px）：值源是 Figma 导出的 `large_size` 组（80px–1440px 大刻度，经转换器映射进 size 命名空间编译为 CSS 变量；160=640 档由用户复查后补进 Figma）。**断点回归响应式独占，绝不参与宽度**——Container 不引用 `--colox-breakpoint-*`（教训：初稿借用断点变量，用户点破「breakpoint 不是给 width 用的」后改源）。
 - **不传 `size` = 无帽**（CSS 忠实默认、不产生任何 size 修饰类）；无 `fluid` 词汇值——缺省 prop 本身就是默认态（与 Stack gap/wrap 缺省同哲学）。
 - **align center 默认**（壳语义：margin-inline auto）；`start` 显式逃逸（块默认 margin）。
 - **gutter** = spacing 键（`--colox-spacing-*` 全 20 键），未设无 padding（CSS 默认）。
