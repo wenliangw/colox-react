@@ -1,0 +1,21 @@
+.colox-stack--row {
+  flex-direction: row;
+}
+
+.colox-stack--column {
+  flex-direction: column;
+}
+
+.colox-stack--row-reverse {
+  flex-direction: row-reverse;
+}
+
+.colox-stack--column-reverse {
+  flex-direction: column-reverse;
+}
+
+// The WRAP aspect of the direction axis: row stacks wrap by demand,
+// column stacks never do.
+.colox-stack--wrap {
+  flex-wrap: wrap;
+}

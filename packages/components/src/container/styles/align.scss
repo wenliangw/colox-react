@@ -1,0 +1,14 @@
+// Centering is the shell semantic; start renders the block's own
+// default margins as an explicit opt-out; end pins the box to the
+// inline end (auto margin absorbs the leftover inline-start space).
+.colox-container--align-center {
+  margin-inline: auto;
+}
+
+.colox-container--align-start {
+  margin-inline: 0;
+}
+
+.colox-container--align-end {
+  margin-inline-start: auto;
+}

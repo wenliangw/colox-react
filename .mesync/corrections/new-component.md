@@ -8,7 +8,7 @@
 
 1. **variants/ 层必建**：per-axis `as const` 类映射（gap.ts 等）+ `variants/index.ts` 导出 cva 成品与 VariantProps 类型；组件根类走 `clsx(<cva>({...}), className)`，**不得**以 clsx + 模板串直拼修饰类（复杂度低不是豁免理由——Stack 首版以此被用户纠回）。
 2. **类型单一事实源**：axis 联合类型从 VariantProps `NonNullable` 派生，`types/index.ts` 不手写联合。
-3. **出口三件**：组件文件自身引用 `styles/index.scss`；组件 `index.ts` 导出组件 + variants + 类型；`src/index.ts` barrel 加 `export * from './<name>'`。
+3. **出口三件**：组件文件自身引用 `styles/index.scss`（且 index.scss 只 @use 聚合 base/各轴 partial，平铺类名——前科：Container/Stack 曾把各轴挤进单文件 index.scss，用户指出应与 Button 一致）；组件 `index.ts` 导出组件 + variants + 类型；`src/index.ts` barrel 加 `export * from './<name>'`。
 4. **测试**：`_tests/` 覆盖默认修饰组、各轴映射、透传/className 合并。
 5. **外围放行**：`apps/docs/docs/components/<name>.mdx`（sidebar_position 递增）引用组件前先 import（Button 漏 import 的前科）；`apps/preview/src/<name>/` 故事；eslint/prettier/组件与 app 构建全绿。
 6. **mesync 落盘**：[wiki/modules/<name>.md](wiki/modules/stack.md) + overview 模块索引 + 决策/品味节点（涉 API 取舍时）。

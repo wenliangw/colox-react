@@ -1,0 +1,19 @@
+// Width caps: each size IS a large-dimension design token
+// (--colox-size-* from the Figma size language), so sm/md/lg/xl cap
+// at 640/768/1024/1280px. No size prop renders no modifier — the
+// CSS-faithful default of no cap.
+.colox-container--size-sm {
+  max-inline-size: var(--colox-size-160);
+}
+
+.colox-container--size-md {
+  max-inline-size: var(--colox-size-192);
+}
+
+.colox-container--size-lg {
+  max-inline-size: var(--colox-size-256);
+}
+
+.colox-container--size-xl {
+  max-inline-size: var(--colox-size-320);
+}

@@ -120,3 +120,9 @@
 
 - 组件的尺寸（size）样式直接写在组件自己的 `styles/` 里（如 `input/styles/size.scss`）。全局 mixin 文件按需再建（respond-to 已随媒体查询路线移除，响应式属性选择器 mixin 待布局组件时建）。
 - 类名拼接用 `clsx`，不复用自研 `cn`。
+
+## styles/ 按变体轴拆 partial，index.scss 只聚合（Button 范式）
+
+- 组件 `styles/` 按变体轴一刀一文件（base/尺寸/对齐/…），partial 直写平铺类名，`index.scss` 仅按序 `@use` 汇总，组件入口只引 index。全体组件一致（定义见 constraints：`styles/（base/各轴/index）`）。
+- 轴文件容得下一组修饰（如 Stack direction.scss：4 个方向值 + wrap——flex-flow 对，一行规则不单立文件）；**空 base 不立文件**（Container base 无规则，裸基注释收进 index.scss 顶部）。
+- 前科：Container/Stack 曾把各轴挤进单个 index.scss，用户指出「与 Button 保持一致」后拆回范式。

@@ -21,7 +21,7 @@
 
 ## 文件
 
-`variants/{size,gutter,align}.ts` + `variants/index.ts`、`types/index.ts`、`container.tsx`（forwardRef + `clsx(cva({...}), className)`）、`styles/index.scss`、`index.ts`（出口 Container + variants + 类型）。测试 `_tests/container.test.tsx` 5 例（默认修饰组、轴映射、半步键、透传/className、ref 转发）。外围：`apps/docs/docs/components/container.mdx`（sidebar 第 5 位）、`apps/preview/src/container/container.stories.tsx`。构建：vite `container` entry + exports 子路径 `@colox/react/container` + 主 barrel `export * from './container'`。
+`variants/{size,gutter,align}.ts` + `variants/index.ts`、`types/index.ts`、`container.tsx`（forwardRef + `clsx(cva({...}), className)`）、`styles/{size,align,gutter}.scss` + 聚合 `styles/index.scss`（base 无规则不立文件，裸基注释收进 index.scss）、`index.ts`（出口 Container + variants + 类型）。测试 `_tests/container.test.tsx` 5 例（默认修饰组、轴映射、半步键、透传/className、ref 转发）。外围：`apps/docs/docs/components/container.mdx`（sidebar 第 5 位）、`apps/preview/src/container/container.stories.tsx`。构建：vite `container` entry + exports 子路径 `@colox/react/container` + 主 barrel `export * from './container'`。
 
 ## 已知边界 / 场景触发
 

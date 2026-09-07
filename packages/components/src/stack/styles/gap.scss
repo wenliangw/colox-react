@@ -1,0 +1,7 @@
+@use '@colox/theme/variables' as tokens;
+
+@each $key in tokens.$colox-spacing-keys {
+  .colox-stack--gap-#{$key} {
+    gap: var(--colox-spacing-#{$key});
+  }
+}

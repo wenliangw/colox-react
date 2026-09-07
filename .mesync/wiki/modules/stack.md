@@ -24,7 +24,7 @@
 
 ## 文件
 
-`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`=ResponsiveValue<StackGap> + `StackContextValue`）、`children/{item,responsive}/index.tsx`（dot-part 子件）、`context/index.ts`（仅 createContext + 默认 no-op 值）、`hooks/use-stack-context.ts`（受保护出口：无根挂载 warn + no-op 降级）、`stack.tsx`（根组件 + Object.assign 挂载）、`styles/index.scss`、`index.ts` 出口（useStackContext 进 barrel、StackContext 不进）；无组件私有 utils（响应式解析已上提 theme）。测试：`_tests/stack.test.tsx` 11 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、无根 warn 降级；theme hook 在测试内 mock 以控制断点），解析器测试随 `resolveResponsiveValue` 上提至 theme 包 8 例。
+`variants/{direction,gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + Props 接口 + `StackResponsiveGap`=ResponsiveValue<StackGap> + `StackContextValue`）、`children/{item,responsive}/index.tsx`（dot-part 子件）、`context/index.ts`（仅 createContext + 默认 no-op 值）、`hooks/use-stack-context.ts`（受保护出口：无根挂载 warn + no-op 降级）、`stack.tsx`（根组件 + Object.assign 挂载）、`styles/{base,direction,gap,align,justify,item}.scss` + 聚合 `styles/index.scss`、`index.ts` 出口（useStackContext 进 barrel、StackContext 不进）；无组件私有 utils（响应式解析已上提 theme）。测试：`_tests/stack.test.tsx` 11 例（默认修饰组、轴映射、反向轴、透传/className、Item grow、Responsive 挂载/换带/卸载还原、无根 warn 降级；theme hook 在测试内 mock 以控制断点），解析器测试随 `resolveResponsiveValue` 上提至 theme 包 8 例。
 
 ## 已知边界 / 场景触发的候选
 

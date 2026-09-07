@@ -1,0 +1,15 @@
+@each $name,
+  $value
+    in (
+      'start': flex-start,
+      'end': flex-end,
+      'center': center,
+      'between': space-between,
+      'around': space-around,
+      'evenly': space-evenly
+    )
+{
+  .colox-stack--justify-#{$name} {
+    justify-content: $value;
+  }
+}

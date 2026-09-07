@@ -1,0 +1,10 @@
+@use '@colox/theme/variables' as tokens;
+
+// Gutters: spacing scale keys, single-sourced from the emitted key list
+// (spacingKeys / $colox-spacing-keys). Values ride the theme variables,
+// so a re-themed design language re-gutters with a rebuild.
+@each $key in tokens.$colox-spacing-keys {
+  .colox-container--gutter-#{$key} {
+    padding-inline: var(--colox-spacing-#{$key});
+  }
+}
