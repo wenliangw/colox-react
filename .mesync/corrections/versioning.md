@@ -16,6 +16,6 @@
 
 - [ ] 包清单：`@colox/react`、`@colox/theme`、`@colox/theme-builder`、`@colox/wiki`、`@colox/mcp`——五个包都要有各自的 changeset 条目（mcp 与 wiki 同批发布）。
 - [ ] 内容按**真实交付**写（勿照抄历史清单）：Button/Stack 已在库且成熟；**Input 是测试组件**——首发说明以它当时的真实定位为准，不确定就问用户。
-- [ ] `react-entry-points`（按组件入口树摇）、theme 拆分（`@colox/theme-builder` 新建 + 契约驱动 CLI）、wiki doctrine 数据包、mcp server——这四个是确定要写进首发 CHANGELOG 的主题。
+- [ ] `react-entry-points`（按组件入口树摇，container 入口并入）、theme 拆分（`@colox/theme-builder` 新建 + 契约驱动 CLI）、wiki doctrine 数据包、mcp server、**Container 语义宽度壳**（新组件）——这些是确定要写进首发 CHANGELOG 的主题。
 - [ ] 文件命名语义化：**禁止**分支名/CLI 随机词（教训：tidy-inputs-fly.md = 分支 tidy-inputs + CLI 随机词 fly）。
 - [ ] `changeset version` 消费后 md 会自动删除；发布后 `.changeset/` 只剩 `config.json`。
