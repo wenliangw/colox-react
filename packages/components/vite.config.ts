@@ -12,6 +12,7 @@ const entries = {
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
   stack: resolve(import.meta.dirname, 'src/stack/index.ts'),
   container: resolve(import.meta.dirname, 'src/container/index.ts'),
+  grid: resolve(import.meta.dirname, 'src/grid/index.ts'),
 };
 
 // Runtime deps stay in `dependencies` (installed transitively, one-line

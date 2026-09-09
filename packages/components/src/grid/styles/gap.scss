@@ -1,0 +1,22 @@
+@use '@colox/theme/variables' as tokens;
+
+// Track spacing: spacing scale keys, single-sourced from the emitted key
+// list (spacingKeys / $colox-spacing-keys). One key covers both axes;
+// the row/column pair carries the per-axis object form.
+@each $key in tokens.$colox-spacing-keys {
+  .colox-grid--gap-#{$key} {
+    gap: var(--colox-spacing-#{$key});
+  }
+}
+
+@each $key in tokens.$colox-spacing-keys {
+  .colox-grid--row-gap-#{$key} {
+    row-gap: var(--colox-spacing-#{$key});
+  }
+}
+
+@each $key in tokens.$colox-spacing-keys {
+  .colox-grid--column-gap-#{$key} {
+    column-gap: var(--colox-spacing-#{$key});
+  }
+}

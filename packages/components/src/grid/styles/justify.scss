@@ -1,0 +1,17 @@
+// Inline-axis track distribution (justify-content). The six-word family
+// shared with Stack's justify axis.
+@each $name,
+  $value
+    in (
+      'start': start,
+      'end': end,
+      'center': center,
+      'between': space-between,
+      'around': space-around,
+      'evenly': space-evenly
+    )
+{
+  .colox-grid--justify-#{$name} {
+    justify-content: $value;
+  }
+}

@@ -1,0 +1,7 @@
+// Block-axis track distribution (align-content). The alignment family:
+// box-alignment words + the CSS-faithful stretch behavior word.
+@each $name, $value in ('start': start, 'end': end, 'center': center, 'stretch': stretch) {
+  .colox-grid--align-#{$name} {
+    align-content: $value;
+  }
+}

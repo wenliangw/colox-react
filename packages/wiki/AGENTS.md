@@ -62,6 +62,21 @@ exactly, apply the reason, not the letter.
   never flexbox/grid semantics inside Container. Why: Container owns only the
   width shell (one mechanism per component).
 
+## Grid — quick rules
+
+- `[grid layout]` → `<Grid>`: `columns`/`gap`/`align`/`justify` + `<Grid.Item span>`.
+  Defaults: 1 column, no gap, CSS-faithful `stretch`/`start` track distribution.
+- `[equal tracks]` → `columns={n}` — any number, not locked to a 12-column convention.
+  Why: the template is `repeat(n, minmax(0, 1fr))`; 12 is a use pattern, not a limit.
+- `[responsive columns]` → `columns={{ sm?, md?, lg?, xl? }}`. Never media queries.
+  Why: fixed breakpoint contract (no `base`), min-width activation — a key starts
+  at its band and carries upward; below the first configured band the default
+  (1) applies.
+- `[per-axis gap]` → `gap="4"` (both axes) or `gap={{ row: '4', column: '6' }}`.
+  Never raw px. Why: spacing keys re-theme; CSS row-gap/column-gap order.
+- `[featured cell]` → `<Grid.Item span={n}>`. Why: span is the item-axis
+  vocabulary; it rides a custom property so arbitrary counts stay class-free.
+
 Full sources: `skills/doctrine/SKILL.md` (read order) ·
 `skills/doctrine/references/rules.md` (global rules) ·
 `skills/stack/references/rules.md` (stack rules) ·

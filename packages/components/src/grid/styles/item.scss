@@ -1,0 +1,7 @@
+// Span rides an inline custom property so arbitrary column counts stay
+// class-free (no 1..n modifier table): the component writes
+// `--colox-grid-item-span: span 3`, and the default is plain auto
+// placement.
+.colox-grid-item {
+  grid-column: var(--colox-grid-item-span, auto);
+}

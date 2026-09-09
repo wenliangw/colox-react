@@ -1,0 +1,92 @@
+---
+sidebar_position: 6
+---
+
+import { Grid } from '@colox/react';
+import '@colox/react/style.css';
+
+# Grid
+
+`Grid` is the CSS Grid layout primitive: equal column tracks, per-breakpoint column
+counts, token spacing and item spans. It is the two-dimensional companion of the
+one-dimensional `Stack`, and together they cover the layout mechanisms:
+`Container` owns the width shell, `Stack` owns flexbox flow, `Grid` owns grid
+tracks.
+
+## Columns
+
+`columns` sets the number of equal, shrinkable tracks
+(`repeat(n, minmax(0, 1fr))`). Any number works — 12 is a common convention,
+not a limit. The default is 1 column.
+
+<Grid columns={3} gap="4">
+  <Grid.Item>one</Grid.Item>
+  <Grid.Item>two</Grid.Item>
+  <Grid.Item>three</Grid.Item>
+</Grid>
+
+```mdx
+<Grid columns={3} gap="4">
+  …
+</Grid>
+```
+
+### Responsive columns
+
+`columns` also accepts per-breakpoint keys from the fixed breakpoint contract
+(`sm`/`md`/`lg`/`xl` — no `base` slot), with min-width activation semantics: a key
+takes effect from its band upward, unconfigured bands keep the latest configured
+value, and below the first configured band the static default (1 column) applies.
+
+```mdx
+<Grid columns={{ sm: 1, md: 2, lg: 6 }} gap="4">
+  …
+</Grid>
+```
+
+The resolution uses the theme's `resolveResponsiveValue` from `@colox/theme` — the
+same vocabulary `Stack.Responsive` consumes — against the current runtime band.
+A static number is sugar for "this count everywhere".
+
+## Gap
+
+`gap` takes a spacing key; one key covers both axes. Pass `{ row, column }` to
+set each axis separately (CSS `row-gap` / `column-gap` order).
+
+```mdx
+<Grid columns={2} gap={{ row: '4', column: '8' }}>
+  …
+</Grid>
+```
+
+## Alignment
+
+`align` distributes the grid tracks on the block axis (`start`/`center`/`end`/
+`stretch`), `justify` on the inline axis (`start`/`center`/`end`/`between`/
+`around`/`evenly`) — box-alignment words, uniform with the `Stack` families.
+Without props the CSS-faithful defaults apply (`stretch` / `start`).
+
+## Items
+
+`Grid.Item` is the blessed grid child. It accepts `span` (column span) plus all
+native `<div>` attributes:
+
+```mdx
+<Grid columns={4} gap="4">
+  <Grid.Item span={2}>featured</Grid.Item>
+  <Grid.Item>aside</Grid.Item>
+</Grid>
+```
+
+## Props
+
+| Prop    | Type                                                                | Default       | Notes                             |
+| ------- | ------------------------------------------------------------------- | ------------- | --------------------------------- |
+| columns | `number \| { sm?, md?, lg?, xl? }`                                  | `1`           | equal tracks, responsive per band |
+| gap     | spacing key (`'1'`…`'16'`, `'0-5'`…`'4-5'`) \| `{ row?, column? }`  | —             | one key = both axes               |
+| align   | `'start' \| 'center' \| 'end' \| 'stretch'`                         | — (`stretch`) | align-content (block axis)        |
+| justify | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | — (`start`)   | justify-content (inline axis)     |
+
+`Grid` and `Grid.Item` accept all native `<div>` attributes and forward refs. The
+root reads the theme breakpoint context to resolve responsive columns; without a
+`<ColoxTheme>` provider it warns once and renders the static defaults.

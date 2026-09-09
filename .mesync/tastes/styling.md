@@ -126,3 +126,8 @@
 - 组件 `styles/` 按变体轴一刀一文件（base/尺寸/对齐/…），partial 直写平铺类名，`index.scss` 仅按序 `@use` 汇总，组件入口只引 index。全体组件一致（定义见 constraints：`styles/（base/各轴/index）`）。
 - 轴文件容得下一组修饰（如 Stack direction.scss：4 个方向值 + wrap——flex-flow 对，一行规则不单立文件）；**空 base 不立文件**（Container base 无规则，裸基注释收进 index.scss 顶部）。
 - 前科：Container/Stack 曾把各轴挤进单个 index.scss，用户指出「与 Button 保持一致」后拆回范式。
+
+## 任意整数轴走内联 CSS 变量通道，不造 1..n 类表
+
+- 值域是任意整数的轴（Grid columns、Grid.Item span）不生成修饰类表——类表在整数开放集上无界（键表单源纪律管不到任意整数）。形态 = 组件把解析值写进内联自定义属性（`--colox-grid-columns` / `--colox-grid-item-span: span N`），唯一的模板/定位规则在 scss 里读变量 + 默认回落（`repeat(var(--colox-grid-columns, 1), …)` / `grid-column: var(--colox-grid-item-span, auto)`）。规则留在 styles/，只有「值」注进 DOM。
+- 消费方的 style 透传保留优先权（内联合并，消费方后写覆盖组件变量）。

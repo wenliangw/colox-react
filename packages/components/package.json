@@ -35,6 +35,11 @@
       "import": "./dist/es/container.js",
       "require": "./dist/cjs/container.cjs"
     },
+    "./grid": {
+      "types": "./dist/types/grid/index.d.ts",
+      "import": "./dist/es/grid.js",
+      "require": "./dist/cjs/grid.cjs"
+    },
     "./input": {
       "types": "./dist/types/input/index.d.ts",
       "import": "./dist/es/input.js",

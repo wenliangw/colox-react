@@ -1,0 +1,9 @@
+.colox-grid {
+  display: grid;
+
+  // Column template: the count rides the runtime-resolved custom property
+  // (static columns resolve to one number; responsive columns resolve per
+  // band in JS), so arbitrary counts need no 1..n modifier table.
+  // minmax(0, 1fr) keeps equal columns shrinkable (grid blowout guard).
+  grid-template-columns: repeat(var(--colox-grid-columns, 1), minmax(0, 1fr));
+}

@@ -8,6 +8,6 @@ topic bundle's `references/component.md`.
 | Stack      | flexbox layout: rows, columns, toolbars, spacers, responsive gaps | shipped | skills/stack |
 | Button     | actions (variants + interactive states)                           | shipped | pending      |
 | Input      | single-line text entry with focus ring and field states           | shipped | pending      |
-| Grid       | grid layout mechanism                                             | planned | —            |
+| Grid       | grid layout mechanism                                             | shipped | skills/grid  |
 | Positioner | absolute positioning context                                      | planned | —            |
 | Container  | semantic width shell (design-token widths, centered)              | shipped | pending      |
