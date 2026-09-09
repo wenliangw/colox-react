@@ -36,3 +36,4 @@
 
 - ColoxTheme 初版四轴全 dot-part → 用户收口：props 主轴承重、可选能力留 dot-part（挂载即启用）。
 - Stack 首版散落结构（`context.ts`/`item.tsx`/`responsive.tsx`/`resolve.ts` 平铺、子件裸调 useContext）被用户纠回，本卷定稿；后再经一轮用户审查细化为「context 保持干净（类型进 types/）+ 纯函数归 utils/ + 主题语义词归 @colox/theme」三分层。此后新组合式组件开工前先核对本卷六条。
+- Grid 交付时 Grid.Item 被拍平写进 `grid.tsx`（未进 `children/item/`），用户再次纠回——即便已读过 Stack 参考实现，浅层模式匹配仍会漏掉「children/ 目录是通用组合规范」这一层；写完还把错误结构写进模块文档。教训：新组合式组件开工前**必须**逐条过 corrections/new-component.md（第 7 条指向本卷），并对照参考实现的完整目录树，不只抄挂载写法。

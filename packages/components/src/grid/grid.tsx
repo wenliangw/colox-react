@@ -2,7 +2,8 @@ import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 import { resolveResponsiveValue, useColoxTheme } from '@colox/theme';
-import type { GridItemProps, GridProps } from './types';
+import { GridItem } from './children/item';
+import type { GridProps } from './types';
 import { gridVariants } from './variants';
 
 import './styles/index.scss';
@@ -39,19 +40,6 @@ const GridRoot = forwardRef<HTMLDivElement, GridProps>((props, ref) => {
       : ({ '--colox-grid-columns': resolvedColumns, ...style } as CSSProperties);
   return (
     <div ref={ref} className={clsx(classes, className)} style={resolvedStyle} {...rest}>
-      {children}
-    </div>
-  );
-});
-
-const GridItem = forwardRef<HTMLDivElement, GridItemProps>((props, ref) => {
-  const { span, className, style, children, ...rest } = props;
-  const resolvedStyle =
-    span === undefined
-      ? style
-      : ({ '--colox-grid-item-span': `span ${span}`, ...style } as CSSProperties);
-  return (
-    <div ref={ref} className={clsx('colox-grid-item', className)} style={resolvedStyle} {...rest}>
       {children}
     </div>
   );

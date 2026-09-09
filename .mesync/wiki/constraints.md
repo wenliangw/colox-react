@@ -26,7 +26,7 @@
 ## 组件约定
 
 - 文件名一律小写、多单词用 `-` 连字符（组件文件 `input.tsx`、样式 `button.scss`、用例 `size.stories.tsx`）；导出符号仍用 PascalCase。
-- 组件目录按关注点拆分：`<component>.tsx` + `index.ts` + `_stories/` + `_tests/` + `types/`（props/ref 类型）+ `styles/`（base/各轴/index）+ `variants/`（各轴/index）；`hooks/` 预留，行为复杂时再加（`useXxx` 只做行为/可访问性，不做外观）。
+- 组件目录按关注点拆分：`<component>.tsx` + `index.ts` + `_stories/` + `_tests/` + `children/`（dot-part 子件，组合规范）+ `types/`（props/ref 类型）+ `styles/`（base/各轴/index）+ `variants/`（各轴/index）；`hooks/` 预留，行为复杂时再加（`useXxx` 只做行为/可访问性，不做外观）。
 - Storybook 按关注点拆 stories 文件；同一关注点的所有取值合并到**一个** story 页面同屏对比（如 Size 页面同屏渲染 sm/md/lg，State 页面同屏渲染 default/invalid/disabled），不为每个取值单独建 story。
 - 组件类名前缀统一为 `colox-`，BEM 风格。
 - 组件必须 `forwardRef` 并继承原生 HTML 属性接口；用箭头函数 `const X = forwardRef<XRef, XProps>((props, ref) => ...)` 定义，属性用 `const { ... } = props` 解构取值。
