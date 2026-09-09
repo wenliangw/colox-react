@@ -13,6 +13,7 @@
 5. **外围放行**：`apps/docs/docs/components/<name>.mdx`（sidebar_position 递增）引用组件前先 import（Button 漏 import 的前科）；`apps/preview/src/<name>/` 故事；eslint/prettier/组件与 app 构建全绿。
 6. **mesync 落盘**：[wiki/modules/<name>.md](wiki/modules/stack.md) + overview 模块索引 + 决策/品味节点（涉 API 取舍时）。
 7. **组合式组件走组合规范**（含 dot-part 子件时）：`children/<part>/index.tsx` 逐件文件夹、`context/index.ts` 建 context（默认 no-op 值 + 关联工具方法）、`hooks/use-<name>-context.ts` 受保护出口；子件**不得**裸调 useContext、工具**不得**散落平铺文件（resolve.ts 前科）——开工前对照 tastes/composition.md 六条与 ColoxTheme/Stack 参考实现。子件**禁止**拍平写在 `<component>.tsx` 里（Grid.Item 前科：写成单文件被用户纠回，「读过 Stack 先例」不豁免——须对照参考实现的完整目录树，不只抄 Object.assign 挂载写法）。
+8. **渲染体只编排**：判别/翻译/样式装配下沉 utils 纯函数（`splitGap`/`withColumnsVariable` 形态），组件体内不堆 typeof 判别、三目装配、类型断言（`as CSSProperties`）——GridRoot 前科：gap 两段判别 + CSS 变量内联装配全在渲染体，被用户纠回。派生结果以**结果语义**命名，不强调行为来源（`resolvedColumns` → `columns`；入参要区分时用来源词 `columnsProp`/`styleProp`）；多余卫语句照 trust 契约删（resolver 对 null/标量本就直通，外面再裹 undefined 卫 = 没吃透工具契约）。
 
 ## 为什么
 

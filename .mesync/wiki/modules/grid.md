@@ -23,7 +23,7 @@
 
 ## 文件
 
-`variants/{gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + props 接口）、`children/item/index.tsx`（dot-part 子件）、`grid.tsx`（根组件 + Object.assign 挂载）、`styles/{base,gap,align,justify,item}.scss` + 聚合 `styles/index.scss`、`index.ts` 出口（Grid + variants + 类型）、`_tests/grid.test.tsx` 11 例（默认修饰组、静态列变量、响应换带/续档/回落、gap 单键与分轴对象、对齐词族、透传/style/ref、Item span 变量、无 span 类态；theme hook 在测试内 mock 以控制断点）。外围：`apps/docs/docs/components/grid.mdx`（sidebar 第 6 位）、`apps/preview/src/grid/grid.stories.tsx`、wiki 包 `skills/grid/` bundle（SKILL + references/rules + references/component）+ `components.md` 状态 shipped。构建：vite `grid` entry + exports 子路径 `@colox/react/grid` + 主 barrel `export * from './grid'`。
+`variants/{gap,align,justify}.ts` + `variants/index.ts`、`types/index.ts`（类型派生 + props 接口）、`children/item/index.tsx`（dot-part 子件）、`utils/split-gap.ts`（gap 形状→cva 轴判别）+ `utils/style.ts`（自定义属性 style 装配）、`grid.tsx`（根组件 + Object.assign 挂载）、`styles/{base,gap,align,justify,item}.scss` + 聚合 `styles/index.scss`、`index.ts` 出口（Grid + variants + 类型）、`_tests/grid.test.tsx` 11 例（默认修饰组、静态列变量、响应换带/续档/回落、gap 单键与分轴对象、对齐词族、透传/style/ref、Item span 变量、无 span 类态；theme hook 在测试内 mock 以控制断点）。外围：`apps/docs/docs/components/grid.mdx`（sidebar 第 6 位）、`apps/preview/src/grid/grid.stories.tsx`、wiki 包 `skills/grid/` bundle（SKILL + references/rules + references/component）+ `components.md` 状态 shipped。构建：vite `grid` entry + exports 子路径 `@colox/react/grid` + 主 barrel `export * from './grid'`。
 
 ## 已知边界 / 场景触发的候选
 
