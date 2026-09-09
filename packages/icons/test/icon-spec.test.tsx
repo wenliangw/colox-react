@@ -2,25 +2,25 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  IconBase,
-  Plus,
-  Search,
-  X,
+  IconCheck,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronUp,
+  IconEye,
+  IconEyeOff,
+  IconPlus,
+  IconSearch,
+  IconX,
 } from '../src';
 import { chevronPath } from '../src/icons/geometry/chevron';
 import { eyeOutlinePath, eyeSlashPath } from '../src/icons/geometry/eye';
 
-type Icon = typeof ChevronRight;
+type Icon = typeof IconChevronRight;
+type IconProps = Omit<Parameters<typeof IconEye>[0], 'ref'>;
 
 /**
- * The IconBase contract every icon must render (spec §1–2): 24 canvas,
+ * The base contract every icon must render (spec §1–2): 24 canvas,
  * stroke set (no fill), 1.5 round stroke, currentColor color and 1em
  * sizing so colors/sizes follow the host, decorative a11y defaults.
  */
@@ -68,48 +68,49 @@ interface IconSpec {
 }
 
 const ICONS: IconSpec[] = [
-  { name: 'chevron-right', component: ChevronRight, paths: [chevronPath] },
+  { name: 'chevron-right', component: IconChevronRight, paths: [chevronPath] },
   {
     name: 'chevron-down',
-    component: ChevronDown,
+    component: IconChevronDown,
     paths: [chevronPath],
     transform: 'rotate(90 12 12)',
   },
   {
     name: 'chevron-left',
-    component: ChevronLeft,
+    component: IconChevronLeft,
     paths: [chevronPath],
     transform: 'rotate(180 12 12)',
   },
   {
     name: 'chevron-up',
-    component: ChevronUp,
+    component: IconChevronUp,
     paths: [chevronPath],
     transform: 'rotate(270 12 12)',
   },
-  { name: 'x', component: X, paths: ['M6 6 L18 18 M18 6 L6 18'] },
-  { name: 'check', component: Check, paths: ['M20 6 L9 17 L4 12'] },
-  { name: 'plus', component: Plus, paths: ['M12 6 V18 M6 12 H18'] },
+  { name: 'x', component: IconX, paths: ['M6 6 L18 18 M18 6 L6 18'] },
+  { name: 'check', component: IconCheck, paths: ['M20 6 L9 17 L4 12'] },
+  { name: 'plus', component: IconPlus, paths: ['M12 6 V18 M6 12 H18'] },
   {
     name: 'eye',
-    component: Eye,
+    component: IconEye,
     paths: [eyeOutlinePath],
     circle: [12, 12, 3],
   },
   {
     name: 'eye-off',
-    component: EyeOff,
+    component: IconEyeOff,
     paths: [eyeOutlinePath, eyeSlashPath],
   },
   {
     name: 'search',
-    component: Search,
+    component: IconSearch,
     paths: ['M16 16 L20 20'],
     circle: [11, 11, 7],
   },
 ];
 
-const renderIcon = (component: Icon): string => renderToStaticMarkup(createElement(component));
+const renderIcon = (component: Icon, props?: IconProps): string =>
+  renderToStaticMarkup(createElement(component, props));
 
 /** All numeric tokens in the geometry attributes (d / cx / cy / r / transform). */
 const geometryNumbers = (html: string): number[] =>
@@ -148,11 +149,24 @@ const pathEndpoints = (d: string): [number, number][] => {
 };
 
 describe('icon spec', () => {
-  it.each(ICONS)('$name renders the IconBase contract', ({ component }) => {
+  it.each(ICONS)('$name renders the base contract', ({ component }) => {
     const html = renderIcon(component);
     for (const attr of CONTRACT) {
       expect(html).toContain(attr);
     }
+  });
+
+  it.each(ICONS)('$name defaults to 1em and takes size as explicit px', ({ component }) => {
+    expect(renderIcon(component, { size: 16 })).toContain('width="16"');
+    expect(renderIcon(component, { size: 16 })).toContain('height="16"');
+    expect(renderIcon(component)).not.toContain('size=');
+  });
+
+  it('public icons pass size, className and a11y overrides through', () => {
+    const html = renderIcon(IconEye, { size: 20, className: 'custom', 'aria-hidden': false });
+    expect(html).toContain('width="20"');
+    expect(html).toContain('class="custom"');
+    expect(html).toContain('aria-hidden="false"');
   });
 
   it.each(ICONS)(
@@ -230,24 +244,12 @@ describe('icon spec', () => {
   });
 
   it('eye-off derives from eye: shared outline, pupil swapped for the slash', () => {
-    const eye = renderIcon(Eye);
-    const off = renderIcon(EyeOff);
+    const eye = renderIcon(IconEye);
+    const off = renderIcon(IconEyeOff);
     expect(off).toContain(`d="${eyeOutlinePath}"`);
     expect(off).toContain(`d="${eyeSlashPath}"`);
     expect(off).not.toContain('<circle');
     expect(eye).toContain('<circle cx="12" cy="12" r="3"');
     expect(eye).not.toContain(`d="${eyeSlashPath}"`);
-  });
-
-  it('consumers keep the fork channel: explicit attributes override the defaults', () => {
-    const html = renderToStaticMarkup(
-      createElement(IconBase, {
-        strokeWidth: 3,
-        'aria-hidden': false,
-        children: createElement('path', { d: chevronPath }),
-      }),
-    );
-    expect(html).toContain('stroke-width="3"');
-    expect(html).toContain('aria-hidden="false"');
   });
 });

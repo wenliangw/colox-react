@@ -1,21 +1,23 @@
 # @colox/icons
 
 The Colox first-party icon set: stroke-based glyphs drawn in the same design
-language as the components. Icons are React components riding `IconBase` — the
-single place the visual contract lives.
+language as the components. Every icon is an `Icon*`-prefixed React component —
+the prefix keeps bare high-frequency names (`X`, `Eye`, `Search`) collision-free
+next to other icon libraries and business components.
 
 ```tsx
-import { ChevronDown, Eye } from '@colox/icons';
+import { IconChevronDown, IconEye, IconSearch } from '@colox/icons';
 
-<Button trailing={<ChevronDown />}>Open</Button>;
-<div style={{ fontSize: 20 }}>
-  <Eye />
-</div>;
+<Button trailing={<IconChevronDown />}>Open</Button>;
+<IconSearch size={16} />;
 ```
 
-Colors follow the host via `stroke="currentColor"` (semantic tokens flow
-through), sizes follow the host font size via `1em` sizing — an icon placed in a
-Button inherits the component's typography and color without props.
+## Sizing
+
+`size` pins a px size; without it an icon renders at `1em` — it follows the host
+font size, so an icon placed in a Button inherits the component's typography
+(and its color via `stroke="currentColor"`, keeping semantic tokens flowing
+through) without props.
 
 ## Design specification
 
@@ -32,11 +34,11 @@ The eight clauses:
 4. **Optical box**: every stroke (bleed included) sits inside the `[2, 22]`
    content box, keeping icons optically flush with text.
 5. **Angles**: diagonals are 45°/30° constructions — no orphan angles.
-6. **Paired glyphs share one source**: `ChevronDown/Left/Right/Up` are one
-   drawing rotated around the canvas center; `EyeOff` is `Eye` with the pupil
-   swapped for the slash. No second hand-drawn face for a state pair.
-7. **Naming**: kebab-case file names, PascalCase exports; direction suffixes
-   `-up/-down/-left/-right`, state suffixes `-off`.
+6. **Paired glyphs share one source**: `IconChevronDown/Left/Right/Up` are one
+   drawing rotated around the canvas center; `IconEyeOff` is `IconEye` with the
+   pupil swapped for the slash. No second hand-drawn face for a state pair.
+7. **Naming**: kebab-case file names, PascalCase `Icon*` exports; direction
+   suffixes `-up/-down/-left/-right`, state suffixes `-off`.
 8. **Variants**: the set is stroke-only; a filled variant enters only when a
    semantic requirement appears.
 
@@ -44,8 +46,9 @@ The eight clauses:
 
 The spec lint renders every icon and asserts:
 
-- the full `IconBase` attribute contract (canvas, fill, stroke, caps, 1em,
-  a11y defaults);
+- the full base attribute contract (canvas, fill, stroke, caps, 1em, a11y
+  defaults) and the public passthrough contract (`size`, className, a11y
+  overrides);
 - the designed drawing is rendered verbatim (the geometry lock — a path change
   fails the suite and forces a spec review);
 - every geometry number is an integer (grid clause);
@@ -53,5 +56,15 @@ The spec lint renders every icon and asserts:
 - the documented optical bounds of each glyph stay inside the content box;
 - pair-source rules (chevron family single geometry, eye/eye-off derivation).
 
-`IconBase` spreads consumer props after its defaults, so stroke width, fill or
-a11y attributes stay overridable — the fork channel is open by design.
+The shared `IconBase` the glyphs render through is internal: it holds the
+visual contract in one place, but consumers take finished icons only. Custom
+business glyphs stay native `svg`/third-party icons in the consumer's own code
+the component slots accept any ReactNode.
+
+## API shape
+
+- Named per-icon exports only — `import { IconEye } from '@colox/icons'` stays
+  per-icon tree-shakeable (preserveModules output, `sideEffects: false`).
+- No namespace object and no `name` string index: they would statically pull
+  the whole set into every consumer's bundle.
+- Every icon: `size?: number` + all native svg attributes pass through.
