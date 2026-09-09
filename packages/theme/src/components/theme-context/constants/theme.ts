@@ -25,7 +25,7 @@ export const BREAKPOINT_KEYS = Object.keys(defaultBreakpoints) as Array<
   keyof typeof defaultBreakpoints
 >;
 
-/** The segment when no max-width query matches (attribute removed). */
+/** The segment when no max-width cap matches: viewport beyond the widest band (attribute removed). */
 export const BASE_BREAKPOINT_NAME = 'base' as const;
 
 /** The axes as <html> data-* attributes (the CSS selector contract). */

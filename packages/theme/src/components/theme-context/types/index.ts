@@ -30,7 +30,7 @@ export type MotionPreference = boolean | 'system';
  */
 export type BreakpointKey = keyof typeof defaultBreakpoints;
 
-/** Current segment; 'base' when no max-width query matches (attribute removed). */
+/** Current segment; 'base' when no max-width cap matches (viewport beyond the widest band). */
 export type BreakpointName = typeof BASE_BREAKPOINT_NAME | BreakpointKey;
 
 /** Breakpoint overrides: values only — the keys are the CSS contract. */
@@ -38,12 +38,13 @@ export type BreakpointOverrides = Partial<Record<BreakpointKey, string>>;
 
 /**
  * A value that responds to the breakpoint axis: the plain value applies
- * everywhere, or an object maps per-band values by breakpoint name.
- * Band semantics follow the max-width cap ladder (see
+ * everywhere, or an object maps per-band values by breakpoint name. The
+ * keys are the fixed breakpoint contract (sm/md/lg/xl — no 'base' slot);
+ * band semantics are min-width activation points (see
  * resolveResponsiveValue). T is expected to be a scalar vocabulary type
  * (spacing keys, counts, etc.).
  */
-export type ResponsiveValue<T> = T | Partial<Record<BreakpointName, T>>;
+export type ResponsiveValue<T> = T | Partial<Record<BreakpointKey, T>>;
 
 /** The live snapshot the useColoxTheme hook exposes. */
 export interface ColoxThemeValue {

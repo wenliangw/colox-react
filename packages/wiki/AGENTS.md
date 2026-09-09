@@ -43,9 +43,11 @@ exactly, apply the reason, not the letter.
 - `[component-shaped child]` → place it directly; never wrap `Button`/`Input`
   in `Stack.Item`. Why: a zero-value DOM layer.
 - `[spacer]` → `<Stack.Item grow />`. Never `margin: auto` or `width: 100%`.
-- `[responsive gap]` → `<Stack.Responsive gap={{ base?, sm?, md?, lg?, xl? }} />`
-  mounted inside the `Stack`. Never CSS media queries. Why: resolution follows the
-  theme breakpoint bands (narrow bands win, `base` is the last fallback).
+- `[responsive gap]` → `<Stack.Responsive gap={{ sm?, md?, lg?, xl? }} />`
+  mounted inside the `Stack`. Never CSS media queries. Why: keys are the fixed
+  breakpoint contract (no `base`); a key activates at its band and carries
+  upward, unconfigured bands keep the latest value, the static `gap` is the
+  fallback below the first configured band.
 - `[static layout]` → no `Stack.Responsive` "just in case".
   Why: capability is mountable, not default; a static Stack stays context-free.
 

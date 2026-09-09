@@ -9,7 +9,7 @@ export type StackGap = NonNullable<StackVariants['gap']>;
 export type StackAlign = NonNullable<StackVariants['align']>;
 export type StackJustify = NonNullable<StackVariants['justify']>;
 
-/** Per-breakpoint gap overrides for `Stack.Responsive` (theme vocabulary). */
+/** Per-breakpoint gap overrides for `Stack.Responsive` (keys are the fixed sm/md/lg/xl contract, activation-point semantics). */
 export type StackResponsiveGap = ResponsiveValue<StackGap>;
 
 /**

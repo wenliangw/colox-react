@@ -41,7 +41,7 @@ Order of decisions: direction → gap → cross-axis align → main-axis justify
 
 ```tsx
 <Stack gap="4">
-  <Stack.Responsive gap={{ base: '2', md: '4', lg: '8' }} />
+  <Stack.Responsive gap={{ sm: '2', md: '4', lg: '8' }} />
   <Stack.Item>block one</Stack.Item>
 </Stack>
 ```

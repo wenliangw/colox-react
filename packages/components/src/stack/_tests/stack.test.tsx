@@ -105,7 +105,7 @@ describe('Stack.Responsive', () => {
   it('overrides the gap prop while mounted and restores it on unmount', () => {
     const { rerender } = render(
       <Stack gap="4">
-        <Stack.Responsive gap={{ base: '2' }} />
+        <Stack.Responsive gap={{ sm: '2' }} />
         content
       </Stack>,
     );
@@ -121,27 +121,27 @@ describe('Stack.Responsive', () => {
     mockBreakpoint.value = 'md';
     render(
       <Stack gap="4">
-        <Stack.Responsive gap={{ base: '2', md: '8' }} />
+        <Stack.Responsive gap={{ sm: '2', md: '8' }} />
         content
       </Stack>,
     );
     expect(screen.getByText('content')).toHaveClass('colox-stack--gap-8');
   });
 
-  it('falls back to base for wider bands without their own value', () => {
+  it('keeps the last configured band for wider bands without their own value', () => {
     mockBreakpoint.value = 'lg';
     render(
       <Stack gap="4">
-        <Stack.Responsive gap={{ base: '2', md: '8' }} />
+        <Stack.Responsive gap={{ sm: '2', md: '8' }} />
         content
       </Stack>,
     );
-    expect(screen.getByText('content')).toHaveClass('colox-stack--gap-2');
+    expect(screen.getByText('content')).toHaveClass('colox-stack--gap-8');
   });
 
   it('warns when mounted outside a Stack and degrades to a no-op', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    render(<Stack.Responsive gap={{ base: '2' }} />);
+    render(<Stack.Responsive gap={{ sm: '2' }} />);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining('useStackContext must be used within a <Stack>'),
     );

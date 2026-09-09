@@ -30,9 +30,9 @@ standardize on Item.
 
 ### Stack.Responsive
 
-| Prop | Type                                            | Notes                                        |
-| ---- | ----------------------------------------------- | -------------------------------------------- |
-| gap  | `{ base?, sm?, md?, lg?, xl? }` of spacing keys | resolves against the current breakpoint band |
+| Prop | Type                                     | Notes                                        |
+| ---- | ---------------------------------------- | -------------------------------------------- |
+| gap  | `{ sm?, md?, lg?, xl? }` of spacing keys | resolves against the current breakpoint band |
 
 Mounted capability; renders nothing. Must be mounted inside a `Stack`; the last
 mounted instance wins (LWW) and unmounting restores the static `gap`.
@@ -44,8 +44,10 @@ mounted instance wins (LWW) and unmounting restores the static `gap`.
   `colox-stack-item--grow` when `grow`.
 - **Responsive resolution**: the theme runtime publishes the current band on
   `<html data-colox-breakpoint>`; `Stack.Responsive` resolves its config with
-  `resolveResponsiveValue` from `@colox/theme` (first configured band at-or-wider
-  wins, `base` last) and registers the result with the enclosing Stack.
+  `resolveResponsiveValue` from `@colox/theme` (min-width activation: the last
+  configured band at-or-narrower than the current one wins; `base` = beyond the
+  widest cap and keeps the last configured value) and registers the result
+  with the enclosing Stack.
 - **Context discipline**: a static `Stack` reads no theme context — only the
   mounted `Stack.Responsive` does.
 

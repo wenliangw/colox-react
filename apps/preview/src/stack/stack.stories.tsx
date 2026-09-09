@@ -104,10 +104,10 @@ export const Spacer: Story = {
 export const Responsive: Story = {
   render: () => (
     <Stack gap="4">
-      <Stack.Responsive gap={{ base: '2', md: '4', lg: '8' }} />
+      <Stack.Responsive gap={{ sm: '2', md: '4', lg: '8' }} />
       <Demo label="Resize the viewport" />
       <Demo label="gap follows the band" />
-      <Demo label="base 2 / md 4 / lg 8" />
+      <Demo label="sm 2 · md 4 · lg 8" />
     </Stack>
   ),
 };

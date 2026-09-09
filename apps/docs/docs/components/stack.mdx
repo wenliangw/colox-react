@@ -69,9 +69,11 @@ div-shaped children; components like `Button` go in directly.
 `Stack.Responsive` is the mounted capability for per-breakpoint gap overrides. The theme
 runtime publishes its breakpoint band on `<html data-colox-breakpoint>`; `Stack.Responsive`
 resolves the config against the current band via the theme context and registers the
-result with the enclosing `Stack`. Values apply while the viewport fits the band's
-max-width cap, so narrow bands win and `base` (the widest band) is the last fallback. A
-static `Stack` never touches the theme context.
+result with the enclosing `Stack`. The keys are the fixed breakpoint contract
+(`sm`/`md`/`lg`/`xl` — no `base` slot), with min-width activation semantics: a key takes
+effect from its band upward, unconfigured bands keep the latest configured value, and
+below the first configured band the static `gap` prop applies. A static `Stack` never
+touches the theme context.
 
 The responsive vocabulary ships from `@colox/theme` as `ResponsiveValue<T>` and
 `resolveResponsiveValue`, so `Grid` and `Positioner` — and a future responsive
@@ -80,8 +82,8 @@ them.
 
 ```mdx
 <Stack gap="4">
-  <Stack.Responsive gap={{ base: '2', lg: '8' }} />
-  <Stack.Item>gap 8 below 1024px, gap 2 beyond</Stack.Item>
+  <Stack.Responsive gap={{ md: '2', lg: '8' }} />
+  <Stack.Item>static "4" below md · 2 from md on · 8 from lg on</Stack.Item>
   <Stack.Item>and back to the static "4" if this part unmounts</Stack.Item>
 </Stack>
 ```

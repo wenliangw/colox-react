@@ -21,10 +21,12 @@ Conditional usage rules for `<Stack>`. Format: `[condition] → action. Why: rea
 
 ## Responsive
 
-5. `[per-breakpoint gap]` → `<Stack.Responsive gap={{ base?, sm?, md?, lg?, xl? }} />`
+5. `[per-breakpoint gap]` → `<Stack.Responsive gap={{ sm?, md?, lg?, xl? }} />`
    mounted inside the `Stack`. Why: the mounted part attaches to the theme
-   breakpoint sensor; values follow the max-width cap semantics — the first
-   configured band at-or-wider than the current one wins, `base` last.
+   breakpoint sensor; keys are the fixed breakpoint contract (no `base`) with
+   min-width activation semantics — a key takes effect from its band upward,
+   the last configured band at-or-narrower than the current one wins, and the
+   static `gap` is the fallback below the first configured band.
 6. `[fixed layout]` → skip `Stack.Responsive` entirely.
    Why: capability is mountable, not default; a static Stack must stay
    theme-context-free.
