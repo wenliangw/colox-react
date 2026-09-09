@@ -4,7 +4,7 @@ import { resolveResponsiveValue, useColoxTheme } from '@colox/theme';
 import { GridItem } from './children/item';
 import type { GridProps } from './types';
 import { splitGap } from './utils/split-gap';
-import { withColumnsVariable } from './utils/style';
+import { withColumnsVariable } from './utils/with-variants';
 import { gridVariants } from './variants';
 
 import './styles/index.scss';

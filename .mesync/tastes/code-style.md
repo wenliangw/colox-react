@@ -93,4 +93,5 @@
 ## 派生值以结果语义命名，渲染体只编排
 
 - 解析/派生后的值直接用**结果语义**命名（`columns`），不强调推导行为（`resolvedColumns`）——resolve 是行为、columns 是结果。入参要与结果区分时，用来源词标注入参（`columnsProp`/`styleProp`），不用行为词标注结果。
+- 文件名同理——按**产出物职责**命名，不用「底材名」：`with-variants.ts`（with* 变体装配族）而非 `style.ts`（碰了 style 对象≠文件职责）；通用桶名（`style.ts`/`util.ts`/`helper.ts`）不严谨。
 - 根组件渲染体退化成「解析 → 翻译 → 渲染」三段编排：判别、形状翻译、样式装配是纯函数，住 utils/（或类映射层），组件体内不出现 typeof 判别、三目装配、类型断言；纯 helper 的输出直接进 JSX。

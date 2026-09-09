@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
 import type { GridItemProps } from '../../types';
-import { withSpanVariable } from '../../utils/style';
+import { withSpanVariable } from '../../utils/with-variants';
 
 /**
  * A child of `Grid`. `span` places the item across columns through an
