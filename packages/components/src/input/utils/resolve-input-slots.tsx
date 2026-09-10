@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { IconSearch } from '@colox/icons';
 
-interface ResolveInputSlotsArgs {
+interface ResolveInputSlotsParams {
   type: InputHTMLAttributes<HTMLInputElement>['type'];
   leading: ReactNode;
   trailing: ReactNode;
@@ -38,7 +38,7 @@ export const resolveInputSlots = ({
   disabled,
   readOnly,
   toggleActive,
-}: ResolveInputSlotsArgs): ResolvedInputSlots => {
+}: ResolveInputSlotsParams): ResolvedInputSlots => {
   const searchLeading = type === 'search' ? (leading ?? <IconSearch />) : leading;
   const showClear = clearable && !disabled && !readOnly;
   const showTrailing = trailing !== undefined || showClear || toggleActive;

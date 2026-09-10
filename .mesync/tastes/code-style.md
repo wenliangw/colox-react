@@ -70,6 +70,11 @@
 - 组件所有 props 类型集中定义在 `<Component>/types/` 目录，`forwardRef` 的 ref 也显式定义类型（如 `export type InputRef = HTMLInputElement`）。
 - 不使用 `any`。
 
+## Props 与 Params 的命名边界
+
+- 组件参数类型用 `Props`（`XProps` / `XPropsWithoutRef` 等读作「组件的参数」）；**函数/方法**（hook、resolver、工具）的参数类型用 `Params`（`UseXParams` / `ResolveXParams`）——「组件用 Props，方法用 Params」。
+- 禁用 `...Args` 命名函数参数类型（Input 首版 `UseInputFilterArgs` / `UsePasswordVisibilityArgs` / `ResolveInputSlotsArgs` 被用户指正后全部改为 `...Params`）。
+
 ## 代码注释与提交全英文，mesync 中文
 
 - 开源定位：**代码注释与 commit message 一律英文**（有 husky 钩子兜底禁 CJK）；`.mesync/` 记忆文档维持中文（维护者是中文团队，属内部资料）。

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 
-interface UsePasswordVisibilityArgs {
+interface UsePasswordVisibilityParams {
   /** The input's declared type; the toggle only acts on `password`. */
   type: InputHTMLAttributes<HTMLInputElement>['type'];
   /** The opt-in switch: the whole capability is off while false. */
@@ -28,7 +28,7 @@ export interface PasswordVisibilityState {
 export const usePasswordVisibility = ({
   type,
   allowTogglePassword,
-}: UsePasswordVisibilityArgs): PasswordVisibilityState => {
+}: UsePasswordVisibilityParams): PasswordVisibilityState => {
   const [revealed, setRevealed] = useState(false);
   const active = allowTogglePassword && type === 'password';
 

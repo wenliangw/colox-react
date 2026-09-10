@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import type { ChangeEvent, ChangeEventHandler, RefObject } from 'react';
 
-interface UseInputFilterArgs {
+interface UseInputFilterParams {
   inputRef: RefObject<HTMLInputElement | null>;
   /** The restriction pattern; `undefined` disables filtering. */
   filterPattern: RegExp | undefined;
@@ -32,7 +32,7 @@ export const useInputFilter = ({
   restoreValue,
   isControlled,
   onChange,
-}: UseInputFilterArgs) => {
+}: UseInputFilterParams) => {
   const composingRef = useRef(false);
   const lastAcceptedRef = useRef(restoreValue);
 
