@@ -28,11 +28,19 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 
 chevron-right（族基准，r2 尖端）/down（rotate 90）/left（rotate 180）/up（rotate 270）、x（45° 双交线）、check（两段 45° 圆肘）、plus（轴正交）、eye（透镜 rx8 ry7 + 瞳孔 r3）、eye-off（派生 + 45° 斜线）、search（r7 镜 + 45° 柄埋入笔画）。
 
+## 新增图标流程（按需追加时的执行步骤）
+
+1. **同源先判**：状态对/方向族先查 `src/icons/geometry/` 有无可派生底图（chevron、eye 系）——有则复用几何 + transform/组合，不画第二张脸（规范 6）
+2. **几何设计**：按八条画 d——节点全整数、[2,22] 内容框（含 bleed ±0.75）、圆角 r2/r4 对位 token、45°/30° 角度系；光边界值**手推自设计**（不是渲染后测量）
+3. **注册门禁**：组件 `src/icons/<name>.tsx` + barrel 导出 + spec test 的 ICONS 表注册（name/component/paths/circle/transform）+ BOUNDS 文档化光边界常量
+4. **过门禁**：`pnpm --filter @colox/icons test`——几何锁/整数网格/节点与圆范围/成对同源/size-color 透传全自动
+5. **肉眼终审**：渲染 PNG 与文字并排交用户看，通过后合入
+
 ## 边界
 
 - **份额与插槽**：Input/Button 的图标 prop 仍收 ReactNode（业务图形/品牌是消费方自备）；`@colox/icons` 提供基础成形容貌——《保持一致》的路径 = 消费方用本包
-- **全量清单待批**：行为必然集 ~16 + 高频消费集 ~20 待用户裁剪；涉及输入框全部内置态（clear/eye/chevron/search 已在批次一）
-- **视觉终审**：批次一已过用户肉眼评审（渲染 PNG + 与 16/24px 文字并排对照页，通过后删除）；后续批次同流程
+- **全量策略：按需追加**（用户定调「遇到了再加」）——26 枚候选池（行为必然集剩 9 + 高频消费集 20）**不预置**：组件内置态或业务反馈需要哪枚才新增哪枚；每枚追加自带规范八条 + spec lint 门禁（常量成本：1 组件 + 1 表项 + 断言）。Input 全部内置态十枚已齐，流转消费方反馈攒够一批再小步交付
+- **视觉终审**：批次一已过用户肉眼评审（渲染 PNG + 与 16/24px 文字并排对照页，通过后删除）；后续同流程
 - **版本**：进发布矩阵，前两位随 @colox/react（设计语言同频），patch 独立
 - **发布前**：@colox/react 依赖它时（Input 批），icons 先于 react 发布；components 构建将其 external
 
