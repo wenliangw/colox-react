@@ -169,6 +169,14 @@ describe('icon spec', () => {
     expect(html).toContain('aria-hidden="false"');
   });
 
+  it('public icons take color as an explicit CSS color, styled explicit wins', () => {
+    expect(renderIcon(IconCheck, { color: '#f00' })).toContain('style="color:#f00"');
+    expect(renderIcon(IconCheck)).not.toContain('color:');
+    expect(renderIcon(IconCheck, { color: '#f00', style: { color: '#00f' } })).toContain(
+      'style="color:#00f"',
+    );
+  });
+
   it.each(ICONS)(
     '$name renders exactly the designed drawing',
     ({ component, paths, transform }) => {

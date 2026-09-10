@@ -5,8 +5,8 @@ import type { IconProps } from './types';
  * The internal SVG base of every Colox icon — the single home of the
  * design-language contract: 24 viewBox, 1.5 round stroke (1px
  * effective at 16px — the component border weight), currentColor
- * (color follows the host's semantic token) and 1em sizing unless
- * `size` pins an explicit px size.
+ * (color follows the host's semantic token, unless `color` pins an
+ * explicit one) and 1em sizing unless `size` pins an explicit px size.
  *
  * Not part of the public API: consumers take finished icons
  * (`IconEye`, `IconChevronDown`, ...). Props spread after the
@@ -14,7 +14,7 @@ import type { IconProps } from './types';
  * does not decide.
  */
 export const IconBase = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
-  const { children, size, ...rest } = props;
+  const { children, size, color, style, ...rest } = props;
   return (
     <svg
       ref={ref}
@@ -29,6 +29,7 @@ export const IconBase = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       strokeLinejoin="round"
       focusable="false"
       aria-hidden="true"
+      style={{ color, ...style }}
       {...rest}
     >
       {children}

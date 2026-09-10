@@ -12,12 +12,14 @@ import { IconChevronDown, IconEye, IconSearch } from '@colox/icons';
 <IconSearch size={16} />;
 ```
 
-## Sizing
+## Sizing and color
 
 `size` pins a px size; without it an icon renders at `1em` — it follows the host
 font size, so an icon placed in a Button inherits the component's typography
-(and its color via `stroke="currentColor"`, keeping semantic tokens flowing
-through) without props.
+without props. `color` pins an explicit CSS color; without it the icon inherits
+the host's `color` via `currentColor` — semantic tokens and status colors (e.g.
+a `success` Message wrapper) reach the icon for free. An explicit `style.color`
+still wins over the `color` prop.
 
 ## Design specification
 
@@ -47,8 +49,8 @@ The eight clauses:
 The spec lint renders every icon and asserts:
 
 - the full base attribute contract (canvas, fill, stroke, caps, 1em, a11y
-  defaults) and the public passthrough contract (`size`, className, a11y
-  overrides);
+  defaults) and the public passthrough contract (`size`, `color`, className,
+  a11y overrides);
 - the designed drawing is rendered verbatim (the geometry lock — a path change
   fails the suite and forces a spec review);
 - every geometry number is an integer (grid clause);
@@ -67,4 +69,5 @@ the component slots accept any ReactNode.
   per-icon tree-shakeable (preserveModules output, `sideEffects: false`).
 - No namespace object and no `name` string index: they would statically pull
   the whole set into every consumer's bundle.
-- Every icon: `size?: number` + all native svg attributes pass through.
+- Every icon: `size?: number`, `color?: string` + all native svg attributes
+  pass through.
