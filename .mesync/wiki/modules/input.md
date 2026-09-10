@@ -25,11 +25,11 @@ input/
 ├── styles/
 │   ├── base.scss              # 外壳契约（focus-within 环/invalid/disabled）+ 裸 control + 插槽条
 │   ├── slots.scss             # 内置按钮复位样式（clear/toggle）
-│   ├── size.scss              # 尺寸类 colox-input-group--sm/md/lg（作用于外壳）
+│   ├── size.scss              # 尺寸类 colox-input--xs/sm/md/lg（作用于外壳）
 │   └── index.scss             # @use base + slots + size
 └── variants/
     ├── size.ts              # 外壳尺寸类映射
-    └── index.ts             # cva('colox-input-group', …) + InputVariants
+    └── index.ts             # cva('colox-input', …) + InputVariants
 ```
 
 组件内不放 `_stories/`（已迁至 `apps/preview/src/input/`：`input.stories.tsx` 尺寸/插槽/状态页、`builtins.stories.tsx` 清除/密码切换页、`filter.stories.tsx` 正则限制页）。
@@ -38,8 +38,8 @@ input/
 
 ### 外壳 DOM 契约
 
-`div.colox-input-group > span.colox-input__leading? + input.colox-input__control + span.colox-input__trailing?`
-空插槽不渲染 span；内置控件追加在消费者 `trailing` 内容**之后**。`className`/`style` 落外壳；`size` 类与 `--invalid`/`--disabled` 修饰类落外壳；`aria-invalid` 落内层 input。焦点视觉从 `:focus` 上移到外壳 `:focus-within`（焦点停留在插槽按钮上时环不灭）。
+`div.colox-input > span.colox-input__leading? + input.colox-input__control + span.colox-input__trailing?`
+块类名 = `colox-input`（组件自身名字空间）；`colox-input-group*` 名字空间预留给未来的 InputGroup 组件（兄弟组件，不抢注）。空插槽不渲染 span；内置控件追加在消费者 `trailing` 内容**之后**。`className`/`style` 落外壳；`size` 类与 `--invalid`/`--disabled` 修饰类落外壳；`aria-invalid` 落内层 input。焦点视觉从 `:focus` 上移到外壳 `:focus-within`（焦点停留在插槽按钮上时环不灭）。
 
 ### 尺寸与图标继承
 

@@ -17,7 +17,7 @@ describe('Input shell contract', () => {
     const { container } = render(
       <Input aria-label="Name" className="custom-class" style={{ marginTop: 8 }} />,
     );
-    const shell = container.querySelector('.colox-input-group');
+    const shell = container.querySelector('.colox-input');
     expect(shell).toHaveClass('custom-class');
     expect(shell).toHaveStyle({ marginTop: '8px' });
   });

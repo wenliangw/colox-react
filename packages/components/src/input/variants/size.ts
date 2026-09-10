@@ -1,6 +1,6 @@
 export const inputSizeStyles = {
-  xs: 'colox-input-group--xs',
-  sm: 'colox-input-group--sm',
-  md: 'colox-input-group--md',
-  lg: 'colox-input-group--lg',
+  xs: 'colox-input--xs',
+  sm: 'colox-input--sm',
+  md: 'colox-input--md',
+  lg: 'colox-input--lg',
 } as const;

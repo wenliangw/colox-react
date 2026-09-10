@@ -3,19 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { Input } from '../input';
 
 describe('Input state', () => {
-  it('renders a text input inside the group shell', () => {
+  it('renders a text input inside the shell', () => {
     render(<Input aria-label="Name" />);
     const input = screen.getByRole('textbox', { name: /name/i });
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass('colox-input__control');
-    expect(input.closest('.colox-input-group')).not.toBeNull();
+    expect(input.closest('.colox-input')).not.toBeNull();
   });
 
   it('marks invalid inputs: aria on the control, class on the shell', () => {
     render(<Input aria-label="Name" invalid />);
     const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('aria-invalid', 'true');
-    expect(input.closest('.colox-input-group')).toHaveClass('colox-input--invalid');
+    expect(input.closest('.colox-input')).toHaveClass('colox-input--invalid');
   });
 
   it('is not marked invalid by default', () => {
@@ -27,7 +27,7 @@ describe('Input state', () => {
     render(<Input aria-label="Name" disabled />);
     const input = screen.getByRole('textbox');
     expect(input).toBeDisabled();
-    expect(input.closest('.colox-input-group')).toHaveClass('colox-input--disabled');
+    expect(input.closest('.colox-input')).toHaveClass('colox-input--disabled');
   });
 
   it('forwards extra attributes to the inner control', () => {

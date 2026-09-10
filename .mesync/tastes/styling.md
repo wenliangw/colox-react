@@ -77,7 +77,7 @@
 ## 间距统一：gap/margin/padding 全部消费 spacing
 
 - 组件里一切空隙（gap、margin、padding）都消费 spacing 档位，不为个别用途另设 grid-gap 类 token。
-- 控件高度现在由「行高 + 间距」组合自然落入像素网格（sm 26 / md 36 / lg 48px），不额外引入 control-height token。
+- 控件高度由固定 height 消费 `--colox-size-*` 数值档（Button/Input 同机制同值四档）——「行高+间距」推算形态已随 Input 对齐退役（旧 26/36/48 出局）。
 
 ## 尺寸基准：界面尺寸走 4 的倍数
 
@@ -88,7 +88,7 @@
 - **80px 以上的大尺寸档 = `large_size` 集合，已发布进 size 语言**：Figma 侧独立集合 `large_size`（80px 至 1440px，keys 20–360，26 条）经 converter 映射进 `colox.size.*`，编译为 `--colox-size-20..360`；容器/大元素域直接消费（Container 帽引用 160/192/256/320 = 640/768/1024/1280px）。教训：converter 对未映射组只告警不失败，`large_size` 曾整组静默消失——见 corrections/token-pipeline.md；`hiddenFromPublishing` 过滤保留做守门。
 - **断点变量（`--colox-breakpoint-*`）只归响应式判定，绝不参与宽度语义**（用户拍板：breakpoint 是给响应式用的，本身不该以宽度语义使用；Container 曾借断点变量凑宽度被纠回）。响应式逻辑读运行时 ColoxTheme context 断点 + `defaultBreakpoints`，宽度读 `--colox-size-*`——两个平面各走各的。
 - **半格档（0_5..4_5 = 2/6/10/14/18px）是半格微距值**：命名沿用图内 `N_5` → CSS `N-5`（读「N 点五」）；控件尺寸只消费整数格（4 的倍数），半格留给微距（2px 分隔线、6px 内距等）。否决「CSS 名带小数点（--size-1.5）」——点号在 CSS 变量/SCSS 链上要转义，得不偿失。
-- Button 高度四档已落地：xs/sm/md/lg = 24/32/40/48 = `var(--colox-size-6/8/10/12)`，padding-inline 走 spacing-2/3/4/6；Input 现阶梯（26/36/48）本轮不动。
+- Button 高度四档已落地：xs/sm/md/lg = 24/32/40/48 = `var(--colox-size-6/8/10/12)`，padding-inline 走 spacing-2/3/4/6；Input 已对齐同一四档（同值同 token，同档并排严丝合缝——见 tastes/api-design 的 size 语义节）。
 
 ## 组件 size prop 属组件私有变体，不进全局 token
 
@@ -104,6 +104,13 @@
 
 - variant/size 等变体用 `cva()` 定义，只拼 className、零运行时 CSS；类名沿用 `colox-` BEM 前缀。
 - 不引入重型 css-in-js。
+
+## 类名块前缀 = 组件自身名字空间，同族未来组件不抢注
+
+- 组件块类名就是组件自己的名字空间：`colox-input`（元素 `colox-input__leading/control/trailing`、修饰 `colox-input--invalid/--xs/sm/md/lg`）。修饰类与 cva base、scss 选择器**三处同字符串**。
+- **不得占用同族未来组件的名字空间**：Input v2 外壳一度用 `colox-input-group` 做块名，被用户指正——「Input 组件的前缀应该是 colox-input，不应该是 colox-input-group，**InputGroup 未来是另外的一个组件**」。
+- 判断法：`colox-<name>` 的 name 段只允许 = 该组件名或该组件的公开 dot-part 名（`colox-grid-item`）；`xxx-group/shell/wrapper` 这类包装结构词不是块名料——DOM 外壳是组件自己，不是新组件。
+- 来源：用户对 Input 块名的指正。
 
 ## 键表是设计语言事实：由 pipeline 发射，组件不复制
 
