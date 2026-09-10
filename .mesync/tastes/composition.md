@@ -32,6 +32,15 @@
 
 - **示例统一以子件宿主为 div 替身**：文档/故事中需要 div 形子项的，一律 `<Component.Item>` 代裸 div（同 DOM 层级、原生属性/事件/ref/className 全透传）；用户可基于 Item 封装自定义块（组合基底）。组件型子项（Button 等）直接放，不再裹 Item；裸 div 始终合法，但示例只展示 Item 形态。
 
+## dot 判据：哪些能力收进根 props、哪些留 dot-part
+
+dot-part 只在两种情形成立（ColoxTheme 演进给出的判据，Input 消费后固化）：
+
+1. **可选在树能力**：挂载即启用、不挂载零成本（ColoxTheme.Storage/Breakpoints、Stack.Responsive），静态组件面不因「可能存在」而订阅 context。
+2. **内容必须在树中**：内容型子件必须住在挂载点（Grid.Item、未来的 Form.Field）。
+
+其余一律收进根 props——**插槽/内置控件属于「属性少、形态简单」类**：Input 的 leading/trailing/clearable/allowTogglePassword 若做成 `<Input.Slot side="leading">` / `<Input.Clear>` 属于把简单属性人肉拆成树，违背「属性少收根 props」判据（用户对 ColoxTheme 的原话：「属性比较多时非常影响开发时的代码体验以及 props 无法合理的进行分类」——反向即：属性少时 dot 形式是过度设计）。生态对照：antd/MUI/Mantine 走 props 营；Radix/Ark 走 dot 营；Colox 是 styled lib，走 props 营。
+
 ## 演进史
 
 - ColoxTheme 初版四轴全 dot-part → 用户收口：props 主轴承重、可选能力留 dot-part（挂载即启用）。

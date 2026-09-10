@@ -81,6 +81,7 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
+    "@colox/icons": "workspace:*",
     "@colox/theme": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1"

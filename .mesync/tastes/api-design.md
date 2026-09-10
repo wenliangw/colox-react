@@ -11,6 +11,22 @@
 
 来源：Input 组件新增时对 `size` 语义的取舍（见决策「Input size prop 语义」）。
 
+## boolean prop 命名：正向能力词 `allow<Ability>`，条件边界即语义
+
+- 布尔开关命名表达「允许什么能力」且默认 false：`allowTogglePassword`（用户改拍自我的 `showVisibilityToggle`：「有点复杂，可以改名 allowTogglePassword 默认 false，为 true 且 type 是 password 才开」）。
+- 激活条件写进 prop 语义本身（`allowTogglePassword && type==='password'` 才生效），不发明「万事皆开」的笼统开关；`show*` 系命名太笼统（show 的是按钮还是状态？），能力词直给目的。
+- 将来做 Boolean 开关类 prop（autoComplete 视觉件、下拉清空、格式化器等）沿用：`allow<Ability>` + 精确条件绑定 + 默认 false。
+
+来源：Input v2 props 定案（用户对该命名的改拍）。
+
+## 表单叶子：机制组件不背产品、状态映射归消费方
+
+- **内置 = 机制；状态→图形映射 = 消费方**：库提供清空机制、密码可见性机制、搜索自动图标机制；「没输入时闭眼、有输入时偷看」这类与产品状态绑定的图形映射由消费方用 data + 三元在插槽里写。槽是舞台、图标是零配置演员、剧本归消费方——Input 背机制不背产品。
+- 表单叶子三不：不做校验引擎（rules/async/messages/字段联动归 Form 层）、不做动态表单（独立子系统）、不发明合成事件（原生事件全透传）。Input 对表单层的承诺只有三件：受控/非受控对称、原生事件流、真 ref。
+- 空间复用词（数字正则、日期掩码）用**模式语言全程约束**表达（`filterPattern` 拒绝即回值不可见），与校验通道（native `pattern` + `:user-invalid`）双轨清晰。
+
+来源：Input v2 设计讨论（用户以密码状态图标为例定出「背机制不背产品」边界）。
+
 ## variant 是从设计语言推导的封闭轴
 
 - 轴必须来自 Figma 真实状态；取值集合小且穷举；轴间正交（非法组合用 `compoundVariants` 显式声明）。

@@ -3,16 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { Input } from '../input';
 
 describe('Input state', () => {
-  it('renders a text input', () => {
+  it('renders a text input inside the group shell', () => {
     render(<Input aria-label="Name" />);
-    expect(screen.getByRole('textbox', { name: /name/i })).toBeInTheDocument();
+    const input = screen.getByRole('textbox', { name: /name/i });
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveClass('colox-input__control');
+    expect(input.closest('.colox-input-group')).not.toBeNull();
   });
 
-  it('marks invalid inputs', () => {
+  it('marks invalid inputs: aria on the control, class on the shell', () => {
     render(<Input aria-label="Name" invalid />);
     const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('aria-invalid', 'true');
-    expect(input).toHaveClass('colox-input--invalid');
+    expect(input.closest('.colox-input-group')).toHaveClass('colox-input--invalid');
   });
 
   it('is not marked invalid by default', () => {
@@ -20,8 +23,17 @@ describe('Input state', () => {
     expect(screen.getByRole('textbox')).not.toHaveAttribute('aria-invalid');
   });
 
-  it('forwards extra attributes', () => {
-    render(<Input data-testid="input" type="email" />);
-    expect(screen.getByTestId('input')).toHaveAttribute('type', 'email');
+  it('marks the shell disabled state', () => {
+    render(<Input aria-label="Name" disabled />);
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+    expect(input.closest('.colox-input-group')).toHaveClass('colox-input--disabled');
+  });
+
+  it('forwards extra attributes to the inner control', () => {
+    render(<Input data-testid="input" type="email" placeholder="you@example.com" />);
+    const input = screen.getByTestId('input');
+    expect(input).toHaveAttribute('type', 'email');
+    expect(input).toHaveAttribute('placeholder', 'you@example.com');
   });
 });

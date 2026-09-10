@@ -28,6 +28,9 @@ const externals = [
   // a shared React context, and an inlined copy would split context identity
   // from the consumer's `<ColoxTheme>`, silently dropping theme overrides.
   '@colox/theme',
+  // Icons are a sibling asset package, not part of the component bundle:
+  // keeping them external preserves per-icon tree-shaking for consumers.
+  '@colox/icons',
 ];
 
 export default defineConfig({

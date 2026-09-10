@@ -1,5 +1,7 @@
-.colox-input {
-  display: block;
+.colox-input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
   width: 100%;
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
@@ -7,33 +9,63 @@
   line-height: var(--colox-line-height-sm);
   color: inherit;
   background-color: var(--colox-color-bg-solid);
+  cursor: text;
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 
-  &::placeholder {
-    color: var(--colox-color-text-subtle);
-  }
-
-  &:focus-visible {
-    outline: none;
+  // The shell owns the appearance contract: the ring stays lit while focus
+  // sits anywhere inside (control or slot buttons).
+  &:focus-within {
     border-color: var(--colox-color-brand-solid);
     box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    color: var(--colox-color-text-disabled);
-    background-color: var(--colox-color-bg-disabled);
-    border-color: var(--colox-color-border-disabled);
   }
 
   &--invalid {
     border-color: var(--colox-color-red-solid);
 
-    &:focus-visible {
+    &:focus-within {
       border-color: var(--colox-color-red-solid);
       box-shadow: 0 0 0 2px var(--colox-color-red-muted);
     }
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-input__control {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+
+  &::placeholder {
+    color: var(--colox-color-text-subtle);
+  }
+
+  // The native webkit search decoration would double up with the built-in
+  // clear button; the group owns clearing.
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+.colox-input__leading,
+.colox-input__trailing {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: inherit;
 }

@@ -3,18 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { Input } from '../input';
 
 describe('Input size', () => {
-  it('applies the default md size class', () => {
+  it.each([
+    ['sm', 'colox-input-group--sm'],
+    ['md', 'colox-input-group--md'],
+    ['lg', 'colox-input-group--lg'],
+  ] as const)('applies %s on the shell', (size, expectedClass) => {
+    render(<Input aria-label="Name" size={size} />);
+    expect(screen.getByRole('textbox').closest('.colox-input-group')).toHaveClass(expectedClass);
+  });
+
+  it('defaults to md', () => {
     render(<Input aria-label="Name" />);
-    expect(screen.getByRole('textbox')).toHaveClass('colox-input--md');
-  });
-
-  it('applies the sm size class', () => {
-    render(<Input aria-label="Name" size="sm" />);
-    expect(screen.getByRole('textbox')).toHaveClass('colox-input--sm');
-  });
-
-  it('applies the lg size class', () => {
-    render(<Input aria-label="Name" size="lg" />);
-    expect(screen.getByRole('textbox')).toHaveClass('colox-input--lg');
+    expect(screen.getByRole('textbox').closest('.colox-input-group')).toHaveClass(
+      'colox-input-group--md',
+    );
   });
 });

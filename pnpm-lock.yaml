@@ -168,6 +168,9 @@ importers:
 
   packages/components:
     dependencies:
+      '@colox/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@colox/theme':
         specifier: workspace:*
         version: link:../theme
