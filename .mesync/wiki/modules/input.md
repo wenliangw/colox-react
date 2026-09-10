@@ -43,7 +43,7 @@ input/
 
 ### 尺寸与图标继承
 
-尺寸档（sm/md/lg）作用于外壳：padding + font-size + line-height；内层 control 零 padding、`font: inherit`。插槽图标（IconSearch/IconX/IconEye…）以 1em/currentColor 渲染，随外壳字号、色调零配置继承。
+尺寸轴四档 **与 Button 完全同源**（Figma 设计语言 size token，见「Input size 对齐设计语言」决策）：`xs` 24 / `sm` 32 / `md` 40(默认) / `lg` 48px（`--colox-size-6/8/10/12` 固定 height），padding-inline 8/12/16/24（spacing-2/3/4/6），字号行高与 Button 同档同名（xs 12/16、sm 14/18、md 16/22、lg 18/24）——并排时同档严丝合缝。外壳内层 control 零 padding、`font: inherit`；插槽图标（IconSearch/IconX/IconEye…）以 1em/currentColor 渲染，随外壳字号、色调零配置继承。
 
 ### filterPattern（输入限制通道）
 

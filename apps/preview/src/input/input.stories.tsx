@@ -21,8 +21,9 @@ type Story = StoryObj<typeof Input>;
 export const Size: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--colox-spacing-4)' }}>
-      <Input aria-label="Small" size="sm" placeholder="sm — 26px" />
-      <Input aria-label="Medium" size="md" placeholder="md — 36px" />
+      <Input aria-label="Extra small" size="xs" placeholder="xs — 24px" />
+      <Input aria-label="Small" size="sm" placeholder="sm — 32px" />
+      <Input aria-label="Medium" size="md" placeholder="md — 40px" />
       <Input aria-label="Large" size="lg" placeholder="lg — 48px" />
     </div>
   ),

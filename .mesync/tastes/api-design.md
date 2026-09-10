@@ -2,14 +2,15 @@
 
 ## size prop 一律表示视觉尺寸
 
-组件库中 `size` prop 的语义固定为「视觉尺寸」，取值 `'sm' | 'md' | 'lg'`：
+组件库中 `size` prop 的语义固定为「视觉尺寸」，取值 `'xs' | 'sm' | 'md' | 'lg'`（Button 四档，Input 对齐后同序）：
 
 - `Button` 用 `size` 表示按钮尺寸。
 - `Input` 用 `size` 表示输入框尺寸；当与原生 `<input>` 的 `size`（字符宽度 number）冲突时，用 `Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>` 覆盖原生属性，而不是改名或暴露原生语义。
+- **size 轴是跨组件共享的设计语言事实，不是组件私有档**：同档名必须同高同字同 padding-inline（Input 首版 26/36/48 自推值偏离 Button 的 size token 网格，被用户指正「Input 的 size 应该和 Button 对齐」后改四档同源）。涉及并排场景（输入框+按钮）时同档严丝合缝是硬验收。
 
-将来做 `Select`、`Textarea` 等表单组件时保持一致：`size` 表示视觉尺寸；遇到原生同名属性冲突，优先用 `Omit` 覆盖。
+将来做 `Select`、`Textarea` 等表单组件时保持一致：`size` 表示视觉尺寸、四档与 Button/Input 同源；遇到原生同名属性冲突，优先用 `Omit` 覆盖。
 
-来源：Input 组件新增时对 `size` 语义的取舍（见决策「Input size prop 语义」）。
+来源：Input 组件新增时对 `size` 语义的取舍（见决策「Input size prop 语义」）；Input v2.1 对齐设计语言时固化跨组件同源规则。
 
 ## boolean prop 命名：正向能力词 `allow<Ability>`，条件边界即语义
 

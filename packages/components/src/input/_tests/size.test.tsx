@@ -4,6 +4,7 @@ import { Input } from '../input';
 
 describe('Input size', () => {
   it.each([
+    ['xs', 'colox-input-group--xs'],
     ['sm', 'colox-input-group--sm'],
     ['md', 'colox-input-group--md'],
     ['lg', 'colox-input-group--lg'],
