@@ -112,6 +112,13 @@
 - 判断法：`colox-<name>` 的 name 段只允许 = 该组件名或该组件的公开 dot-part 名（`colox-grid-item`）；`xxx-group/shell/wrapper` 这类包装结构词不是块名料——DOM 外壳是组件自己，不是新组件。
 - 来源：用户对 Input 块名的指正。
 
+## 文本前景色由组件自持，宿主主色不代劳
+
+- 组件的默认文字色显式声明语义 token（Input 外壳 `color: var(--colox-color-text-solid)`），不用 `color: inherit` 依赖宿主环境——裸继承默认落 #000，且暗色主题下不翻转。
+- 全局 base/reset 只做结构归一（box-sizing，零变量），不设 `body { color }`——宿主文档主色是宿主的决定（global-css 作用域收敛纪律）；future Select/Textarea 等文本组件各自声明前景色。
+- 组件内文字角色同组收敛：placeholder `text-subtle`、disabled `text-disabled`、图标 currentColor、峥 Button 的 variant 声明前景（intent-inverse / intent-solid）。
+- 来源：用户指出「文字默认是 #000，应该用设计语言中的 text」后定案。
+
 ## 键表是设计语言事实：由 pipeline 发射，组件不复制
 
 - spacing 键表（哪些刻度存在）由 theme build 发射成两份产物：`tokens/index.ts`（聚合 `defaultBreakpoints` + `spacingKeys`/`SpacingKey`，theme barrel 再导出，引用路径 = 目录 `@/styles/tokens`）供组件 variants 层生成类映射；`dist/variables.scss`（经 exports `./variables` sass 条件）供组件 scss `@use` 后 `@each`。组件里不再出现手写的 `$xxx-keys` 枚举或 `as const` 键表（前科：Container gutter 与 Stack gap 各复制 20 键，用户指出「硬编码设计语言数值不合规范」后收编）。
