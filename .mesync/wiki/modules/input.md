@@ -10,13 +10,16 @@
 
 ```
 input/
-├── input.tsx                # 编排层：外壳结构 + 插槽 + 内置控件 + 可见性内部状态
+├── input.tsx                # 编排层：接 hooks + 调 resolver + 组装外壳 JSX（无判别/状态逻辑）
 ├── index.ts                 # 出口（六个公开符号，与 v1 一致）
-├── controls/                # 内置尾插控件（非公开面）
+├── hooks/                   # React hook（状态/行为逻辑，高内聚拆分）
+│   ├── use-input-filter.ts    # filterPattern 行为：三车道（IME 透传/清除直通/过滤门禁）+ 合成/清除/回写
+│   └── use-password-visibility.ts  # 密码可见性关切：active/resolvedType/revealed/toggle
+├── utils/
+│   └── resolve-input-slots.tsx  # 纯判别装配：searchLeading/showClear/showTrailing
+├── controls/                # 内置尾插控件子组件（非公开面）
 │   ├── clear-button.tsx       # ClearButton：mousedown 防失焦、aria-label="Clear input"
 │   └── visibility-toggle.tsx  # VisibilityToggle：状态式图标（闭眼=隐藏/睁眼=可见）
-├── utils/
-│   └── use-input-filter.ts    # filterPattern 行为 hook：三车道（IME 透传/清除直通/过滤门禁）
 ├── _tests/                  # 6 个测试文件：state/size/slots/builtins/filter/contract
 ├── types/index.ts           # InputProps（全量扩展）+ InputSize + InputRef
 ├── styles/

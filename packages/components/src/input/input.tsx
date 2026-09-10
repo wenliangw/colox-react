@@ -1,8 +1,9 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import clsx from 'clsx';
-import { IconSearch } from '@colox/icons';
 import type { InputProps, InputRef } from './types';
-import { useInputFilter } from './utils/use-input-filter';
+import { useInputFilter } from './hooks/use-input-filter';
+import { usePasswordVisibility } from './hooks/use-password-visibility';
+import { resolveInputSlots } from './utils/resolve-input-slots';
 import { ClearButton } from './controls/clear-button';
 import { VisibilityToggle } from './controls/visibility-toggle';
 import { inputVariants } from './variants';
@@ -50,16 +51,23 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
   const isControlled = value !== undefined;
-  const restoreValue = String(value ?? defaultValue ?? '');
-  const { handleChange, handleClear, handleCompositionStart, handleCompositionEnd } =
-    useInputFilter({ inputRef, filterPattern, restoreValue, isControlled, onChange });
-
-  const [revealed, setRevealed] = useState(false);
-  const passwordToggleOn = allowTogglePassword && type === 'password';
-  const resolvedType = passwordToggleOn && revealed ? 'text' : type;
-  const searchLeading = type === 'search' ? (leading ?? <IconSearch />) : leading;
-  const showClear = clearable && !disabled && !readOnly;
-  const showTrailing = trailing !== undefined || showClear || passwordToggleOn;
+  const filter = useInputFilter({
+    inputRef,
+    filterPattern,
+    restoreValue: String(value ?? defaultValue ?? ''),
+    isControlled,
+    onChange,
+  });
+  const visibility = usePasswordVisibility({ type, allowTogglePassword });
+  const slots = resolveInputSlots({
+    type,
+    leading,
+    trailing,
+    clearable,
+    disabled,
+    readOnly,
+    toggleActive: visibility.active,
+  });
 
   return (
     <div
@@ -70,35 +78,37 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
       )}
       style={style}
     >
-      {searchLeading !== undefined && <span className="colox-input__leading">{searchLeading}</span>}
+      {slots.searchLeading !== undefined && (
+        <span className="colox-input__leading">{slots.searchLeading}</span>
+      )}
       <input
         ref={inputRef}
         className="colox-input__control"
-        type={resolvedType}
+        type={visibility.resolvedType}
         aria-invalid={invalid || undefined}
         value={value}
         defaultValue={defaultValue}
-        onChange={handleChange}
+        onChange={filter.handleChange}
         onCompositionStart={(event) => {
-          handleCompositionStart();
+          filter.handleCompositionStart();
           onCompositionStart?.(event);
         }}
         onCompositionEnd={(event) => {
-          handleCompositionEnd();
+          filter.handleCompositionEnd();
           onCompositionEnd?.(event);
         }}
         disabled={disabled}
         readOnly={readOnly}
         {...rest}
       />
-      {showTrailing && (
+      {slots.showTrailing && (
         <span className="colox-input__trailing">
           {trailing}
-          {showClear && <ClearButton onClear={handleClear} icon={clearIcon} />}
-          {passwordToggleOn && (
+          {slots.showClear && <ClearButton onClear={filter.handleClear} icon={clearIcon} />}
+          {visibility.active && (
             <VisibilityToggle
-              revealed={revealed}
-              onToggle={() => setRevealed((current) => !current)}
+              revealed={visibility.revealed}
+              onToggle={visibility.toggle}
               eyeIcon={eyeIcon}
               eyeOffIcon={eyeOffIcon}
               disabled={disabled}

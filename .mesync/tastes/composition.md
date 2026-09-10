@@ -10,9 +10,11 @@
 ├── children/                        # 全部 dot-part 子组件
 │   └── <part>/index.tsx             # 每子件一文件夹，入口 index.tsx
 ├── context/index.ts                 # createContext + 默认值(no-op)（类型住 types/，工具按三分层）
-├── hooks/use-<component>-context.ts # 受保护出口 hook
+├── hooks/                           # 全部 React hook（受保护出口 + 功能性拆分：状态/行为逻辑）
+│   ├── use-<component>-context.ts     # 受保护出口 hook
+│   └── use-<behavior>.ts              # 功能高内聚的 hook（如 use-input-filter / use-password-visibility）
 ├── types/                           # 轴类型 + Props + <Name>ContextValue 类型
-├── utils/                           # 组件私有纯函数工具（职责分离）
+├── utils/                           # 仅纯 TS 工具函数（判别/翻译/装配）——禁止放 hook
 ├── variants/  styles/  _tests/
 └── index.ts                         # barrel
 ```
@@ -24,9 +26,12 @@
 1. **子组件禁止直接 `useContext`**：一律走 `use<Name>Context` 受保护出口；无根挂载时 `console.warn` 一次（副本 `useColoxTheme` 文案形态）+ 服务静态默认值（注册命令变 no-op）。
 2. **context 建在 `context/index.ts` 且保持干净**：只放 createContext + `default<Name>ContextValue`（no-op 命令）；`<Name>ContextValue` 类型住 `types/`；**context 对象不进公共 barrel**，只有受保护 hook 进 barrel。
 3. **工具方法按宿主三分层**：(a) 断点/响应式解析等**主题语义词**由 `@colox/theme` 公共出口提供（跨组件复用的契约执行器，组件不重复持有——Stack 首版自持 `resolveResponsiveGap` 已上提为 theme 的 `resolveResponsiveValue`）；(b) 组件私有的**纯函数工具住 `utils/`**（职责分离，context 文件只负责 context）；(c) 平铺散放（`resolve.ts` 之类）禁止。
-4. **dot-part 挂载**：根文件末尾 `Object.assign(Root, { PartA, PartB })` + `type Component = typeof Root & { PartA: typeof PartA; ... }`；parts 导出名与实现文件名一致。
-5. **注册管道**：根组件 `useCallback` 注册命令 + `useMemo` context value 下发；parts 经受保护 hook 拿命令；同类多实例 **LWW**，卸载必须还原（cleanup 里注册回 undefined/初始值）。
-6. **静态面纯净**：根组件不因「可能存在的能力挂载」而订阅 theme context 等；只有挂载件（parts）在需要时订阅。
+4. **hooks 与 utils 边界**：`hooks/` 收全部 React hook——受保护出口（`use<Name>Context`）与功能拆分 hook（状态/行为，如 `use-input-filter`/`use-password-visibility`）同住；`utils/` 只放**无状态纯 TS 函数**（判别/翻译/样式装配）。hook 放 utils/ 是规范违反（Input 初版前科，用户指正「hooks 是 React 的独有应该单独维护」）。
+5. **高内聚低耦合拆分**：TS 逻辑按功能拆功能性 hook（一个 hook 管一个关切：过滤=过滤、可见性=可见性）；纯判别/翻译下沉 utils 纯函数；多个 DOM 结构拆内部子组件（Input 内置按钮住 `controls/`，组合式树形部分走 `children/` 规范）；根组件只编排——接 hooks、调 resolver、组装 JSX。
+6. **context 门槛：跨组件交互「确实复杂」才引入**。单层父子共享状态用 props 显式传（数据流可见、无 provider 仪式）；context 在多级嵌套 part、多消费者共享状态时收益才超过成本（并引入「静态面纯净/挂载即启用」开销）。Input v2 的可见性状态只有两个一层消费者（input type 与 toggle 图标），用 props 显式传——引入 context 属负收益。
+7. **dot-part 挂载**：根文件末尾 `Object.assign(Root, { PartA, PartB })` + `type Component = typeof Root & { PartA: typeof PartA; ... }`；parts 导出名与实现文件名一致。
+8. **注册管道**：根组件 `useCallback` 注册命令 + `useMemo` context value 下发；parts 经受保护 hook 拿命令；同类多实例 **LWW**，卸载必须还原（cleanup 里注册回 undefined/初始值）。
+9. **静态面纯净**：根组件不因「可能存在的能力挂载」而订阅 theme context 等；只有挂载件（parts）在需要时订阅。
 
 ## 用法约定
 
