@@ -2,14 +2,11 @@ import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/react-vite';
 
 // Story globs are resolved relative to this config directory.
-// Component examples live in apps/preview/src/<Component>/ (the preview
-// app owns its content); the legacy patterns under packages/components
-// stay active only until Button/Input are rewritten.
+// All component examples live in apps/preview/src/<Component>/ (the
+// preview app owns its content) — packages/components carries no
+// stories anymore.
 const config: StorybookConfig = {
-  stories: [
-    '../src/**/*.stories.@(ts|tsx)',
-    '../../../packages/components/src/**/*.stories.@(ts|tsx)',
-  ],
+  stories: ['../src/**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
   framework: {
     name: '@storybook/react-vite',

@@ -27,7 +27,7 @@ Colox React 是一个模块化、可访问的 React 组件库 monorepo。目标�
 - **`@colox/icons`**（`packages/icons/`）：第一方基础图标包——stroke 风格（24 viewBox / 1.5 round stroke / currentColor / 1em 默认、`size` 数字 px 覆盖），`IconXxx` 前缀命名的 React 组件（前缀防碰撞，per-icon 命名导出保树摇），`IconBase` 为内部契约基座（不进公共面）；图标设计规范八条由 spec lint（test/icon-spec.test.tsx）机器门禁：几何锁（渲染必须等于设计的 d）、整数网格、[2,22] 光学内容框、成对同源（chevron 四向单几何旋转、eye-off 由 eye 派生）。零运行时依赖。批次一：chevron×4、x、check、plus、eye、eye-off、search 十枚样板。详见 [modules/icons.md](wiki/modules/icons.md)
 - **`@colox/wiki`**（`packages/wiki/`）：AI 使用心法数据包——`AGENTS.md`（各家 harness 自动读的用法总纲）+ `components.md`（组件地图：职责+状态）+ `skills/<name>/` 主题 bundle（`SKILL.md` 配方本体 + `references/` 按需读：`rules.md` 条件规则、`component.md` API 参考；doctrine bundle 载全局规则、style bundle 讲样式接线；SKILL.md 为 Claude/Codex/dsh 三方自动发现格式）；纯 markdown、无构建，版本纪律：前两位（major.minor）与 `@colox/react` 一致、patch 位留给组件 bugfix、API 变更才随版本更新。详见 [wiki/architecture.md](wiki/architecture.md)
 - **`@colox/mcp`**（`packages/mcp/`）：官方 MCP server（本地 stdio、官方 `@modelcontextprotocol/sdk`，tsc 构建产 `dist`，bin 即包名——各家一行 `npx -y @colox/mcp` 注册）；读 `@colox/wiki` 依赖（workspace symlink 开发态 / npm 安装态）提供四工具：`search_doctrine`（全文搜索+评分+摘要+读指引，覆盖 bundle 与 references）/ `get_rule`（`global` 别名）/ `get_skill`（`reference` 参数读参考件）/ `get_component`（无参读组件地图）；离线、零网络、版本=wiki 依赖版本。详见 [wiki/architecture.md](wiki/architecture.md)
-- **`@colox/preview`**（`apps/preview/`）：组件预览环境（Storybook），组件示例按组件分类存于 `apps/preview/src/<Component>/`（示例归应用、不混入组件包源码；过渡期兼容组件目录内旧 stories）
+- **`@colox/preview`**（`apps/preview/`）：组件预览环境（Storybook），组件示例按组件分类存于 `apps/preview/src/<Component>/<component>.stories.tsx`——一组件一 Overview story，按状态轴用 `Section` 分区、以自家布局组件（Container/Stack/Grid）作陈列骨架（示例归应用、不混入组件包源码）
 - **`@colox/docs`**（`apps/docs/`）：Docusaurus 官方文档站点，MDX 内嵌组件示例
 
 ## 目录结构

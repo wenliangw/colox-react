@@ -13,7 +13,7 @@ apps/docs ───────┘
               └── src/index.ts       统一导出入口（含全局 token 层 import）
 ```
 
-组件示例（stories）归属预览应用：`apps/preview/src/<Component>/`（示例是应用内容，不混入库源码）。示例一律以消费方视角书写（`import ... from '@colox/react'`）；preview 的 viteFinal 将 `@colox/react` alias 到组件源码（`packages/components/src/index.ts`），dev 下示例热更新、无需先 build 包；tsconfig paths 同步映射。Button/Input 重写时故事从组件目录迁出，过渡期 stories glob 双路径并存。
+组件示例（stories）归属预览应用：`apps/preview/src/<Component>/<component>.stories.tsx`（示例是应用内容，不混入库源码）。一组件一 Overview story：按状态轴用共享 `Section`（showcase/section.tsx）分区陈列，`parameters.layout = 'fullscreen'` + 自家 Container/Stack/Grid 作骨架（形（sizes/variants）→ 交互（slots/built-ins/filter）→ 态（invalid/disabled）分区；表单内容 Container md、视口级布局 demo Container xl）。示例一律以消费方视角书写（`import ... from '@colox/react'`）；preview 的 viteFinal 将 `@colox/react` alias 到组件源码（`packages/components/src/index.ts`），dev 下示例热更新、无需先 build 包；tsconfig paths 同步映射。组件包内不再有 stories，main.ts 只有 preview 单一 glob。
 
 ### 组件目录结构（约定）
 

@@ -6,14 +6,25 @@ examples are app content, not library source.
 
 ```
 src/
-└── <Component>/          # e.g. button/, input/
-    └── *.stories.tsx     # one story file per concern
+├── <Component>/          # e.g. button/, input/
+│   └── <component>.stories.tsx   # one Overview story per component
+└── showcase/
+    └── section.tsx       # shared Section exhibit helper
 ```
 
 Conventions:
 
-- Import components from `@colox/react` (the consumer perspective).
-  The preview dev server aliases that package to the component source,
+- Import components from `@colox/react` (the consumer perspective, or
+  the layout components when used as exhibit scaffolds).
+  The preview dev server aliases `@colox/react` to the component source,
   so examples stay hot-reloadable during development.
-- One story file per concern (size, state, ...); keep legacy stories
-  under `packages/components` until those components are rewritten.
+- **One Overview story per component**: group the component's states
+  into `Section` blocks (sizes, variants, slots, states, ...) ordered
+  from pure form to interaction. Add a section for a state only when it
+  carries a visually distinct, real axis — no one-demo-per-story spam.
+- Exhibit pages are laid out with the library's own layout components
+  (`Container` + `Stack` scaffolds, `Grid` for multi-column demos), set
+  `parameters.layout = 'fullscreen'` on the meta and let the `Container`
+  cap (`md` for form content, `xl` for viewport-wide layout demos).
+- Interactive rows (clearable, filterPattern, toggles) hold their state
+  in a small local component inside the story file.
