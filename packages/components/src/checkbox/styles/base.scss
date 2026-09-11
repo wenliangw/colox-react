@@ -20,6 +20,20 @@
   flex: none;
 }
 
+// The invalid signal paints the unfilled state (red border + red focus
+// ring). It sits before the filled states on purpose: once the box is
+// checked/indeterminate, the filled state owns the border back (brand)
+// — the red ring still marks the transient keyboard focus on an
+// invalid box.
+.colox-checkbox--invalid .colox-checkbox__control {
+  border-color: var(--colox-color-red-solid);
+
+  &:focus-visible {
+    border-color: var(--colox-color-red-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  }
+}
+
 .colox-checkbox__control {
   appearance: none;
   margin: 0;
@@ -39,19 +53,13 @@
     box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
   }
 
+  // Filled states paint the box border + background brand (same
+  // specificity as the invalid block, later in source order — so a
+  // selected invalid box keeps the brand border).
   &:checked,
   &:indeterminate {
     border-color: var(--colox-color-brand-solid);
     background-color: var(--colox-color-brand-solid);
-  }
-}
-
-.colox-checkbox--invalid .colox-checkbox__control {
-  border-color: var(--colox-color-red-solid);
-
-  &:focus-visible {
-    border-color: var(--colox-color-red-solid);
-    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
   }
 }
 
@@ -71,6 +79,15 @@
   justify-content: center;
   pointer-events: none;
   opacity: 0;
+}
+
+// The check rides a filled box, not the icon's standalone canvas:
+// IconCheck's 1.5-unit stroke (1px effective at 16px) reads hairline
+// against brand. The checkbox doubles it (3 units → 2px effective at
+// md, 1.5px at xs) as a local override, leaving the icon system's
+// stroke contract untouched.
+.colox-checkbox__mark-check {
+  stroke-width: 3;
 }
 
 .colox-checkbox__control:checked ~ .colox-checkbox__mark,

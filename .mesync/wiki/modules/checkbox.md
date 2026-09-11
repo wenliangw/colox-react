@@ -39,6 +39,12 @@ checkbox/
 
 `label.colox-checkbox > span.colox-checkbox__box > input.colox-checkbox__control + span.colox-checkbox__mark(IconCheck + span.colox-checkbox__mark-bar)`，`children` 渲染为 `span.colox-checkbox__label`（无 children 不渲染）。块类名 = `colox-checkbox`（组件自身名字空间）。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（disabled 用**解析后**的继承值）；`aria-invalid` 落内层 input。box 包裹 span 是定位容器（control 是盒子的视觉本体、mark 绝对定位覆盖其上）；input 获得 `ref`/原生属性/事件/`value`/`name`，FormData 原生收集可用。
 
+### 状态优先级（视觉态裁决）
+
+- **invalid 只画未选中态**：红边框 + 红焦点环作用于未选中盒；一旦勾选/不确定（实心态），品牌边框夺回（同特异性 0,2,0、实心态规则源顺序在后）。键盘焦点落在 invalid+checked 盒上时红环红边短暂标记（交互瞬间的错误提醒，`aria-invalid` 语义始终存在）。
+- **disabled 终局优先**：disabled 规则排在最后，压过实心态的边框/底色（灰底 + 白勾）。
+- **勾选描边权重**：`IconCheck` 的图标系统默认描边 1.5 单位（16px 渲染 1px）在品牌实心底上呈发丝状——checkbox 在 styles 层以 `stroke-width: 3` 局部翻倍（md 档 ≈2px 实线、xs ≈1.5px、lg ≈2.25px，随排版阶梯等比加粗），图标包契约不动。
+
 ### 尺寸与设计语言
 
 尺寸四档**与 Button/Input 同源**：行高 24/32/40/48（`--colox-size-6/8/10/12` 固定 height），字号行高同档同名（xs 12/16、sm 14/18、md 16/22、lg 18/24）。盒子尺寸低两阶：16/20/24/28（`--colox-size-4/5/6/7`）。勾选图标 `IconCheck` 以 mark 的 `font-size`（= 行高同档字号）作 1em 渲染——勾字形随排版阶梯缩放且零 px 字面量。盒子 `radius-sm`。

@@ -145,3 +145,10 @@
 
 - 值域是任意整数的轴（Grid columns、Grid.Item span）不生成修饰类表——类表在整数开放集上无界（键表单源纪律管不到任意整数）。形态 = 组件把解析值写进内联自定义属性（`--colox-grid-columns` / `--colox-grid-item-span: span N`），唯一的模板/定位规则在 scss 里读变量 + 默认回落（`repeat(var(--colox-grid-columns, 1), …)` / `grid-column: var(--colox-grid-item-span, auto)`）。规则留在 styles/，只有「值」注进 DOM。
 - 消费方的 style 透传保留优先权（内联合并，消费方后写覆盖组件变量）。
+
+## 实心态组件的 mark：反色前景 + 按盒子调描边权重（图标契约不动）
+
+- 勾选/不确定等**实心态**的 mark 用品牌实心底 + 反色前景（checked/indeterminate → `brand-solid` bg + `brand-inverse` mark，Button solid-intent 同模型）。
+- **图标嵌入填充盒时按消费语境局部调描边**：图标系统默认 1.5 单位描边 = 1px 边框等价物（16px 渲染），在实心底上是发丝；checkbox 在组件 styles 层 `stroke-width: 3` 翻倍（md ≈2px 实线，随排版阶梯等比）。**改的是消费语境，图标包的描边契約（spec lint 机器门禁 + stroke 风格）不动**——Input 插槽等其他消费方不受牵连。将来 Radio 等嵌入小盒的 mark 同源。
+- **错误信号退让于实心态**：invalid 红边框只画未选中态；选中后实心态夺回边框（同特异性 + 源顺序），红环只在焦点交互瞬间标记。
+- 来源：用户对 checkbox 的视觉反馈（「图标线条太细了，导致不是特别明显」+「invalid 选中后的 border 不应该是红色的了吧」）。
