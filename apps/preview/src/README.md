@@ -25,6 +25,12 @@ Conventions:
 - Exhibit pages are laid out with the library's own layout components
   (`Container` + `Stack` scaffolds, `Grid` for multi-column demos), set
   `parameters.layout = 'fullscreen'` on the meta and let the `Container`
-  cap (`md` for form content, `xl` for viewport-wide layout demos).
+  cap (`md` for form content and grid demos; `xl` for width-cap demos).
+- **Layout demos must make their reference frames visible**: draw the
+  available width with the shared `track` style (dashed border), bound
+  reading rows to `bound()` (`min(480px, 100%)`), and show Container
+  caps against a full-width track instead of nesting invisible shells.
+  Fluid viewport-scale demos (`Stack.Responsive`) sit outside the capped
+  column at page width, or their bands can never change.
 - Interactive rows (clearable, filterPattern, toggles) hold their state
   in a small local component inside the story file.

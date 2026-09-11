@@ -34,7 +34,7 @@ type Story = StoryObj<typeof Grid>;
 
 export const Overview: Story = {
   render: () => (
-    <Container size="xl" gutter="4">
+    <Container size="md" gutter="4">
       <Stack direction="column" gap="8">
         <Section title="Columns">
           <Grid columns={3} gap="4">
