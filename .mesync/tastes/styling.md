@@ -155,6 +155,7 @@
 
 ## 单选走环+点模型，与多选实心模型区分
 
-- **Radio 选中态 = 品牌描边环 + 内部品牌点**（`:checked` 只染 border-color，内圆保持 bg-solid；mark `::before` 50% 圆点以 brand-solid 上色）——不整圆填实，是单选平台的经典辨识惯例，也与 Checkbox 的实心方块形态语言区分：方块实心勾 vs 圆环点，双控件辨识由形态承载。
-- **简单图形不引图标**：单选点 CSS 化（`::before` 50% + currentColor，随 tier 零字面量缩放），不给它新增图标——按需追加纪律；disabled 时点转 text-disabled。
-- 来源：Radio 交付时的形态裁决（对照 antd/MUI 同为环+点模型；反方选择「与 Checkbox 同实心模型」被否）。
+- **Radio 选中态 = 品牌描边环 + 内部品牌点**（`:checked` 只染 border-color，内圆保持 bg-solid；mark `::before` 圆点以 brand-solid 上色）——不整圆填实，是单选平台的经典辨识惯例，也与 Checkbox 的实心方块形态语言区分：方块实心勾 vs 圆环点，双控件辨识由形态承载。
+- **点径 40%**：环是 1px 发丝框架，点压到 40%（不是 50% 实心盘）才与环的视觉权重平衡、与 checkbox 勾形 ~45% 占宽协调；跨档比例恒定、零字面量。环保持 1px 不动——与表单家族（Input/Checkbox 1px 边框）同源，加粗环会破坏家族一致性。
+- **简单图形不引图标**：单选点 CSS 化（`::before` 40% + currentColor，随 tier 零字面量缩放），不给它新增图标——按需追加纪律；disabled 时点转 text-disabled。
+- 来源：Radio 交付时的形态裁决（对照 antd/MUI 同为环+点模型；反方选择「与 Checkbox 同实心模型」被否）；用户反馈「border 和实心圆比例差异过大」后点径 50%→40% 定案。

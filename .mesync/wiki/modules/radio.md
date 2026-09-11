@@ -36,11 +36,11 @@ radio/
 
 ### DOM 契约
 
-`label.colox-radio > span.colox-radio__box > input.colox-radio__control + span.colox-radio__mark`，`children` 渲染为 `span.colox-radio__label`（无 children 不渲染）。块类名 = `colox-radio`。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（disabled 用解析后的继承值）；`aria-invalid` 落内层 input。圆点不占 DOM：`__mark::before`（50% 宽高、`radius-full`、currentColor）上色随态——无 per-tier 字面量。input 获得 `ref`/原生属性/事件/`value`/`name`：组共享 `name` 时浏览器原生单选取代 + FormData 原生收集。
+`label.colox-radio > span.colox-radio__box > input.colox-radio__control + span.colox-radio__mark`，`children` 渲染为 `span.colox-radio__label`（无 children 不渲染）。块类名 = `colox-radio`。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（disabled 用解析后的继承值）；`aria-invalid` 落内层 input。圆点不占 DOM：`__mark::before`（40% 宽高、`radius-full`、currentColor）上色随态——无 per-tier 字面量。input 获得 `ref`/原生属性/事件/`value`/`name`：组共享 `name` 时浏览器原生单选取代 + FormData 原生收集。
 
 ### 环+点模型（与 Checkbox 实心模型的区分）
 
-选中态 = 品牌描边环 + 内部点：`:checked` 只染 `border-color`（内圆保持 bg-solid），mark 上 opacity 1 + `color: brand-solid`，点以 currentColor 充填（50% 直径）。这与 Checkbox 的「品牌实心底 + 反色/描边加粗 mark」是两套形态语言：方块实心 vs 圆环点——单选/多选的双控件辨识由形态承载。disabled 时点转 `text-disabled`。无 indeterminate。
+选中态 = 品牌描边环 + 内部点：`:checked` 只染 `border-color`（内圆保持 bg-solid），mark 上 opacity 1 + `color: brand-solid`，点以 currentColor 充填——**点径 40%**（发丝环是框架，50% 实心盘对 1px 环视觉过重且与 checkbox 勾形 ~45% 占宽不搭；40% 为经典轻盈比例）。这与 Checkbox 的「品牌实心底 + 反色/描边加粗 mark」是两套形态语言：方块实心 vs 圆环点——单选/多选的双控件辨识由形态承载。disabled 时点转 `text-disabled`。无 indeterminate。
 
 ### 状态优先级
 

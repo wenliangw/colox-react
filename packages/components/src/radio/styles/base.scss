@@ -66,10 +66,12 @@
   cursor: not-allowed;
 }
 
-// The mark overlays the circle: a centered dot at half the circle
-// width, scale-free across the size tiers. currentColor carries the
-// dot's fill — brand when checked, text-disabled inside a disabled
-// radio.
+// The mark overlays the circle: a centered dot at 40% of the circle
+// width, scale-free across the size tiers. The hairline ring reads as
+// the frame, so the dot holds back to 40% — a 50% disc reads heavy
+// next to the 1px ring (and next to the checkbox's check glyph, which
+// occupies ~45%). currentColor carries the dot's fill — brand when
+// checked, text-disabled inside a disabled radio.
 .colox-radio__mark {
   position: absolute;
   inset: 0;
@@ -81,8 +83,8 @@
 
   &::before {
     content: '';
-    width: 50%;
-    height: 50%;
+    width: 40%;
+    height: 40%;
     border-radius: var(--colox-radius-full);
     background-color: currentColor;
   }
