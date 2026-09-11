@@ -1,0 +1,63 @@
+// The four tiers share the Button/Input design language: fixed row
+// heights (--colox-size-6/8/10/12) and the matching font ladder, with
+// the box riding the size scale two steps below (16/20/24/28). The
+// mark's font size drives the IconCheck glyph (1em) per tier.
+.colox-checkbox--xs {
+  height: var(--colox-size-6);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-checkbox--xs .colox-checkbox__control {
+  width: var(--colox-size-4);
+  height: var(--colox-size-4);
+}
+
+.colox-checkbox--xs .colox-checkbox__mark {
+  font-size: var(--colox-font-size-xs);
+}
+
+.colox-checkbox--sm {
+  height: var(--colox-size-8);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-checkbox--sm .colox-checkbox__control {
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
+}
+
+.colox-checkbox--sm .colox-checkbox__mark {
+  font-size: var(--colox-font-size-sm);
+}
+
+.colox-checkbox--md {
+  height: var(--colox-size-10);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-checkbox--md .colox-checkbox__control {
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+}
+
+.colox-checkbox--md .colox-checkbox__mark {
+  font-size: var(--colox-font-size-md);
+}
+
+.colox-checkbox--lg {
+  height: var(--colox-size-12);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}
+
+.colox-checkbox--lg .colox-checkbox__control {
+  width: var(--colox-size-7);
+  height: var(--colox-size-7);
+}
+
+.colox-checkbox--lg .colox-checkbox__mark {
+  font-size: var(--colox-font-size-lg);
+}

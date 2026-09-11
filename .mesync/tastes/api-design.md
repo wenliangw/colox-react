@@ -28,6 +28,15 @@
 
 来源：Input v2 设计讨论（用户以密码状态图标为例定出「背机制不背产品」边界）。
 
+## Checkbox 组语义与三态（Group 值数组 / indeterminate 纯视觉）
+
+- **组 = 值数组语义**：多选的状态形态就是 `string[]`（`value`/`defaultValue`/`onChange(value: string[])`），成员以原生 `value` prop 声明参与键（表单值 + 组键双职，不发明 `groupKey` 之类的平行 prop）；显式 `checked`/`defaultChecked` 的成员退出组（本人优先），`name`/`disabled` 组继承、本人优先、组 disabled 不可退出。
+- **组容器走 dot-part**（`<Checkbox.Group>`）：「内容必须在树中」判据成立——多选集合天然是父子树，成员需要在组上下文里生存；Leaf 三件（props/事件/ref）不动，组级语义（数组 onChange）是组自己的出口，叶子 onChange 始终原生透传。
+- **受控勾选的原生事件边界**：不学 MUI/antd 造 `(event, checked)` 包装事件——原生透传例外不可破；组内成员受控时 `event.target.checked` 是 React 受控语义（恢复后的受控值），下一选中数组从 `Checkbox.Group.onChange` 读。这是「原生透传」与「受控」的诚实边界，写进成员 value 的 docblock。
+- **indeterminate 是纯视觉通道**：第三态只改图形（bar vs check），真相永远在 `checked`（事件流、表单值、FormData 只认它）；「选中了几个孩子」的级联数学归消费方，库只负责可视化——「状态→图形映射归消费方」在复选框上的延续。
+
+来源：Checkbox 设计定案（用户拍板「Group 做」+ 追问 indeterminate 语义后定句）。
+
 ## variant 是从设计语言推导的封闭轴
 
 - 轴必须来自 Figma 真实状态；取值集合小且穷举；轴间正交（非法组合用 `compoundVariants` 显式声明）。

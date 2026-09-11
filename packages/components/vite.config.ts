@@ -9,6 +9,7 @@ import dts from 'vite-plugin-dts';
 const entries = {
   index: resolve(import.meta.dirname, 'src/index.ts'),
   button: resolve(import.meta.dirname, 'src/button/index.ts'),
+  checkbox: resolve(import.meta.dirname, 'src/checkbox/index.ts'),
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
   stack: resolve(import.meta.dirname, 'src/stack/index.ts'),
   container: resolve(import.meta.dirname, 'src/container/index.ts'),

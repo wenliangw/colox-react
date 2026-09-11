@@ -1,0 +1,96 @@
+.colox-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-solid);
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+// The box is a positioning wrapper: the control itself is the native
+// input drawn via appearance none, and the mark overlays it.
+.colox-checkbox__box {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.colox-checkbox__control {
+  appearance: none;
+  margin: 0;
+  flex: none;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--colox-color-bg-solid);
+  cursor: pointer;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &:checked,
+  &:indeterminate {
+    border-color: var(--colox-color-brand-solid);
+    background-color: var(--colox-color-brand-solid);
+  }
+}
+
+.colox-checkbox--invalid .colox-checkbox__control {
+  border-color: var(--colox-color-red-solid);
+
+  &:focus-visible {
+    border-color: var(--colox-color-red-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  }
+}
+
+.colox-checkbox--disabled .colox-checkbox__control {
+  border-color: var(--colox-color-border-disabled);
+  background-color: var(--colox-color-bg-disabled);
+  cursor: not-allowed;
+}
+
+// The mark overlays the box: the check (IconCheck, 1em of the mark's
+// tier font size) on :checked, a currentColor bar on :indeterminate.
+.colox-checkbox__mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.colox-checkbox__control:checked ~ .colox-checkbox__mark,
+.colox-checkbox__control:indeterminate ~ .colox-checkbox__mark {
+  opacity: 1;
+  color: var(--colox-color-brand-inverse);
+}
+
+.colox-checkbox__mark-bar {
+  display: none;
+  width: 55%;
+  height: 2px;
+  border-radius: var(--colox-radius-full);
+  background-color: currentColor;
+}
+
+.colox-checkbox__control:indeterminate ~ .colox-checkbox__mark .colox-checkbox__mark-check {
+  display: none;
+}
+
+.colox-checkbox__control:indeterminate ~ .colox-checkbox__mark .colox-checkbox__mark-bar {
+  display: block;
+}

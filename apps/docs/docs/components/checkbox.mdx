@@ -1,0 +1,55 @@
+---
+sidebar_position: 7
+---
+
+import { Checkbox } from '@colox/react';
+import '@colox/react/style.css';
+
+# Checkbox
+
+Checkboxes capture boolean states and, through `Checkbox.Group`, multi-select sets.
+
+## States
+
+<Checkbox>Unchecked</Checkbox> <Checkbox defaultChecked>Checked</Checkbox>
+<Checkbox indeterminate>Indeterminate</Checkbox> <Checkbox invalid>Invalid</Checkbox>
+<Checkbox disabled>Disabled</Checkbox>
+
+`indeterminate` marks the partially-selected state visually (a bar); `checked` stays the
+single source of truth for events and form values, and the bar clears on the next click.
+
+## Sizes
+
+<Checkbox size="xs">extra small</Checkbox> <Checkbox size="sm">small</Checkbox>
+<Checkbox size="md">medium</Checkbox> <Checkbox size="lg">large</Checkbox>
+
+## Group
+
+Members declare a `value` to join the group's selection array:
+
+<Checkbox.Group defaultValue={['apple']}>
+  <Checkbox value="apple">Apple</Checkbox>
+  <Checkbox value="banana">Banana</Checkbox>
+  <Checkbox value="orange">Orange</Checkbox>
+</Checkbox.Group>
+
+## Props
+
+| Prop          | Type                           | Default |
+| ------------- | ------------------------------ | ------- |
+| size          | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
+| invalid       | `boolean`                      | `false` |
+| indeterminate | `boolean`                      | `false` |
+| value         | `string`                       | —       |
+
+It also accepts all native `<input>` attributes (`size` and `type` excluded).
+
+### Checkbox.Group props
+
+| Prop         | Type                        | Default |
+| ------------ | --------------------------- | ------- |
+| value        | `string[]`                  | —       |
+| defaultValue | `string[]`                  | —       |
+| onChange     | `(value: string[]) => void` | —       |
+| disabled     | `boolean`                   | `false` |
+| name         | `string`                    | —       |
