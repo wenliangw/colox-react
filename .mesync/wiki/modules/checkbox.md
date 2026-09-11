@@ -14,7 +14,7 @@ checkbox/
 │   └── group/index.tsx        # Checkbox.Group：select array 容器（受控/非受控对称）、Provider 下发
 ├── context/index.ts         # CheckboxGroupContext + defaultCheckboxGroupContextValue（no-op）
 ├── hooks/
-│   ├── use-checkbox-group.ts           # Group 选中态：value/defaultValue 对称 + toggleValue 翻转命令
+│   ├── use-checkbox-group.ts           # Group 选中态：value/defaultValue 对称 + toggleValue 翻转命令（hook 命令；context 侧以 onChange 事件槽下发）
 │   ├── use-checkbox-group-context.ts   # 受保护出口（无警告语义——裸 Checkbox 脱离组是合法用法）
 │   └── use-indeterminate.ts            # indeterminate prop → DOM property 镜像（useLayoutEffect）
 ├── utils/
@@ -37,7 +37,7 @@ checkbox/
 
 ### DOM 契约
 
-`label.colox-checkbox > span.colox-checkbox__box > input.colox-checkbox__control + span.colox-checkbox__mark(IconCheck + span.colox-checkbox__mark-bar)`，`children` 渲染为 `span.colox-checkbox__label`（无 children 不渲染）。块类名 = `colox-checkbox`（组件自身名字空间）。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（disabled 用**解析后**的继承值）；`aria-invalid` 落内层 input。box 包裹 span 是定位容器（control 是盒子的视觉本体、mark 绝对定位覆盖其上）；input 获得 `ref`/原生属性/事件/`value`/`name`，FormData 原生收集可用。
+`label.colox-checkbox > span.colox-checkbox__box > input.colox-checkbox__control + span.colox-checkbox__mark(IconCheck + span.colox-checkbox__mark-bar)`，`children` 渲染为 `span.colox-checkbox__label`（无 children 不渲染）。块类名 = `colox-checkbox`（组件自身名字空间）。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（size/disabled 用**解析后**的继承值）；`aria-invalid` 落内层 input。box 包裹 span 是定位容器（control 是盒子的视觉本体、mark 绝对定位覆盖其上）；input 获得 `ref`/原生属性/事件/`value`/`name`，FormData 原生收集可用。
 
 ### 状态优先级（视觉态裁决）
 
@@ -55,7 +55,7 @@ checkbox/
 
 ### Group 成员判定（resolveCheckboxState）
 
-成员 = 声明 `value` 且未显式 `checked`/`defaultChecked` 的 checkbox：checked 派生自 `group.value.includes(value)`，翻转走 `group.toggleValue(value)`；显式控制者独立（`value` 只喂原生表单）。`disabled`/`name` 组继承、本人优先（组 disabled 不可退出）。成员受控于组：成员自己的 `onChange` 仍透传原生事件，但 `target.checked` 是 React 受控输入的标准语义（恢复后的受控值）——下一选中数组从 `Checkbox.Group` 的 `onChange` 读取（叶子未受控时 `target.checked` 即真实翻转值）。`toggleValue` 纯函数逻辑（含/不含 → 增/删）住 hook，不依赖 DOM 事件目标。
+成员 = 声明 `value` 且未显式 `checked`/`defaultChecked` 的 checkbox：checked 派生自 `group.value.includes(value)`，翻转走组 context 的 `onChange` 事件槽（成员调 `group.onChange(value)`，背后是 hook 的 `toggleValue` 命令）；显式控制者独立（`value` 只喂原生表单）。`size`/`name`/`disabled` 组继承、本人优先（组 disabled 不可退出）。成员受控于组：成员自己的 `onChange` 仍透传原生事件，但 `target.checked` 是 React 受控输入的标准语义（恢复后的受控值）——下一选中数组从 `Checkbox.Group` 的 `onChange` 读取（叶子未受控时 `target.checked` 即真实翻转值）。toggle 纯函数逻辑（含/不含 → 增/删）住 hook，不依赖 DOM 事件目标。
 
 ### 受控/非受控对称
 
@@ -70,5 +70,5 @@ checkbox/
 
 - 导出 `Checkbox`（含 `Checkbox.Group`）、`useCheckboxGroupContext`、`checkboxVariants`、`CheckboxVariants`、`CheckboxProps`/`CheckboxSize`/`CheckboxRef`/`CheckboxGroupProps`/`CheckboxGroupRef`/`CheckboxGroupContextValue`。
 - `CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'value'>`（`type` 锁死 checkbox、`value` 收紧为 string），新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`indeterminate?`、`value?: string`（成员键 + 表单值）。
-- `CheckboxGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`，新增：`value?: string[]`、`defaultValue?: string[]`、`onChange?: (value: string[]) => void`、`disabled?`、`name?`。Group 根 div `role="group"` + `colox-checkbox-group`（纵向布局，gap spacing-2）。
+- `CheckboxGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`，新增：`value?: string[]`、`defaultValue?: string[]`、`onChange?: (value: string[]) => void`、`size?: CheckboxSize`（成员继承、本人优先、缺省 md）、`disabled?`、`name?`。Group 根 div `role="group"` + `colox-checkbox-group`（纵向布局，gap spacing-2）。
 - 未建（按需追加纪律）：`options` 数组便捷形态；嵌套 Group（内层组自成体系，但外层不感知——罕见场景，遇到真实需求再挣）。

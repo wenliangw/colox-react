@@ -55,6 +55,13 @@ export interface RadioGroupProps extends Omit<
   defaultValue?: string;
   /** Fires with the next selection when the radio group switches. */
   onChange?: (value: string) => void;
+  /**
+   * Visual size inherited by members that don't set their own — a
+   * group's members usually share the same tier, so the group carries
+   * the axis.
+   * @default 'md'
+   */
+  size?: RadioSize;
   /** Disables every member radio the group renders. */
   disabled?: boolean;
   /**
@@ -69,10 +76,15 @@ export type RadioGroupRef = HTMLDivElement;
 export interface RadioGroupContextValue {
   /** The group's current single selection. */
   value: string;
-  /** Selects a member value as the group's selection. */
-  selectValue: (value: string) => void;
+  /**
+   * The group's selection-change slot: members invoke it with their
+   * value (same semantic slot as `Radio.Group`'s `onChange` prop).
+   */
+  onChange: (value: string) => void;
   /** The group `name` members inherit when they set none. */
   name: string;
+  /** The group `size` members inherit when they set none. */
+  size: RadioSize;
   /** The group `disabled` flag members inherit. */
-  groupDisabled: boolean;
+  disabled: boolean;
 }

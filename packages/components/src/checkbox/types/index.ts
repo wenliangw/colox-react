@@ -61,6 +61,13 @@ export interface CheckboxGroupProps extends Omit<
   defaultValue?: string[];
   /** Fires with the next selection array on every member toggle. */
   onChange?: (value: string[]) => void;
+  /**
+   * Visual size inherited by members that don't set their own — a
+   * group's members usually share the same tier, so the group carries
+   * the axis.
+   * @default 'md'
+   */
+  size?: CheckboxSize;
   /** Disables every member checkbox the group renders. */
   disabled?: boolean;
   /**
@@ -75,10 +82,16 @@ export type CheckboxGroupRef = HTMLDivElement;
 export interface CheckboxGroupContextValue {
   /** The group's current selection array. */
   value: string[];
-  /** Flips a member value inside the selection array. */
-  toggleValue: (value: string) => void;
+  /**
+   * The group's selection-change slot: members invoke it with their
+   * value on toggle (same semantic slot as `Checkbox.Group`'s
+   * `onChange` prop).
+   */
+  onChange: (value: string) => void;
   /** The group `name` members inherit when they set none. */
   name: string;
+  /** The group `size` members inherit when they set none. */
+  size: CheckboxSize;
   /** The group `disabled` flag members inherit. */
-  groupDisabled: boolean;
+  disabled: boolean;
 }

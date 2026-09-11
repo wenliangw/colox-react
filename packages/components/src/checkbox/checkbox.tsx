@@ -50,12 +50,13 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     defaultChecked,
     disabled,
     name,
+    size,
     group,
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (state.groupMember && memberValue !== undefined) {
-      group.toggleValue(memberValue);
+      group.onChange(memberValue);
     }
     onChange?.(event);
   };
@@ -63,7 +64,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
   return (
     <label
       className={clsx(
-        checkboxVariants({ size }),
+        checkboxVariants({ size: state.size }),
         { 'colox-checkbox--invalid': invalid, 'colox-checkbox--disabled': state.disabled },
         className,
       )}

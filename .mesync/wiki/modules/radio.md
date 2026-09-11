@@ -14,7 +14,7 @@ radio/
 │   └── group/index.tsx        # Radio.Group：单值容器（受控/非受控对称）、Provider 下发
 ├── context/index.ts         # RadioGroupContext + defaultRadioGroupContextValue（no-op）
 ├── hooks/
-│   ├── use-radio-group.ts            # 单选态：value/defaultValue 对称 + selectValue 选中命令
+│   ├── use-radio-group.ts            # 单选态：value/defaultValue 对称 + selectValue 选中命令（hook 命令；context 侧以 onChange 事件槽下发）
 │   └── use-radio-group-context.ts    # 受保护出口（无警告语义——裸 Radio 脱离组是合法用法）
 ├── utils/
 │   └── resolve-radio-state.ts        # 纯判别：成员判定 + checked/disabled/name 解析（本人优先、组继承）
@@ -36,7 +36,7 @@ radio/
 
 ### DOM 契约
 
-`label.colox-radio > span.colox-radio__box > input.colox-radio__control + span.colox-radio__mark`，`children` 渲染为 `span.colox-radio__label`（无 children 不渲染）。块类名 = `colox-radio`。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（disabled 用解析后的继承值）；`aria-invalid` 落内层 input。圆点不占 DOM：`__mark::before`（40% 宽高、`radius-full`、currentColor）上色随态——无 per-tier 字面量。input 获得 `ref`/原生属性/事件/`value`/`name`：组共享 `name` 时浏览器原生单选取代 + FormData 原生收集。
+`label.colox-radio > span.colox-radio__box > input.colox-radio__control + span.colox-radio__mark`，`children` 渲染为 `span.colox-radio__label`（无 children 不渲染）。块类名 = `colox-radio`。`className`/`style` 落 label 根；`size` 类与 `--invalid`/`--disabled` 修饰类落根（size/disabled 用解析后的继承值）；`aria-invalid` 落内层 input。圆点不占 DOM：`__mark::before`（40% 宽高、`radius-full`、currentColor）上色随态——无 per-tier 字面量。input 获得 `ref`/原生属性/事件/`value`/`name`：组共享 `name` 时浏览器原生单选取代 + FormData 原生收集。
 
 ### 环+点模型（与 Checkbox 实心模型的区分）
 
@@ -49,7 +49,7 @@ radio/
 
 ### Group 单值语义（resolveRadioState + useRadioGroup）
 
-成员 = 声明 `value` 且未显式 `checked`/`defaultChecked`：checked 派生自 `group.value === memberValue`，选中走 `group.selectValue(value)`。**无移除语义**：radio 不可反选，重复点击已选中成员时 DOM 无 change 事件——selectValue 由成员 change 驱动，天然不会重复上报（受控/非受控同构）。显式 control / 无 value 成员独立。组级 `onChange(value: string)` 取代单选态的 next 值通道；成员 `onChange` 仍原生透传（受控值语义，见 Checkbox 同款边界——消费方从 Radio.Group 读 next）。`disabled`/`name` 组继承、本人优先。
+成员 = 声明 `value` 且未显式 `checked`/`defaultChecked`：checked 派生自 `group.value === memberValue`，选中走组 context 的 `onChange` 事件槽（成员调 `group.onChange(value)`，背后是 hook 的 `selectValue` 命令）。**无移除语义**：radio 不可反选，重复点击已选中成员时 DOM 无 change 事件——onChange 槽由成员 change 驱动，天然不会重复上报（受控/非受控同构）。显式 control / 无 value 成员独立。组级 `onChange(value: string)` 取代单选态的 next 值通道；成员 `onChange` 仍原生透传（受控值语义，见 Checkbox 同款边界——消费方从 Radio.Group 读 next）。`size`/`name`/`disabled` 组继承、本人优先。
 
 ### 受控/非受控对称
 
@@ -64,5 +64,5 @@ radio/
 
 - 导出 `Radio`（含 `Radio.Group`）、`useRadioGroupContext`、`radioVariants`、`RadioVariants`、`RadioProps`/`RadioSize`/`RadioRef`/`RadioGroupProps`/`RadioGroupRef`/`RadioGroupContextValue`。
 - `RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'value'>`（`type` 锁死 radio、`value` 收紧为 string），新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`value?: string`（成员键 + 表单值）。
-- `RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`，新增：`value?: string`、`defaultValue?: string`、`onChange?: (value: string) => void`、`disabled?`、`name?`。Group 根 div `role="radiogroup"` + `colox-radio-group`（纵向布局，gap spacing-2）。
+- `RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`，新增：`value?: string`、`defaultValue?: string`、`onChange?: (value: string) => void`、`size?: RadioSize`（成员继承、本人优先、缺省 md）、`disabled?`、`name?`。Group 根 div `role="radiogroup"` + `colox-radio-group`（纵向布局，gap spacing-2）。
 - 未建（按需追加纪律）：`options` 数组便捷形态；Radio.Button 形态（antd 风格按钮单选——需形态轴，遇到真实需求再挣）。

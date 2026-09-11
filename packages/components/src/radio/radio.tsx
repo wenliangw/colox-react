@@ -47,12 +47,13 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     defaultChecked,
     disabled,
     name,
+    size,
     group,
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (state.groupMember && memberValue !== undefined) {
-      group.selectValue(memberValue);
+      group.onChange(memberValue);
     }
     onChange?.(event);
   };
@@ -60,7 +61,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
   return (
     <label
       className={clsx(
-        radioVariants({ size }),
+        radioVariants({ size: state.size }),
         { 'colox-radio--invalid': invalid, 'colox-radio--disabled': state.disabled },
         className,
       )}

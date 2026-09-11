@@ -67,8 +67,8 @@ export const Overview: Story = {
 
         <Section title="Group">
           <FruitSelectionDemo />
-          <Radio.Group disabled>
-            <Radio value="pear">Disabled group</Radio>
+          <Radio.Group disabled size="lg">
+            <Radio value="pear">Disabled group · size lg inherited</Radio>
             <Radio value="plum">No member is interactive</Radio>
           </Radio.Group>
         </Section>

@@ -46,10 +46,13 @@ It also accepts all native `<input>` attributes (`size` and `type` excluded).
 
 ### Checkbox.Group props
 
-| Prop         | Type                        | Default |
-| ------------ | --------------------------- | ------- |
-| value        | `string[]`                  | —       |
-| defaultValue | `string[]`                  | —       |
-| onChange     | `(value: string[]) => void` | —       |
-| disabled     | `boolean`                   | `false` |
-| name         | `string`                    | —       |
+Members inherit `size`, `name` and `disabled` from the group; a member's own prop wins.
+
+| Prop         | Type                           | Default |
+| ------------ | ------------------------------ | ------- |
+| value        | `string[]`                     | —       |
+| defaultValue | `string[]`                     | —       |
+| onChange     | `(value: string[]) => void`    | —       |
+| size         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
+| disabled     | `boolean`                      | `false` |
+| name         | `string`                       | —       |

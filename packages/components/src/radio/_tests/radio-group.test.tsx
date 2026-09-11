@@ -110,6 +110,34 @@ describe('Radio.Group', () => {
     expect(screen.getByRole('radio', { name: 'Banana' })).toBeDisabled();
   });
 
+  it('lets members inherit the group size with own-size precedence', () => {
+    render(
+      <Radio.Group size="sm">
+        <Radio value="apple">Apple</Radio>
+        <Radio value="banana" size="lg">
+          Banana
+        </Radio>
+      </Radio.Group>,
+    );
+    expect(screen.getByRole('radio', { name: 'Apple' }).closest('.colox-radio')).toHaveClass(
+      'colox-radio--sm',
+    );
+    expect(screen.getByRole('radio', { name: 'Banana' }).closest('.colox-radio')).toHaveClass(
+      'colox-radio--lg',
+    );
+  });
+
+  it('defaults members to md when neither the group nor the member sets a size', () => {
+    render(
+      <Radio.Group>
+        <Radio value="apple">Apple</Radio>
+      </Radio.Group>,
+    );
+    expect(screen.getByRole('radio', { name: 'Apple' }).closest('.colox-radio')).toHaveClass(
+      'colox-radio--md',
+    );
+  });
+
   it('renders a column radiogroup container with the role', () => {
     const { container } = render(
       <Radio.Group>

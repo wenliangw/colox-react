@@ -37,7 +37,10 @@
 
 - **单选组（Radio.Group）同构但单值**：状态形态是 `string`（`value`/`defaultValue`/`onChange(value)`），成员仍以原生 `value` 声明参与键；**无移除语义**——radio 不可反选，select 命令由成员 change 事件驱动，重复点击已选中成员时 DOM 无 change、天然不上报（受控/非受控同构、原生忠实）。组容器命名按同族惯例 `colox-radio-group`（dot-part 名段合法）。
 
-来源：Checkbox 设计定案（用户拍板「Group 做」+ 追问 indeterminate 语义后定句）；Radio 交付沿用并落实单值语义。
+- **组是成员共享契约（size/name/disabled）的自然载体**：`size` 进 Group props、成员继承、本人优先、缺省 md——组成员几乎总是同档，逐成员设 size 是重复劳动（用户拍板「继承能力」）；`name`/`disabled` 继承同构。继承解析下沉 resolver（`size ?? group.size`），context 默认值即家族默认 md。
+- **组 context 命名纪律**：状态字段**不带宿主前缀**——`disabled` 而非 `groupDisabled`（字段已住在组上下文类型里，归属不言自明，前缀是命名噪音）；成员上报选择走 context 的 **`onChange` 事件槽**（on 开头的事件命名，与组公开 prop `onChange` 同槽同签名；`selectValue`/`toggleValue` 这类动词命令名只留在 hook 内部——命令归命令、事件归事件）。
+
+来源：Checkbox 设计定案（用户拍板「Group 做」+ 追问 indeterminate 语义后定句）；Radio 交付沿用并落实单值语义；用户对 Group 的两次指正（size 继承能力、context 字段命名）固化上述两条。
 
 ## variant 是从设计语言推导的封闭轴
 

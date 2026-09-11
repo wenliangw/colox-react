@@ -1,4 +1,4 @@
-import type { RadioGroupContextValue } from '../types';
+import type { RadioGroupContextValue, RadioSize } from '../types';
 
 export interface ResolveRadioStateParams {
   /** The member value prop (`string`), or absent on independent radios. */
@@ -9,6 +9,7 @@ export interface ResolveRadioStateParams {
   /** Own props the group overrides when inherited. */
   disabled: boolean | undefined;
   name: string | undefined;
+  size: RadioSize | undefined;
   /** The mounted group snapshot (static defaults outside a group). */
   group: RadioGroupContextValue;
 }
@@ -20,14 +21,16 @@ export interface ResolveRadioStateResult {
   checked: boolean | undefined;
   disabled: boolean;
   name: string | undefined;
+  /** Resolved tier: own prop wins, the group carries the axis otherwise. */
+  size: RadioSize;
 }
 
 /**
  * Resolves a radio's state contract from its own props and the mounted
  * group: a `value` without explicit checked control is a group member
  * (its check derives from the single selection), everything else stays
- * own-controlled. `disabled` and `name` inherit from the group with
- * own prop precedence (a disabled group cannot be opted out of).
+ * own-controlled. `size`, `disabled` and `name` inherit from the group
+ * with own prop precedence (a disabled group cannot be opted out of).
  */
 export function resolveRadioState({
   memberValue,
@@ -35,6 +38,7 @@ export function resolveRadioState({
   defaultChecked,
   disabled,
   name,
+  size,
   group,
 }: ResolveRadioStateParams): ResolveRadioStateResult {
   const groupMember =
@@ -43,7 +47,8 @@ export function resolveRadioState({
   return {
     groupMember,
     checked: groupMember ? group.value === memberValue : checked,
-    disabled: disabled || group.groupDisabled,
+    disabled: disabled || group.disabled,
     name: name ?? (group.name === '' ? undefined : group.name),
+    size: size ?? group.size,
   };
 }

@@ -1,14 +1,17 @@
 import { createContext } from 'react';
 import type { RadioGroupContextValue } from '../types';
 
-const selectNoop = (): undefined => undefined;
+const changeNoop = (): undefined => undefined;
 
 /** The static snapshot served when no <Radio.Group> is mounted. */
 export const defaultRadioGroupContextValue: RadioGroupContextValue = {
   value: '',
-  selectValue: selectNoop,
+  onChange: changeNoop,
   name: '',
-  groupDisabled: false,
+  // The family default an ungrouped radio and an unsized group land
+  // on: members resolve size against this when neither sets their own.
+  size: 'md',
+  disabled: false,
 };
 
 /**

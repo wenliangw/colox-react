@@ -110,6 +110,34 @@ describe('Checkbox.Group', () => {
     expect(screen.getByRole('checkbox', { name: 'Banana' })).toBeDisabled();
   });
 
+  it('lets members inherit the group size with own-size precedence', () => {
+    render(
+      <Checkbox.Group size="sm">
+        <Checkbox value="apple">Apple</Checkbox>
+        <Checkbox value="banana" size="lg">
+          Banana
+        </Checkbox>
+      </Checkbox.Group>,
+    );
+    expect(screen.getByRole('checkbox', { name: 'Apple' }).closest('.colox-checkbox')).toHaveClass(
+      'colox-checkbox--sm',
+    );
+    expect(screen.getByRole('checkbox', { name: 'Banana' }).closest('.colox-checkbox')).toHaveClass(
+      'colox-checkbox--lg',
+    );
+  });
+
+  it('defaults members to md when neither the group nor the member sets a size', () => {
+    render(
+      <Checkbox.Group>
+        <Checkbox value="apple">Apple</Checkbox>
+      </Checkbox.Group>,
+    );
+    expect(screen.getByRole('checkbox', { name: 'Apple' }).closest('.colox-checkbox')).toHaveClass(
+      'colox-checkbox--md',
+    );
+  });
+
   it('renders a column group container with the role', () => {
     const { container } = render(
       <Checkbox.Group>

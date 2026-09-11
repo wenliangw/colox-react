@@ -104,8 +104,8 @@ export const Overview: Story = {
 
         <Section title="Group">
           <FruitSelectionDemo />
-          <Checkbox.Group disabled>
-            <Checkbox value="pear">Disabled group</Checkbox>
+          <Checkbox.Group disabled size="sm">
+            <Checkbox value="pear">Disabled group · size sm inherited</Checkbox>
             <Checkbox value="plum">No member is interactive</Checkbox>
           </Checkbox.Group>
         </Section>
