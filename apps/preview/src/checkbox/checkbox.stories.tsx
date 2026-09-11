@@ -26,7 +26,7 @@ const SelectAllDemo = () => {
       >
         Select all
       </Checkbox>
-      <Checkbox.Group value={selected} onChange={setSelected}>
+      <Checkbox.Group value={selected} onChange={({ value }) => setSelected(value)}>
         {selectAllOptions.map((option) => (
           <Checkbox key={option.value} value={option.value}>
             {option.label}
@@ -41,7 +41,7 @@ const FruitSelectionDemo = () => {
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <Stack direction="column" gap="2">
-      <Checkbox.Group value={selected} onChange={setSelected}>
+      <Checkbox.Group value={selected} onChange={({ value }) => setSelected(value)}>
         <Checkbox value="apple">Apple</Checkbox>
         <Checkbox value="banana">Banana</Checkbox>
         <Checkbox value="orange">Orange</Checkbox>

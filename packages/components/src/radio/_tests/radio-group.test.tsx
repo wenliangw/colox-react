@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Radio } from '../radio';
+import type { RadioGroupChangePayload } from '../types';
 
 describe('Radio.Group', () => {
   it('derives member checked state from the group value', () => {
@@ -14,8 +15,8 @@ describe('Radio.Group', () => {
     expect(screen.getByRole('radio', { name: 'Banana' })).not.toBeChecked();
   });
 
-  it('publishes the next single selection when a member is picked', () => {
-    const onChange = vi.fn();
+  it('publishes the next single selection with the firing event when a member is picked', () => {
+    const onChange = vi.fn<(payload: RadioGroupChangePayload) => void>();
     render(
       <Radio.Group value="apple" onChange={onChange}>
         <Radio value="apple">Apple</Radio>
@@ -24,7 +25,9 @@ describe('Radio.Group', () => {
     );
     fireEvent.click(screen.getByRole('radio', { name: 'Banana' }));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith('banana');
+    const [payload] = onChange.mock.calls[0];
+    expect(payload.value).toBe('banana');
+    expect(payload.event.target.value).toBe('banana');
   });
 
   it('stays silent when the already-selected member is clicked again', () => {

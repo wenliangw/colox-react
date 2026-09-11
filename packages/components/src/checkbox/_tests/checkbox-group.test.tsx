@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Checkbox } from '../checkbox';
+import type { CheckboxGroupChangePayload } from '../types';
 
 describe('Checkbox.Group', () => {
   it('derives member checked state from the group value', () => {
@@ -14,8 +15,8 @@ describe('Checkbox.Group', () => {
     expect(screen.getByRole('checkbox', { name: 'Banana' })).not.toBeChecked();
   });
 
-  it('publishes the next selection array when a member toggles on', () => {
-    const onChange = vi.fn();
+  it('publishes the next selection array with the firing event when a member toggles on', () => {
+    const onChange = vi.fn<(payload: CheckboxGroupChangePayload) => void>();
     render(
       <Checkbox.Group value={[]} onChange={onChange}>
         <Checkbox value="apple">Apple</Checkbox>
@@ -24,11 +25,13 @@ describe('Checkbox.Group', () => {
     );
     fireEvent.click(screen.getByRole('checkbox', { name: 'Banana' }));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(['banana']);
+    const [payload] = onChange.mock.calls[0];
+    expect(payload.value).toEqual(['banana']);
+    expect(payload.event.target.value).toBe('banana');
   });
 
   it('publishes the array without the member when it toggles off', () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<(payload: CheckboxGroupChangePayload) => void>();
     render(
       <Checkbox.Group value={['apple', 'banana']} onChange={onChange}>
         <Checkbox value="apple">Apple</Checkbox>
@@ -37,7 +40,9 @@ describe('Checkbox.Group', () => {
     );
     fireEvent.click(screen.getByRole('checkbox', { name: 'Apple' }));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange).toHaveBeenCalledWith(['banana']);
+    const [payload] = onChange.mock.calls[0];
+    expect(payload.value).toEqual(['banana']);
+    expect(payload.event.target.value).toBe('apple');
   });
 
   it('seeds the initial selection from defaultValue and toggles on top', () => {

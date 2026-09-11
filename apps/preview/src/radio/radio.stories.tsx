@@ -7,7 +7,7 @@ const FruitSelectionDemo = () => {
   const [selected, setSelected] = useState<string>('');
   return (
     <Stack direction="column" gap="2">
-      <Radio.Group value={selected} onChange={setSelected}>
+      <Radio.Group value={selected} onChange={({ value }) => setSelected(value)}>
         <Radio value="apple">Apple</Radio>
         <Radio value="banana">Banana</Radio>
         <Radio value="orange">Orange</Radio>

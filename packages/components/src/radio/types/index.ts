@@ -1,4 +1,4 @@
-import type { HTMLAttributes, InputHTMLAttributes } from 'react';
+import type { ChangeEvent, HTMLAttributes, InputHTMLAttributes } from 'react';
 import type { RadioVariants } from '../variants';
 
 export type RadioSize = NonNullable<RadioVariants['size']>;
@@ -53,8 +53,14 @@ export interface RadioGroupProps extends Omit<
   value?: string;
   /** Uncontrolled initial selection. */
   defaultValue?: string;
-  /** Fires with the next selection when the radio group switches. */
-  onChange?: (value: string) => void;
+  /**
+   * Fires when the group's selection switches. The payload carries the
+   * triggering member's native change event (which radio fired,
+   * propagation control) alongside the next selection — the group's
+   * `onChange` is its own event face, so it hands over the original
+   * event object instead of only the value.
+   */
+  onChange?: (payload: RadioGroupChangePayload) => void;
   /**
    * Visual size inherited by members that don't set their own — a
    * group's members usually share the same tier, so the group carries
@@ -73,14 +79,26 @@ export interface RadioGroupProps extends Omit<
 
 export type RadioGroupRef = HTMLDivElement;
 
+/**
+ * The group's change payload: `event` is the firing member's native
+ * change event, `value` the next single selection.
+ */
+export interface RadioGroupChangePayload {
+  /** The triggering member radio's native change event. */
+  event: ChangeEvent<HTMLInputElement>;
+  /** The next single selection (`''` while nothing is selected). */
+  value: string;
+}
+
 export interface RadioGroupContextValue {
   /** The group's current single selection. */
   value: string;
   /**
    * The group's selection-change slot: members invoke it with their
-   * value (same semantic slot as `Radio.Group`'s `onChange` prop).
+   * value and the native change event that fired the pick (the group's
+   * own `onChange` prop is the published `{ event, value }` shape).
    */
-  onChange: (value: string) => void;
+  onChange: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
   /** The group `name` members inherit when they set none. */
   name: string;
   /** The group `size` members inherit when they set none. */

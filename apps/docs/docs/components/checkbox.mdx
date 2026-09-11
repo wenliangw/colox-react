@@ -46,13 +46,13 @@ It also accepts all native `<input>` attributes (`size` and `type` excluded).
 
 ### Checkbox.Group props
 
-Members inherit `size`, `name` and `disabled` from the group; a member's own prop wins.
+Members inherit `size`, `name` and `disabled` from the group; a member's own prop wins. `onChange` fires with `{ event, value }` — `event` is the triggering member's native change event, `value` the next selection array.
 
-| Prop         | Type                           | Default |
-| ------------ | ------------------------------ | ------- |
-| value        | `string[]`                     | —       |
-| defaultValue | `string[]`                     | —       |
-| onChange     | `(value: string[]) => void`    | —       |
-| size         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
-| disabled     | `boolean`                      | `false` |
-| name         | `string`                       | —       |
+| Prop         | Type                                   | Default |
+| ------------ | -------------------------------------- | ------- |
+| value        | `string[]`                             | —       |
+| defaultValue | `string[]`                             | —       |
+| onChange     | `({ event, value: string[] }) => void` | —       |
+| size         | `'xs' \| 'sm' \| 'md' \| 'lg'`         | `'md'`  |
+| disabled     | `boolean`                              | `false` |
+| name         | `string`                               | —       |

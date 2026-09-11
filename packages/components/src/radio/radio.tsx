@@ -53,7 +53,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (state.groupMember && memberValue !== undefined) {
-      group.onChange(memberValue);
+      group.onChange(memberValue, event);
     }
     onChange?.(event);
   };

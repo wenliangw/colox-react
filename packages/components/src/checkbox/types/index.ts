@@ -1,4 +1,4 @@
-import type { HTMLAttributes, InputHTMLAttributes } from 'react';
+import type { ChangeEvent, HTMLAttributes, InputHTMLAttributes } from 'react';
 import type { CheckboxVariants } from '../variants';
 
 export type CheckboxSize = NonNullable<CheckboxVariants['size']>;
@@ -59,8 +59,14 @@ export interface CheckboxGroupProps extends Omit<
   value?: string[];
   /** Uncontrolled initial selection array. */
   defaultValue?: string[];
-  /** Fires with the next selection array on every member toggle. */
-  onChange?: (value: string[]) => void;
+  /**
+   * Fires on every member toggle. The payload carries the triggering
+   * member's native change event (which checkbox fired, propagation
+   * control) alongside the next selection array — the group's
+   * `onChange` is its own event face, so it hands over the original
+   * event object instead of only the value.
+   */
+  onChange?: (payload: CheckboxGroupChangePayload) => void;
   /**
    * Visual size inherited by members that don't set their own — a
    * group's members usually share the same tier, so the group carries
@@ -79,15 +85,27 @@ export interface CheckboxGroupProps extends Omit<
 
 export type CheckboxGroupRef = HTMLDivElement;
 
+/**
+ * The group's change payload: `event` is the firing member's native
+ * change event, `value` the next selection array.
+ */
+export interface CheckboxGroupChangePayload {
+  /** The triggering member checkbox's native change event. */
+  event: ChangeEvent<HTMLInputElement>;
+  /** The next selection array after the toggle. */
+  value: string[];
+}
+
 export interface CheckboxGroupContextValue {
   /** The group's current selection array. */
   value: string[];
   /**
    * The group's selection-change slot: members invoke it with their
-   * value on toggle (same semantic slot as `Checkbox.Group`'s
-   * `onChange` prop).
+   * value and the native change event that fired the toggle (the
+   * group's own `onChange` prop is the published `{ event, value }`
+   * shape).
    */
-  onChange: (value: string) => void;
+  onChange: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
   /** The group `name` members inherit when they set none. */
   name: string;
   /** The group `size` members inherit when they set none. */

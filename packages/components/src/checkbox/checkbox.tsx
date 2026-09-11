@@ -56,7 +56,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (state.groupMember && memberValue !== undefined) {
-      group.onChange(memberValue);
+      group.onChange(memberValue, event);
     }
     onChange?.(event);
   };
