@@ -1,0 +1,48 @@
+// The four tiers share the Button/Input/Checkbox design language:
+// fixed row heights (--colox-size-6/8/10/12) and the matching font
+// ladder, with the circle riding the size scale two steps below
+// (16/20/24/28). The dot is a 50% of the circle in CSS — no per-tier
+// literals needed.
+.colox-radio--xs {
+  height: var(--colox-size-6);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-radio--xs .colox-radio__control {
+  width: var(--colox-size-4);
+  height: var(--colox-size-4);
+}
+
+.colox-radio--sm {
+  height: var(--colox-size-8);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-radio--sm .colox-radio__control {
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
+}
+
+.colox-radio--md {
+  height: var(--colox-size-10);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-radio--md .colox-radio__control {
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+}
+
+.colox-radio--lg {
+  height: var(--colox-size-12);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}
+
+.colox-radio--lg .colox-radio__control {
+  width: var(--colox-size-7);
+  height: var(--colox-size-7);
+}

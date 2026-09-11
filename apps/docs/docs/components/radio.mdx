@@ -1,0 +1,53 @@
+---
+sidebar_position: 8
+---
+
+import { Radio } from '@colox/react';
+import '@colox/react/style.css';
+
+# Radio
+
+Radios capture single selections; `Radio.Group` owns the picked value.
+
+## States
+
+<Radio>Unchecked</Radio> <Radio defaultChecked>Checked</Radio> <Radio invalid>Invalid</Radio>
+<Radio disabled>Disabled</Radio>
+
+`invalid` paints the unfilled state only — a selected radio keeps its brand ring
+(same visual priority as [Checkbox](./checkbox)).
+
+## Sizes
+
+<Radio size="xs">extra small</Radio> <Radio size="sm">small</Radio> <Radio size="md">medium</Radio>
+<Radio size="lg">large</Radio>
+
+## Group
+
+Members declare a `value` to join the group's single selection:
+
+<Radio.Group defaultValue="apple">
+  <Radio value="apple">Apple</Radio>
+  <Radio value="banana">Banana</Radio>
+  <Radio value="orange">Orange</Radio>
+</Radio.Group>
+
+## Props
+
+| Prop    | Type                           | Default |
+| ------- | ------------------------------ | ------- |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
+| invalid | `boolean`                      | `false` |
+| value   | `string`                       | —       |
+
+It also accepts all native `<input>` attributes (`size` and `type` excluded).
+
+### Radio.Group props
+
+| Prop         | Type                      | Default |
+| ------------ | ------------------------- | ------- |
+| value        | `string`                  | —       |
+| defaultValue | `string`                  | —       |
+| onChange     | `(value: string) => void` | —       |
+| disabled     | `boolean`                 | `false` |
+| name         | `string`                  | —       |

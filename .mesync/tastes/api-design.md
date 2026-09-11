@@ -35,7 +35,9 @@
 - **受控勾选的原生事件边界**：不学 MUI/antd 造 `(event, checked)` 包装事件——原生透传例外不可破；组内成员受控时 `event.target.checked` 是 React 受控语义（恢复后的受控值），下一选中数组从 `Checkbox.Group.onChange` 读。这是「原生透传」与「受控」的诚实边界，写进成员 value 的 docblock。
 - **indeterminate 是纯视觉通道**：第三态只改图形（bar vs check），真相永远在 `checked`（事件流、表单值、FormData 只认它）；「选中了几个孩子」的级联数学归消费方，库只负责可视化——「状态→图形映射归消费方」在复选框上的延续。
 
-来源：Checkbox 设计定案（用户拍板「Group 做」+ 追问 indeterminate 语义后定句）。
+- **单选组（Radio.Group）同构但单值**：状态形态是 `string`（`value`/`defaultValue`/`onChange(value)`），成员仍以原生 `value` 声明参与键；**无移除语义**——radio 不可反选，select 命令由成员 change 事件驱动，重复点击已选中成员时 DOM 无 change、天然不上报（受控/非受控同构、原生忠实）。组容器命名按同族惯例 `colox-radio-group`（dot-part 名段合法）。
+
+来源：Checkbox 设计定案（用户拍板「Group 做」+ 追问 indeterminate 语义后定句）；Radio 交付沿用并落实单值语义。
 
 ## variant 是从设计语言推导的封闭轴
 

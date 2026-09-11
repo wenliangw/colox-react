@@ -11,6 +11,7 @@ const entries = {
   button: resolve(import.meta.dirname, 'src/button/index.ts'),
   checkbox: resolve(import.meta.dirname, 'src/checkbox/index.ts'),
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
+  radio: resolve(import.meta.dirname, 'src/radio/index.ts'),
   stack: resolve(import.meta.dirname, 'src/stack/index.ts'),
   container: resolve(import.meta.dirname, 'src/container/index.ts'),
   grid: resolve(import.meta.dirname, 'src/grid/index.ts'),

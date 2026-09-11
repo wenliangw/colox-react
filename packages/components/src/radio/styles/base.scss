@@ -1,0 +1,98 @@
+.colox-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-solid);
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+// The circle is a positioning wrapper: the control itself is the native
+// input drawn via appearance none, and the mark (the dot) overlays it.
+.colox-radio__box {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+// The invalid signal paints the unfilled state (red border + red focus
+// ring). It sits before the checked state on purpose: a selected radio
+// keeps its brand ring, the red ring still marks the transient
+// keyboard focus on an invalid radio (same visual priority as
+// Checkbox).
+.colox-radio--invalid .colox-radio__control {
+  border-color: var(--colox-color-red-solid);
+
+  &:focus-visible {
+    border-color: var(--colox-color-red-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  }
+}
+
+.colox-radio__control {
+  appearance: none;
+  margin: 0;
+  flex: none;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-solid);
+  cursor: pointer;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  // Ring model: selection paints the ring brand and lets the dot carry
+  // the fill — the interior stays solid, the classic radio affordance
+  // that keeps it distinct from the filled checkbox box.
+  &:checked {
+    border-color: var(--colox-color-brand-solid);
+  }
+}
+
+.colox-radio--disabled .colox-radio__control {
+  border-color: var(--colox-color-border-disabled);
+  background-color: var(--colox-color-bg-disabled);
+  cursor: not-allowed;
+}
+
+// The mark overlays the circle: a centered dot at half the circle
+// width, scale-free across the size tiers. currentColor carries the
+// dot's fill — brand when checked, text-disabled inside a disabled
+// radio.
+.colox-radio__mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+
+  &::before {
+    content: '';
+    width: 50%;
+    height: 50%;
+    border-radius: var(--colox-radius-full);
+    background-color: currentColor;
+  }
+}
+
+.colox-radio__control:checked ~ .colox-radio__mark {
+  opacity: 1;
+  color: var(--colox-color-brand-solid);
+}
+
+.colox-radio--disabled .colox-radio__control:checked ~ .colox-radio__mark {
+  color: var(--colox-color-text-disabled);
+}

@@ -50,6 +50,11 @@
       "import": "./dist/es/input.js",
       "require": "./dist/cjs/input.cjs"
     },
+    "./radio": {
+      "types": "./dist/types/radio/index.d.ts",
+      "import": "./dist/es/radio.js",
+      "require": "./dist/cjs/radio.cjs"
+    },
     "./stack": {
       "types": "./dist/types/stack/index.d.ts",
       "import": "./dist/es/stack.js",

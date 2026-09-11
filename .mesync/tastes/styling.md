@@ -152,3 +152,9 @@
 - **图标嵌入填充盒时按消费语境局部调描边**：图标系统默认 1.5 单位描边 = 1px 边框等价物（16px 渲染），在实心底上是发丝；checkbox 在组件 styles 层 `stroke-width: 3` 翻倍（md ≈2px 实线，随排版阶梯等比）。**改的是消费语境，图标包的描边契約（spec lint 机器门禁 + stroke 风格）不动**——Input 插槽等其他消费方不受牵连。将来 Radio 等嵌入小盒的 mark 同源。
 - **错误信号退让于实心态**：invalid 红边框只画未选中态；选中后实心态夺回边框（同特异性 + 源顺序），红环只在焦点交互瞬间标记。
 - 来源：用户对 checkbox 的视觉反馈（「图标线条太细了，导致不是特别明显」+「invalid 选中后的 border 不应该是红色的了吧」）。
+
+## 单选走环+点模型，与多选实心模型区分
+
+- **Radio 选中态 = 品牌描边环 + 内部品牌点**（`:checked` 只染 border-color，内圆保持 bg-solid；mark `::before` 50% 圆点以 brand-solid 上色）——不整圆填实，是单选平台的经典辨识惯例，也与 Checkbox 的实心方块形态语言区分：方块实心勾 vs 圆环点，双控件辨识由形态承载。
+- **简单图形不引图标**：单选点 CSS 化（`::before` 50% + currentColor，随 tier 零字面量缩放），不给它新增图标——按需追加纪律；disabled 时点转 text-disabled。
+- 来源：Radio 交付时的形态裁决（对照 antd/MUI 同为环+点模型；反方选择「与 Checkbox 同实心模型」被否）。
