@@ -10,6 +10,15 @@
 
 将来做 `Select`、`Textarea` 等表单组件时保持一致：`size` 表示视觉尺寸、四档与 Button/Input 同源；遇到原生同名属性冲突，优先用 `Omit` 覆盖。
 
+### IconButton size：预设档 + theme 键表双通道（用户定调）
+
+- **`size?: 'xs'|'sm'|'md'|'lg' | SizeKey`**：预设档是组件层语义（IconButton 的四档对齐表单家族同档同高，xs 24/sm 32/md 40/lg 48——用户「默认与其他组件 size 对齐」），`SizeKey` 是 **@colox/theme 发射的 `sizeKeys` 键表联合类型**（与 Stack/Grid gap 收 spacingKeys 同构：键表由 theme 发射、组件只消费、类型即白名单——`size="7"` 有补全、`size="99"` 编译期报错）。
+- **两个细节用户拍板**：组件内部使用（Input/Select 的控件钮）用裸键贴合容器语境（一律 `size="4"`），不走预设档；Input 的 size 档是「height+padding+字阶」复合语义，IconButton 只要纯方块足迹（flex 居中、字阶无用），语义不同但四档高度仍对齐家族。
+- 键表类名 `colox-icon-button--size-<key>` 由 `sizeKeys` 动态生成，尺寸落 `var(--colox-size-<key>)`——绑定 token 变量而非写死 px，主题重定义自动跟随。
+- 将来形状类组件（Avatar、Badge 等）的尺寸 prop 沿用：预设档对齐 + theme 键表兜底的双通道。
+
+来源：IconButton 设计讨论（用户先后定下「四档但不套 Input 复合语义、允许裸 token 值」「键表像 spacingKeys 一样由 theme 提供」「内部站点用别的裸键」三节奏；决策见 `IconButton size 双通道`）。
+
 来源：Input 组件新增时对 `size` 语义的取舍（见决策「Input size prop 语义」）；Input v2.1 对齐设计语言时固化跨组件同源规则。
 
 ## boolean prop 命名：正向能力词 `allow<Ability>`，条件边界即语义

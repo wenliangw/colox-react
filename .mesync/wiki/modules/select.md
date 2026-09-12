@@ -32,7 +32,7 @@ packages/components/src/select/
 ├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物；各 XxxProps/Ref 契约在 types/children.ts，私有行组件 SelectOptionRowProps 留 panel 原地）
 │   ├── control/        # SelectControl：两种形态（内嵌 InputControl / 触发 button）+ combobox ARIA 面
 │   ├── tags/           # SelectTags：multiple chip 行（text 文案 + 移除钮）+ 溢出折叠（视觉切片：挂载全量、尾部脱流隐藏、行内 +M chip）
-│   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮（不复用 Input 的——aria-label/类名名字空间不同）
+│   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮，换装 IconButton（size="4"；不复用 Input 的——aria-label/类名名字空间不同）
 │   ├── form-values/    # FormSelectValues：给 Form 组件设置 value 的隐藏输入通道（single 一枚 / multiple 每值一枚）
 │   ├── panel/          # SelectPanel：portal listbox 行渲染（行 tier/selcted/active/disabled）+ 空态
 │   ├── option/         # SelectOption 叶子：compile-time-only 成员（渲染 null，dot-part 挂载到根）
@@ -52,7 +52,7 @@ packages/components/src/select/
 ### 跨组件复用
 
 - 搜索 control = **cdk 的 `src/cdk/input-control/`**（forwardRef 裸 `<input>`，`colox-input-control` 基础类 + className 合并），自带裸化 reset、自足工作于任何外壳——Input 与 Select 双消费者实锤，迁出 input/ 私有件位置。
-- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。
+- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。按钮本体与 tag-remove 均为 IconButton（`size="4"`）——复位/方形足迹/聚焦环/禁用态上提基座，站点类只留换位 reveal 与 chip 内着色（决策 07ea9169）。
 
 ## 样式约定
 
@@ -77,5 +77,6 @@ packages/components/src/select/
 - 2026-09 Select 折叠测量 bug 修复：首版把「行自身宽」当折叠预算，行随切片回缩 → 计数自我坍塌归零（用户现象：继续选中后空间够却只剩 +M、全选后零 chip）；改预算 = inner − control 底线 − trailing − 2×gap，RO 观察 inner/control/row 三方（纠错条款见 corrections/measurement.md）。
 - 2026-09 Select 折叠测量 bug 修复二轮（重构版）：上一版的「control 当前宽 > 底线则受让」分支是第二次坍塌（control flex:1/0% 基底在折叠后吸收空余，分支恒真 → 预算坍回切片内容宽 → 一个 option 都不展示只剩 +M）；终版抽 `useTagFold` hook：预算 = inner − control computed min-width − trailing − 2×gap，全恒定占位、RO 只观察 inner；回归测试把 control 模拟为贪婪宽 220（前版 mock 8px 等于底线，盲区漏测）。纠错条款 corrections/measurement.md 已二轮补全。
 - 2026-09 Select clear × 命中修复：渐隐中的 chevron（opacity<1 的层叠上下文，DOM 序后于 ×）吃掉 × 的全部点击——真实点不中（jsdom 测不出，Playwright elementFromPoint 实证）；chevron 加 `pointer-events: none`。纠错条款 corrections/hit-testing.md。
+- 2026-09 IconButton 换装（决策 07ea9169）：clear 钮与 tag-remove 换装公共 IconButton（size="4"），base.scss 站点类裁剪为纯上下文规则（clear 只剩 position/换位 reveal；tag-remove 只剩 chip 内着色）；探针 A/B 复验全绿。
 - 2026-09 Select 交互评审三轮：选中行灰底再修正——单选重开时初始键盘高亮落在选中行，`--active` 灰底误读为选中染色（多选初始高亮 -1 无此相）；选中行 hover/active 一律不染灰底（check 仍是唯一选中信号）。
 - 2026-09 Select tag 定制定案：`Select.Template name="tag"` 模板叶 + cloneElement 注入 `{ props, option, onRemove }`（用户否决 tagRender 回调形式，props 背包 = 无壳 + 前向兼容；详见决策 c7778102）；docs 演示组件落 `apps/docs/src/components/select/tag-template-demo.tsx`（MDX ESM 对箭头函数组件导出解析极脆——注释里的 `<EmojiTag />` 字面量都会被当正文 JSX 解析，教训：docs 复杂 demo 一律 app 侧文件）。

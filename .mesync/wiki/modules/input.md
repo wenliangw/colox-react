@@ -18,15 +18,15 @@ input/
 ├── utils/
 │   └── resolve-input-slots.tsx  # 纯判别装配：searchLeading/showClear/showTrailing
 ├── controls/                # 内置尾插控件子组件（非公开面）
-│   ├── clear-button.tsx       # ClearButton：mousedown 防失焦、aria-label="Clear input"
+│   ├── clear-button.tsx       # ClearButton：换装 IconButton 基座（size="4"），站点保留 mousedown 防失焦、aria-label="Clear input"
 │   └── visibility-toggle.tsx  # VisibilityToggle：状态式图标（闭眼=隐藏/睁眼=可见）
 ├── _tests/                  # 6 个测试文件：state/size/slots/builtins/filter/contract
 ├── types/index.ts           # InputProps（全量扩展）+ InputSize + InputRef
 ├── styles/
 │   ├── base.scss              # 外壳契约（focus-within 环/invalid/disabled）+ 插槽条（裸 control reset 已随 cdk 迁出）
-│   ├── slots.scss             # 内置按钮复位样式（clear/toggle）
+
 │   ├── size.scss              # 尺寸类 colox-input--xs/sm/md/lg（作用于外壳）
-│   └── index.scss             # @use base + slots + size
+│   └── index.scss             # @use base + size（slots.scss 已退役——复位/聚焦/禁用上提 IconButton 基座）
 └── variants/
     ├── size.ts              # 外壳尺寸类映射
     └── index.ts             # cva('colox-input', …) + InputVariants
@@ -59,7 +59,7 @@ input/
 
 ### 内置控件
 
-- **清除（`clearable`，默认 false）**：追加到尾插槽；`disabled`/`readOnly` 下不渲染；`onMouseDown` preventDefault 防焦点转移；`aria-label="Clear input"`；`clearIcon` 可替换（默认 `IconX`）。
+- **清除（`clearable`，默认 false）**：追加到尾插槽；`disabled`/`readOnly` 下不渲染；`onMouseDown` preventDefault 防焦点转移；`aria-label="Clear input"`；`clearIcon` 可替换（默认 `IconX`）。按钮本体 = IconButton（`size="4"`，复位/方形足迹/焦点环/禁用态全走基座），本站只保留防失焦与槽位装配（决策 07ea9169）。
 - **密码可见性（`allowTogglePassword`，默认 false）**：仅当 `true` 且 `type="password"` 时生效；内部 `revealed` state 为纯视觉状态（非 value），切换 input type text/password；`onMouseDown` 防失焦；`aria-label` 状态式："Show password"（隐藏时）/ "Hide password"（可见时）。图标语义 **状态式**：隐藏时显示闭眼 `eyeOffIcon`（默认 `IconEyeOff`）、可见时显示睁眼 `eyeIcon`（默认 `IconEye`）——「没输密码时闭眼、能看到内容时睁眼」；「点击后会发生什么」的动作式语义被否（见决策链）。
 - **搜索前置图标（`type="search"`）**：无显式 `leading` 时自动渲染 `IconSearch` 进前置槽；显式 `leading` 优先。CSS 抑制 webkit 原生 search cancel 装饰，避免与内置清除钮重复。
 
