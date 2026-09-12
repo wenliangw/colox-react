@@ -8,6 +8,11 @@
 
 - 组件体内用 `const { size, ...rest } = props;` 解构取值，而不是在 `({ ... }) => {}` 参数里直接解构。
 
+## props 顺序：普通属性 → 方法入参 → 事件属性
+
+- Props 声明（`XxxProps` 类型里的字段序）与组件内解构（`const {...} = props`）两处保持同一顺序：**普通属性（值/开关/样式/children/id）在前，方法型入参（如 `filterOption?: (query, option) => boolean`）居中，事件回调（`onChange`/`onSearch`/`onOpenChange`）最后**。
+- 来源：用户 2026-09 指正 Select 的 `filterOption` 位置——方法入参排在普通属性之后、事件属性之前是顺序约定，类型声明与使用两处都要遵守。
+
 ## import 排序约定
 
 - `react` 引用永远第一；其余按 第三方库 → `@/` 别名 → 相对路径 依次排列。
