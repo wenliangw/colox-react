@@ -164,7 +164,8 @@ export const Overview: Story = {
           <Stack direction="column" gap="2">
             <Select placeholder="Picker placeholder">{FruitOptions}</Select>
             <Select value="banana">{FruitOptions}</Select>
-            <Select value="banana" clearable>
+            {/* defaultValue (uncontrolled) so the clear action works without wiring. */}
+            <Select defaultValue="banana" clearable>
               {FruitOptions}
             </Select>
             <Select value="banana" invalid>
