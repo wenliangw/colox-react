@@ -40,8 +40,23 @@
 - **必须检查那里**：pnpm/npm 不给包自己的 bin 注入自己脚本的 PATH（`sh: colox: not found`，实测）；改成相对直调 `node cli/colox.mjs theme build`。下游包用依赖的 bin 正常（theme 的 `build:css` 跑 `colox` 没问题——bin 来自 devDep builder）。
 - 为什么：脚本 PATH 由依赖的 .bin 目录构成，自身不在其列。
 
+## 新增内部 alias（如 @colox/cdk）→ 必须同步消费侧 bypass 配置
+
+- **改这里**：给组件源码加内部 alias（tsconfig `paths` + vite/vitest `resolve.alias`，现例 `@colox/cdk/*` → `src/cdk/*`）后，只把 alias 接在自己的构建里。
+- **必须检查那里**：凡「把组件包源码（而非 dist）当依赖消费」的配置，都要同步补 alias，三处逐一对照：
+  - `apps/preview/tsconfig.json` + `apps/docs/tsconfig.json` 的 `paths`（它们把 `@colox/react` 指到 `packages/components/src/index.ts`——tsc 顺着源码解析，alias 缺失 → `Cannot find module` 报错 / 回调参数推断成隐式 any，组件包自身 tsc 看不出）；
+  - `apps/preview/.storybook/main.ts` 的 `viteFinal` `resolve.alias`（storybook 产物解析源码 import → rollup `handleInvalidResolvedId` 构建崩）；
+  - vitest 的独立 alias（组件包内，测试入口也要解析）。
+- 为什么：alias 没有包边界传播——tsc/vite 各自按自己的 paths/alias 表解析，消费侧的「源码 alias」会让内部 alias 图进入消费侧编译器/打包器的视野；dist 产物方向相反（构建时已内联，`grep dist/ '@colox/cdk'` 零残留是产物侧检查）。
+
 ## 每次构建改动后的三件套验证
 
 - [ ] node 冒烟：`/tmp/colox-resolve` 里 ESM `import('@colox/react/button')` + CJS `require('@colox/react')` + `require.resolve('@colox/react/style.css')` 全通
 - [ ] 摇树实验：`pnpm --filter @colox/react exec vite build --config /tmp/colox-shake/vite.config.mjs`，Button-only 无 Input/Stack 残留、体积与基线比无回退（当前基线 2.5KB / 全量 10.3KB）
 - [ ] 结构断言：dist 根只有 `es/ cjs/ types/ style.css`；上面那条 `.cjs` 后缀断言为空
+
+## 带 portal/弹层的组件 → 必须跑 docs SSG 构建验证
+
+- **改这里**：交付含 `createPortal(…, document.body)` 的组件（Select 起经 cdk Popup；将来 DatePicker/Dropdown 同），或给这类组件在 docs 里写 `defaultOpen` 之类的「初始即开」示例。
+- **必须检查那里**：storybook 构建 + jsdom 测试全绿**不足证**——两者都有 `document`（纯 CSR/jsdom），SSR 崩溃只在 Docusaurus SSG 暴露（Select 首版：docs 一加 `defaultOpen` 示例，SSG 立刻 `ReferenceError: document is not defined`，而组件包测试/typecheck/storybook 全绿）。验证必须包含 `apps/docs` 的 `CI=true pnpm run build`。
+- 为什么：portal 目标 `document.body` 在渲染期求值；storybook 是纯客户端、jsdom 有 document，两条链路都测不到 SSR。正解在 Popup 基建层（mounted 守卫：客户端挂载后再渲染 portal），后续弹层组件自动免疫——但 docs 的 SSG 冒烟仍必须留在验证链里。

@@ -29,6 +29,9 @@ const config: StorybookConfig = {
       // while the dev server keeps them live against the source —
       // component changes hot-reload without rebuilding the package.
       '@colox/react': resolve(process.cwd(), '../../packages/components/src/index.ts'),
+      // The components' internal cdk layer ships under this alias —
+      // storybook consumes the source, so the alias must resolve here too.
+      '@colox/cdk': resolve(process.cwd(), '../../packages/components/src/cdk'),
     };
     return config;
   },

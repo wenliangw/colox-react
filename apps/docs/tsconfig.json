@@ -5,7 +5,8 @@
     "jsx": "react-jsx",
     "paths": {
       "@site/*": ["./*"],
-      "@colox/react": ["../../packages/components/src/index.ts"]
+      "@colox/react": ["../../packages/components/src/index.ts"],
+      "@colox/cdk/*": ["../../packages/components/src/cdk/*"]
     }
   },
   "include": ["src/**/*", "docs/**/*", "*.ts", "*.tsx"],

@@ -4,7 +4,8 @@
     "types": ["node"],
     "noEmit": true,
     "paths": {
-      "@colox/react": ["../../packages/components/src/index.ts"]
+      "@colox/react": ["../../packages/components/src/index.ts"],
+      "@colox/cdk/*": ["../../packages/components/src/cdk/*"]
     }
   },
   "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"],
