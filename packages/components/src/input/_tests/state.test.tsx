@@ -7,7 +7,7 @@ describe('Input state', () => {
     render(<Input aria-label="Name" />);
     const input = screen.getByRole('textbox', { name: /name/i });
     expect(input).toBeInTheDocument();
-    expect(input).toHaveClass('colox-input__control');
+    expect(input).toHaveClass('colox-input-control');
     expect(input.closest('.colox-input')).not.toBeNull();
   });
 

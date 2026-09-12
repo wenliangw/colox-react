@@ -9,7 +9,7 @@ describe('Input shell contract', () => {
     const ref = createRef<HTMLInputElement>();
     const { container } = render(<Input aria-label="Name" ref={ref} />);
     expect(ref.current).toBeInstanceOf(HTMLInputElement);
-    expect(ref.current).toHaveClass('colox-input__control');
+    expect(ref.current).toHaveClass('colox-input-control');
     expect(ref.current).toBe(container.querySelector('input'));
   });
 

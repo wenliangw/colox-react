@@ -1,24 +1,10 @@
 import { forwardRef, useEffect, useState, useImperativeHandle, useRef } from 'react';
-import type { HTMLAttributes, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
-import type { Placement } from '@floating-ui/dom';
-import { useFloatingPosition } from './use-floating-position';
+import { useFloatingPosition } from '../hooks/use-floating-position';
+import type { PopupProps } from './types';
 
-import './popup.scss';
-
-export interface PopupProps extends HTMLAttributes<HTMLDivElement> {
-  /** The element the panel positions against (the combobox organ/shell). */
-  referenceRef: RefObject<HTMLElement | null>;
-  open: boolean;
-  placement?: Placement;
-  /** Gap between the reference edge and the panel. */
-  gap?: number;
-  /** Minimum clearance kept to the viewport edges. */
-  padding?: number;
-  /** Keep the panel at least as wide as its reference (default true). */
-  matchWidth?: boolean;
-}
+import './styles/popup.scss';
 
 /**
  * The headless popup carrier: mounts the panel into document.body
@@ -63,3 +49,5 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     document.body,
   );
 });
+
+Popup.displayName = 'Popup';

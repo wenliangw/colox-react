@@ -1,14 +1,14 @@
 export { Popup } from './popup';
 export type { PopupProps } from './popup';
-export { useComboboxKeyboard } from './use-combobox-keyboard';
+export { useComboboxKeyboard } from './hooks/use-combobox-keyboard';
 export type {
   UseComboboxKeyboardOptions,
   UseComboboxKeyboardResult,
-} from './use-combobox-keyboard';
-export { useDismissible } from './use-dismissible';
-export type { UseDismissibleOptions } from './use-dismissible';
-export { useFloatingPosition } from './use-floating-position';
+} from './hooks/use-combobox-keyboard';
+export { useDismissible } from './hooks/use-dismissible';
+export type { UseDismissibleOptions } from './hooks/use-dismissible';
+export { useFloatingPosition } from './hooks/use-floating-position';
 export type {
   UseFloatingPositionOptions,
   UseFloatingPositionResult,
-} from './use-floating-position';
+} from './hooks/use-floating-position';

@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 
 export interface UseComboboxKeyboardOptions {
-  /** Whether the popup is open (closed organs open on navigation keys). */
+  /** Whether the popup is open (closed controls open on navigation keys). */
   open: boolean;
   /** Option count the navigation walks over. */
   itemCount: number;
   /** Options that keyboard navigation skips. */
   isItemDisabled?: (index: number) => boolean;
-  /** Opens the popup (from a closed organ's Enter/arrow key). */
+  /** Opens the popup (from a closed control's Enter/arrow key). */
   onRequestOpen: () => void;
   /** Fires with the active index and the activating key event on Enter. */
   onActivate: (index: number, event: KeyboardEvent<HTMLElement>) => void;
@@ -19,8 +19,8 @@ export interface UseComboboxKeyboardResult {
   activeIndex: number;
   /** Host-controlled active index (open-to-selected, reset on close). */
   setActiveIndex: (index: number) => void;
-  /** Keydown handler for the combobox organ (input or button). */
-  onOrganKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
+  /** Keydown handler for the combobox control (input or button). */
+  onControlKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 }
 
 const nextEnabledIndex = (
@@ -46,9 +46,9 @@ const nextEnabledIndex = (
 
 /**
  * The ARIA 1.2 editable-combobox keyboard model: focus stays in the
- * organ, arrows move a highlighted option via aria-activedescendant,
- * Enter activates it. Closed organs open on Enter/arrow keys; Space
- * opens a button organ but keeps typing through an input organ.
+ * control, arrows move a highlighted option via aria-activedescendant,
+ * Enter activates it. Closed controls open on Enter/arrow keys; Space
+ * opens a button control but keeps typing through an input control.
  * Walk wraps and skips disabled options.
  */
 export function useComboboxKeyboard({
@@ -65,7 +65,7 @@ export function useComboboxKeyboard({
 
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const onOrganKeyDown = useCallback(
+  const onControlKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>) => {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
@@ -101,8 +101,8 @@ export function useComboboxKeyboard({
       }
 
       if (event.key === ' ') {
-        const isInputOrgan = event.currentTarget instanceof HTMLInputElement;
-        if (!isInputOrgan) {
+        const isInputControl = event.currentTarget instanceof HTMLInputElement;
+        if (!isInputControl) {
           // Suppress the native button activation so Space never toggles
           // the popup shut behind the keyboard model's back.
           event.preventDefault();
@@ -115,5 +115,5 @@ export function useComboboxKeyboard({
     [open, itemCount, disabledAt, activeIndex, onActivate, onRequestOpen],
   );
 
-  return { activeIndex, setActiveIndex, onOrganKeyDown };
+  return { activeIndex, setActiveIndex, onControlKeyDown };
 }

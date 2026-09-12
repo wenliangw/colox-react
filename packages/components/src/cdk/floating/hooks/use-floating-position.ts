@@ -4,7 +4,7 @@ import { autoUpdate, computePosition, flip, offset, shift, size } from '@floatin
 import type { Middleware, Placement } from '@floating-ui/dom';
 
 export interface UseFloatingPositionOptions {
-  /** The reference element the panel positions against (combobox organ/shell). */
+  /** The reference element the panel positions against (the combobox control/shell). */
   referenceRef: RefObject<HTMLElement | null>;
   /** The panel element; the resolved position is written into its inline style. */
   floatingRef: RefObject<HTMLElement | null>;

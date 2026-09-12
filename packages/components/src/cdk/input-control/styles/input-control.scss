@@ -1,0 +1,26 @@
+// The naked control reset: no visual identity of its own — the shell
+// injects font/color context via `font: inherit` (Input, Select and
+// future consumers each keep their own size tiers).
+.colox-input-control {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+
+  &::placeholder {
+    color: var(--colox-color-text-subtle);
+  }
+
+  // The native webkit search decoration would double up with a built-in
+  // clear control; the shell owns clearing.
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}

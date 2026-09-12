@@ -5,7 +5,7 @@ export interface UseDismissibleOptions {
   open: boolean;
   /** Closes the popup: outside pointerdown or Escape. */
   onDismiss: () => void;
-  /** The trigger reference (combobox organ or its shell). */
+  /** The trigger reference (the combobox control or its shell). */
   triggerRef: RefObject<HTMLElement | null>;
   /** The portal-mounted panel. */
   panelRef: RefObject<HTMLElement | null>;
