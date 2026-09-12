@@ -5,237 +5,199 @@ sidebar_position: 9
 import { Select } from '@colox/react';
 import '@colox/react/style.css';
 
+export const fruits = [
+  { value: 'apple', text: 'Apple' },
+  { value: 'banana', text: 'Banana' },
+  { value: 'cherry', text: 'Cherry (out of season)', disabled: true },
+  { value: 'date', text: 'Date' },
+];
+
+export const FruitOptions = (
+  <>
+    {fruits.map((fruit) => (
+      <Select.Option
+        key={fruit.value}
+        value={fruit.value}
+        text={fruit.text}
+        disabled={fruit.disabled}
+      />
+    ))}
+  </>
+);
+
+export const SearchOptions = (
+  <>
+    {['Apple', 'Apricot', 'Pineapple'].map((fruit) => (
+      <Select.Option key={fruit.toLowerCase()} value={fruit.toLowerCase()} text={fruit} />
+    ))}
+  </>
+);
+
 # Select
 
 A searchable single/multiple select built on the shared form-family shell: the
 trigger rows sit flush with same-tier `Input`/`Checkbox`/`Radio` controls, and
 the popup is a portal listbox modeled as an ARIA 1.2 editable combobox — focus
-stays in the trigger organ, arrows walk options, Enter picks.
+stays in the trigger control, arrows walk options, Enter picks.
 
-Selection is `options`-driven (label data, server-ready), `onChange` carries
-`{ event, value, option }`.
+Selection is declared with `Select.Option` leaves inside the select — every
+member carries a required `value` (the selection truth) and `text` (the
+plain-text surface). `onChange` carries `{ event, value, option }`.
+
+## Members
+
+Members are the first-class children of the select. `text` is the single source
+for search filtering, the trigger display and multiple chips; `children`
+optionally replace the panel row render (the trigger and chips keep showing
+`text`):
+
+<Select defaultValue="fig">{FruitOptions}</Select>
+
+```tsx
+<Select value={selected} onChange={({ value }) => setValue(value)}>
+  <Select.Option value="apple" text="Apple" />
+  <Select.Option value="fig" text="Fig" />
+  <Select.Option value="cherry" text="Cherry (out of season)" disabled />
+</Select>
+```
+
+Members may live inside fragments, mapped arrays or pass-through wrappers — the
+select walks the whole children subtree (a component that creates members
+internally is not visible, same boundary as rc-select). `value` + `text` are
+required; `disabled` members are skipped by the keyboard walk and mouse clicks.
 
 ## States
 
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  placeholder="Pick a fruit"
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="banana"
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="banana"
-  clearable
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="banana"
-  invalid
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="banana"
-  disabled
-/>
+<Select placeholder="Pick a fruit">{FruitOptions}</Select>
+<Select value="banana">{FruitOptions}</Select>
+<Select value="banana" clearable>
+  {FruitOptions}
+</Select>
+<Select value="banana" invalid>
+  {FruitOptions}
+</Select>
+<Select value="banana" disabled>
+  {FruitOptions}
+</Select>
 
 ## Sizes
 
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="apple"
-  size="xs"
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="apple"
-  size="sm"
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="apple"
-  size="md"
-/>
-<Select
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-  value="apple"
-  size="lg"
-/>
+<Select value="apple" size="xs">
+  {FruitOptions}
+</Select>
+<Select value="apple" size="sm">
+  {FruitOptions}
+</Select>
+<Select value="apple" size="md">
+  {FruitOptions}
+</Select>
+<Select value="apple" size="lg">
+  {FruitOptions}
+</Select>
 
 The same four design-language tiers as `Button`/`Input` — heights `--colox-size-6/8/10/12`, fonts `xs/sm/md/lg`.
 
-## Options
+The parent `size` also sets the panel row typography by default; a member may
+override its own tier with its own `size` prop — here an `lg` trigger with its
+Apple row pinned to `xs`:
 
-A select takes `options: SelectOption[]` — `value` is the selection truth, `label` the display. Disabled members are skipped by the keyboard walk and mouse clicks:
+<Select defaultOpen size="lg" value="apple">
+  <Select.Option value="apple" text="Apple" size="xs" />
+  <Select.Option value="grape" text="Grape" />
+</Select>
 
-<Select
-  defaultValue="fig"
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'fig', label: 'Fig' },
-    { value: 'cherry', label: 'Cherry (out of season)', disabled: true },
-  ]}
-/>
-
-```tsx
-const options: SelectOption[] = [
-  { value: 'apple', label: 'Apple' },
-  { value: 'fig', label: 'Fig' },
-  { value: 'cherry', label: 'Cherry (out of season)', disabled: true },
-];
-
-<Select options={options} value={selected} onChange={({ value }) => setSelected(value)} />;
-```
+## Change payload
 
 `onChange` fires with `{ event, value, option }`: `event` is the triggering
-click/press, `value` the next selection (`''` = none in single mode), `option`
-the chosen/toggled option object (undefined when cleared).
+click/press, `value` the next selection (`''` = none in single mode, an array in
+multiple mode), `option` the chosen/toggled member's compiled record —
+`{ value, text, disabled }` — or `undefined` when cleared.
 
 ## Search
 
-`showSearch` embeds the search organ — the same naked input organ the `Input`
-shell uses. Single mode flips the organ between the selected label (closed) and
-the query stream (open):
+`showSearch` embeds the search control — the cdk `InputControl` the `Input`
+shell shares. Single mode flips the control between the selected text (closed)
+and the query stream (open):
 
-<Select
-  showSearch
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'apricot', label: 'Apricot' },
-    { value: 'pineapple', label: 'Pineapple' },
-  ]}
-  placeholder="Type to search fruit"
-/>
+<Select showSearch placeholder="Type to search fruit">
+  {SearchOptions}
+</Select>
 
-The default matcher is a case-insensitive substring over label and value;
+The default matcher is a case-insensitive substring over `text` and `value`;
 pass `filterOption` to replace it, and `onSearch(query)` fires on every query
-change for server-side delegation. `optionRender` replaces an option's panel
-row content (the trigger keeps showing the raw label).
+change for server-side delegation. The rich panel render you give a member via
+`children` shows only in the panel — filtering still reads `text`.
 
 ## Multiple
 
-`mode="multiple"` renders one removable chip per value; the panel stays open
-after each pick, Backspace on an empty query removes the last chip.
+`mode="multiple"` renders one removable chip per value (labeled by `text`); the
+panel stays open after each pick, Backspace on an empty query removes the last
+chip.
 
-<Select
-  mode="multiple"
-  defaultValue={['apple', 'date']}
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-    { value: 'date', label: 'Date' },
-  ]}
-/>
+<Select mode="multiple" defaultValue={['apple', 'date']}>
+  {FruitOptions}
+</Select>
 
-## Popup rows (optionSize)
-
-The panel is its own layout context: its typography does not follow the trigger
-size. `optionSize` (default `'md'`) sets the row tier independently — here a `lg`
-trigger with `xs` rows:
-
-<Select
-  defaultOpen
-  size="lg"
-  optionSize="xs"
-  value="apple"
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-/>
+Multi chips show `text` too — even for members with rich `children`, the chip
+stays a plain-text pill.
 
 ## Form collection
 
 `name` mounts hidden native inputs — one in single mode, one per value in
 multiple mode — so native `FormData` collects the selection:
 
-<Select
-  name="fruit"
-  defaultValue="banana"
-  options={[
-    { value: 'apple', label: 'Apple' },
-    { value: 'banana', label: 'Banana' },
-  ]}
-/>
+<Select name="fruit" defaultValue="banana">
+  {FruitOptions}
+</Select>
 
 ## Props
 
-| Prop         | Type                                               | Default    |
-| ------------ | -------------------------------------------------- | ---------- |
-| mode         | `'single' \| 'multiple'`                           | `'single'` |
-| options      | `SelectOption[]`                                   | `[]`       |
-| optionRender | `(option: SelectOption) => ReactNode`              | —          |
-| filterOption | `(query: string, option: SelectOption) => boolean` | —          |
-| showSearch   | `boolean`                                          | `false`    |
-| value        | `string \| string[]`                               | —          |
-| defaultValue | `string \| string[]`                               | —          |
-| onChange     | `(payload: SelectChangePayload) => void`           | —          |
-| onSearch     | `(query: string) => void`                          | —          |
-| placeholder  | `ReactNode`                                        | —          |
-| clearable    | `boolean`                                          | `false`    |
-| open         | `boolean`                                          | —          |
-| defaultOpen  | `boolean`                                          | `false`    |
-| onOpenChange | `(open: boolean) => void`                          | —          |
-| name         | `string`                                           | —          |
-| size         | `'xs' \| 'sm' \| 'md' \| 'lg'`                     | `'md'`     |
-| optionSize   | `'xs' \| 'sm' \| 'md' \| 'lg'`                     | `'md'`     |
-| invalid      | `boolean`                                          | `false`    |
-| disabled     | `boolean`                                          | `false`    |
+| Prop         | Type                                                     | Default    |
+| ------------ | -------------------------------------------------------- | ---------- |
+| mode         | `'single' \| 'multiple'`                                 | `'single'` |
+| filterOption | `(query: string, option: SelectOptionRecord) => boolean` | —          |
+| showSearch   | `boolean`                                                | `false`    |
+| value        | `string \| string[]`                                     | —          |
+| defaultValue | `string \| string[]`                                     | —          |
+| onChange     | `(payload: SelectChangePayload) => void`                 | —          |
+| onSearch     | `(query: string) => void`                                | —          |
+| placeholder  | `ReactNode`                                              | —          |
+| clearable    | `boolean`                                                | `false`    |
+| open         | `boolean`                                                | —          |
+| defaultOpen  | `boolean`                                                | `false`    |
+| onOpenChange | `(open: boolean) => void`                                | —          |
+| name         | `string`                                                 | —          |
+| size         | `'xs' \| 'sm' \| 'md' \| 'lg'`                           | `'md'`     |
+| invalid      | `boolean`                                                | `false`    |
+| disabled     | `boolean`                                                | `false`    |
 
-### SelectOption
+### Select.Option
 
-| Prop     | Type        | Notes                                       |
-| -------- | ----------- | ------------------------------------------- |
-| value    | `string`    | The selection truth and FormData value.     |
-| label    | `ReactNode` | Display; also the default search surface.   |
-| disabled | `boolean`   | Skipped by keyboard walk; clicks are inert. |
+| Prop     | Type                           | Notes                                                         |
+| -------- | ------------------------------ | ------------------------------------------------------------- |
+| value    | `string`                       | Required. The selection truth and FormData value.             |
+| text     | `string`                       | Required. Search surface, trigger display and chip label.     |
+| disabled | `boolean`                      | Skipped by keyboard walk; clicks are inert.                   |
+| size     | `'xs' \| 'sm' \| 'md' \| 'lg'` | Row tier override, defaults to the parent `size`.             |
+| children | `ReactNode`                    | Optional rich panel row render; defaults to rendering `text`. |
 
 ### SelectChangePayload
 
-| Prop   | Type                                                    | Notes                                                                             |
-| ------ | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| event  | `MouseEvent<HTMLElement> \| KeyboardEvent<HTMLElement>` | The triggering interaction (option click/press, chip remove or the clear button). |
-| value  | `string \| string[]`                                    | The next selection.                                                               |
-| option | `SelectOption`                                          | The chosen/toggled option; `undefined` when cleared.                              |
+| Prop   | Type                                                    | Notes                                                                                     |
+| ------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| event  | `MouseEvent<HTMLElement> \| KeyboardEvent<HTMLElement>` | The triggering interaction (option click/press, chip remove or the clear button).         |
+| value  | `string \| string[]`                                    | The next selection.                                                                       |
+| option | `SelectOptionRecord`                                    | The chosen/toggled member's `{ value, text, disabled }` record; `undefined` when cleared. |
 
 ### Ref
 
-`ref` exposes the focus organ: the trigger button in plain single mode, the
+`ref` exposes the focus control: the trigger button in plain single mode, the
 embedded input in searchable/multiple modes — typed
 `SelectRef = HTMLInputElement | HTMLButtonElement`.
 
 The shell also accepts all native `div` attributes; `id` lands on the focusable
-organ so `<label for>` targets the real control, and `aria-label` overrides the
-organ's default reachable name (selected label or placeholder text).
+control so `<label for>` targets the real control, and `aria-label` overrides the
+control's default reachable name (selected text, raw value or placeholder text).
 
 V1 intentionally excludes tags-in-placeholder, optgroups, virtual scrolling,
 typeahead selection and remote debounce — requests welcome.
