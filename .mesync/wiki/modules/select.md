@@ -23,11 +23,11 @@
 packages/components/src/select/
 ├── select.tsx          # 编排层：解析 props → 编译成员 → 接 hooks → 组装 children 单元 JSX（渲染体零三目）
 ├── index.ts            # 公共 barrel（组件 + 类型 + variants）
-├── types/index.ts      # SelectOptionProps / SelectOptionRecord / SelectChangePayload / SelectProps / SelectRef
-├── hooks/use-select.ts # 状态对称（value/defaultValue、open/defaultOpen、query 流、publish）
-├── utils/select-options.ts       # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter
-├── utils/resolve-select-surface.tsx  # 派生值 resolver：inputValue/controlLabel/buttonDisplay 逐级回退链（if + return）
-├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物）
+├── types/              # 类型契约集中（按能力层分文件）：component.ts（根契约 7 件）/ hooks.ts / children.ts / utils.ts + index.ts 内部全量 barrel
+├── hooks/use-select.ts # 状态对称（value/defaultValue、open/defaultOpen、query 流、publish；契约在 types/hooks.ts）
+├── utils/select-options.ts       # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter（SelectFilterFn 契约在 types/utils.ts）
+├── utils/resolve-select-surface.tsx  # 派生值 resolver：inputValue/controlLabel/buttonDisplay 逐级回退链（if + return；ResolveXxxParams 契约在 types/utils.ts）
+├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物；各 XxxProps/Ref 契约在 types/children.ts，私有行组件 SelectOptionRowProps 留 panel 原地）
 │   ├── control/        # SelectControl：两种形态（内嵌 InputControl / 触发 button）+ combobox ARIA 面
 │   ├── tags/           # SelectTags：multiple chip 列（text 文案 + 移除钮）
 │   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮（不复用 Input 的——aria-label/类名名字空间不同）
@@ -65,4 +65,5 @@ packages/components/src/select/
 ## 变更
 
 - 2026-09 Select 首版交付（数据式 options，已撤）：单/多模式、搜索、clearable、optionSize、FormData、ARIA combobox。
-- 2026-09 v2 评审改判：options/optionRender/optionSize 撤除，Select.Option 叶子声明 + value/text 必填 + size 继承（本人优先）；payload option = 叶子编译记录；渲染体拆 children/ 功能单元（零三目）。V1 排除 tags-in-placeholder、optgroups、虚拟滚动、typeahead、远程 debounce。
+- 2026-09 Select v2 评审改判：options/optionRender/optionSize 撤除，Select.Option 叶子声明 + value/text 必填 + size 继承（本人优先）；payload option = 叶子编译记录；渲染体拆 children/ 功能单元（零三目）。V1 排除 tags-in-placeholder、optgroups、虚拟滚动、typeahead、远程 debounce。
+- 2026-09 Select 类型集中化（用户提议，全库第一个试点）：全部类型契约（公开 + hooks/children/utils 内部）收进 `types/`，按能力层分 `component.ts`/`hooks.ts`/`children.ts`/`utils.ts`；`types/index.ts` = 内部全量 barrel，公共出口 `select/index.ts` 保持选择性具名导出（内部名字不漏进公共面）；各单元删内联类型定义改 import。动因（用户原话精神）：「类型定义长了影响读实现的体验；改代码多读几个文件成本不高；AI 时代代码为人的阅读体验服务」。

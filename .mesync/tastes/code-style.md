@@ -67,10 +67,16 @@
 - 每个关注点一个 story 页面：`size` 一个页面、`state` 一个页面。
 - 同一关注点的不同取值在**同一个 story** 里同屏展示做对比（Size 页面同屏渲染 sm/md/lg；State 页面同屏渲染 default/invalid/disabled），不为每个取值单独建 story。
 
-## props/ref 显式类型化，禁止 any
+## 类型契约集中收在 types/，按能力层分文件
 
-- 组件所有 props 类型集中定义在 `<Component>/types/` 目录，`forwardRef` 的 ref 也显式定义类型（如 `export type InputRef = HTMLInputElement`）。
-- 不使用 `any`。
+- 组件**全部**类型契约——公开的（`XProps`/`XRef`/载荷/Records）与内部的（hook Params/Result、children Props/Ref、utils Params、context/reducer 声明）——一律集中 `<Component>/types/`；`hooks/`、`utils/`、`children/` 等功能目录**不导出/内联类型定义**，只从 `../types` 引。
+- **按能力层分文件**（与「层内分组」的目录规范同源）：`component.ts`（根契约）/ `hooks.ts` / `children.ts` / `utils.ts`；出现新层时按层加 `context.ts`/`reducers.ts`。禁止「每个单元镜像一个文件」（等于把分散感搬进 types/）也禁止一个 index.ts 全塞。
+- **双层出口**：`types/index.ts` 是**内部全量 barrel**（`export * from './component' | './hooks' | './children' | './utils'`）供组件内各单元互引；公共出口（`<component>/index.ts`）保持**选择性具名导出**，内部名字（`ResolveXxxParams`/children Props）一个不漏进 `@colox/react` 公共面。
+- **私有行组件留在原地**：不跨文件被引用的构件（面板内部的行组件 Props 等）类型随行组件自身走，不进 types/。
+- 协议来源（用户拍板）：类型的定义内容很长，混在实现文件里影响阅读实现的体验；「改内容需多读几个文件成本不高，且现在是 AI Coding——**代码为人的阅读体验服务**」。
+- 位序落库排首批：Select v2（component/hooks/children/utils 四层）；存量组件（radio/checkbox/input/theme 等）按「顺手迁移」逐组件收敛，不一次全仓扫平。
+- `forwardRef` 的 ref 显式定义类型（如 `export type InputRef = HTMLInputElement`）。
+- 禁止任何 `any`。
 
 ## Props 与 Params 的命名边界
 
