@@ -52,8 +52,9 @@
 // The chip row: one line. Only the leading prefix sits in flow — the
 // folded tail is visually sliced (visibility + position) by the tags
 // unit, and the +M chip occupies the flow slot right after it. The
-// row shrinks as a flex item, so its live width is exactly the room
-// the chips may use.
+// row hugs its content; the fold budget is computed by the tags unit
+// from the inner row (control floor + trailing reserved) — never
+// from the row's own width, which shrinks with the slice.
 .colox-select__tags {
   position: relative;
   display: flex;

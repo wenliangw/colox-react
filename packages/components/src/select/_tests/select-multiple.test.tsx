@@ -1,5 +1,5 @@
 import { createRef } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Select } from '../select';
 import { countFittingTags } from '../utils/tag-fitting';
@@ -307,5 +307,101 @@ describe('Select multiple tag folding', () => {
       'aria-hidden',
       'true',
     );
+  });
+
+  it('recounts against the inner budget and re-expands when the shell widens', () => {
+    // Regression guard: the fold budget is the inner width minus the
+    // control floor/trailing/gaps — measuring the row's own width
+    // makes the slice eat its own layout (fold -> narrower row ->
+    // deeper fold), collapsing everything into the +M badge.
+    const observers: Array<{ callback: () => void }> = [];
+    class CapturingResizeObserver {
+      public readonly callback: () => void;
+      constructor(callback: () => void) {
+        this.callback = callback;
+        observers.push(this);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', CapturingResizeObserver);
+
+    const { container } = render(
+      <Select
+        mode="multiple"
+        defaultValue={['o1', 'o2', 'o3', 'o4', 'o5', 'o6']}
+        placeholder="Pick items"
+      >
+        <Select.Option value="o1" text="One" />
+        <Select.Option value="o2" text="Two" />
+        <Select.Option value="o3" text="Three" />
+        <Select.Option value="o4" text="Four" />
+        <Select.Option value="o5" text="Five" />
+        <Select.Option value="o6" text="Six" />
+      </Select>,
+    );
+    const inner = container.querySelector('.colox-select__inner') as HTMLElement;
+    const row = container.querySelector('.colox-select__tags') as HTMLElement;
+    const control = container.querySelector('.colox-select__control') as HTMLElement;
+    const trailing = container.querySelector('.colox-select__trailing') as HTMLElement;
+    const badge = container.querySelector('.colox-select__tag-overflow') as HTMLElement;
+
+    const defineWidth = (
+      el: HTMLElement,
+      prop: 'clientWidth' | 'offsetWidth',
+      value: () => number,
+    ) => {
+      Object.defineProperty(el, prop, { configurable: true, get: value });
+    };
+    let innerWidth = 260;
+    defineWidth(inner, 'clientWidth', () => innerWidth);
+    defineWidth(control, 'offsetWidth', () => 8);
+    defineWidth(trailing, 'offsetWidth', () => 20);
+    defineWidth(badge, 'offsetWidth', () => 26);
+    Array.from(row.querySelectorAll('.colox-select__tag')).forEach((chip) => {
+      defineWidth(chip as HTMLElement, 'offsetWidth', () => 44);
+    });
+
+    const realGetComputedStyle = window.getComputedStyle;
+    const getComputedStyle = vi
+      .spyOn(window, 'getComputedStyle')
+      .mockImplementation((el: Element) => {
+        const base = realGetComputedStyle(el);
+        if (el === inner) {
+          return { ...base, columnGap: '4px' } as CSSStyleDeclaration;
+        }
+        if (el === control) {
+          return { ...base, minWidth: '8px' } as CSSStyleDeclaration;
+        }
+        return base;
+      });
+
+    // budget = 260 - 8 - 20 - 8 = 224; chips 44 with gap 0:
+    // every 6 = 264 > 224 -> fold pass limit 224 - 26 = 198 -> 4 fit.
+    act(() => {
+      for (const { callback } of observers) {
+        callback();
+      }
+    });
+    let chips = Array.from(row.querySelectorAll('.colox-select__tag')) as HTMLElement[];
+    expect(chips.filter((chip) => !chip.hasAttribute('aria-hidden'))).toHaveLength(4);
+    expect(chips.filter((chip) => chip.hasAttribute('aria-hidden'))).toHaveLength(2);
+    expect(badge).not.toHaveAttribute('aria-hidden');
+    expect(badge.textContent).toBe('+2');
+
+    // Widening the shell (not the row!) grows the slice back up.
+    innerWidth = 340;
+    act(() => {
+      for (const { callback } of observers) {
+        callback();
+      }
+    });
+    chips = Array.from(row.querySelectorAll('.colox-select__tag')) as HTMLElement[];
+    expect(chips.filter((chip) => !chip.hasAttribute('aria-hidden'))).toHaveLength(6);
+    expect(badge).toHaveAttribute('aria-hidden', 'true');
+
+    getComputedStyle.mockRestore();
+    vi.unstubAllGlobals();
   });
 });
