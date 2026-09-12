@@ -60,6 +60,11 @@
       "import": "./dist/es/stack.js",
       "require": "./dist/cjs/stack.cjs"
     },
+    "./select": {
+      "types": "./dist/types/select/index.d.ts",
+      "import": "./dist/es/select.js",
+      "require": "./dist/cjs/select.cjs"
+    },
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },

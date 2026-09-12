@@ -1,0 +1,51 @@
+// Shell tiers: identical heights/paddings/typography to the Input
+// shell (same design-language tokens), so same-tier controls sit flush.
+.colox-select--xs {
+  height: var(--colox-size-6);
+  padding-inline: var(--colox-spacing-2);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-select--sm {
+  height: var(--colox-size-8);
+  padding-inline: var(--colox-spacing-3);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-select--md {
+  height: var(--colox-size-10);
+  padding-inline: var(--colox-spacing-4);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-select--lg {
+  height: var(--colox-size-12);
+  padding-inline: var(--colox-spacing-6);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}
+
+// Popup row tiers: the optionSize axis — the panel is its own layout
+// context, so its typography is decoupled from the trigger tier.
+.colox-select__listbox--xs {
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-select__listbox--sm {
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-select__listbox--md {
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-select__listbox--lg {
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}

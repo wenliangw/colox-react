@@ -1,0 +1,61 @@
+// The option listbox: an overlay surface painted entirely with
+// existing tokens (bg-overlay, border-muted, shadow-md) — no new
+// design language. The cdk popup class owns positioning and
+// visibility; this file owns the panel's visual identity.
+.colox-select__listbox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-0-5);
+  padding: var(--colox-spacing-1);
+  max-height: 256px;
+  overflow-y: auto;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-overlay);
+  box-shadow: var(--colox-shadow-md);
+  color: var(--colox-color-text-solid);
+}
+
+.colox-select__option {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-1) var(--colox-spacing-1-5);
+  border-radius: var(--colox-radius-sm);
+  cursor: pointer;
+
+  &:hover,
+  &--active {
+    background-color: var(--colox-color-gray-wash-hover);
+  }
+
+  &--selected {
+    background-color: var(--colox-color-brand-wash-active);
+    color: var(--colox-color-brand-solid);
+  }
+
+  &--disabled {
+    color: var(--colox-color-text-disabled);
+    cursor: not-allowed;
+    background-color: transparent;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+.colox-select__option-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.colox-select__option-check {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.colox-select__empty {
+  padding: var(--colox-spacing-1) var(--colox-spacing-1-5);
+  color: var(--colox-color-text-muted);
+}

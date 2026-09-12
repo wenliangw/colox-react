@@ -1,0 +1,148 @@
+// The Select shell: the form family's third shell, sharing the Input
+// visual contract — 1px border, focus-within ring, four size tiers,
+// invalid red channel and terminal disabled — so select rows sit flush
+// with same-tier Input/Checkbox/Radio controls.
+.colox-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-1);
+  max-width: 100%;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-solid);
+  background-color: var(--colox-color-bg-solid);
+  cursor: pointer;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-within {
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-within {
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-select__inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--colox-spacing-1);
+  flex: 1;
+  min-width: 0;
+}
+
+// The non-searchable single trigger: a native button carrying the
+// combobox role, visually transparent inside the shell.
+.colox-select__combobox {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.colox-select__placeholder {
+  color: var(--colox-color-text-subtle);
+}
+
+// The search organ is Input's shared naked control class: it already
+// carries the standalone reset (borderless, font/color inheritance).
+.colox-select .colox-input__control {
+  cursor: text;
+}
+
+// Multiple-mode chips: constant height pills inside the shared shell,
+// removable via the X control.
+.colox-select__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-0-5);
+  height: var(--colox-size-5);
+  padding-inline: var(--colox-spacing-1-5);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+  color: inherit;
+  white-space: nowrap;
+}
+
+.colox-select__tag-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+  font-size: 1em;
+
+  &:hover {
+    color: var(--colox-color-text-solid);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+.colox-select__trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-0-5);
+  color: var(--colox-color-text-muted);
+  flex-shrink: 0;
+}
+
+.colox-select__chevron {
+  transition: transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+.colox-select--open .colox-select__chevron {
+  transform: rotate(180deg);
+}
+
+.colox-select__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--colox-color-text-solid);
+  }
+}

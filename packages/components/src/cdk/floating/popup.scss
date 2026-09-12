@@ -1,24 +1,25 @@
-// The headless popup carrier: the resolved position (left/top/min-width)
-// is written inline by useFloatingPosition; this file owns only
-// visibility and the enter transition. Visual identity (surface, border,
-// shadow, content styling) comes from the consumer's classname on the
-// same element — the popup never paints at the pre-layout origin.
+// The headless popup carrier: position (left/top/min-width) is written
+// inline by useFloatingPosition; this file owns only the pre-resolve
+// guard and the enter transition. Before the first position lands the
+// panel is invisible and click-through — `opacity` + `pointer-events`
+// (not `visibility`) so the option tree stays reachable to the
+// accessibility tree from the moment it opens.
 .colox-popup {
   position: fixed;
   left: 0;
   top: 0;
   z-index: var(--colox-z-popup, 1000);
   margin: 0;
-  visibility: hidden;
   opacity: 0;
+  pointer-events: none;
   transform: translateY(-2px);
   transition:
     opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
     transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 
   &--positioned {
-    visibility: visible;
     opacity: 1;
+    pointer-events: auto;
     transform: translateY(0);
   }
 }

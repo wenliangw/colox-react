@@ -10,8 +10,8 @@ export interface UseComboboxKeyboardOptions {
   isItemDisabled?: (index: number) => boolean;
   /** Opens the popup (from a closed organ's Enter/arrow key). */
   onRequestOpen: () => void;
-  /** Fires with the active index when Enter activates it. */
-  onActivate: (index: number) => void;
+  /** Fires with the active index and the activating key event on Enter. */
+  onActivate: (index: number, event: KeyboardEvent<HTMLElement>) => void;
 }
 
 export interface UseComboboxKeyboardResult {
@@ -71,10 +71,11 @@ export function useComboboxKeyboard({
         event.preventDefault();
         if (!open) {
           onRequestOpen();
-        } else {
-          const direction = event.key === 'ArrowDown' ? 1 : -1;
-          setActiveIndex((current) => nextEnabledIndex(current, direction, itemCount, disabledAt));
         }
+        // Close+arrow = open and move in the pressed direction (first
+        // on down, last on up); open+arrow = walk from the highlight.
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        setActiveIndex((current) => nextEnabledIndex(current, direction, itemCount, disabledAt));
         return;
       }
 
@@ -94,7 +95,7 @@ export function useComboboxKeyboard({
         if (!open) {
           onRequestOpen();
         } else if (activeIndex >= 0 && !disabledAt(activeIndex)) {
-          onActivate(activeIndex);
+          onActivate(activeIndex, event);
         }
         return;
       }
