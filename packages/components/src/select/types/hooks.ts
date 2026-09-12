@@ -1,4 +1,4 @@
-import type { KeyboardEvent, MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent, RefObject } from 'react';
 import type { SelectChangePayload, SelectMode, SelectOptionRecord } from './component';
 
 export type SelectChangeEvent = MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>;
@@ -33,4 +33,18 @@ export interface UseSelectResult {
   toggle: (member: string, event: SelectChangeEvent, option?: SelectOptionRecord) => void;
   /** Resets the selection to the mode's empty shape (clearable channel). */
   clear: (event: SelectChangeEvent) => void;
+}
+
+export interface UseTagFoldArgs {
+  /** The selection in order — every chip participates in the fold. */
+  values: readonly string[];
+  /** The single-line chip row whose tail gets visually sliced. */
+  rowRef: RefObject<HTMLDivElement | null>;
+  /** The always-mounted +M count chip (hidden while nothing folds). */
+  badgeRef: RefObject<HTMLSpanElement | null>;
+}
+
+export interface UseTagFoldResult {
+  /** Chips with a lower index render in flow; the rest are sliced. */
+  visibleCount: number;
 }

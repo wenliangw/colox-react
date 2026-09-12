@@ -311,9 +311,11 @@ describe('Select multiple tag folding', () => {
 
   it('recounts against the inner budget and re-expands when the shell widens', () => {
     // Regression guard: the fold budget is the inner width minus the
-    // control floor/trailing/gaps — measuring the row's own width
-    // makes the slice eat its own layout (fold -> narrower row ->
-    // deeper fold), collapsing everything into the +M badge.
+    // constant reservations (control CSS floor, trailing, gaps). The
+    // trap is a control whose *current* width (greedily absorbing the
+    // space freed by the fold — mocked to 220 here) enters the budget:
+    // the count then feeds on its own layout and collapses into a lone
+    // +M badge.
     const observers: Array<{ callback: () => void }> = [];
     class CapturingResizeObserver {
       public readonly callback: () => void;
@@ -356,7 +358,9 @@ describe('Select multiple tag folding', () => {
     };
     let innerWidth = 260;
     defineWidth(inner, 'clientWidth', () => innerWidth);
-    defineWidth(control, 'offsetWidth', () => 8);
+    // The greedy control width: far beyond its 2ch floor — must not
+    // affect the budget at all.
+    defineWidth(control, 'offsetWidth', () => 220);
     defineWidth(trailing, 'offsetWidth', () => 20);
     defineWidth(badge, 'offsetWidth', () => 26);
     Array.from(row.querySelectorAll('.colox-select__tag')).forEach((chip) => {
@@ -377,8 +381,9 @@ describe('Select multiple tag folding', () => {
         return base;
       });
 
-    // budget = 260 - 8 - 20 - 8 = 224; chips 44 with gap 0:
-    // every 6 = 264 > 224 -> fold pass limit 224 - 26 = 198 -> 4 fit.
+    // budget = 260 - 8 (floor, not the 220 current width) - 20 - 8
+    // = 224; chips 44 with gap 0: 6 x 44 = 264 > 224 -> fold pass
+    // limit 224 - 26 = 198 -> 4 chips fit, 2 slide under the badge.
     act(() => {
       for (const { callback } of observers) {
         callback();
@@ -390,7 +395,7 @@ describe('Select multiple tag folding', () => {
     expect(badge).not.toHaveAttribute('aria-hidden');
     expect(badge.textContent).toBe('+2');
 
-    // Widening the shell (not the row!) grows the slice back up.
+    // Widening the inner (not the row!) grows the slice back up.
     innerWidth = 340;
     act(() => {
       for (const { callback } of observers) {
