@@ -58,11 +58,12 @@ renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
 
 ## Variant & intent
 
-`variant` mirrors the Button vocabulary: `ghost` (default) keeps no chrome
-and shows an intent wash on hover; `outline` and `solid` carry
-bordered/filled paint in the intent color. `intent` is the Button five-axis
-palette (primary/neutral/danger/warning/success) — it drives the hover wash,
-the focus ring and the variant paint.
+`variant` sets the icon color, not only the chrome: `text` (default) is the
+pure icon — no resting chrome, context-colored; `ghost` tints the icon in the
+intent color — both show the intent wash on hover; `outline` and `solid`
+carry bordered/filled paint in the intent color. `intent` is the Button
+five-axis palette (primary/neutral/danger/warning/success) — it drives the
+icon color match, the hover wash, the focus ring and the variant paint.
 
 ## Rounded
 
@@ -81,7 +82,7 @@ switches it to a full circle — the hover/active wash follows the shape.
 | Prop    | Type                                                           | Default     |
 | ------- | -------------------------------------------------------------- | ----------- |
 | size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)       | `'md'`      |
-| variant | `'ghost' \| 'outline' \| 'solid'`                              | `'ghost'`   |
+| variant | `'text' \| 'ghost' \| 'outline' \| 'solid'`                    | `'text'`    |
 | intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'primary'` |
 | rounded | `boolean`                                                      | `false`     |
 

@@ -24,10 +24,11 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    */
   size?: IconButtonSize;
   /**
-   * Visual form. Ghost is the bare default (transparent, context
-   * colored, wash on hover); solid/outline carry filled/bordered
+   * Visual form. Text is the default — pure icon, no resting chrome,
+   * context color; ghost tints the icon in the intent color — both
+   * show the intent wash on hover; solid/outline carry filled/bordered
    * chrome in the intent color.
-   * @default 'ghost'
+   * @default 'text'
    */
   variant?: IconButtonVariant;
   /**
