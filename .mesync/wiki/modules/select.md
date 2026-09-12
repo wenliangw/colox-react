@@ -53,7 +53,8 @@ packages/components/src/select/
 
 ## 样式约定
 
-- 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；选中行 `--colox-color-brand-wash-active` + brand 文字，hover/键盘高亮 `--colox-color-gray-wash-hover`。
+- 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；hover/键盘高亮 `--colox-color-gray-wash-hover`。**选中不做背景染色**（用户指正：行尾 IconCheck 已是选中信号，brand-wash 背景 + brand 文字多余）——`--selected` 类仍挂在行 DOM 上（测试/API 钩子），但无视觉规则；`aria-selected` 照旧背书。
+- **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。
 - z-index 无设计 token → cdk 内 `var(--colox-z-popup, 1000)` 内部变量 + 回落。
 - 面板最大高 256px + 滚动；chip 高度 `--colox-size-5` 恒定（不随 tier）。
 - 行 tier `colox-select__option--{tier}` 每行按成员解析发射（继承父级或本人覆盖）。
@@ -67,3 +68,4 @@ packages/components/src/select/
 - 2026-09 Select 首版交付（数据式 options，已撤）：单/多模式、搜索、clearable、optionSize、FormData、ARIA combobox。
 - 2026-09 Select v2 评审改判：options/optionRender/optionSize 撤除，Select.Option 叶子声明 + value/text 必填 + size 继承（本人优先）；payload option = 叶子编译记录；渲染体拆 children/ 功能单元（零三目）。V1 排除 tags-in-placeholder、optgroups、虚拟滚动、typeahead、远程 debounce。
 - 2026-09 Select 类型集中化（用户提议，全库第一个试点）：全部类型契约（公开 + hooks/children/utils 内部）收进 `types/`，按能力层分 `component.ts`/`hooks.ts`/`children.ts`/`utils.ts`；`types/index.ts` = 内部全量 barrel，公共出口 `select/index.ts` 保持选择性具名导出（内部名字不漏进公共面）；各单元删内联类型定义改 import。动因（用户原话精神）：「类型定义长了影响读实现的体验；改代码多读几个文件成本不高；AI 时代代码为人的阅读体验服务」。
+- 2026-09 Select 交互评审：① Storybook「点击 X 不清空」= story/docs 演示接线前科（`value="banana"` 常量 + 无 onChange → onChange 发射但绝不回写），改 `defaultValue` 非受控——组件本身绿测无 bug；② trailing 区 X 与箭头并排 → `--clearable` 状态类驱动 hover/focus-within 箭头让位 X；③ 选中行背景染色撤除（IconCheck 单通道）。

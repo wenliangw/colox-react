@@ -120,6 +120,12 @@
 - 组件内文字角色同组收敛：placeholder `text-subtle`、disabled `text-disabled`、图标 currentColor、峥 Button 的 variant 声明前景（intent-inverse / intent-solid）。
 - 来源：用户指出「文字默认是 #000，应该用设计语言中的 text」后定案。
 
+## 状态表达：单信号通道，动作图标悬停让位
+
+- **选中指示不搞双通道**：行尾 IconCheck 已是完整选中信号，选中行不再叠 brand 背景 + brand 文字（Select 首版前科，用户指正「背景颜色没有必要，有后面的 IconCheck 就够了」）；`aria-selected` 照旧背书 DOM。
+- **尾部动作图标不并排**：clear X 与下拉箭头二选一——默认只显 chevron；有值且可清时（`--clearable` 状态类挂根壳）`:hover`/`:focus-within` 让 X 替换箭头（focus-within 保证键盘用户也能到达 X）；空值/disabled 时 chevron 常驻（X 无活可干）。来源：用户指正「并排视觉不好，hover 时箭头变 X，移开默认箭头」。
+- **让位用 opacity + pointer-events，不用 display/visibility**：X 绝对定位叠在 chevron 槽位（零布局抖动），静止 opacity:0——`display:none`/`visibility:hidden` 会把元素从 a11y 可达树摘掉（Testing Library `getByRole` 即找不到、键盘不可达）；与 popup 首帧守卫同一条通道纪律。
+
 ## 键表是设计语言事实：由 pipeline 发射，组件不复制
 
 - spacing 键表（哪些刻度存在）由 theme build 发射成两份产物：`tokens/index.ts`（聚合 `defaultBreakpoints` + `spacingKeys`/`SpacingKey`，theme barrel 再导出，引用路径 = 目录 `@/styles/tokens`）供组件 variants 层生成类映射；`dist/variables.scss`（经 exports `./variables` sass 条件）供组件 scss `@use` 后 `@each`。组件里不再出现手写的 `$xxx-keys` 枚举或 `as const` 键表（前科：Container gutter 与 Stack gap 各复制 20 键，用户指出「硬编码设计语言数值不合规范」后收编）。

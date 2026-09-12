@@ -19,3 +19,25 @@
 ## 为什么
 
 布局组件的示例 = 让消费者看见「宽度决策」，参考框就是坐标系；坐标系隐形或标尺被拉伸污染，示例就从「演示」退化成「装饰」。
+
+---
+
+# 交互演示接线（第二前科）
+
+## 现状
+
+- Select States 区的 clearable 演示写 `value="banana"` 常量 + 不给 onChange——点击 X 时组件正确发射 `onChange({value:'', option:undefined})`，但父组件从不回写，「清不掉」的用户报告打在组件头上（组件测试当时 207 例全绿）。docs select.mdx 同款 states 演示亦同病。
+
+## 改这里
+
+- 给任何包含**交互 prop**（clearable/open/onChange/…）的 story/docs 演示接线。
+
+## 必须检查
+
+- [ ] 受控演示必须接 `onChange` 回写 state；只做「状态陈列」时直接 `defaultValue` 非受控（清空/开合动作自行生效，SSG 静态渲染也成立）。
+- [ ] 常量 `value={...}` + 交互 prop 组合 = 死档：进任何 story/docs 前先扫一遍 `value="` 与 clearable/open 并存的行。
+- [ ] 疑似组件 bug 的报告先在**接线层面**排嫌：受控链路 = prop → 组件 → onChange → 父回写，四环断一环都会伪装成「组件没反应」。
+
+## 为什么
+
+用户看到的是「点了没反应」，但真凶在演示的受控闭环缺了回写——组件行为绿测能自证清白，前科记录要让「组件 bug」的排查先过接线这一关。
