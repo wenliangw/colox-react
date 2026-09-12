@@ -9,7 +9,8 @@ Select clearable × 的「点不到」排查实录沉淀。将来任何组件做
   - [ ] 渐隐元素 `opacity < 1`（包括过渡中与归零后）**保持层叠上下文**；若它在 DOM 序里位于可交互元素**之后**，同层 z-auto 按 DOM 序绘制——它永远压在可交互元素上面，`elementFromPoint` 永远命中它。
   - [ ] `opacity: 0` 的元素**照常参与命中测试**（只有 `pointer-events`/`visibility` 能退出）。视觉让位 ≠ 命中让位。
   - [ ] 装饰元素（aria-hidden、无行为的图标）一律 `pointer-events: none`——它从不需要命中，命中穿过它落到下层才是期望行为。
-- **为什么**：Select 光滑进 chevron、× 渐显后，chevron 的命中面仍盖在 × 上——真实点击永远落在 chevron 的 SVG 上（无 handler），× 看起来可点但「点不到」；面板开着时 mousedown 落在 SVG 上把焦点从 control 拽走。jsdom/vitest 测不出（fireEvent 直接调处理器、不做命中测试）——最终靠 Playwright + `elementFromPoint` 实弹钉死。
+  - [ ] **@colox/icons 的图标不用再处理**：IconBase 已默认 `pointer-events="none"` 表现属性（spec §9），消费方经 className CSS / style / pointerEvents prop 三通道显式恢复。组件里若用非 icons 包的自备 svg/字符做渐隐装饰件，仍照本条目显式处理。
+- **为什么**：Select 光滑进 chevron、× 渐显后，chevron 的命中面仍盖在 × 上——真实点击永远落在 chevron 的 SVG 上（无 handler），× 看起来可点但「点不到」；面板开着时 mousedown 落在 SVG 上把焦点从 control 拽走。jsdom/vitest 测不出（fireEvent 直接调处理器、不做命中测试）——最终靠 Playwright + `elementFromPoint` 实弹钉死。首版修复在组件 scss 里给 chevron 显式加规则，后按「契约收进基座」缩编：IconBase 默认承载（决策 d9d62f07），组件侧规则撤回。
 
 ## 排查「点不到」类问题 → 先做命中点对拍
 

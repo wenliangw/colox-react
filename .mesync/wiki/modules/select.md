@@ -57,14 +57,14 @@ packages/components/src/select/
 ## 样式约定
 
 - 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；hover/键盘高亮 `--colox-color-gray-wash-hover`。**选中不做背景染色**（用户指正：行尾 IconCheck 已是选中信号，brand-wash 背景 + brand 文字多余）——`--selected` 类仍挂在行 DOM 上（测试/API 钩子），仅一条视觉规则：check 图标上主色 `--colox-color-brand-solid`、行文字保持默认（用户第二轮指正：「IconCheck 应该是主色，但文字保持默认的文字颜色」）；**选中行也不接受 hover/active 的灰底**（第三轮指正：单选重开时键盘高亮初始化落在选中行，灰底误读为选中染色——多选初始高亮为 -1 故无此现象；CSS 以 `--selected:hover`/`--selected.--active` 归零覆盖）；`aria-selected` 照旧背书。
-- **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。**命中原罪（四轮修复）**：chevron 渐隐（opacity→0）仍保持层叠上下文 + DOM 序在 × 之后 → 永远压住 × 的命中面，`elementFromPoint` 命中 chevron SVG——真实点击从不落在 × 上（「点不到」+ 面板开着时焦点被拽走）；修复 = chevron 显式 `pointer-events: none`（命中穿过装饰件），Playwright 实弹验证双场景（关/开面板）全通。
+- **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。**命中原罪（四轮修复）**：chevron 渐隐（opacity→0）仍保持层叠上下文 + DOM 序在 × 之后 → 永远压住 × 的命中面，`elementFromPoint` 命中 chevron SVG——真实点击从不落在 × 上（「点不到」+ 面板开着时焦点被拽走）；修复 = 装饰件命中让位收进 **IconBase 基座**（全部 icons 默认 `pointer-events="none"` 表现属性，spec §9）——chevron 是 icon 即自动携带，组件侧零处理（先加过一版组件级规则，随后按「基座即契约」撤回；决策 d9d62f07）；Playwright 实弹验证双场景（关/开面板）全通。
 - z-index 无设计 token → cdk 内 `var(--colox-z-popup, 1000)` 内部变量 + 回落。
 - 面板最大高 256px + 滚动；chip 高度 `--colox-size-5` 恒定（不随 tier）。
 - 行 tier `colox-select__option--{tier}` 每行按成员解析发射（继承父级或本人覆盖）。
 
 ## 测试
 
-86 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态、折叠计数纯函数 4 例 + jsdom 徽标隐藏 1 例 + 模拟指标回归 1 例（inner 预算折叠与放宽长回双向断言，防「折叠自食」归零）、tag 模板 9 例（注入契约/包装发现/未声明值合成兜底/onRemove 载荷+面板不弹/折叠隐藏包注入自定义根/宿主元素/无子/重复模板/未知槽硬错误）。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate + 折叠重测需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
+88 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态、折叠计数纯函数 4 例 + jsdom 徽标隐藏 1 例 + 模拟指标回归 1 例（inner 预算折叠与放宽长回双向断言，防「折叠自食」归零）、tag 模板 9 例（注入契约/包装发现/未声明值合成兜底/onRemove 载荷+面板不弹/折叠隐藏包注入自定义根/宿主元素/无子/重复模板/未知槽硬错误）+ tag 模板受控移除 2 例（面板关/开两态 pointerdown+click 序列）。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate + 折叠重测需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
 
 ## 变更
 

@@ -5,13 +5,13 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 ## 形态
 
 - **SVG 组件源**：每图标一个 React 组件（箭头函数 forwardRef），**公共名 = `IconXxx` 前缀命名**（IconEye/IconChevronDown/IconX——碰撞成本定调：X/Eye/Search 与开源图标库及业务命名必撞，前缀让双生态共存零别名；「语义显性进名字」+ 「per-icon 命名导出」同时保住树摇，解掉「摇树 vs 语义」两难），文件平铺于 `src/icons/`（能力文件夹，文件名仍 kebab），成族几何住 `src/icons/geometry/`（chevron 单几何、eye 轮廓/斜线）——源与产物同构（将来 Figma 管线发射的也是 SVG 几何，链条后置、不推翻现有形态）
-- **`IconBase` 内部契约基座**（`src/components/icon-base/`，**不进公共 barrel**）：24 viewBox / fill none / stroke currentColor / 1.5 round cap+join / 1em 默认尺寸（`size?: number` 显式 px 覆盖）/ currentColor 继承宿主色（`color?: string` 显式 CSS 色覆盖、映射 style.color、显式 style.color 仍优先）/ focusable false + aria-hidden 装饰性默认——**设计语言契约集中一处**；props 展开在默认值之后（公共透传：size/color/className/a11y/原生 svg 属性全部经图标组件直下）
+- **`IconBase` 内部契约基座**（`src/components/icon-base/`，**不进公共 barrel**）：24 viewBox / fill none / stroke currentColor / 1.5 round cap+join / 1em 默认尺寸（`size?: number` 显式 px 覆盖）/ currentColor 继承宿主色（`color?: string` 显式 CSS 色覆盖、映射 style.color、显式 style.color 仍优先）/ focusable false + aria-hidden 装饰性默认 / **pointer-events none 命中默认（spec §9，表现属性形式）**——装饰性图标绝不拦截宿主表面命中（chevron 渐隐吃 × 点击的前科）；用表现属性而非内联 style：优先级最低、覆盖通道三开（className CSS 规则 / style prop / pointerEvents prop——rest 展开在后），交互型图标的消费方可自行恢复命中——**设计语言契约集中一处**；props 展开在默认值之后（公共透传：size/color/className/a11y/原生 svg 属性全部经图标组件直下）
 - **公共面单轨**：只出 `IconXxx` 命名导出——无 `Icon.Eye` 命名空间件（Object.assign 全量静态引用 = 失树摇）、无 `name` 字符串索引（同）、无双名出口；`IconBase` 不对外（自绘通道关闭：业务图形消费方全自备，插槽收 ReactNode）
 - **树摇**：单 barrel entry + preserveModules 产物 + `sideEffects: false`——per-icon 模块输出（dist/es/icons/x.js + .d.ts），`import { IconEye }` 消费一枚进一枚（lucide barrel 同款机制），无子路径导出
 - **零运行时依赖**：peer react/react-dom（>=18），无 theme 依赖（currentColor 继承宿主色——组件里即语义 token）
 - 构建镜像 components：vite ES/CJS 双产物 + vite-plugin-dts → dist/types + exports "."
 
-## 设计规范八条（README.md 公开成文 + spec lint 机器门禁）
+## 设计规范九条（README.md 公开成文 + spec lint 机器门禁）
 
 1. **画纸**：24×24 viewBox，所有节点落整数网格（no half-pixel）
 2. **笔画**：stroke 1.5、round cap/join——**几何换算锚**：1.5@24 在 16px 渲染时恰等效 1px，与组件边框观感同频
@@ -21,8 +21,9 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 6. **成对同源**：状态对/反向族由一张图派生——chevron 四向 = 单 d + rotate(0/90/180/270) 绕画布中心；eye-off = eye 轮廓 + 斜线换瞳孔。不画第二张脸
 7. **命名**：文件小写连字符、公共导出 `Icon*` 前缀 PascalCase（IconEye；前缀承载「语义显性 + 防碰撞」，不是缩写）；方向后缀 -up/-down/-left/-right、状态后缀 -off
 8. **变体**：基础集全 stroke；filled 有语义需求才进，不预筑
+9. **命中让位**：全部图标默认 `pointer-events="none"`（SVG 表现属性形式）——装饰性图标默认不进命中测试、不拦截宿主表面（按钮/行/壳空白）点击；需要交互命中的消费方经 className CSS/style prop/pointerEvents prop 三通道之一显式恢复（决策 d9d62f07，caused_by Select clearable × 命中修复）
 
-**机器门禁（spec lint，test/icon-spec.test.tsx，renderToStaticMarkup 断言，节点环境无需 jsdom，74 例）**：基座属性契约逐条断言 + 公共透传契约（size 默认 1em→显式 px、color 显式/默认继承/优先级、className/a11y 覆盖直下）；**几何锁**——渲染的 d 必须等于设计的 d（改图必挂测试 = 强制 specs 复核）；整数网格（d/cx/cy/r/transform 的数值 token 全整数）；显式节点 + 圆范围 ∈ [2,22]；每 icon 文档化光边界常量 ∈ 内容框（手推自设计，非测量）；成对同源断言（chevron 四向同 d 异 rotate、eye-off 含轮廓+斜线无瞳孔）。规范是契约、测试是门禁——挂 CI。
+**机器门禁（spec lint，test/icon-spec.test.tsx，renderToStaticMarkup 断言，节点环境无需 jsdom，74 例）**：基座属性契约逐条断言（含 §9 `pointer-events="none"`，每条 icon 渲染即校验）+ 公共透传契约（size 默认 1em→显式 px、color 显式/默认继承/优先级、className/a11y 覆盖直下）；**几何锁**——渲染的 d 必须等于设计的 d（改图必挂测试 = 强制 specs 复核）；整数网格（d/cx/cy/r/transform 的数值 token 全整数）；显式节点 + 圆范围 ∈ [2,22]；每 icon 文档化光边界常量 ∈ 内容框（手推自设计，非测量）；成对同源断言（chevron 四向同 d 异 rotate、eye-off 含轮廓+斜线无瞳孔）。规范是契约、测试是门禁——挂 CI。
 
 ## 批次一（十枚样板）
 
