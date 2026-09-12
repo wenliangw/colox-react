@@ -49,9 +49,11 @@
   min-width: 0;
 }
 
-// The chip row: one line, the clipped tail hides behind the +M
-// badge overlaid on its right end. The row shrinks as a flex item, so
-// its live width is exactly the room the chips may use.
+// The chip row: one line. Only the leading prefix sits in flow — the
+// folded tail is visually sliced (visibility + position) by the tags
+// unit, and the +M chip occupies the flow slot right after it. The
+// row shrinks as a flex item, so its live width is exactly the room
+// the chips may use.
 .colox-select__tags {
   position: relative;
   display: flex;
@@ -113,15 +115,11 @@
   flex-shrink: 0;
 }
 
-// The +M fold count: a chip-colored pill pinned over the row's right
-// end, masking the chips that slipped under it (bg-muted is an opaque
-// palette color, so nothing bleeds through). It carries no behavior —
-// clicking it bubbles to the shell and opens the panel.
+// The +M fold count: an ordinary in-flow chip at the row's end — no
+// overlay, nothing covers a chip. It carries no behavior: clicking it
+// bubbles to the shell and opens the panel. Hidden while the whole
+// selection fits.
 .colox-select__tag-overflow {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   height: var(--colox-size-5);
@@ -130,6 +128,7 @@
   background-color: var(--colox-color-bg-muted);
   color: inherit;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .colox-select__tag-remove {
