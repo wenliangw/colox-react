@@ -238,6 +238,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
         selectVariants({ size }),
         {
           'colox-select--open': state.isOpen,
+          'colox-select--clearable': showClear,
           'colox-select--invalid': invalid,
           'colox-select--disabled': disabled,
         },

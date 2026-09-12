@@ -29,11 +29,6 @@
     background-color: var(--colox-color-gray-wash-hover);
   }
 
-  &--selected {
-    background-color: var(--colox-color-brand-wash-active);
-    color: var(--colox-color-brand-solid);
-  }
-
   &--disabled {
     color: var(--colox-color-text-disabled);
     cursor: not-allowed;

@@ -413,20 +413,30 @@ describe('Select clearing', () => {
     const onChange = vi.fn();
     renderFruits({ defaultValue: 'banana', clearable: true, onChange });
     const clear = screen.getByRole('button', { name: 'Clear selection' });
+    // The clearable state class drives the hover swap (chevron <-> X).
+    expect(screen.getByRole('combobox').closest('.colox-select')).toHaveClass(
+      'colox-select--clearable',
+    );
     fireEvent.click(clear);
 
     expect(onChange).toHaveBeenCalledTimes(1);
     const [payload] = onChange.mock.calls[0];
     expect(payload).toMatchObject({ value: '', option: undefined });
     expect(payload.event.target).toBe(clear);
-    // The selection left, so the clear control leaves with it.
+    // The selection left, so the clear control and its state class leave with it.
     expect(screen.queryByRole('button', { name: 'Clear selection' })).toBeNull();
+    expect(screen.getByRole('combobox').closest('.colox-select')).not.toHaveClass(
+      'colox-select--clearable',
+    );
     expect(screen.getByRole('combobox', { name: 'Pick a fruit' })).toBeInTheDocument();
   });
 
   it('is hidden while the selection is empty', () => {
     renderFruits({ clearable: true });
     expect(screen.queryByRole('button', { name: 'Clear selection' })).toBeNull();
+    expect(screen.getByRole('combobox').closest('.colox-select')).not.toHaveClass(
+      'colox-select--clearable',
+    );
   });
 });
 

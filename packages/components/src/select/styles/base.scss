@@ -120,6 +120,7 @@
 }
 
 .colox-select__trailing {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--colox-spacing-0-5);
@@ -128,7 +129,9 @@
 }
 
 .colox-select__chevron {
-  transition: transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+  transition:
+    transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+    opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 }
 
 .colox-select--open .colox-select__chevron {
@@ -136,6 +139,8 @@
 }
 
 .colox-select__clear {
+  position: absolute;
+  inset: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -144,8 +149,37 @@
   background: none;
   color: inherit;
   cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 
   &:hover {
     color: var(--colox-color-text-solid);
+  }
+}
+
+// The clear affordance swaps in for the chevron instead of pairing
+// with it: while a value sits in the shell, hover (or focus-anywhere
+// within the shell, so keyboard users reach it) fades the chevron out
+// and the X in — opacity rather than display, so the X never leaves
+// the a11y tree (the same channel decision as the popup first-frame
+// guard). An empty/disabled shell keeps the chevron alone and the X
+// stays cold.
+.colox-select--clearable {
+  .colox-select__clear {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-within {
+    .colox-select__clear {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .colox-select__chevron {
+      opacity: 0;
+    }
   }
 }
