@@ -125,7 +125,7 @@
 - **选中指示不搞双通道**：行尾 IconCheck 已是完整选中信号，选中行不再叠 brand 背景；**check 上主色（`--colox-color-brand-solid`），行文字保持默认 text 色**——「选中态 = 主色小图标 + 默认文字」，颜色只加在图标上（Select 前科两轮：先被指「背景颜色没有必要」，再被指「IconCheck 应该是主色但文字保持默认」）；`aria-selected` 照旧背书 DOM。
 - **尾部动作图标不并排**：clear X 与下拉箭头二选一——默认只显 chevron；有值且可清时（`--clearable` 状态类挂根壳）`:hover`/`:focus-within` 让 X 替换箭头（focus-within 保证键盘用户也能到达 X）；空值/disabled 时 chevron 常驻（X 无活可干）。来源：用户指正「并排视觉不好，hover 时箭头变 X，移开默认箭头」。
 - **让位用 opacity + pointer-events，不用 display/visibility**：X 绝对定位叠在 chevron 槽位（零布局抖动），静止 opacity:0——`display:none`/`visibility:hidden` 会把元素从 a11y 可达树摘掉（Testing Library `getByRole` 即找不到、键盘不可达）；与 popup 首帧守卫同一条通道纪律。
-- **遮蔽用实底 token，不依赖透明度**：叠在内容上的状态件（Select 多选的 +M 折叠徽标盖 chips）一律用 palette 实色 token（`bg-muted`）做底——透明度会渗色且跨主题不可控；实色底让叠加件零渗色、无需额外遮罩层。
+- **状态件进文档流排尾，不叠加遮蔽**：计数/状态件（如 Select 多选 +M chip）与内容同流同位排布——绝对定位覆盖会切进被遮件中段、露出断 pill（+M 叠加形态前科，用户指正「视觉污染，效果特别差」后改行内 chip 排尾）；「叠件遮罩」方案不用于有被遮内容的场合。
 
 ## 键表是设计语言事实：由 pipeline 发射，组件不复制
 
