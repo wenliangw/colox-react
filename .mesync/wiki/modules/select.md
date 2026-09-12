@@ -9,7 +9,7 @@
 - **叶子契约（v2 改判）**：`Select.Option` 成员为唯一声明面——`value`（选择真值与 FormData 值）+ `text`（文本面：搜索过滤、触发器显示、multiple chip、缺省行渲染）必填；`children` 为可选富渲染（无则渲染 `text`）；`disabled` 照旧。消费方渲染定制是第一等 JSX 处方，数据式 + optionRender 回调徒增隔层——v1 的 options/optionRender 已撤。
 - **成员编译**：`compileSelectOptions` 对 children 子树做纯结构遍历——穿透 Fragment、数组与传透型包装组件（成员以 children 传入的结构仍在），组件内部自造成员不可见（成员叶子自身从不渲染，与 rc-select 同边界）。编译记录 = `{ value, text, disabled, size, key, content, className, style }`；key = 元素 key ?? value；重复 value 允许（原生 select 语义）。
 - **size 继承（本人优先）**：成员 `size` 缺省取父级 `Select.size`，可单独覆盖——行 tier 类 `colox-select__option--{tier}` 每行独立发射；optionSize 专 prop 随数据式 API 一并废除（面板行型归入家族继承轴）。
-- **模式**：`mode: 'single'`（value `string`，`''` = 未选中，Radio.Group 空值惯例）/ `'multiple'`（`string[]`）。multi 下每次选择后面板保持打开；chip 独立移除按钮 + 空查询 Backspace 删除末位 chip。chip 文案取 `text`（富 children 成员也不克隆 children 进 chip）。
+- **模式**：`mode: 'single'`（value `string`，`''` = 未选中，Radio.Group 空值惯例）/ `'multiple'`（`string[]`）。multi 下每次选择后面板保持打开；chip 独立移除按钮 + 空查询 Backspace 删除末位 chip。chip 文案取 `text`（富 children 成员也不克隆 children 进 chip）。**溢出折叠（用户拍板 A 方案）**：chip 行单线不折行，尾部折叠进 `+M` 计数徽标（绝对定位叠加行尾、bg-muted 实底遮罩、DOM 保持全量 chips、ResizeObserver 测量重算、SSR/jsdom 无布局时徽标隐藏）；+M 无自家交互，点击走壳逻辑开面板，面板里全部成员照旧可管理。计数纯函数 `countFittingTags`（utils/tag-fitting.ts）单测覆盖。
 - **onChange 载荷**：`{ event, value, option }` —— `event` 为触发交互（选项点击 / combobox Enter 按压 / chip 移除 / 清除按钮的原生合成事件，类型 `MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>`），`value` 为下一选择，`option` 为被选/被切换成员的**叶子编译记录** `{ value, text, disabled }`（清除时 `undefined`）。
 - **showSearch**（默认 false）：single 可搜索时用内嵌输入 control 替代显示行——关闭时显示选中项 text、打开时翻转到 query 流；multiple 恒有 control 承载 query。默认过滤 = text + value 大小写不敏感子串，`filterOption` 可替换；`onSearch(query)` 原始流直出（远程编排归消费方）。
 - **焦点与键盘**：闭合 control 上 Enter/方向键打开并移动高亮；打开后上下方向键循环走（跳过 disabled），Home/End 跳首尾，Enter 激活；Space 只在非 input control 上拦截（`event.currentTarget instanceof HTMLInputElement` 判别）。
@@ -27,9 +27,10 @@ packages/components/src/select/
 ├── hooks/use-select.ts # 状态对称（value/defaultValue、open/defaultOpen、query 流、publish；契约在 types/hooks.ts）
 ├── utils/select-options.ts       # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter（SelectFilterFn 契约在 types/utils.ts）
 ├── utils/resolve-select-surface.tsx  # 派生值 resolver：inputValue/controlLabel/buttonDisplay 逐级回退链（if + return；ResolveXxxParams 契约在 types/utils.ts）
+├── utils/tag-fitting.ts   # countFittingTags：chip 行折叠计数的纯函数（对行宽+badge 宽求可见前缀，单测覆盖）
 ├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物；各 XxxProps/Ref 契约在 types/children.ts，私有行组件 SelectOptionRowProps 留 panel 原地）
 │   ├── control/        # SelectControl：两种形态（内嵌 InputControl / 触发 button）+ combobox ARIA 面
-│   ├── tags/           # SelectTags：multiple chip 列（text 文案 + 移除钮）
+│   ├── tags/           # SelectTags：multiple chip 行（text 文案 + 移除钮）+ +M 溢出计数徽标（全量渲染 + 测量折叠）
 │   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮（不复用 Input 的——aria-label/类名名字空间不同）
 │   ├── form-values/    # FormSelectValues：给 Form 组件设置 value 的隐藏输入通道（single 一枚 / multiple 每值一枚）
 │   ├── panel/          # SelectPanel：portal listbox 行渲染（行 tier/selcted/active/disabled）+ 空态
@@ -61,7 +62,7 @@ packages/components/src/select/
 
 ## 测试
 
-71 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate 需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
+76 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态、折叠计数纯函数 4 例 + jsdom 徽标隐藏 1 例。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate + 折叠重测需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
 
 ## 变更
 
@@ -69,3 +70,4 @@ packages/components/src/select/
 - 2026-09 Select v2 评审改判：options/optionRender/optionSize 撤除，Select.Option 叶子声明 + value/text 必填 + size 继承（本人优先）；payload option = 叶子编译记录；渲染体拆 children/ 功能单元（零三目）。V1 排除 tags-in-placeholder、optgroups、虚拟滚动、typeahead、远程 debounce。
 - 2026-09 Select 类型集中化（用户提议，全库第一个试点）：全部类型契约（公开 + hooks/children/utils 内部）收进 `types/`，按能力层分 `component.ts`/`hooks.ts`/`children.ts`/`utils.ts`；`types/index.ts` = 内部全量 barrel，公共出口 `select/index.ts` 保持选择性具名导出（内部名字不漏进公共面）；各单元删内联类型定义改 import。动因（用户原话精神）：「类型定义长了影响读实现的体验；改代码多读几个文件成本不高；AI 时代代码为人的阅读体验服务」。
 - 2026-09 Select 交互评审：① Storybook「点击 X 不清空」= story/docs 演示接线前科（`value="banana"` 常量 + 无 onChange → onChange 发射但绝不回写），改 `defaultValue` 非受控——组件本身绿测无 bug；② trailing 区 X 与箭头并排 → `--clearable` 状态类驱动 hover/focus-within 箭头让位 X；③ 选中行背景染色撤除（IconCheck 单通道）。
+- 2026-09 Select 交互评审二轮：① IconCheck 上主色（唯一视觉规则）、行文字保持默认；② 多选 chip 溢出跑版修复——用户拍板 A 方案（+M 折叠）：chip 行禁折行 + 全量渲染 + 叠加徽标 + 响应式测量（详见决策 59ee6358）。
