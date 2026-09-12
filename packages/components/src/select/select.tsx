@@ -45,7 +45,6 @@ import './styles/index.scss';
 const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   const {
     mode = 'single',
-    filterOption,
     showSearch = false,
     value,
     defaultValue,
@@ -65,6 +64,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     // targets the real control rather than the shell.
     'aria-label': ariaLabel,
     id,
+    filterOption,
     onChange,
     onSearch,
     onOpenChange,

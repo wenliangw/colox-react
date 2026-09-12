@@ -69,11 +69,6 @@ export interface SelectProps extends Omit<
    */
   mode?: SelectMode;
   /**
-   * Replaces the default filter (case-insensitive substring over text
-   * and value). Applies only while `showSearch` is on.
-   */
-  filterOption?: (query: string, option: SelectOptionRecord) => boolean;
-  /**
    * Enable the search control: members get an embedded input (the cdk
    * InputControl) and typing filters the options.
    * @default false
@@ -117,6 +112,11 @@ export interface SelectProps extends Omit<
   invalid?: boolean;
   /** Disables the select: the shell goes terminal and the panel cannot open. */
   disabled?: boolean;
+  /**
+   * Replaces the default filter (case-insensitive substring over text
+   * and value). Applies only while `showSearch` is on.
+   */
+  filterOption?: (query: string, option: SelectOptionRecord) => boolean;
   /** Fires with the next selection as a `{ event, value, option }` payload. */
   onChange?: (payload: SelectChangePayload) => void;
   /**
