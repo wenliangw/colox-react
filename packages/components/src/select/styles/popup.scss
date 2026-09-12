@@ -29,6 +29,14 @@
     background-color: var(--colox-color-gray-wash-hover);
   }
 
+  &--selected {
+    // The IconCheck carries the selection in the brand channel; the
+    // row text stays on the default text color (no wash background).
+    .colox-select__option-check {
+      color: var(--colox-color-brand-solid);
+    }
+  }
+
   &--disabled {
     color: var(--colox-color-text-disabled);
     cursor: not-allowed;
