@@ -22,7 +22,9 @@ type IconProps = Omit<Parameters<typeof IconEye>[0], 'ref'>;
 /**
  * The base contract every icon must render (spec §1–2): 24 canvas,
  * stroke set (no fill), 1.5 round stroke, currentColor color and 1em
- * sizing so colors/sizes follow the host, decorative a11y defaults.
+ * sizing so colors/sizes follow the host, decorative a11y defaults and
+ * pointer-inert hits (an icon never intercepts the host surface —
+ * spec §9).
  */
 const CONTRACT = [
   'viewBox="0 0 24 24"',
@@ -35,6 +37,7 @@ const CONTRACT = [
   'height="1em"',
   'focusable="false"',
   'aria-hidden="true"',
+  'pointer-events="none"',
 ];
 
 /**

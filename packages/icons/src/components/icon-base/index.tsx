@@ -7,6 +7,13 @@ import type { IconProps } from './types';
  * effective at 16px — the component border weight), currentColor
  * (color follows the host's semantic token, unless `color` pins an
  * explicit one) and 1em sizing unless `size` pins an explicit px size.
+ * Icons are decorative by default — pointer-events none keeps their
+ * hit-testing with the host surface (a sibling swapping in above an
+ * icon must not be swallowed by the icon's hit area). It is a
+ * presentation attribute, the lowest of the three override channels,
+ * so an author can still re-enable hits through a className rule, the
+ * style prop or the pointerEvents prop (rest spread after the
+ * defaults) — the base obeys, it does not decide.
  *
  * Not part of the public API: consumers take finished icons
  * (`IconEye`, `IconChevronDown`, ...). Props spread after the
@@ -29,6 +36,7 @@ export const IconBase = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
       strokeLinejoin="round"
       focusable="false"
       aria-hidden="true"
+      pointerEvents="none"
       style={{ color, ...style }}
       {...rest}
     >

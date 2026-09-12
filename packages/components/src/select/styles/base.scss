@@ -163,12 +163,9 @@
 }
 
 .colox-select__chevron {
-  // Decoration only: it carries no behavior, and when the clear
-  // affordance swaps in the chevron fades via an opacity transition —
-  // an opacity < 1 keeps a stacking context that (later in DOM order)
-  // paints above the clear button and swallows its hit-testing even
-  // after the fade completes. Never let it receive a click.
-  pointer-events: none;
+  // Hit-inertness comes from the icon base (IconBase ships every icon
+  // with pointer-events none — see the hit-testing correction), so the
+  // faded chevron can never swallow clicks meant for the clear button.
   transition:
     transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
     opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);

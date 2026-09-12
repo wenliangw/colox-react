@@ -24,7 +24,7 @@ still wins over the `color` prop.
 ## Design specification
 
 Every glyph must pass the machine-enforced spec lint (`test/icon-spec.test.tsx`).
-The eight clauses:
+The nine clauses:
 
 1. **Canvas**: `24×24` viewBox; every node lands on the integer grid — no
    half-pixel strokes.
@@ -43,14 +43,18 @@ The eight clauses:
    suffixes `-up/-down/-left/-right`, state suffixes `-off`.
 8. **Variants**: the set is stroke-only; a filled variant enters only when a
    semantic requirement appears.
+9. **Hit-test yielding**: every icon ships `pointer-events="none"` — a
+   decorative icon never intercepts the host surface (button, row, shell).
+   Consumers needing interactive hits re-enable them through one of three
+   channels: a className rule, the `style` prop, or the `pointerEvents` prop.
 
 ## Machine enforcement
 
 The spec lint renders every icon and asserts:
 
 - the full base attribute contract (canvas, fill, stroke, caps, 1em, a11y
-  defaults) and the public passthrough contract (`size`, `color`, className,
-  a11y overrides);
+  defaults, pointer-inert hits) and the public passthrough contract (`size`,
+  `color`, className, a11y overrides);
 - the designed drawing is rendered verbatim (the geometry lock — a path change
   fails the suite and forces a spec review);
 - every geometry number is an integer (grid clause);
