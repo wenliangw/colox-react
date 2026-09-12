@@ -5,8 +5,10 @@
  * disabled semantics and the interaction motion (hover/active wash and
  * press scale). Variant paint lives in variant.scss, intent color
  * families in intent.scss (private intent variables, mirroring the
- * Button namespace). The square footprint is the default; `rounded`
- * switches it to a full circle and the washes follow the shape.
+ * Button namespace). The chrome variants (ghost/outline/solid) ride
+ * the token-pinned square footprint and `rounded` switches it to a
+ * full circle; the text variant skips the box entirely — it hugs the
+ * icon and feeds the size channel to the font-size instead.
  */
 .colox-icon-button {
   // md fallback: the size channel normally feeds this var through a

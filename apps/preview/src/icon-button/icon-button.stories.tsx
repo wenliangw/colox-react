@@ -29,7 +29,7 @@ const meta: Meta<typeof IconButton> = {
     docs: {
       description: {
         component:
-          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; text (default, pure icon) / ghost / outline / solid variants — text and ghost share the intent hover wash, differing in the resting icon color — sit over the five-axis intent palette and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
+          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; text (default) is the pure icon — its box hugs the icon, size sizes the icon itself and hovering recolors it to the intent — while ghost/outline/solid carry intent-tinted chrome and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
       },
     },
   },

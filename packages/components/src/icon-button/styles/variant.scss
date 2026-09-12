@@ -1,22 +1,23 @@
 /**
  * Variant paint — text/solid/outline/ghost over the private intent
  * variables (the intent layer maps them onto the color families). Text
- * is the default pure-icon form: no resting chrome, context color, an
- * intent wash on hover; ghost is the intent-tinted icon with the same
- * wash (so text and ghost differ only in the resting color);
- * solid/outline carry filled/bordered chrome in the intent color.
- * Disabled keeps the shared muted treatment plus a variant-appropriate
- * fill/border.
+ * is the default pure-icon form: no chrome, the box hugs the icon
+ * (the size channel feeds the font-size, so `size` sizes the icon
+ * itself) and hover feedback is the icon color switching to the
+ * intent, not a background; ghost is the intent-tinted icon with a
+ * wash on hover; solid/outline carry filled/bordered chrome in the
+ * intent color. Disabled keeps the shared muted treatment plus a
+ * variant-appropriate fill/border.
  */
 .colox-icon-button--text {
   background-color: transparent;
+  width: auto;
+  height: auto;
+  font-size: var(--colox-icon-button-block);
 
-  &:hover:not(:disabled) {
-    background-color: var(--colox-icon-button-intent-wash-hover);
-  }
-
+  &:hover:not(:disabled),
   &:active:not(:disabled) {
-    background-color: var(--colox-icon-button-intent-wash-active);
+    color: var(--colox-icon-button-intent-solid);
   }
 }
 

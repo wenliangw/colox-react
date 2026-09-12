@@ -17,16 +17,19 @@ export type IconButtonIntent = NonNullable<IconButtonVariants['intent']>;
  */
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * Footprint size: a preset tier aligned with the form family
-   * (xs 24 / sm 32 / md 40 / lg 48) or any theme size-token key —
-   * `size="4"` renders a 16px square, `size="0-5"` a 2px one.
+   * Size: a preset tier aligned with the form family (xs 24 / sm 32 /
+   * md 40 / lg 48) or any theme size-token key — `size="4"` means
+   * 16px, `size="0-5"` 2px. For the text variant (default) the box
+   * hugs the icon, so size is the rendered icon size; for ghost/
+   * outline/solid it is the footprint of the box.
    * @default 'md'
    */
   size?: IconButtonSize;
   /**
-   * Visual form. Text is the default — pure icon, no resting chrome,
-   * context color; ghost tints the icon in the intent color — both
-   * show the intent wash on hover; solid/outline carry filled/bordered
+   * Visual form. Text is the default — pure icon: the box hugs the
+   * icon and `size` sizes the icon itself, hover feedback is the icon
+   * color switching to the intent; ghost tints the icon in the intent
+   * color with a wash on hover; solid/outline carry filled/bordered
    * chrome in the intent color.
    * @default 'text'
    */
