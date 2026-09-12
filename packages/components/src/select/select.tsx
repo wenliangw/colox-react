@@ -1,12 +1,12 @@
 import { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef } from 'react';
-import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import clsx from 'clsx';
 import { IconChevronDown } from '@colox/icons';
 import { useComboboxKeyboard, useDismissible } from '@colox/cdk/floating';
 import { SelectClearButton } from './children/clear-button';
 import { SelectControl } from './children/control';
 import type { SelectControlRef } from './children/control';
-import { SelectHiddenInputs } from './children/hidden-inputs';
+import { FormSelectValues } from './children/form-values';
 import { SelectOption } from './children/option';
 import { SelectPanel } from './children/panel';
 import { SelectTags } from './children/tags';
@@ -18,6 +18,11 @@ import {
   filterSelectOptions,
   findSelectOption,
 } from './utils/select-options';
+import {
+  resolveButtonDisplay,
+  resolveControlLabel,
+  resolveInputValue,
+} from './utils/resolve-select-surface';
 import { selectVariants } from './variants';
 
 import './styles/index.scss';
@@ -40,13 +45,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     showSearch = false,
     value,
     defaultValue,
-    onChange,
-    onSearch,
     placeholder,
     clearable = false,
     open,
     defaultOpen,
-    onOpenChange,
     name,
     size = 'md',
     invalid = false,
@@ -59,6 +61,9 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     // targets the real control rather than the shell.
     'aria-label': ariaLabel,
     id,
+    onChange,
+    onSearch,
+    onOpenChange,
     ...rest
   } = props;
 
@@ -77,9 +82,9 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     mode,
     value,
     defaultValue,
-    onChange,
     open,
     defaultOpen,
+    onChange,
     onOpenChange,
     onSearch,
   });
@@ -110,11 +115,11 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     }
     if (isMultiple) {
       state.toggle(option.value, event, option);
-    } else {
-      state.select(option.value, event, option);
-      state.close();
-      keyboard.setActiveIndex(-1);
+      return;
     }
+    state.select(option.value, event, option);
+    state.close();
+    keyboard.setActiveIndex(-1);
   };
 
   const keyboard = useComboboxKeyboard({
@@ -144,72 +149,50 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
 
   useDismissible({
     open: state.isOpen,
+    triggerRef: rootRef,
+    panelRef,
     onDismiss: () => {
       state.close();
       keyboard.setActiveIndex(-1);
     },
-    triggerRef: rootRef,
-    panelRef,
   });
 
   const selectedRecord = findSelectOption(options, currentSingle);
 
-  /* ===== control surfaces ===== */
+  const inputValue = resolveInputValue({
+    isMultiple,
+    isOpen: state.isOpen,
+    query: state.query,
+    selectedText: selectedRecord?.text,
+  });
 
-  // Closed single shows the selected text; the typed query replaces it
-  // while open. Multiple always carries the query (close resets it).
-  let inputValue: string;
-  if (isMultiple || state.isOpen) {
-    inputValue = state.query;
-  } else {
-    inputValue = selectedRecord?.text ?? '';
-  }
-
-  // aria-label > selected text > raw value > placeholder (single);
-  // aria-label > placeholder (multiple — the query stream is the name
-  // while open, the placeholder names the empty control).
-  let controlLabel: string | undefined;
-  if (ariaLabel !== undefined) {
-    controlLabel = ariaLabel;
-  } else if (isMultiple) {
-    controlLabel = typeof placeholder === 'string' ? placeholder : undefined;
-  } else if (selectedRecord !== undefined) {
-    controlLabel = selectedRecord.text;
-  } else if (currentSingle !== '') {
-    controlLabel = currentSingle;
-  } else {
-    controlLabel = typeof placeholder === 'string' ? placeholder : undefined;
-  }
+  const controlLabel = resolveControlLabel({
+    ariaLabel,
+    isMultiple,
+    selectedRecord,
+    currentSingle,
+    placeholder,
+  });
 
   let activeDescendantId: string | undefined;
   if (state.isOpen && keyboard.activeIndex >= 0) {
     activeDescendantId = `${optionIdPrefix}-${keyboard.activeIndex}`;
   }
 
-  // The closed single button display: selected text, then the raw
-  // value (a controlled value outside the members still reads
-  // honestly), then the placeholder.
-  let buttonDisplay: ReactNode;
-  if (selectedRecord !== undefined) {
-    buttonDisplay = selectedRecord.text;
-  } else if (currentSingle !== '') {
-    buttonDisplay = currentSingle;
-  } else {
-    buttonDisplay = (
-      <span className="colox-select__placeholder">
-        {placeholder !== undefined ? placeholder : '\u00a0'}
-      </span>
-    );
-  }
+  const buttonDisplay = resolveButtonDisplay({
+    selectedRecord,
+    currentSingle,
+    placeholder,
+  });
 
   const handleButtonClick = () => {
     if (state.isOpen) {
       state.close();
       keyboard.setActiveIndex(-1);
-    } else {
-      keyboard.setActiveIndex(initialActiveIndex);
-      state.setOpen(true);
+      return;
     }
+    keyboard.setActiveIndex(initialActiveIndex);
+    state.setOpen(true);
   };
 
   const handleControlKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -231,7 +214,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
       return;
     }
     const target = event.target;
-    if (target instanceof HTMLElement && target.closest('button') !== null) {
+    if (!(target instanceof HTMLElement) || target.closest('button') !== null) {
       return;
     }
     keyboard.setActiveIndex(initialActiveIndex);
@@ -243,8 +226,6 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
 
   const isSelected = (candidate: string) =>
     isMultiple ? currentMultiple.includes(candidate) : candidate === currentSingle;
-
-  /* ===== the shell ===== */
 
   return (
     <div
@@ -299,7 +280,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
         <IconChevronDown className="colox-select__chevron" aria-hidden="true" />
       </span>
 
-      <SelectHiddenInputs name={name} values={state.value} />
+      <FormSelectValues name={name} values={state.value} />
 
       <SelectPanel
         ref={panelRef}

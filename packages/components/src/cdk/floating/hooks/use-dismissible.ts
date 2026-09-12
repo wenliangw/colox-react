@@ -3,12 +3,12 @@ import type { RefObject } from 'react';
 
 export interface UseDismissibleOptions {
   open: boolean;
-  /** Closes the popup: outside pointerdown or Escape. */
-  onDismiss: () => void;
   /** The trigger reference (the combobox control or its shell). */
   triggerRef: RefObject<HTMLElement | null>;
   /** The portal-mounted panel. */
   panelRef: RefObject<HTMLElement | null>;
+  /** Closes the popup: outside pointerdown or Escape. */
+  onDismiss: () => void;
 }
 
 /**
@@ -19,9 +19,9 @@ export interface UseDismissibleOptions {
  */
 export function useDismissible({
   open,
-  onDismiss,
   triggerRef,
   panelRef,
+  onDismiss,
 }: UseDismissibleOptions): void {
   useEffect(() => {
     if (!open) {

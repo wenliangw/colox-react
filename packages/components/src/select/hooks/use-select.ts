@@ -8,9 +8,9 @@ export interface UseSelectParams {
   mode: SelectMode;
   value: string | string[] | undefined;
   defaultValue: string | string[] | undefined;
-  onChange: ((payload: SelectChangePayload) => void) | undefined;
   open: boolean | undefined;
   defaultOpen: boolean | undefined;
+  onChange: ((payload: SelectChangePayload) => void) | undefined;
   onOpenChange: ((open: boolean) => void) | undefined;
   onSearch: ((query: string) => void) | undefined;
 }
@@ -37,6 +37,22 @@ export interface UseSelectResult {
 }
 
 /**
+ * The selection truth: the controlled prop when supplied (the prop is
+ * the contract), the seeded inner state otherwise.
+ */
+const resolveCurrent = (
+  isMultiple: boolean,
+  value: string | string[] | undefined,
+  innerMultiple: string[],
+  innerSingle: string,
+): string | string[] => {
+  if (isMultiple) {
+    return Array.isArray(value) ? value : innerMultiple;
+  }
+  return typeof value === 'string' ? value : innerSingle;
+};
+
+/**
  * The selection + open state behind Select: symmetric control (value /
  * defaultValue, open / defaultOpen), a query stream, and the three
  * change channels (select / toggle / clear) that publish the
@@ -46,9 +62,9 @@ export function useSelect({
   mode,
   value,
   defaultValue,
-  onChange,
   open,
   defaultOpen,
+  onChange,
   onOpenChange,
   onSearch,
 }: UseSelectParams): UseSelectResult {
@@ -63,13 +79,7 @@ export function useSelect({
     Array.isArray(defaultValue) ? [...defaultValue] : [],
   );
 
-  const current: string | string[] = isMultiple
-    ? Array.isArray(value)
-      ? value
-      : innerMultiple
-    : typeof value === 'string'
-      ? value
-      : innerSingle;
+  const current = resolveCurrent(isMultiple, value, innerMultiple, innerSingle);
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -94,22 +104,24 @@ export function useSelect({
     [onSearch],
   );
 
+  // Writes the uncontrolled selection: the state slot follows the value
+  // shape, the controlled select never writes (the prop is the truth).
+  const writeUncontrolled = useCallback((next: string | string[]) => {
+    if (typeof next === 'string') {
+      setInnerSingle(next);
+      return;
+    }
+    setInnerMultiple(next);
+  }, []);
+
   const commit = useCallback(
     (next: string | string[], event: SelectChangeEvent, option?: SelectOptionRecord) => {
-      if (isMultiple) {
-        const nextArray = next as string[];
-        if (value === undefined) {
-          setInnerMultiple(nextArray);
-        }
-      } else {
-        const nextValue = next as string;
-        if (value === undefined) {
-          setInnerSingle(nextValue);
-        }
+      if (value === undefined) {
+        writeUncontrolled(next);
       }
       onChange?.({ event, value: next, option });
     },
-    [isMultiple, value, onChange],
+    [value, writeUncontrolled, onChange],
   );
 
   const select = useCallback(

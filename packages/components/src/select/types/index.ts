@@ -86,14 +86,6 @@ export interface SelectProps extends Omit<
    */
   value?: string | string[];
   defaultValue?: string | string[];
-  /** Fires with the next selection as a `{ event, value, option }` payload. */
-  onChange?: (payload: SelectChangePayload) => void;
-  /**
-   * The raw query stream (remote search delegation): fires on every
-   * query change. Filtering still runs locally unless the consumer
-   * swaps the members with server results.
-   */
-  onSearch?: (query: string) => void;
   /** Shown while the selection is empty. */
   placeholder?: ReactNode;
   /**
@@ -105,8 +97,6 @@ export interface SelectProps extends Omit<
   /** Controlled open state; `defaultOpen` seeds the uncontrolled one. */
   open?: boolean;
   defaultOpen?: boolean;
-  /** Fires whenever the panel opens or closes. */
-  onOpenChange?: (open: boolean) => void;
   /**
    * Form collection name: a single hidden `<input type="hidden">` in
    * single mode, one per value in multiple mode (FormData native
@@ -127,6 +117,16 @@ export interface SelectProps extends Omit<
   invalid?: boolean;
   /** Disables the select: the shell goes terminal and the panel cannot open. */
   disabled?: boolean;
+  /** Fires with the next selection as a `{ event, value, option }` payload. */
+  onChange?: (payload: SelectChangePayload) => void;
+  /**
+   * The raw query stream (remote search delegation): fires on every
+   * query change. Filtering still runs locally unless the consumer
+   * swaps the members with server results.
+   */
+  onSearch?: (query: string) => void;
+  /** Fires whenever the panel opens or closes. */
+  onOpenChange?: (open: boolean) => void;
 }
 
 /** The combobox control: the embedded input when searchable/multiple, the trigger button otherwise. */
