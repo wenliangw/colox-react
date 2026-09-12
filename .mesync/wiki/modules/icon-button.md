@@ -19,17 +19,17 @@
 
 ## 视觉轴（决策 05b83bed）
 
-`variant?: 'text' | 'ghost' | 'outline' | 'solid'`（默认 **text**，决策 a42ba861）× `intent?: 'primary' | 'neutral' | 'danger' | 'warning' | 'success'`（默认 primary——Button 同款五色轴，含 success，不缩水）× `rounded?: boolean`（默认 false）：
+`variant?: 'text' | 'ghost' | 'outline' | 'solid'`（默认 **text**，决策 a42ba861）× `intent?: 'primary' | 'neutral' | 'danger' | 'warning' | 'success'`（默认 **neutral**——决策 666d8aa8，用户「intent 默认为 neutral」；Button 同款五色轴，不缩水）× `rounded?: boolean`（默认 false）：
 
 - **变体决定图标色**（用户定调「设置 variant 后，图标的颜色也应该跟着变」）：
-  - **text**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；静态色 `color: inherit`（字段内清空钮/chip × 依赖上下文 muted/disabled 诉求落在此）；hover/active = **图标变色 intent-solid、背景恒透明**（决策 644ffa12：用户连否「无反馈」「wash 浅底」两版后定「图标本身的颜色需要变」）。
+  - **text**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；**着色图标语义（决策 666d8aa8 定稿）**：静止即涂 intent-solid（默认 neutral 灰），hover/active = 同族 intent-solid-hover/active 加深，背景恒透明（用户否决链：无反馈 → wash → 继承+intent hover → 静止 intent + 同族加深）。
   - **ghost**：图标色 = intent solid（照 Button ghost 语义）；hover/active = intent wash 方形浅底。**text/ghost 的界线 = 静止色与反馈通道俱异**：text = context 色静止→intent 色 hover 无底；ghost = intent 色静止→wash。
   - **solid**：intent 实底三态（solid → solid-hover/active）+ intent-inverse 图标；disabled = bg-disabled。
   - **outline**：1px intent border + intent 图标 + 透明底，hover/active = wash，disabled = border-disabled。
 - **方形圆角**：默认 `radius-lg`(8px)——用户反馈 radius-xs(2px) 视觉上等于没有，且 Button/Input 家族基准就是 radius-lg，同源对齐；**圆形不做默认**，`rounded` prop 才切 `radius-full`(9999px)。wash/fill 跟随足迹。
 - **实现形状同 Button**：intent.scss 注解私有变量族 `--colox-icon-button-intent-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
 - **动效与 Button 同步**：base 双段 transition（normal 全轴 + active 快速段）、`scale(0.97)` 按压。
-- **内部四站零代码变更**：默认即 text+primary、size="4"——text 的 size 通道此刻真正兑现 16px 设计意图（此前图标是上下文字号 1em：原版 slots 只标了盒、没标字号）；hover 图标变色，Select clear/tag-remove 的站点 hover 色规则仍经站点类胜出（Input clear/toggle 无站点 hover 规则 → 随基座变 intent 色）。
+- **内部四站零代码变更**：默认即 text+neutral、size="4"——text 的 size 通道兑现 16px 设计意图（此前是上下文字号 1em：原版 slots 只标了盒、没标字号）。站点视线：tag-remove 静止 muted/hover solid 全为站点色规则、经站点类胜出不变；Select clear 静止随基座 neutral 灰、hover 站点规则 text-solid 胜出；Input clear/toggle 无站点色规则 → 静止 neutral 灰、hover 灰加深。
 
 ## 站点契约（换装后的分工）
 
