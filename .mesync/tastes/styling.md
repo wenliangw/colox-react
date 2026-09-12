@@ -109,6 +109,7 @@
 
 - 组件块类名就是组件自己的名字空间：`colox-input`（元素 `colox-input__leading/control/trailing`、修饰 `colox-input--invalid/--xs/sm/md/lg`）。修饰类与 cva base、scss 选择器**三处同字符串**。
 - **不得占用同族未来组件的名字空间**：Input v2 外壳一度用 `colox-input-group` 做块名，被用户指正——「Input 组件的前缀应该是 colox-input，不应该是 colox-input-group，**InputGroup 未来是另外的一个组件**」。
+- **元素类名锚定渲染产物语义，不随承载槽位组件名漂移**：`colox-select__hidden` 描述「渲染出的隐藏 input 值通道」这个产物，承载它的槽位组件改名（SelectHiddenInputs → FormSelectValues）时类名保留——用户拍板「这个类名不用调整」；cdk 迁移同理：`colox-input-control` 是渲染出的裸控件，而非 InputOrgan/InputControl 组件名。
 - 判断法：`colox-<name>` 的 name 段只允许 = 该组件名或该组件的公开 dot-part 名（`colox-grid-item`）；`xxx-group/shell/wrapper` 这类包装结构词不是块名料——DOM 外壳是组件自己，不是新组件。
 - 来源：用户对 Input 块名的指正。
 
