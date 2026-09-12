@@ -19,7 +19,7 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 4. **光学框**：所有笔画（含 bleed ±0.75）必须在 [2,22] 内容框内，与文字并排行高不打架
 5. **角度**：斜线统一 45°/30° 系，杜绝孤儿角
 6. **成对同源**：状态对/反向族由一张图派生——chevron 四向 = 单 d + rotate(0/90/180/270) 绕画布中心；eye-off = eye 轮廓 + 斜线换瞳孔。不画第二张脸
-7. **命名**：文件小写连字符、公共导出 `Icon*` 前缀 PascalCase（IconEye；前缀承载「语义显性 + 防碰撞」，不是缩写）；方向后缀 -up/-down/-left/-right、状态后缀 -off
+7. **命名**：文件小写连字符、公共导出 `Icon*` 前缀 PascalCase（IconEye；前缀承载「语义显性 + 防碰撞」，不是缩写）；方向后缀 -up/-down/-left/-right、状态后缀 -off；**chevron 与 arrow 是两种图形**——chevron 指 V 形尖角（下拉/折叠族，行业标准词：lucide/antd/Radix 同形同名），arrow 指箭杆+箭头图形；`Arrow*` 前缀**预留**给将来的真箭头族（决策 ae4820f0，用户曾提议 chevron→arrow 改名，对齐语义后放弃）
 8. **变体**：基础集全 stroke；filled 有语义需求才进，不预筑
 9. **命中让位**：全部图标默认 `pointer-events="none"`（SVG 表现属性形式）——装饰性图标默认不进命中测试、不拦截宿主表面（按钮/行/壳空白）点击；需要交互命中的消费方经 className CSS/style prop/pointerEvents prop 三通道之一显式恢复（决策 d9d62f07，caused_by Select clearable × 命中修复）
 
