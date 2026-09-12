@@ -1,0 +1,27 @@
+@use '@colox/theme/variables' as tokens;
+
+// Preset tiers: one block with the form family — Button/Input/Select
+// land their same-name tiers on the same size tokens.
+.colox-icon-button--xs {
+  --colox-icon-button-block: var(--colox-size-6);
+}
+
+.colox-icon-button--sm {
+  --colox-icon-button-block: var(--colox-size-8);
+}
+
+.colox-icon-button--md {
+  --colox-icon-button-block: var(--colox-size-10);
+}
+
+.colox-icon-button--lg {
+  --colox-icon-button-block: var(--colox-size-12);
+}
+
+// Raw scale keys, straight from the theme emission: every size token is
+// addressable as `size="<key>"` (`size="4"` renders a 16px square).
+@each $key in tokens.$colox-size-keys {
+  .colox-icon-button--size-#{$key} {
+    --colox-icon-button-block: var(--colox-size-#{$key});
+  }
+}

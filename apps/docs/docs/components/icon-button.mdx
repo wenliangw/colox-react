@@ -1,0 +1,57 @@
+---
+sidebar_position: 10
+---
+
+import { IconButton } from '@colox/react';
+import { IconEye, IconX } from '@colox/icons';
+import '@colox/react/style.css';
+
+# IconButton
+
+The square bare-button primitive for icon-only controls: one place for the
+button reset, the token-pinned hit shape, the focus ring and the disabled
+semantics. Buttons in the field controls (Input clear / visibility toggle,
+Select clear / chip remove) are built on it.
+
+An icon carries no text node, so an icon button is nameless to assistive
+tech — always pass `aria-label` (or valid `aria-labelledby`).
+
+<IconButton aria-label="Close">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Close" disabled>
+  <IconX />
+</IconButton>
+
+## Size
+
+`size` accepts the preset form tiers (same-name same-height as
+Input/Button/Select) **or any theme size-token key** — the raw key pins the
+footprint to that token, so theme overrides flow through.
+
+<IconButton aria-label="Extra small" size="xs">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Small" size="sm">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Medium" size="md">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Large" size="lg">
+  <IconX />
+</IconButton>
+
+<IconButton aria-label="Icon" size="4">
+  <IconEye />
+</IconButton>
+renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
+
+## Props
+
+| Prop | Type                                                     | Default |
+| ---- | -------------------------------------------------------- | ------- |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens) | `'md'`  |
+
+It also accepts all native `<button>` attributes (`type` defaults to
+`'button'`).

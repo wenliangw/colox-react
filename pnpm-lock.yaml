@@ -53,6 +53,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@colox/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@colox/react':
         specifier: workspace:*
         version: link:../../packages/components
@@ -110,6 +113,10 @@ importers:
         version: 5.9.3
 
   apps/preview:
+    dependencies:
+      '@colox/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
     devDependencies:
       '@colox/react':
         specifier: workspace:*

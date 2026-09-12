@@ -1,0 +1,40 @@
+/**
+ * IconButton — the square bare-button primitive.
+ *
+ * Base scope: token-pinned hit shape, the button reset, the focus ring
+ * and disabled semantics. Hover decoration is deliberately absent: hover
+ * feedback belongs to the consumer (a field-internal clear button wants
+ * none while a toolbar button might layer a wash) — sites add it through
+ * their own class, which wins over the base by cascade order.
+ */
+.colox-icon-button {
+  // md fallback: the size channel normally feeds this var through a
+  // size class, but the base keeps a sane footprint on its own.
+  --colox-icon-button-block: var(--colox-size-10);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--colox-icon-button-block);
+  height: var(--colox-icon-button-block);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  line-height: 1;
+  color: inherit;
+  border-radius: var(--colox-radius-xs);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--colox-color-brand-solid);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+  }
+}

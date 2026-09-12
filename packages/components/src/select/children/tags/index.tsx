@@ -1,6 +1,7 @@
 import { cloneElement, useRef } from 'react';
 import type { CSSProperties, JSX } from 'react';
 import { IconX } from '@colox/icons';
+import { IconButton } from '../../../icon-button';
 import type {
   SelectChangeEvent,
   SelectOptionRecord,
@@ -85,8 +86,8 @@ export const SelectTags = ({
               style={hidden ? HIDDEN : undefined}
             >
               <span className="colox-select__tag-label">{option.text}</span>
-              <button
-                type="button"
+              <IconButton
+                size="4"
                 className="colox-select__tag-remove"
                 aria-label={`Remove ${option.text}`}
                 disabled={disabled}
@@ -96,7 +97,7 @@ export const SelectTags = ({
                 }}
               >
                 <IconX aria-hidden="true" />
-              </button>
+              </IconButton>
             </span>
           );
         }

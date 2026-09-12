@@ -45,6 +45,11 @@
       "import": "./dist/es/grid.js",
       "require": "./dist/cjs/grid.cjs"
     },
+    "./icon-button": {
+      "types": "./dist/types/icon-button/index.d.ts",
+      "import": "./dist/es/icon-button.js",
+      "require": "./dist/cjs/icon-button.cjs"
+    },
     "./input": {
       "types": "./dist/types/input/index.d.ts",
       "import": "./dist/es/input.js",
