@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useState, useImperativeHandle, useRef } from 'react';
 import type { HTMLAttributes, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
@@ -42,7 +42,14 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     matchWidth,
   });
 
-  if (!open) {
+  // Popup escapes into document.body — evaluating that during render
+  // crashes SSR (document is undefined) and desyncs hydration. Render
+  // nothing until the client mounts; the open state still flips
+  // client-side and mounts the panel through this same branch.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted || !open) {
     return null;
   }
   return createPortal(
