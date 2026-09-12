@@ -1,15 +1,12 @@
 import type { ReactNode } from 'react';
-import type { SelectOptionRecord } from '../types';
+import type {
+  ResolveButtonDisplayParams,
+  ResolveControlLabelParams,
+  ResolveInputValueParams,
+} from '../types';
 
 const stringPlaceholder = (placeholder: ReactNode): string | undefined =>
   typeof placeholder === 'string' ? placeholder : undefined;
-
-export interface ResolveInputValueParams {
-  isMultiple: boolean;
-  isOpen: boolean;
-  query: string;
-  selectedText: string | undefined;
-}
 
 /**
  * The control's value face: the query stream whenever the panel is
@@ -26,14 +23,6 @@ export function resolveInputValue({
     return query;
   }
   return selectedText ?? '';
-}
-
-export interface ResolveControlLabelParams {
-  ariaLabel: string | undefined;
-  isMultiple: boolean;
-  selectedRecord: SelectOptionRecord | undefined;
-  currentSingle: string;
-  placeholder: ReactNode;
 }
 
 /**
@@ -63,12 +52,6 @@ export function resolveControlLabel({
     return currentSingle;
   }
   return stringPlaceholder(placeholder);
-}
-
-export interface ResolveButtonDisplayParams {
-  selectedRecord: SelectOptionRecord | undefined;
-  currentSingle: string;
-  placeholder: ReactNode;
 }
 
 /**

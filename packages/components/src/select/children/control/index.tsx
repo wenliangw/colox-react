@@ -1,33 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import type { ChangeEvent, KeyboardEvent, ReactNode } from 'react';
+import type { ChangeEvent } from 'react';
 import { InputControl } from '@colox/cdk/input-control';
-
-export type SelectControlRef = HTMLInputElement | HTMLButtonElement;
-
-export interface SelectControlProps {
-  /** Shape selector: every multiple select embeds the input control. */
-  isMultiple: boolean;
-  showSearch: boolean;
-  open: boolean;
-  disabled: boolean;
-  invalid: boolean;
-  id?: string;
-  /** Explicit name override; wins over the fallback `controlLabel`. */
-  ariaLabel?: string;
-  /** The resolved combobox reachable name (selected text / raw value / placeholder). */
-  controlLabel?: string;
-  listboxId: string;
-  /** Prefixed id of the highlighted option while open. */
-  activeDescendantId?: string;
-  /** The input control's value: query stream while open, selected text while closed single. */
-  inputValue: string;
-  /** The closed single button's display content (text / raw value / placeholder). */
-  buttonDisplay: ReactNode;
-  placeholder?: ReactNode;
-  onInputChange: (value: string) => void;
-  onButtonClick: () => void;
-  onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
-}
+import type { SelectControlProps, SelectControlRef } from '../../types';
 
 /**
  * The combobox control in both shapes: the embedded InputControl for

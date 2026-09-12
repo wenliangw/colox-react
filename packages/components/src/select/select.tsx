@@ -5,14 +5,18 @@ import { IconChevronDown } from '@colox/icons';
 import { useComboboxKeyboard, useDismissible } from '@colox/cdk/floating';
 import { SelectClearButton } from './children/clear-button';
 import { SelectControl } from './children/control';
-import type { SelectControlRef } from './children/control';
 import { FormSelectValues } from './children/form-values';
 import { SelectOption } from './children/option';
 import { SelectPanel } from './children/panel';
 import { SelectTags } from './children/tags';
 import { useSelect } from './hooks/use-select';
-import type { SelectChangeEvent } from './hooks/use-select';
-import type { SelectOptionRecord, SelectProps, SelectRef } from './types';
+import type {
+  SelectChangeEvent,
+  SelectControlRef,
+  SelectOptionRecord,
+  SelectProps,
+  SelectRef,
+} from './types';
 import {
   compileSelectOptions,
   filterSelectOptions,

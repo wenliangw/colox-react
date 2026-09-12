@@ -1,14 +1,5 @@
-import type { MouseEvent } from 'react';
 import { IconX } from '@colox/icons';
-import type { SelectOptionRecord } from '../../types';
-
-export interface SelectTagsProps {
-  values: readonly string[];
-  /** The compiled members — text lookup for chip labels. */
-  options: readonly SelectOptionRecord[];
-  disabled: boolean;
-  onRemove: (value: string, event: MouseEvent<HTMLButtonElement>) => void;
-}
+import type { SelectTagsProps } from '../../types';
 
 /**
  * Multiple-mode chips: one removable pill per value. The chip label is

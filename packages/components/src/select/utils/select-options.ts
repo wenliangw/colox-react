@@ -1,9 +1,7 @@
 import { isValidElement } from 'react';
 import type { ReactNode } from 'react';
 import { SelectOption } from '../children/option';
-import type { SelectOptionRecord, SelectOptionProps, SelectSize } from '../types';
-
-export type SelectFilterFn = (query: string, option: SelectOptionRecord) => boolean;
+import type { SelectFilterFn, SelectOptionRecord, SelectOptionProps, SelectSize } from '../types';
 
 /** The default matcher: case-insensitive substring over the text and value. */
 export const defaultSelectFilter: SelectFilterFn = (query, option) => {

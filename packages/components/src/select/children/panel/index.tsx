@@ -1,24 +1,8 @@
 import { forwardRef } from 'react';
-import type { MouseEvent, RefObject } from 'react';
 import clsx from 'clsx';
 import { IconCheck } from '@colox/icons';
 import { Popup } from '@colox/cdk/floating';
-import type { SelectOptionRecord } from '../../types';
-
-export interface SelectPanelProps {
-  open: boolean;
-  listboxId: string;
-  optionIdPrefix: string;
-  /** The positioning reference (the trigger shell). */
-  referenceRef: RefObject<HTMLElement | null>;
-  /** The filtered members rendered as rows. */
-  options: readonly SelectOptionRecord[];
-  /** Index of the keyboard-highlighted row, -1 when none. */
-  activeIndex: number;
-  /** Whether a value reads as selected in the current mode. */
-  isSelected: (value: string) => boolean;
-  onOptionClick: (option: SelectOptionRecord, event: MouseEvent<HTMLDivElement>) => void;
-}
+import type { SelectOptionRecord, SelectPanelProps } from '../../types';
 
 interface SelectOptionRowProps {
   option: SelectOptionRecord;

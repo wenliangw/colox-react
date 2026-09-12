@@ -1,9 +1,5 @@
-import type { MouseEvent } from 'react';
 import { IconX } from '@colox/icons';
-
-export interface SelectClearButtonProps {
-  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
-}
+import type { SelectClearButtonProps } from '../../types';
 
 /**
  * The clear control, built here rather than reusing Input's

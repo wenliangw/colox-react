@@ -1,8 +1,4 @@
-export interface FormSelectValuesProps {
-  name?: string;
-  /** The current selection ('', a value, or the value array). */
-  values: string | string[];
-}
+import type { FormSelectValuesProps } from '../../types';
 
 /**
  * The form-facing value channel: hidden native inputs carrying the
