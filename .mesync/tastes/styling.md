@@ -122,7 +122,7 @@
 
 ## 状态表达：单信号通道，动作图标悬停让位
 
-- **选中指示不搞双通道**：行尾 IconCheck 已是完整选中信号，选中行不再叠 brand 背景 + brand 文字（Select 首版前科，用户指正「背景颜色没有必要，有后面的 IconCheck 就够了」）；`aria-selected` 照旧背书 DOM。
+- **选中指示不搞双通道**：行尾 IconCheck 已是完整选中信号，选中行不再叠 brand 背景；**check 上主色（`--colox-color-brand-solid`），行文字保持默认 text 色**——「选中态 = 主色小图标 + 默认文字」，颜色只加在图标上（Select 前科两轮：先被指「背景颜色没有必要」，再被指「IconCheck 应该是主色但文字保持默认」）；`aria-selected` 照旧背书 DOM。
 - **尾部动作图标不并排**：clear X 与下拉箭头二选一——默认只显 chevron；有值且可清时（`--clearable` 状态类挂根壳）`:hover`/`:focus-within` 让 X 替换箭头（focus-within 保证键盘用户也能到达 X）；空值/disabled 时 chevron 常驻（X 无活可干）。来源：用户指正「并排视觉不好，hover 时箭头变 X，移开默认箭头」。
 - **让位用 opacity + pointer-events，不用 display/visibility**：X 绝对定位叠在 chevron 槽位（零布局抖动），静止 opacity:0——`display:none`/`visibility:hidden` 会把元素从 a11y 可达树摘掉（Testing Library `getByRole` 即找不到、键盘不可达）；与 popup 首帧守卫同一条通道纪律。
 

@@ -53,7 +53,7 @@ packages/components/src/select/
 
 ## 样式约定
 
-- 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；hover/键盘高亮 `--colox-color-gray-wash-hover`。**选中不做背景染色**（用户指正：行尾 IconCheck 已是选中信号，brand-wash 背景 + brand 文字多余）——`--selected` 类仍挂在行 DOM 上（测试/API 钩子），但无视觉规则；`aria-selected` 照旧背书。
+- 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；hover/键盘高亮 `--colox-color-gray-wash-hover`。**选中不做背景染色**（用户指正：行尾 IconCheck 已是选中信号，brand-wash 背景 + brand 文字多余）——`--selected` 类仍挂在行 DOM 上（测试/API 钩子），仅一条视觉规则：check 图标上主色 `--colox-color-brand-solid`、行文字保持默认（用户第二轮指正：「IconCheck 应该是主色，但文字保持默认的文字颜色」）；`aria-selected` 照旧背书。
 - **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。
 - z-index 无设计 token → cdk 内 `var(--colox-z-popup, 1000)` 内部变量 + 回落。
 - 面板最大高 256px + 滚动；chip 高度 `--colox-size-5` 恒定（不随 tier）。
