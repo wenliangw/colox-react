@@ -27,12 +27,12 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 
 ## 批次一（十枚样板）
 
-chevron-right（族基准，r2 尖端）/down（rotate 90）/left（rotate 180）/up（rotate 270）、x（45° 双交线）、check（两段 45° 圆肘）、plus（轴正交）、eye（透镜 rx8 ry7 + 瞳孔 r3）、eye-off（派生 + 45° 斜线）、search（r7 镜 + 45° 柄埋入笔画）。
+chevron-right（族基准，纯折线 V：`M9 6 L15 12 L9 18`，45° 臂 + round join 收小圆尖——圆弧拼接会破坏切线连续性、放大显形，决策见「chevron 几何 zoom-proof 校正」）/down（rotate 90）/left（rotate 180）/up（rotate 270）、x（45° 双交线）、check（两段 45° 圆肘）、plus（轴正交）、eye（透镜 rx8 ry7 + 瞳孔 r3）、eye-off（派生 + 45° 斜线）、search（r7 镜 + 45° 柄埋入笔画）。
 
 ## 新增图标流程（按需追加时的执行步骤）
 
 1. **同源先判**：状态对/方向族先查 `src/icons/geometry/` 有无可派生底图（chevron、eye 系）——有则复用几何 + transform/组合，不画第二张脸（规范 6）
-2. **几何设计**：按八条画 d——节点全整数、[2,22] 内容框（含 bleed ±0.75）、圆角 r2/r4 对位 token、45°/30° 角度系；光边界值**手推自设计**（不是渲染后测量）
+2. **几何设计**：按八条画 d——节点全整数、[2,22] 内容框（含 bleed ±0.75）、圆角 r2/r4 对位 token、45°/30° 角度系；**直线↔圆弧接点必须切线连续（整数网格下做不到就用纯折线 + round join——前科：chevron 旧圆弧接点断裂放大失真，corrections/icon-geometry.md）**；光边界值**手推自设计**（不是渲染后测量），改几何同步重算 BOUNDS
 3. **注册门禁**：组件 `src/icons/<name>.tsx` + barrel 导出 + spec test 的 ICONS 表注册（name/component/paths/circle/transform）+ BOUNDS 文档化光边界常量
 4. **过门禁**：`pnpm --filter @colox/icons test`——几何锁/整数网格/节点与圆范围/成对同源/size-color 透传全自动
 5. **肉眼终审**：渲染 PNG 与文字并排交用户看，通过后合入
