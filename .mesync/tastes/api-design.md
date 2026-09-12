@@ -19,6 +19,15 @@
 
 来源：IconButton 设计讨论（用户先后定下「四档但不套 Input 复合语义、允许裸 token 值」「键表像 spacingKeys 一样由 theme 提供」「内部站点用别的裸键」三节奏；决策见 `IconButton size 双通道`）。
 
+### IconButton 视觉轴：variant/intent 复用 Button 轴 + hover 反馈基座化（用户反转裁决）
+
+- **反馈默认进基座、覆盖留给站点**：hover/active wash + 按压缩放是图标钮通用契约，基座默认提供（最初「hover 不进基座」是过度保守——独立组件零反馈被用户指摘「IconButton 好像没有 hover 效果」后反转）；站点要克制时用自己的类覆盖，而不是逼所有消费方自己上 hover。
+- **形状开关显式化**：方形圆角（radius-xs）是默认足迹；圆形是 `rounded` prop 的显式选择——用户「圆底应该使用 rounded prop 来设置，默认应该是方形（圆角）」。
+- **视觉轴词汇与 Button 同源**：variant = ghost/solid/outline（默认 ghost），intent = Button 全套五色轴（primary/neutral/danger/warning/success，不缩水）——不发明 IconButton 私有颜色表/档名。ghost 基色保持 `color: inherit` 不涂 intent 色（与 Button ghost 涂色相反——图标钮常在上下文色敏感处：字段内清空钮/chip × 依赖 muted/disabled 继承，基座推色会污染已验收视觉；色加深由站点 hover 规则自己给）。
+- 将来 shape 类组件（Avatar/Badge 等）沿用：显式 rounded 开关、家族轴词汇复用、反馈基座默认化。
+
+来源：IconButton 视觉轴裁定（决策 05b83bed，caused_by IconButton 独立原语）。
+
 来源：Input 组件新增时对 `size` 语义的取舍（见决策「Input size prop 语义」）；Input v2.1 对齐设计语言时固化跨组件同源规则。
 
 ## boolean prop 命名：正向能力词 `allow<Ability>`，条件边界即语义
