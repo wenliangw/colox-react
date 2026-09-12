@@ -59,12 +59,13 @@ renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
 ## Variant & intent
 
 `variant` sets the icon color, not only the chrome: `text` (default) is the
-pure icon — the box hugs the icon (`size` sizes the icon itself) and hovering
-switches the icon color to the intent; `ghost` tints the icon in the intent
-color with a wash on hover; `outline` and `solid` carry bordered/filled
-paint in the intent color. `intent` is the Button five-axis palette
-(primary/neutral/danger/warning/success) — it drives the icon color, the
-hover feedback, the focus ring and the variant paint.
+pure icon — the box hugs the icon (`size` sizes the icon itself) and the icon
+is painted in the intent color, darkening to the intent hover/active shade;
+`ghost` tints the icon in the intent color with a wash on hover; `outline` and
+`solid` carry bordered/filled paint in the intent color. `intent` is the
+Button five-axis palette (primary/neutral/danger/warning/success) — **neutral
+by default** — it drives the icon color, the hover feedback, the focus ring
+and the variant paint.
 
 ## Rounded
 
@@ -84,7 +85,7 @@ switches it to a full circle — the hover/active wash follows the shape.
 | ------- | -------------------------------------------------------------- | ----------- |
 | size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)       | `'md'`      |
 | variant | `'text' \| 'ghost' \| 'outline' \| 'solid'`                    | `'text'`    |
-| intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'primary'` |
+| intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'neutral'` |
 | rounded | `boolean`                                                      | `false`     |
 
 It also accepts all native `<button>` attributes (`type` defaults to

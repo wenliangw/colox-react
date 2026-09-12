@@ -93,9 +93,9 @@ describe('IconButton intent', () => {
     expect(screen.getByRole('button', { name: 'close' })).toHaveClass(expectedClass);
   });
 
-  it('defaults to primary', () => {
+  it('defaults to neutral', () => {
     render(<IconButton aria-label="close" />);
-    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--primary');
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--neutral');
   });
 });
 

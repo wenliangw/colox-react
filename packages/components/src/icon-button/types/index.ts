@@ -26,18 +26,20 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    */
   size?: IconButtonSize;
   /**
-   * Visual form. Text is the default — pure icon: the box hugs the
-   * icon and `size` sizes the icon itself, hover feedback is the icon
-   * color switching to the intent; ghost tints the icon in the intent
-   * color with a wash on hover; solid/outline carry filled/bordered
-   * chrome in the intent color.
+   * Visual form. Text is the default — pure icon, no chrome: the box
+   * hugs the icon, `size` sizes the icon itself and the icon is
+   * painted in the intent color, darkening to the intent hover/active
+   * shade (no background feedback); ghost is the intent-tinted icon
+   * with a wash on hover; solid/outline carry filled/bordered chrome
+   * in the intent color.
    * @default 'text'
    */
   variant?: IconButtonVariant;
   /**
-   * Semantic intent — the color family for hover washes, focus ring,
-   * and solid/outline paint. Mirrors the Button intent axis.
-   * @default 'primary'
+   * Semantic intent — the color family for the icon, the hover
+   * feedback, the focus ring, and the solid/outline paint. Mirrors
+   * the Button intent axis.
+   * @default 'neutral'
    */
   intent?: IconButtonIntent;
   /**

@@ -3,21 +3,25 @@
  * variables (the intent layer maps them onto the color families). Text
  * is the default pure-icon form: no chrome, the box hugs the icon
  * (the size channel feeds the font-size, so `size` sizes the icon
- * itself) and hover feedback is the icon color switching to the
- * intent, not a background; ghost is the intent-tinted icon with a
- * wash on hover; solid/outline carry filled/bordered chrome in the
- * intent color. Disabled keeps the shared muted treatment plus a
- * variant-appropriate fill/border.
+ * itself) and the icon is painted in the intent color, darkening to
+ * the intent hover/active shades — no background involved; ghost is
+ * the intent-tinted icon with a wash on hover; solid/outline carry
+ * filled/bordered chrome in the intent color. Disabled keeps the
+ * shared muted treatment plus a variant-appropriate fill/border.
  */
 .colox-icon-button--text {
   background-color: transparent;
   width: auto;
   height: auto;
   font-size: var(--colox-icon-button-block);
+  color: var(--colox-icon-button-intent-solid);
 
-  &:hover:not(:disabled),
+  &:hover:not(:disabled) {
+    color: var(--colox-icon-button-intent-solid-hover);
+  }
+
   &:active:not(:disabled) {
-    color: var(--colox-icon-button-intent-solid);
+    color: var(--colox-icon-button-intent-solid-active);
   }
 }
 
