@@ -1,4 +1,4 @@
-import { createRef } from 'react';
+import { createRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
@@ -504,6 +504,58 @@ describe('Select tag templates', () => {
     expect(payload.event).toBeDefined();
     // The injected onRemove stops the click from bubbling to the shell.
     expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('removes the chip through onRemove under a controlled value', () => {
+    const Controlled = () => {
+      const [value, setValue] = useState<string[]>(['apple', 'date']);
+      return (
+        <Select
+          mode="multiple"
+          value={value}
+          onChange={({ value: next }) => setValue(next as string[])}
+        >
+          {FruitOptions}
+          <Select.Template name="tag">
+            <DemoTagTemplate />
+          </Select.Template>
+        </Select>
+      );
+    };
+    render(<Controlled />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Apple' }));
+
+    expect(screen.queryByText('Apple', { selector: '.demo-tag-label' })).not.toBeInTheDocument();
+    expect(screen.getByText('Date', { selector: '.demo-tag-label' })).toBeInTheDocument();
+  });
+
+  it('removes the chip while the panel is open, without dismissing', () => {
+    const Controlled = () => {
+      const [value, setValue] = useState<string[]>(['apple', 'date']);
+      return (
+        <Select
+          mode="multiple"
+          value={value}
+          open
+          onOpenChange={() => undefined}
+          onChange={({ value: next }) => setValue(next as string[])}
+        >
+          {FruitOptions}
+          <Select.Template name="tag">
+            <DemoTagTemplate />
+          </Select.Template>
+        </Select>
+      );
+    };
+    render(<Controlled />);
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Remove Apple' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Apple' }));
+
+    expect(screen.queryByText('Apple', { selector: '.demo-tag-label' })).not.toBeInTheDocument();
+    expect(screen.getByText('Date', { selector: '.demo-tag-label' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
 
   it('hydrates the fold bag onto the custom root when the row tightens', () => {

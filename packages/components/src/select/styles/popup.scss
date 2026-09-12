@@ -31,9 +31,18 @@
 
   &--selected {
     // The IconCheck carries the selection in the brand channel; the
-    // row text stays on the default text color (no wash background).
+    // row text stays on the default text color.
     .colox-select__option-check {
       color: var(--colox-color-brand-solid);
+    }
+
+    // The selected row never takes the hover/active wash: on
+    // single-mode reopen the keyboard highlight initializes on the
+    // selected row — a wash there would read as a selection
+    // background (the ruling: selection = check only).
+    &:hover,
+    &.colox-select__option--active {
+      background-color: transparent;
     }
   }
 
