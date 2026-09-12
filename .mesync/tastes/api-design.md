@@ -112,3 +112,14 @@
 - 回调不设（变化响应 = 订阅 context/store 值）；`'system'` 词汇进主题值域（声明与 setTheme 命令同词），跟随系统的状态机由 context 内部控制，使用方零实现。
 - 运行时不做配置文件接线（colox.theme.json 纯编译期）：文件管编译产物、代码管运行接线。palette prop 的值即 output.name 轴名——人肉对齐的漂移风险已知并接受。
 - 四轴事实源是 `<html>` 属性，React 层只做写入者+订阅器，不建平行状态。motion 轴例外更简：`'system'`/缺省**不写属性**，`prefers-reduced-motion` 媒体查询原生跟随（无 JS 传感器），只有显式 true/false 写入 `data-colox-motion`。**存储模型 = React 状态流**：`<ColoxTheme>` 根持 useReducer 状态 + context 下发（snapshot 字段 + 命令 + register/unregister 平铺为一个 context 值）；属性写入是 useInsertionEffect 副作用，matchMedia 传感器/存储恢复在 layout/普通 effect 里接线并自动清理；无模块级全局变量。无 Provider 时 useColoxTheme `console.warn` + 静态默认值（命令式 setter 与子组件 register/unregister 皆变 no-op）——调用保护只存在 useColoxTheme 一处，所有消费方同出口。
+
+## 集合逐项定制：模板叶 + clone 注入，否决 prop 回调 render-prop
+
+- 集合型组件的逐项渲染定制（Select 多选 chip、将来 Checkbox.Group 成员等）标准形态 = **compile-time 模板叶**（`<Select.Template name="tag">` 唯一组件子节点），渲染期逐项 `cloneElement` 注入契约——不是 `tagRender` 式 prop 回调。
+- 否决 prop 回调的理由（用户原话精神）：「prop 的形式入参渲染节点不直观也很别扭」；回调把 JSX 隔一层——与 optionRender 撤销同一病因，叶子才是第一等 JSX 处方。
+- **注入契约三元组**：`props`（必须属性背包，库将来新增必须属性消费方 spread 一次自动跟进，可前向兼容——「组件不套壳」）/ `option`（成员编译记录，未声明值合成兜底恒定义）/ `onRemove`（内部移除通道，视觉归消费方、行为归库）。背包 `{...props}` **靠前展开**、库属性赢。
+- 模板组件必须输出单一根元素（fragment 根破坏「一值一节点」测量索引）；宿主元素/重复模板/未知槽 = 编译期硬错误。
+- 不提供模板 + 回调双通道（双源真相与优先级文档负债，违反正交原则——options 与叶子并存被否的前科）。
+- 通用引擎节奏：**模式先行、引擎后行**——clone 一步无抽象价值（一行 cloneElement），共性在校验 + 类型基座 + 遍历 visitor；第二个消费者出现才提权 cdk（rule of two；InputControl 提权同规）。
+
+来源：Select tag 定制定案（决策 c7778102，caused_by 59aa4801 选项叶子化改判）。

@@ -9,7 +9,7 @@
 - **叶子契约（v2 改判）**：`Select.Option` 成员为唯一声明面——`value`（选择真值与 FormData 值）+ `text`（文本面：搜索过滤、触发器显示、multiple chip、缺省行渲染）必填；`children` 为可选富渲染（无则渲染 `text`）；`disabled` 照旧。消费方渲染定制是第一等 JSX 处方，数据式 + optionRender 回调徒增隔层——v1 的 options/optionRender 已撤。
 - **成员编译**：`compileSelectOptions` 对 children 子树做纯结构遍历——穿透 Fragment、数组与传透型包装组件（成员以 children 传入的结构仍在），组件内部自造成员不可见（成员叶子自身从不渲染，与 rc-select 同边界）。编译记录 = `{ value, text, disabled, size, key, content, className, style }`；key = 元素 key ?? value；重复 value 允许（原生 select 语义）。
 - **size 继承（本人优先）**：成员 `size` 缺省取父级 `Select.size`，可单独覆盖——行 tier 类 `colox-select__option--{tier}` 每行独立发射；optionSize 专 prop 随数据式 API 一并废除（面板行型归入家族继承轴）。
-- **模式**：`mode: 'single'`（value `string`，`''` = 未选中，Radio.Group 空值惯例）/ `'multiple'`（`string[]`）。multi 下每次选择后面板保持打开；chip 独立移除按钮 + 空查询 Backspace 删除末位 chip。chip 文案取 `text`（富 children 成员也不克隆 children 进 chip）。**溢出折叠（A 方案，实现形态经一轮改判）**：chip 行单线不折行；chips 挂载全量、行内只渲染前 k 枚、折叠尾部 visibility:hidden + position:absolute 脱流隐藏（不可见/不进 a11y 树/仍可测宽），`+M` 行内 chip 排尾零叠压（叠加徽标前科：断 pill 视觉污染）；**折叠预算 = inner 宽 − control 的 CSS min-width（computed，绝不读 offsetWidth）− trailing 宽 − 2×gap**——不取行自身宽（随切片回缩自我坍塌归零，前科一轮），也不取任何元素的当前宽（control flex:1/0% 基底贪婪吸收空余，当前宽分支恒真再坍，前科二轮，最终定案）；ResizeObserver 只观察 inner（以它为容器参考值）；SSR/jsdom 无布局时徽标隐藏全量显示；+M 无自家交互，点击走壳逻辑开面板，面板里全部成员照旧可管理。计数纯函数 `countFittingTags`（utils/tag-fitting.ts）+ 测量 hook `useTagFold`（hooks/use-tag-fold.ts）单测覆盖（含贪婪宽回归）。
+- **模式**：`mode: 'single'`（value `string`，`''` = 未选中，Radio.Group 空值惯例）/ `'multiple'`（`string[]`）。multi 下每次选择后面板保持打开；chip 独立移除按钮 + 空查询 Backspace 删除末位 chip。chip 文案取 `text`（富 children 成员也不克隆 children 进 chip）。**tag 模板（compile-time 模板叶，详见决策 c7778102）**：`Select.Template name="tag"` 唯一组件子节点声明 chip 视觉处方；渲染期逐 chip cloneElement 注入三元契约 `{ props, option, onRemove }`——`props` 必须属性背包（折叠通道 aria-hidden/style，作者 `{...props}` 靠前展开不得覆盖），`option` 成员编译记录（未声明值合成兜底），`onRemove` 内部移除通道（onChange 载荷 + stopPropagation）；模板组件须输出单一根元素（fragment 根破坏一值一节点索引）。不提供 tagRender 回调（双通道违反正交前科）；cdk 通用 Template 引擎待第二个消费者出现再提权。**溢出折叠（A 方案，实现形态经一轮改判）**：chip 行单线不折行；chips 挂载全量、行内只渲染前 k 枚、折叠尾部 visibility:hidden + position:absolute 脱流隐藏（不可见/不进 a11y 树/仍可测宽），`+M` 行内 chip 排尾零叠压（叠加徽标前科：断 pill 视觉污染）；**折叠预算 = inner 宽 − control 的 CSS min-width（computed，绝不读 offsetWidth）− trailing 宽 − 2×gap**——不取行自身宽（随切片回缩自我坍塌归零，前科一轮），也不取任何元素的当前宽（control flex:1/0% 基底贪婪吸收空余，当前宽分支恒真再坍，前科二轮，最终定案）；ResizeObserver 只观察 inner（以它为容器参考值）；SSR/jsdom 无布局时徽标隐藏全量显示；+M 无自家交互，点击走壳逻辑开面板，面板里全部成员照旧可管理。计数纯函数 `countFittingTags`（utils/tag-fitting.ts）+ 测量 hook `useTagFold`（hooks/use-tag-fold.ts）单测覆盖（含贪婪宽回归）。
 - **onChange 载荷**：`{ event, value, option }` —— `event` 为触发交互（选项点击 / combobox Enter 按压 / chip 移除 / 清除按钮的原生合成事件，类型 `MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>`），`value` 为下一选择，`option` 为被选/被切换成员的**叶子编译记录** `{ value, text, disabled }`（清除时 `undefined`）。
 - **showSearch**（默认 false）：single 可搜索时用内嵌输入 control 替代显示行——关闭时显示选中项 text、打开时翻转到 query 流；multiple 恒有 control 承载 query。默认过滤 = text + value 大小写不敏感子串，`filterOption` 可替换；`onSearch(query)` 原始流直出（远程编排归消费方）。
 - **焦点与键盘**：闭合 control 上 Enter/方向键打开并移动高亮；打开后上下方向键循环走（跳过 disabled），Home/End 跳首尾，Enter 激活；Space 只在非 input control 上拦截（`event.currentTarget instanceof HTMLInputElement` 判别）。
@@ -35,7 +35,8 @@ packages/components/src/select/
 │   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮（不复用 Input 的——aria-label/类名名字空间不同）
 │   ├── form-values/    # FormSelectValues：给 Form 组件设置 value 的隐藏输入通道（single 一枚 / multiple 每值一枚）
 │   ├── panel/          # SelectPanel：portal listbox 行渲染（行 tier/selcted/active/disabled）+ 空态
-│   └── option/         # SelectOption 叶子：compile-time-only 成员（渲染 null，dot-part 挂载到根）
+│   ├── option/         # SelectOption 叶子：compile-time-only 成员（渲染 null，dot-part 挂载到根）
+│   └── template/       # SelectTemplate 叶子：name="tag" 模板槽（渲染 null）；编译校验在 utils/select-options 的 findSelectTemplate
 ├── variants/           # size 四档 cva（仅外壳；行 tier 由成员 size 解析，不设变体）
 ├── styles/             # base.scss（壳/control/chiip/trailing）+ size.scss（壳四档 + 行四档）+ popup.scss（listbox/option）
 └── _tests/             # select.test.tsx（单模式）+ select-multiple.test.tsx（多模式）
@@ -63,7 +64,7 @@ packages/components/src/select/
 
 ## 测试
 
-77 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态、折叠计数纯函数 4 例 + jsdom 徽标隐藏 1 例 + 模拟指标回归 1 例（inner 预算折叠与放宽长回双向断言，防「折叠自食」归零）。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate + 折叠重测需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
+86 例全绿（v1 的 61 例全部保留并改写为新契约）：键盘循环/跳 disabled/Home/End、Enter 载荷（event.key 断言）、受控对称、mouse 选择载荷（记录 + event.target）、重新选择同值仍发射、clearable（payload option undefined）、隐藏 input、invalid/disabled、过滤（默认/自定义/onSearch）、富 children 渲染 + text 行名钉住、size 继承/逐行覆盖、传透包装编译、受控 open、默认 open（SSR mounted 守卫）、外部点击/Escape 关闭、multiple chip/Backspace/Enter 反选/多隐藏 input、focus 保持、空态、折叠计数纯函数 4 例 + jsdom 徽标隐藏 1 例 + 模拟指标回归 1 例（inner 预算折叠与放宽长回双向断言，防「折叠自食」归零）、tag 模板 9 例（注入契约/包装发现/未声明值合成兜底/onRemove 载荷+面板不弹/折叠隐藏包注入自定义根/宿主元素/无子/重复模板/未知槽硬错误）。测试依赖 test-setup.ts 的 ResizeObserver stub（autoUpdate + 折叠重测需要）；option 的 id 用 `document.getElementById` 查询（useId 冒号不能进选择器）。
 
 ## 变更
 
@@ -75,3 +76,4 @@ packages/components/src/select/
 - 2026-09 Select 折叠形态改判：叠加徽标被指「视觉污染（断 pill）」→ 视觉切片 + 行内 +M chip（挂载全量、尾部脱流隐藏兼任测量源；详见决策 1c6ee3a7，59ee6358 被其 supersede）。
 - 2026-09 Select 折叠测量 bug 修复：首版把「行自身宽」当折叠预算，行随切片回缩 → 计数自我坍塌归零（用户现象：继续选中后空间够却只剩 +M、全选后零 chip）；改预算 = inner − control 底线 − trailing − 2×gap，RO 观察 inner/control/row 三方（纠错条款见 corrections/measurement.md）。
 - 2026-09 Select 折叠测量 bug 修复二轮（重构版）：上一版的「control 当前宽 > 底线则受让」分支是第二次坍塌（control flex:1/0% 基底在折叠后吸收空余，分支恒真 → 预算坍回切片内容宽 → 一个 option 都不展示只剩 +M）；终版抽 `useTagFold` hook：预算 = inner − control computed min-width − trailing − 2×gap，全恒定占位、RO 只观察 inner；回归测试把 control 模拟为贪婪宽 220（前版 mock 8px 等于底线，盲区漏测）。纠错条款 corrections/measurement.md 已二轮补全。
+- 2026-09 Select tag 定制定案：`Select.Template name="tag"` 模板叶 + cloneElement 注入 `{ props, option, onRemove }`（用户否决 tagRender 回调形式，props 背包 = 无壳 + 前向兼容；详见决策 c7778102）；docs 演示组件落 `apps/docs/src/components/select/tag-template-demo.tsx`（MDX ESM 对箭头函数组件导出解析极脆——注释里的 `<EmojiTag />` 字面量都会被当正文 JSX 解析，教训：docs 复杂 demo 一律 app 侧文件）。
