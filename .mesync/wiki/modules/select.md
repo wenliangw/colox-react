@@ -25,12 +25,13 @@ packages/components/src/select/
 ├── index.ts            # 公共 barrel（组件 + 类型 + variants）
 ├── types/index.ts      # SelectOptionProps / SelectOptionRecord / SelectChangePayload / SelectProps / SelectRef
 ├── hooks/use-select.ts # 状态对称（value/defaultValue、open/defaultOpen、query 流、publish）
-├── utils/select-options.ts  # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter
+├── utils/select-options.ts       # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter
+├── utils/resolve-select-surface.tsx  # 派生值 resolver：inputValue/controlLabel/buttonDisplay 逐级回退链（if + return）
 ├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物）
 │   ├── control/        # SelectControl：两种形态（内嵌 InputControl / 触发 button）+ combobox ARIA 面
 │   ├── tags/           # SelectTags：multiple chip 列（text 文案 + 移除钮）
 │   ├── clear-button/   # SelectClearButton：mousedown 防失焦清除钮（不复用 Input 的——aria-label/类名名字空间不同）
-│   ├── hidden-inputs/  # SelectHiddenInputs：FormData 隐藏 input（single 一枚 / multiple 每值一枚）
+│   ├── form-values/    # FormSelectValues：给 Form 组件设置 value 的隐藏输入通道（single 一枚 / multiple 每值一枚）
 │   ├── panel/          # SelectPanel：portal listbox 行渲染（行 tier/selcted/active/disabled）+ 空态
 │   └── option/         # SelectOption 叶子：compile-time-only 成员（渲染 null，dot-part 挂载到根）
 ├── variants/           # size 四档 cva（仅外壳；行 tier 由成员 size 解析，不设变体）

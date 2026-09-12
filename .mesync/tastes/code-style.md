@@ -46,6 +46,7 @@
 
 - **`if` 必须带 `{}`**：即使一行内容也要完整语句块（`if (x) {\n  return;\n}`），绝不写 `if (x) return;`。
 - **优先 guard clause（单 if + return/continue）**，不堆 switch 与 if-else：先处理边界/失效分支并提前返回，主逻辑保持平铺；`else` 能用「先置默认值，再单 if 覆盖」消解的就消解。多轴同构时**统一归零再统一写入**：所有 remove/重置提到前面整体执行，随后按条件 set 各偏差值（属性写入：先 removeAttribute 全部归零再条件 setAttribute；存储写穿同序），同一轴的 remove/set 不交错。
+- **多分支派生值沉淀 resolver，不在渲染体堆 `let` + else-if 链**：可达名/显示内容/输入值这类「逐级回退」的派生，下沉 utils 纯函数，用「单 if + return 回退」逐级早退（`resolveControlLabel` 的 aria-label → 选项 text → 原始 value → placeholder 链）；组件体内只剩一次函数调用（Select v2 首版三条 let+else-if 链被用户指正「特别丑陋」）。
 - **switch 与 if-else 不禁止**，是整洁取舍：在合理场景仍用（状态机对可辨识联合的 exhaustive switch、校验器无后续检查时、三路分支各赋一值）；使用处分支统一带花括号。
 
 ## 注释克制：代码即注释
@@ -53,6 +54,7 @@
 - **文件开头不写长篇注释**（模块用途大论文一律删除），文件首部保持干净的 import。
 - 只留解释「为什么」的必要注释；能自我说明的代码不注释（自解释代码 > 注释）。
 - 工具方法与类型**都要写多行注释**，简洁说明作用即可（`/** … */` 多行形式，可带 `@default`；本条目即「props 注释放多行」的泛化）。
+- **不写分隔横幅注释**：`/* ===== xxx ===== */` 这类「伪章节标题」一律删除（Select v2 首版 `/* ===== control surfaces ===== */` 被用户指正「无意义」）——代码结构靠函数/组件边界表达，不靠注释横幅。
 - 无用/无意义注释宁缺毋滥；注释遗产随重构清理——一旦某文件被重构，注释必须同步瘦身。
 
 ## 命名用全拼，不用缩写
@@ -74,6 +76,12 @@
 
 - 组件参数类型用 `Props`（`XProps` / `XPropsWithoutRef` 等读作「组件的参数」）；**函数/方法**（hook、resolver、工具）的参数类型用 `Params`（`UseXParams` / `ResolveXParams`）——「组件用 Props，方法用 Params」。
 - 禁用 `...Args` 命名函数参数类型（Input 首版 `UseInputFilterArgs` / `UsePasswordVisibilityArgs` / `ResolveInputSlotsArgs` 被用户指正后全部改为 `...Params`）。
+
+## props 声明顺序：属性在前，事件在后
+
+- 接口、组件解构、调用点（`useXxx({...})` / JSX）三处同序：**属性块在前、事件块在后**，不混插（Select v2 首版把 `onChange`/`onSearch` 夹在 `value`/`defaultValue` 与视觉属性中间，被用户指正「属性 … 事件」）。事件块内部保持接口声明的相对顺序（如 `onChange` → `onSearch` → `onOpenChange`）。
+- 属性块内部按语义关系分组（模式 → 数据 → 视觉 → 状态），不做字母序。
+- 原生事件透传属性（`onClick` 等）随 `...rest` 末尾展开，不参与排序。
 
 ## 代码注释与提交全英文，mesync 中文
 
