@@ -19,15 +19,17 @@
 
 ## 视觉轴（决策 05b83bed）
 
-`variant?: 'ghost' | 'outline' | 'solid'`（默认 ghost）× `intent?: 'primary' | 'neutral' | 'danger' | 'warning' | 'success'`（默认 primary——Button 同款五色轴，含 success，不缩水）× `rounded?: boolean`（默认 false）：
+`variant?: 'text' | 'ghost' | 'outline' | 'solid'`（默认 **text**，决策 a42ba861）× `intent?: 'primary' | 'neutral' | 'danger' | 'warning' | 'success'`（默认 primary——Button 同款五色轴，含 success，不缩水）× `rounded?: boolean`（默认 false）：
 
-- **ghost**：无铬、`color: inherit`（显式不涂 intent 色——字段内清空钮/chip × 依赖上下文 muted/disabled 继承，基座推色会污染已验收视觉；Button ghost 涂色、IconButton ghost 不涂）；hover/active = intent wash 方形浅底（radius-xs——**圆形不做默认**，用户定调「圆底应该使用 rounded prop 来设置，默认应该是方形（圆角）」）；disabled = text-disabled。
-- **solid**：intent 实底三态（solid → solid-hover/active）+ intent-inverse 图标；disabled = bg-disabled。
-- **outline**：1px intent border + intent 图标 + 透明底，hover/active = wash，disabled = border-disabled。
-- **rounded**：`border-radius: var(--colox-radius-full)`（9999px）——wash/fill 跟随圆形足迹。
+- **变体决定图标色**（用户定调「设置 variant 后，图标的颜色也应该跟着变」）：
+  - **text**（默认）：纯图标、无静止铬；`color: inherit`——字段内清空钮/chip × 依赖上下文 muted/disabled 色的诉求自然落在 text；hover/active = intent wash 方形浅底（用户追加「text 的 IconButton 也需要有 hover 效果」→ 与 ghost 同款 wash）。
+  - **ghost**：图标色 = intent solid（照 Button ghost 语义——旧实现 color: inherit 是「变体不决定色」的缺块）；hover/active = 同款 wash。**text/ghost 的唯一差异 = 静止图标色（继承 vs intent）**，hover 语言同一，变体轴最小差异化。
+  - **solid**：intent 实底三态（solid → solid-hover/active）+ intent-inverse 图标；disabled = bg-disabled。
+  - **outline**：1px intent border + intent 图标 + 透明底，hover/active = wash，disabled = border-disabled。
+- **方形圆角**：默认 `radius-lg`(8px)——用户反馈 radius-xs(2px) 视觉上等于没有，且 Button/Input 家族基准就是 radius-lg，同源对齐；**圆形不做默认**，`rounded` prop 才切 `radius-full`(9999px)。wash/fill 跟随足迹。
 - **实现形状同 Button**：intent.scss 注解私有变量族 `--colox-icon-button-intent-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
 - **动效与 Button 同步**：base 双段 transition（normal 全轴 + active 快速段）、`scale(0.97)` 按压。
-- **内部四站零代码变更**：默认即 ghost+primary，wash 与站点 hover 色规则叠加成「浅底 + 色加深」双反馈（Playwright 实证：hover bg = brand wash 8% alpha、离开回透明、radius 2px）。
+- **内部四站零代码变更**：默认即 text+primary——静止视觉与最原版一致（无色继承），hover wash 由 text 变体带回，与站点 hover 色规则叠加成「浅底 + 色加深」双反馈。
 
 ## 站点契约（换装后的分工）
 

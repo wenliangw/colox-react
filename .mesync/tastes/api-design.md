@@ -23,7 +23,10 @@
 
 - **反馈默认进基座、覆盖留给站点**：hover/active wash + 按压缩放是图标钮通用契约，基座默认提供（最初「hover 不进基座」是过度保守——独立组件零反馈被用户指摘「IconButton 好像没有 hover 效果」后反转）；站点要克制时用自己的类覆盖，而不是逼所有消费方自己上 hover。
 - **形状开关显式化**：方形圆角（radius-xs）是默认足迹；圆形是 `rounded` prop 的显式选择——用户「圆底应该使用 rounded prop 来设置，默认应该是方形（圆角）」。
-- **视觉轴词汇与 Button 同源**：variant = ghost/solid/outline（默认 ghost），intent = Button 全套五色轴（primary/neutral/danger/warning/success，不缩水）——不发明 IconButton 私有颜色表/档名。ghost 基色保持 `color: inherit` 不涂 intent 色（与 Button ghost 涂色相反——图标钮常在上下文色敏感处：字段内清空钮/chip × 依赖 muted/disabled 继承，基座推色会污染已验收视觉；色加深由站点 hover 规则自己给）。
+- **视觉轴词汇与 Button 同源**：variant = text/ghost/solid/outline（默认 text），intent = Button 全套五色轴（primary/neutral/danger/warning/success，不缩水）——不发明 IconButton 私有颜色表/档名。
+- **变体决定图标色**（用户「设置 variant 后，图标的颜色也应该跟着变；ghost 的图标颜色好像不正确」）：text 继承上下文色（字段内清空钮/chip × 依赖 muted/disabled 继承的诉求落在这里）、ghost/outline 涂 intent solid、solid 涂 inverse——色随变体走，不留给语境猜。text 与 ghost 共享同一 wash hover，唯一差异收敛在静止图标色一处（变更最小化）。
+- **默认形态最小化**：纯图标 text 是默认（无静止铬），加铬（ghost 色/outline 边/solid 底）是显式选择（用户「variant 需要增加 text 形式……并且默认应该为 text」）。
+- **形状参数家族同源**：方形默认圆角对齐 Button/Input 的 radius-lg(8px)——radius-xs(2px) 视觉上等于没有（用户指正）；圆形仍是 rounded prop 显式开关。
 - 将来 shape 类组件（Avatar/Badge 等）沿用：显式 rounded 开关、家族轴词汇复用、反馈基座默认化。
 
 来源：IconButton 视觉轴裁定（决策 05b83bed，caused_by IconButton 独立原语）。

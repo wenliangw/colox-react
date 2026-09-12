@@ -59,7 +59,7 @@ input/
 
 ### 内置控件
 
-- **清除（`clearable`，默认 false）**：追加到尾插槽；`disabled`/`readOnly` 下不渲染；`onMouseDown` preventDefault 防焦点转移；`aria-label="Clear input"`；`clearIcon` 可替换（默认 `IconX`）。按钮本体 = IconButton（`size="4"`，复位/方形足迹/焦点环/禁用态全走基座），本站只保留防失焦与槽位装配（决策 07ea9169 → 05b83bed：hover wash 也随之进基座）。
+- **清除（`clearable`，默认 false）**：追加到尾插槽；`disabled`/`readOnly` 下不渲染；`onMouseDown` preventDefault 防焦点转移；`aria-label="Clear input"`；`clearIcon` 可替换（默认 `IconX`）。按钮本体 = IconButton（`size="4"`，复位/方形足迹/焦点环/禁用态全走基座），本站只保留防失焦与槽位装配（决策 07ea9169 → 05b83bed → a42ba861：hover wash 基座化，默认 text 变体也带同款 wash）。
 - **密码可见性（`allowTogglePassword`，默认 false）**：仅当 `true` 且 `type="password"` 时生效；内部 `revealed` state 为纯视觉状态（非 value），切换 input type text/password；`onMouseDown` 防失焦；`aria-label` 状态式："Show password"（隐藏时）/ "Hide password"（可见时）。图标语义 **状态式**：隐藏时显示闭眼 `eyeOffIcon`（默认 `IconEyeOff`）、可见时显示睁眼 `eyeIcon`（默认 `IconEye`）——「没输密码时闭眼、能看到内容时睁眼」；「点击后会发生什么」的动作式语义被否（见决策链）。
 - **搜索前置图标（`type="search"`）**：无显式 `leading` 时自动渲染 `IconSearch` 进前置槽；显式 `leading` 优先。CSS 抑制 webkit 原生 search cancel 装饰，避免与内置清除钮重复。
 
