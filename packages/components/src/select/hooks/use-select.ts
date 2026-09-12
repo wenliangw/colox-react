@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
-import type { SelectChangePayload, SelectMode, SelectOption } from '../types';
+import type { SelectChangePayload, SelectMode, SelectOptionRecord } from '../types';
 
 export type SelectChangeEvent = MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>;
 
@@ -29,9 +29,9 @@ export interface UseSelectResult {
   /** The current selection: `''`/`string[]` resolved from control or state. */
   value: string | string[];
   /** Single mode: picks the selection (`next` replaces, '' = none). */
-  select: (next: string, event: SelectChangeEvent, option?: SelectOption) => void;
+  select: (next: string, event: SelectChangeEvent, option?: SelectOptionRecord) => void;
   /** Multiple mode: toggles a member inside the selection array. */
-  toggle: (member: string, event: SelectChangeEvent, option?: SelectOption) => void;
+  toggle: (member: string, event: SelectChangeEvent, option?: SelectOptionRecord) => void;
   /** Resets the selection to the mode's empty shape (clearable channel). */
   clear: (event: SelectChangeEvent) => void;
 }
@@ -95,7 +95,7 @@ export function useSelect({
   );
 
   const commit = useCallback(
-    (next: string | string[], event: SelectChangeEvent, option?: SelectOption) => {
+    (next: string | string[], event: SelectChangeEvent, option?: SelectOptionRecord) => {
       if (isMultiple) {
         const nextArray = next as string[];
         if (value === undefined) {
@@ -113,14 +113,14 @@ export function useSelect({
   );
 
   const select = useCallback(
-    (next: string, event: SelectChangeEvent, option?: SelectOption) => {
+    (next: string, event: SelectChangeEvent, option?: SelectOptionRecord) => {
       commit(next, event, option);
     },
     [commit],
   );
 
   const toggle = useCallback(
-    (member: string, event: SelectChangeEvent, option?: SelectOption) => {
+    (member: string, event: SelectChangeEvent, option?: SelectOptionRecord) => {
       const members = current as string[];
       const next = members.includes(member)
         ? members.filter((candidate) => candidate !== member)

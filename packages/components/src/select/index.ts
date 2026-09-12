@@ -2,7 +2,8 @@ export { Select } from './select';
 export type {
   SelectChangePayload,
   SelectMode,
-  SelectOption,
+  SelectOptionProps,
+  SelectOptionRecord,
   SelectProps,
   SelectRef,
   SelectSize,

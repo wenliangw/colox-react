@@ -49,9 +49,11 @@
   min-width: 0;
 }
 
-// The non-searchable single trigger: a native button carrying the
-// combobox role, visually transparent inside the shell.
-.colox-select__combobox {
+// The shell's control — the non-searchable single trigger as a native
+// button and the search input in one shared class. The button shape is
+// visually transparent inside the shell; the input shape carries the
+// cdk InputControl reset (borderless, font/color inheritance) on top.
+.colox-select__control {
   flex: 1;
   min-width: 0;
   padding: 0;
@@ -75,9 +77,10 @@
   color: var(--colox-color-text-subtle);
 }
 
-// The search organ is Input's shared naked control class: it already
+// The search control is the cdk's naked input control: it already
 // carries the standalone reset (borderless, font/color inheritance).
-.colox-select .colox-input__control {
+// Typing reads better with a text cursor than the shell's pointer.
+.colox-select .colox-input-control {
   cursor: text;
 }
 

@@ -1,35 +1,61 @@
-import type { HTMLAttributes, KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import type { SelectVariants } from '../variants';
 
 export type SelectSize = NonNullable<SelectVariants['size']>;
 
 export type SelectMode = 'single' | 'multiple';
 
-export interface SelectOption {
+/**
+ * A compiled option member: the Select.Option leaf resolved at render
+ * time (the member's `size` falls back to the parent's, `content` is
+ * the member's children or its `text`).
+ */
+export interface SelectOptionRecord {
   /** The selection truth: what `value`/`onChange`/FormData carry. */
   value: string;
-  /** Display content — also the default filter match surface. */
-  label: ReactNode;
+  /** The text surface: search filtering, trigger display, chips and the default row render. */
+  text: string;
+  /** Not selectable; keyboard navigation skips it. */
+  disabled: boolean;
+  /** The row typography tier: the member's own prop or the parent's `size`. */
+  size: SelectSize;
+  /** Stable row key: the element's key, falling back to `value`. */
+  key: string;
+  /** The panel row content: the member's children, or `text` when absent. */
+  content: ReactNode;
+  /** The member's className — merged onto the panel row. */
+  className?: string;
+  style?: CSSProperties;
+}
+
+/** The Select.Option leaf: `value` + `text` required, children = optional rich render. */
+export interface SelectOptionProps extends HTMLAttributes<HTMLDivElement> {
+  /** The selection truth: what `value`/`onChange`/FormData carry. */
+  value: string;
+  /** The text surface: search, trigger display, chips, default render. */
+  text: string;
   /** Not selectable; keyboard navigation skips it. */
   disabled?: boolean;
+  /** Row typography tier — defaults to the parent Select `size`. */
+  size?: SelectSize;
 }
 
 /**
- * The group's change payload: `event` is the native event that fired
- * the change — an option click (mouse) or the combobox Enter press
+ * The change payload: `event` is the native interaction that fired the
+ * change — an option click (mouse) or the combobox Enter press
  * (keyboard) — `value` the next selection, and `option` the chosen or
- * toggled option (undefined when cleared).
+ * toggled option's compiled record (undefined when cleared).
  */
 export interface SelectChangePayload {
-  /** The triggering interaction: an option click/press or the clear button. */
+  /** The triggering interaction: an option click/press, chip remove or the clear button. */
   event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>;
   /**
    * The next selection: the chosen value in single mode ('' = none,
    * clearable) or the next array in multiple mode.
    */
   value: string | string[];
-  /** The chosen/toggled option; undefined on clearable clears. */
-  option?: SelectOption;
+  /** The chosen/toggled option record; undefined on clearable clears. */
+  option?: SelectOptionRecord;
 }
 
 export interface SelectProps extends Omit<
@@ -42,21 +68,14 @@ export interface SelectProps extends Omit<
    * @default 'single'
    */
   mode?: SelectMode;
-  /** The option list rendered inside the popup (data-driven, server-ready). */
-  options?: readonly SelectOption[];
   /**
-   * Customizes an option's panel content. The trigger still displays
-   * the raw `label`.
-   */
-  optionRender?: (option: SelectOption) => ReactNode;
-  /**
-   * Replaces the default filter (case-insensitive substring over label
+   * Replaces the default filter (case-insensitive substring over text
    * and value). Applies only while `showSearch` is on.
    */
-  filterOption?: (query: string, option: SelectOption) => boolean;
+  filterOption?: (query: string, option: SelectOptionRecord) => boolean;
   /**
-   * Enable the search organ: members get an embedded input (Input's
-   * inner organ) and typing filters the options.
+   * Enable the search control: members get an embedded input (the cdk
+   * InputControl) and typing filters the options.
    * @default false
    */
   showSearch?: boolean;
@@ -72,7 +91,7 @@ export interface SelectProps extends Omit<
   /**
    * The raw query stream (remote search delegation): fires on every
    * query change. Filtering still runs locally unless the consumer
-   * swaps `options` with server results.
+   * swaps the members with server results.
    */
   onSearch?: (query: string) => void;
   /** Shown while the selection is empty. */
@@ -95,17 +114,11 @@ export interface SelectProps extends Omit<
    */
   name?: string;
   /**
-   * Visual tier of the trigger shell: same-name tiers share the
-   * Button/Input/Checkbox design language.
+   * Visual tier of the trigger shell — and the default tier every
+   * Select.Option member inherits for its row typography.
    * @default 'md'
    */
   size?: SelectSize;
-  /**
-   * The popup's row typography tier. The panel is its own layout
-   * context, so its type does not follow the trigger size.
-   * @default 'md'
-   */
-  optionSize?: SelectSize;
   /**
    * Marks the select as invalid: sets `aria-invalid` and swaps the
    * shell border/ring to the red tokens (Input channel).
@@ -116,5 +129,5 @@ export interface SelectProps extends Omit<
   disabled?: boolean;
 }
 
-/** The combobox organ: the embedded input when searchable/multiple, the trigger button otherwise. */
+/** The combobox control: the embedded input when searchable/multiple, the trigger button otherwise. */
 export type SelectRef = HTMLInputElement | HTMLButtonElement;

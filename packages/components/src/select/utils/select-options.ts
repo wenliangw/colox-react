@@ -1,20 +1,65 @@
-import type { SelectOption } from '../types';
+import { isValidElement } from 'react';
+import type { ReactNode } from 'react';
+import { SelectOption } from '../children/option';
+import type { SelectOptionRecord, SelectOptionProps, SelectSize } from '../types';
 
-export type SelectFilterFn = (query: string, option: SelectOption) => boolean;
+export type SelectFilterFn = (query: string, option: SelectOptionRecord) => boolean;
 
-export const selectOptionLabel = (option: SelectOption): string => String(option.label);
-
-/** The default matcher: case-insensitive substring over the label and value. */
+/** The default matcher: case-insensitive substring over the text and value. */
 export const defaultSelectFilter: SelectFilterFn = (query, option) => {
   const needle = query.trim().toLowerCase();
   if (needle.length === 0) {
     return true;
   }
-  return (
-    selectOptionLabel(option).toLowerCase().includes(needle) ||
-    option.value.toLowerCase().includes(needle)
-  );
+  return option.text.toLowerCase().includes(needle) || option.value.toLowerCase().includes(needle);
 };
+
+/**
+ * Compiles the Select.Option members into option records: a pure
+ * structural walk over the children subtree — fragments, arrays and
+ * pass-through wrappers are descended (members passed as children stay
+ * reachable), while a component that creates members internally is not
+ * visible — the member never renders itself, its element props are the
+ * data (same boundary as rc-select). The member's own `size` wins, the
+ * parent's tier follows; the member key falls back to `value`.
+ */
+export function compileSelectOptions(
+  children: ReactNode,
+  fallbackSize: SelectSize,
+): SelectOptionRecord[] {
+  const records: SelectOptionRecord[] = [];
+
+  const visit = (node: ReactNode): void => {
+    if (Array.isArray(node)) {
+      node.forEach(visit);
+      return;
+    }
+    if (!isValidElement(node)) {
+      return;
+    }
+    if (node.type === SelectOption) {
+      const member = node.props as SelectOptionProps;
+      records.push({
+        value: member.value,
+        text: member.text,
+        disabled: member.disabled ?? false,
+        size: member.size ?? fallbackSize,
+        key: node.key ?? member.value,
+        content: member.children ?? member.text,
+        className: member.className,
+        style: member.style,
+      });
+      return;
+    }
+    // Fragments and pass-through wrappers: their children stay
+    // structurally reachable. A component that creates members
+    // internally is not visible — the member never renders itself.
+    visit((node.props as { children?: ReactNode }).children);
+  };
+
+  visit(children);
+  return records;
+}
 
 /**
  * The visible option list: everything while the query is empty,
@@ -22,10 +67,10 @@ export const defaultSelectFilter: SelectFilterFn = (query, option) => {
  * `filterOption`). Runs only in search mode.
  */
 export function filterSelectOptions(
-  options: readonly SelectOption[],
+  options: readonly SelectOptionRecord[],
   query: string,
   filterOption?: SelectFilterFn,
-): SelectOption[] {
+): SelectOptionRecord[] {
   if (query.length === 0) {
     return [...options];
   }
@@ -33,11 +78,11 @@ export function filterSelectOptions(
   return options.filter((option) => matches(query, option));
 }
 
-/** The option a single-mode value maps back to (undefined when unset/unknown). */
+/** The record a single-mode value maps back to (undefined when unset/unknown). */
 export function findSelectOption(
-  options: readonly SelectOption[],
+  options: readonly SelectOptionRecord[],
   value: string | undefined,
-): SelectOption | undefined {
+): SelectOptionRecord | undefined {
   if (value === undefined) {
     return undefined;
   }
