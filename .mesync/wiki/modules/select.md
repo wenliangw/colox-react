@@ -52,7 +52,7 @@ packages/components/src/select/
 ### 跨组件复用
 
 - 搜索 control = **cdk 的 `src/cdk/input-control/`**（forwardRef 裸 `<input>`，`colox-input-control` 基础类 + className 合并），自带裸化 reset、自足工作于任何外壳——Input 与 Select 双消费者实锤，迁出 input/ 私有件位置。
-- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。按钮本体与 tag-remove 均为 IconButton（`size="4"`）——复位/方形足迹/聚焦环/禁用态上提基座，站点类只留换位 reveal 与 chip 内着色（决策 07ea9169）；视觉轴落地后（05b83bed → a42ba861）两钮随默认 text+primary：静止色仍靠继承（与初版一致），hover 由 text 变体的方形浅底 intent wash 带回，与站点 hover 色规则叠加。
+- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。按钮本体与 tag-remove 均为 IconButton（`size="4"`）——复位/方形足迹/聚焦环/禁用态上提基座，站点类只留换位 reveal 与 chip 内着色（决策 07ea9169）；视觉轴落地后（05b83bed → a42ba861 → 644ffa12）两钮随默认 text+primary：静止色继承、图标 16px（size="4" 直驱图标）、hover 图标变 intent 色（无底）——本站点自己的 hover 色规则经站点类胜出，观感保持「chip 内 muted → solid」。
 
 ## 样式约定
 
