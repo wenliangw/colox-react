@@ -9,14 +9,23 @@ import '@colox/react/style.css';
 # IconButton
 
 The square bare-button primitive for icon-only controls: one place for the
-button reset, the token-pinned hit shape, the focus ring and the disabled
-semantics. Buttons in the field controls (Input clear / visibility toggle,
-Select clear / chip remove) are built on it.
+button reset, the token-pinned hit shape, hover/active feedback, the focus
+ring and the disabled semantics. Buttons in the field controls (Input clear /
+visibility toggle, Select clear / chip remove) are built on it.
 
 An icon carries no text node, so an icon button is nameless to assistive
 tech — always pass `aria-label` (or valid `aria-labelledby`).
 
 <IconButton aria-label="Close">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Close" variant="outline">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Close" variant="solid">
+  <IconX />
+</IconButton>
+<IconButton aria-label="Close" variant="solid" intent="danger">
   <IconX />
 </IconButton>
 <IconButton aria-label="Close" disabled>
@@ -47,11 +56,34 @@ footprint to that token, so theme overrides flow through.
 </IconButton>
 renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
 
+## Variant & intent
+
+`variant` mirrors the Button vocabulary: `ghost` (default) keeps no chrome
+and shows an intent wash on hover; `outline` and `solid` carry
+bordered/filled paint in the intent color. `intent` is the Button five-axis
+palette (primary/neutral/danger/warning/success) — it drives the hover wash,
+the focus ring and the variant paint.
+
+## Rounded
+
+The footprint is a square with the small radius by default; `rounded`
+switches it to a full circle — the hover/active wash follows the shape.
+
+<IconButton aria-label="Rounded" rounded>
+  <IconX />
+</IconButton>
+<IconButton aria-label="Rounded solid" rounded variant="solid">
+  <IconX />
+</IconButton>
+
 ## Props
 
-| Prop | Type                                                     | Default |
-| ---- | -------------------------------------------------------- | ------- |
-| size | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens) | `'md'`  |
+| Prop    | Type                                                           | Default     |
+| ------- | -------------------------------------------------------------- | ----------- |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)       | `'md'`      |
+| variant | `'ghost' \| 'outline' \| 'solid'`                              | `'ghost'`   |
+| intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'primary'` |
+| rounded | `boolean`                                                      | `false`     |
 
 It also accepts all native `<button>` attributes (`type` defaults to
 `'button'`).

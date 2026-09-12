@@ -1,0 +1,50 @@
+/**
+ * Intent color families — the same five-axis palette as Button,
+ * mapped onto the private icon-button intent variables. Ghosts only
+ * consume the wash keys (hover/active feedback), solid/outline take
+ * the full set.
+ */
+.colox-icon-button--primary {
+  --colox-icon-button-intent-solid: var(--colox-color-brand-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-brand-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-brand-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-brand-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-brand-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-brand-wash-active);
+}
+
+.colox-icon-button--neutral {
+  --colox-icon-button-intent-solid: var(--colox-color-gray-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-gray-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-gray-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-gray-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-gray-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-gray-wash-active);
+}
+
+.colox-icon-button--danger {
+  --colox-icon-button-intent-solid: var(--colox-color-red-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-red-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-red-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-red-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-red-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-red-wash-active);
+}
+
+.colox-icon-button--warning {
+  --colox-icon-button-intent-solid: var(--colox-color-orange-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-orange-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-orange-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-orange-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-orange-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-orange-wash-active);
+}
+
+.colox-icon-button--success {
+  --colox-icon-button-intent-solid: var(--colox-color-green-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-green-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-green-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-green-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-green-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-green-wash-active);
+}

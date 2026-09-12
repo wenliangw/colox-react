@@ -29,7 +29,7 @@ const meta: Meta<typeof IconButton> = {
     docs: {
       description: {
         component:
-          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, focus ring and disabled semantics live in one place, and the size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
+          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; variant/ intent mirror the Button vocabulary (solid/outline/ghost over five intents) and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
       },
     },
   },
@@ -56,6 +56,54 @@ export const Overview: Story = {
             </IconButton>
             <IconButton aria-label="Search">
               <IconEye />
+            </IconButton>
+          </Stack>
+        </Section>
+
+        <Section title="Variants">
+          <Stack direction="row" gap="4">
+            <IconButton aria-label="Ghost">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Outline" variant="outline">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Solid" variant="solid">
+              <IconX />
+            </IconButton>
+          </Stack>
+        </Section>
+
+        <Section title="Intents — solid over the five-axis palette">
+          <Stack direction="row" gap="4">
+            <IconButton aria-label="Primary" variant="solid">
+              <IconChevronDown />
+            </IconButton>
+            <IconButton aria-label="Neutral" variant="solid" intent="neutral">
+              <IconChevronDown />
+            </IconButton>
+            <IconButton aria-label="Danger" variant="solid" intent="danger">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Warning" variant="solid" intent="warning">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Success" variant="solid" intent="success">
+              <IconEye />
+            </IconButton>
+          </Stack>
+        </Section>
+
+        <Section title="Rounded">
+          <Stack direction="row" gap="4">
+            <IconButton aria-label="Rounded ghost" rounded>
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Rounded outline" rounded variant="outline">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Rounded solid" rounded variant="solid">
+              <IconX />
             </IconButton>
           </Stack>
         </Section>

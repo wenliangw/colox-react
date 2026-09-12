@@ -63,3 +63,51 @@ describe('IconButton semantics', () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('IconButton variant', () => {
+  it.each([
+    ['solid', 'colox-icon-button--solid'],
+    ['outline', 'colox-icon-button--outline'],
+    ['ghost', 'colox-icon-button--ghost'],
+  ] as const)('applies the %s variant class', (variant, expectedClass) => {
+    render(<IconButton variant={variant} aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass(expectedClass);
+  });
+
+  it('defaults to ghost', () => {
+    render(<IconButton aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--ghost');
+  });
+});
+
+describe('IconButton intent', () => {
+  it.each([
+    ['primary', 'colox-icon-button--primary'],
+    ['neutral', 'colox-icon-button--neutral'],
+    ['danger', 'colox-icon-button--danger'],
+    ['warning', 'colox-icon-button--warning'],
+    ['success', 'colox-icon-button--success'],
+  ] as const)('applies the %s intent class', (intent, expectedClass) => {
+    render(<IconButton variant="solid" intent={intent} aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass(expectedClass);
+  });
+
+  it('defaults to primary', () => {
+    render(<IconButton aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--primary');
+  });
+});
+
+describe('IconButton rounded', () => {
+  it('stays square by default', () => {
+    render(<IconButton aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).not.toHaveClass(
+      'colox-icon-button--rounded',
+    );
+  });
+
+  it('applies the rounded class when set', () => {
+    render(<IconButton rounded aria-label="close" />);
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--rounded');
+  });
+});

@@ -1,0 +1,54 @@
+/**
+ * Variant paint — solid/outline/ghost over the private intent variables
+ * (the intent layer maps them onto the color families). Ghost is the
+ * bare form: no chrome, context color, a wash on hover for the
+ * interaction feedback; solid/outline carry filled/bordered chrome in
+ * the intent color. Disabled keeps the shared muted treatment plus a
+ * variant-appropriate fill/border.
+ */
+.colox-icon-button--solid {
+  background-color: var(--colox-icon-button-intent-solid);
+  color: var(--colox-icon-button-intent-inverse);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-solid-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-solid-active);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
+  }
+}
+
+.colox-icon-button--outline {
+  border: 1px solid var(--colox-icon-button-intent-solid);
+  background-color: transparent;
+  color: var(--colox-icon-button-intent-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-wash-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-wash-active);
+  }
+
+  &:disabled {
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-icon-button--ghost {
+  background-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-wash-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-icon-button-intent-wash-active);
+  }
+}

@@ -1,16 +1,25 @@
 /**
  * IconButton — the square bare-button primitive.
  *
- * Base scope: token-pinned hit shape, the button reset, the focus ring
- * and disabled semantics. Hover decoration is deliberately absent: hover
- * feedback belongs to the consumer (a field-internal clear button wants
- * none while a toolbar button might layer a wash) — sites add it through
- * their own class, which wins over the base by cascade order.
+ * Base scope: token-pinned hit shape, the button reset, the focus ring,
+ * disabled semantics and the interaction motion (hover/active wash and
+ * press scale). Variant paint lives in variant.scss, intent color
+ * families in intent.scss (private intent variables, mirroring the
+ * Button namespace). The square footprint is the default; `rounded`
+ * switches it to a full circle and the washes follow the shape.
  */
 .colox-icon-button {
   // md fallback: the size channel normally feeds this var through a
   // size class, but the base keeps a sane footprint on its own.
   --colox-icon-button-block: var(--colox-size-10);
+  // Intent fallback: the intent layer overrides these; the brand
+  // family keeps the paint alive even without an intent class.
+  --colox-icon-button-intent-solid: var(--colox-color-brand-solid);
+  --colox-icon-button-intent-inverse: var(--colox-color-brand-inverse);
+  --colox-icon-button-intent-solid-hover: var(--colox-color-brand-solid-hover);
+  --colox-icon-button-intent-solid-active: var(--colox-color-brand-solid-active);
+  --colox-icon-button-intent-wash-hover: var(--colox-color-brand-wash-hover);
+  --colox-icon-button-intent-wash-active: var(--colox-color-brand-wash-active);
 
   display: inline-flex;
   align-items: center;
@@ -27,9 +36,25 @@
   color: inherit;
   border-radius: var(--colox-radius-xs);
   cursor: pointer;
+  transition:
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    // Fast in, slow out: the press snaps down at the fast duration and
+    // the release bounces back on the normal one from the base list.
+    transition:
+      background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      border-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      color var(--colox-motion-duration-fast) var(--colox-motion-easing-out),
+      transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+  }
 
   &:focus-visible {
-    outline: 2px solid var(--colox-color-brand-solid);
+    outline: 2px solid var(--colox-icon-button-intent-solid);
     outline-offset: 2px;
   }
 
@@ -37,4 +62,8 @@
     cursor: not-allowed;
     color: var(--colox-color-text-disabled);
   }
+}
+
+.colox-icon-button--rounded {
+  border-radius: var(--colox-radius-full);
 }

@@ -2,11 +2,14 @@ import type { ButtonHTMLAttributes } from 'react';
 import type { IconButtonVariants } from '../variants';
 
 export type IconButtonSize = NonNullable<IconButtonVariants['size']>;
+export type IconButtonVariant = NonNullable<IconButtonVariants['variant']>;
+export type IconButtonIntent = NonNullable<IconButtonVariants['intent']>;
 
 /**
  * The square bare-button primitive for icon-only controls — the reset,
- * token-pinned footprint, focus ring and disabled semantics live here,
- * so every call site stops re-hand-rolling them.
+ * token-pinned footprint, focus ring, hover/active feedback and
+ * disabled semantics live here, so every call site stops
+ * re-hand-rolling them.
  *
  * Accessibility contract: an icon carries no text node, so an icon
  * button is nameless to assistive tech. Consumers must supply an
@@ -20,6 +23,25 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    * @default 'md'
    */
   size?: IconButtonSize;
+  /**
+   * Visual form. Ghost is the bare default (transparent, context
+   * colored, wash on hover); solid/outline carry filled/bordered
+   * chrome in the intent color.
+   * @default 'ghost'
+   */
+  variant?: IconButtonVariant;
+  /**
+   * Semantic intent — the color family for hover washes, focus ring,
+   * and solid/outline paint. Mirrors the Button intent axis.
+   * @default 'primary'
+   */
+  intent?: IconButtonIntent;
+  /**
+   * Fully-round footprint (circle) instead of the square with small
+   * radius. The hover/active wash follows the shape.
+   * @default false
+   */
+  rounded?: boolean;
 }
 
 export type IconButtonRef = HTMLButtonElement;
