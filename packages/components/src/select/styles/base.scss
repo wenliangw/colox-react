@@ -43,9 +43,22 @@
 .colox-select__inner {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; // single line — a wrapped chip row breaks the shell height
   gap: var(--colox-spacing-1);
   flex: 1;
+  min-width: 0;
+}
+
+// The chip row: one line, the clipped tail hides behind the +M
+// badge overlaid on its right end. The row shrinks as a flex item, so
+// its live width is exactly the room the chips may use.
+.colox-select__tags {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--colox-spacing-1);
+  overflow: hidden;
   min-width: 0;
 }
 
@@ -55,7 +68,7 @@
 // cdk InputControl reset (borderless, font/color inheritance) on top.
 .colox-select__control {
   flex: 1;
-  min-width: 0;
+  min-width: 2ch; // the input floor: chips fold before the typing point dies
   padding: 0;
   border: none;
   background: none;
@@ -85,13 +98,34 @@
 }
 
 // Multiple-mode chips: constant height pills inside the shared shell,
-// removable via the X control.
+// removable via the X control. Chips never shrink under flex pressure —
+// the row clips them instead.
 .colox-select__tag {
   display: inline-flex;
   align-items: center;
   gap: var(--colox-spacing-0-5);
   height: var(--colox-size-5);
   padding-inline: var(--colox-spacing-1-5);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+  color: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// The +M fold count: a chip-colored pill pinned over the row's right
+// end, masking the chips that slipped under it (bg-muted is an opaque
+// palette color, so nothing bleeds through). It carries no behavior —
+// clicking it bubbles to the shell and opens the panel.
+.colox-select__tag-overflow {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  height: var(--colox-size-5);
+  padding-inline: var(--colox-spacing-1);
   border-radius: var(--colox-radius-full);
   background-color: var(--colox-color-bg-muted);
   color: inherit;

@@ -86,6 +86,20 @@ const MultipleDemo = () => {
   );
 };
 
+// The chip row stays single-line: in a narrow shell the clipped tail
+// folds into a +M badge (click it — or anywhere in the shell — to
+// open the panel and manage the selection).
+const MultipleFoldDemo = () => (
+  <Select
+    mode="multiple"
+    placeholder="Fold overflow"
+    defaultValue={fruits.map((fruit) => fruit.value)}
+    style={{ width: 340 }}
+  >
+    {FruitOptions}
+  </Select>
+);
+
 const RichOptionsDemo = () => {
   const [value, setValue] = useState('apple');
   return (
@@ -204,6 +218,7 @@ export const Overview: Story = {
 
         <Section title="Multiple selection">
           <MultipleDemo />
+          <MultipleFoldDemo />
         </Section>
 
         <Section title="Rich option content">

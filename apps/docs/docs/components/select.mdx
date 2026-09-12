@@ -138,6 +138,19 @@ chip.
   {FruitOptions}
 </Select>
 
+The chip row is single-line: in a narrow shell the clipped tail folds
+into a `+M` count. `+M` carries no behavior of its own — clicking it
+(like anywhere in the shell) opens the panel, where every member stays
+manageable.
+
+<Select
+  mode="multiple"
+  defaultValue={['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grapefruit']}
+  style={{ width: 300 }}
+>
+  {FruitOptions}
+</Select>
+
 Multi chips show `text` too — even for members with rich `children`, the chip
 stays a plain-text pill.
 

@@ -2,6 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Select } from '../select';
+import { countFittingTags } from '../utils/tag-fitting';
 
 // A fragment member block: the compiler walks fragments, arrays and
 // custom wrappers (the member leaf never renders itself).
@@ -274,5 +275,37 @@ describe('Select multiple refs', () => {
     const ref = createRef<HTMLInputElement | HTMLButtonElement>();
     renderFruits({ ref });
     expect(ref.current).toBeInstanceOf(HTMLInputElement);
+  });
+});
+
+describe('Select multiple tag folding', () => {
+  it('counts every chip while they fit the row', () => {
+    expect(countFittingTags([40, 40, 40], 4, 200, 32)).toBe(3);
+  });
+
+  it('folds the tail once the badge needs room', () => {
+    // Total 216 > 200; with the badge reserved only three chips end
+    // before the 164px fold limit.
+    expect(countFittingTags([40, 40, 40, 40, 40], 4, 200, 32)).toBe(3);
+  });
+
+  it('folds even the first chip when it cannot fit alone', () => {
+    expect(countFittingTags([300], 4, 200, 32)).toBe(0);
+  });
+
+  it('returns zero for an empty selection', () => {
+    expect(countFittingTags([], 4, 200, 32)).toBe(0);
+  });
+
+  it('keeps the overflow badge hidden while nothing overflows', () => {
+    // jsdom has no layout (clientWidth 0), so the row shows every chip
+    // and the +M badge stays hidden.
+    renderFruits({ defaultValue: ['apple', 'banana'] });
+    expect(screen.getByRole('button', { name: 'Remove Apple' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove Banana' })).toBeInTheDocument();
+    expect(document.querySelector('.colox-select__tag-overflow')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
   });
 });
