@@ -49,6 +49,13 @@
 - **Option 必填 value + text**：value 是选择真值（受控/FormData），text 是文本面本源——搜索过滤、触发器显示、多选 chip、缺省渲染共用同一条 text；children 只做富渲染（无 children 即渲染 text）。必填 text 免除「抽 children 文本」的隐式魔法（富节点抽文本错漏无声），这也是 antd 叶子式兜底 `label` prop 的教训——文本面不会因叶子化而消失。命名用 text 与 value 对偶、无 aria/表单语义联想负担（用户拍板 text 优于 label）。
 - **成员 size 沿父级继承、本人优先**：Option 持 `size` 可覆盖父 Select 的尺寸档（缺省跟随）——「组是 size 共享契约的自然载体」在 Select 选项集合上的延续；`optionSize` 独生专 prop 随数据式 API 一并废除。
 
+## 多选 chips 溢出交互：折叠 +N（不搞横向滚动）
+
+- **chip 行单线定高，溢出折叠为 +M 计数徽标**：壳高恒定与表单家族单行契约一致（源头 bug 是 flex-wrap 折行撑高壳）；「状态看触发、管理看面板」分工成立——触发器只展示能放下的 chips + 计数，面板里全集可见可管；生态先例 antd `maxTagCount: responsive` 同结论。
+- **+M 是纯提示，无自家交互**：点击走壳空白同逻辑（开面板）；不发明计数件的专属行为。
+- **计数靠 layout 响应式测量，不设固定 maxTagCount prop**：壳宽随宿主布局变化，固定数字阈值在窄宿主溢出、宽宿主浪费；ResizeObserver 重测一次到位，不引入临时公共 prop 面。
+- 来源：用户报告多选溢出折行跑版后两候选（横向滚动/+N 折叠）讨论拍板 A 方案（决策 59ee6358）。
+
 ## variant 是从设计语言推导的封闭轴
 
 - 轴必须来自 Figma 真实状态；取值集合小且穷举；轴间正交（非法组合用 `compoundVariants` 显式声明）。
