@@ -33,6 +33,7 @@
 - **组 = 值数组语义**：多选的状态形态就是 `string[]`（`value`/`defaultValue`/`onChange(value: string[])`），成员以原生 `value` prop 声明参与键（表单值 + 组键双职，不发明 `groupKey` 之类的平行 prop）；显式 `checked`/`defaultChecked` 的成员退出组（本人优先），`name`/`disabled` 组继承、本人优先、组 disabled 不可退出。
 - **组容器走 dot-part**（`<Checkbox.Group>`）：「内容必须在树中」判据成立——多选集合天然是父子树，成员需要在组上下文里生存；Leaf 三件（props/事件/ref）不动，组级语义（数组 onChange）是组自己的出口，叶子 onChange 始终原生透传。
 - **自造事件面与原生槽的边界**：事件通道分两种，各守各的——**组级 onChange 是库自造的自定义事件面**（无原生槽可忠实），载荷为对象 `{ event, value }`：event = 触发成员的原生合成事件（哪成员触发、stopPropagation 可控），value = 语义载荷（下一单选值/数组）。**叶子 onChange 是原生事件透传槽**，不包 `(event, checked)`/`(event, value)` 包装——MUI 式叶子包装仍不做，「原生忠实」在叶子成立。组内成员受控时 `event.target.checked` 是 React 受控语义（恢复后的受控值），真相从 Group 的 `{ event, value }` 读。这是「自造事件面才组装载荷、原生槽永远透传」的诚实边界。
+- **载荷按组件语义扩展字段，对象形态免反查**：`{ event, value }` 是原模不是上限——Select 的载荷加 `option`（被选/被切换项的完整对象，受控消费方不用拿着 value 反查 options 数组）；对象形态加字段非破坏，趁未发布补齐。**行为词全家族同名同义**：`clearable` 对齐 Input 已定名，后续组件（DatePicker 等）有清除语义一律 `clearable`——命名对齐减少用户心智负担（用户拍板「后续组件命名全部对齐」）。
 - **indeterminate 是纯视觉通道**：第三态只改图形（bar vs check），真相永远在 `checked`（事件流、表单值、FormData 只认它）；「选中了几个孩子」的级联数学归消费方，库只负责可视化——「状态→图形映射归消费方」在复选框上的延续。
 
 - **单选组（Radio.Group）同构但单值**：状态形态是 `string`（`value`/`defaultValue`/`onChange({ event, value })`），成员仍以原生 `value` 声明参与键；**无移除语义**——radio 不可反选，select 命令由成员 change 事件驱动，重复点击已选中成员时 DOM 无 change、天然不上报（受控/非受控同构、原生忠实）。组容器命名按同族惯例 `colox-radio-group`（dot-part 名段合法）。

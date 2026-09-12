@@ -159,3 +159,8 @@
 - **点径 40%**：环是 1px 发丝框架，点压到 40%（不是 50% 实心盘）才与环的视觉权重平衡、与 checkbox 勾形 ~45% 占宽协调；跨档比例恒定、零字面量。环保持 1px 不动——与表单家族（Input/Checkbox 1px 边框）同源，加粗环会破坏家族一致性。
 - **简单图形不引图标**：单选点 CSS 化（`::before` 40% + currentColor，随 tier 零字面量缩放），不给它新增图标——按需追加纪律；disabled 时点转 text-disabled。
 - 来源：Radio 交付时的形态裁决（对照 antd/MUI 同为环+点模型；反方选择「与 Checkbox 同实心模型」被否）；用户反馈「border 和实心圆比例差异过大」后点径 50%→40% 定案。
+
+## 弹层是独立排版语境：面板字号不随触发器漂移，专 prop 控制
+
+- **Select 的弹层面板字号不跟随 trigger 的 size 档**：触发器 xs 与 lg 的面板内容各自漂移会过度放大差异、也不成立（弹层不是触发器的延长，是另一个排版平面）。面板行型有自己独立缺省（md 档排版），组件提供 **`optionSize` 专 prop**（默认 md、四档同源）让消费方有精确控制点——「弹层行型」与「触发器尺寸」两条轴解耦（用户拍板「面板字号先不跟随 size」）。
+- 面板视觉零新增 token：`bg-overlay` 底 + `border-muted` 1px + `shadow-md` + radius-md；选项交互态走 `wash-hover`/`wash-active`，选中标记 `brand-wash-active` + IconCheck 尾标。z-index 无 token——面板 z 用组件内变量起步（设计语言补 `--colox-z-*` 后再收编）。

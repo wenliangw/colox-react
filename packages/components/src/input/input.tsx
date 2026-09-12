@@ -6,6 +6,7 @@ import { usePasswordVisibility } from './hooks/use-password-visibility';
 import { resolveInputSlots } from './utils/resolve-input-slots';
 import { ClearButton } from './controls/clear-button';
 import { VisibilityToggle } from './controls/visibility-toggle';
+import { InputOrgan } from './organ';
 import { inputVariants } from './variants';
 
 import './styles/index.scss';
@@ -81,9 +82,8 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
       {slots.searchLeading !== undefined && (
         <span className="colox-input__leading">{slots.searchLeading}</span>
       )}
-      <input
+      <InputOrgan
         ref={inputRef}
-        className="colox-input__control"
         type={visibility.resolvedType}
         aria-invalid={invalid || undefined}
         value={value}

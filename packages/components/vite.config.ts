@@ -26,6 +26,10 @@ const externals = [
   'react/jsx-runtime',
   'clsx',
   'class-variance-authority',
+  // The headless positioning core stays a runtime dependency like clsx:
+  // it ships no styles and no React bindings — only the computePosition +
+  // autoUpdate math the internal cdk/floating layer wraps.
+  '@floating-ui/dom',
   // Theme runtime must stay external (never inlined): useColoxTheme relies on
   // a shared React context, and an inlined copy would split context identity
   // from the consumer's `<ColoxTheme>`, silently dropping theme overrides.
@@ -36,6 +40,14 @@ const externals = [
 ];
 
 export default defineConfig({
+  resolve: {
+    // The internal CDK alias: `@colox/cdk/*` names the future package
+    // today, so promoting src/cdk to a workspace package later needs no
+    // import rewrites — only adding the real package to externals.
+    alias: {
+      '@colox/cdk': resolve(import.meta.dirname, 'src/cdk'),
+    },
+  },
   plugins: [
     react(),
     dts({
