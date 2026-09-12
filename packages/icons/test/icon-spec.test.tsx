@@ -47,10 +47,10 @@ const CONTRACT = [
  * Changing a drawing that breaks them is a spec violation by design.
  */
 const BOUNDS: Record<string, [number, number, number, number]> = {
-  'chevron-right': [8.25, 17.75, 5.25, 18.75],
-  'chevron-down': [5.25, 18.75, 8.25, 17.75],
-  'chevron-left': [6.25, 15.75, 5.25, 18.75],
-  'chevron-up': [5.25, 18.75, 6.25, 15.75],
+  'chevron-right': [8.25, 15.75, 5.25, 18.75],
+  'chevron-down': [5.25, 18.75, 8.25, 15.75],
+  'chevron-left': [8.25, 15.75, 5.25, 18.75],
+  'chevron-up': [5.25, 18.75, 8.25, 15.75],
   x: [5.25, 18.75, 5.25, 18.75],
   check: [3.25, 20.75, 5.25, 17.75],
   plus: [5.25, 18.75, 5.25, 18.75],
