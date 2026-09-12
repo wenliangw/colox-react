@@ -9,6 +9,7 @@ import { FormSelectValues } from './children/form-values';
 import { SelectOption } from './children/option';
 import { SelectPanel } from './children/panel';
 import { SelectTags } from './children/tags';
+import { SelectTemplate } from './children/template';
 import { useSelect } from './hooks/use-select';
 import type {
   SelectChangeEvent,
@@ -21,6 +22,7 @@ import {
   compileSelectOptions,
   filterSelectOptions,
   findSelectOption,
+  findSelectTemplate,
 } from './utils/select-options';
 import {
   resolveButtonDisplay,
@@ -94,8 +96,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   });
 
   // Resolve the members into option records; the member's own size wins,
-  // the parent's tier follows.
+  // the parent's tier follows. The tag template is captured from the
+  // same walk — a single component child the tags unit clones per chip.
   const options = useMemo(() => compileSelectOptions(children, size), [children, size]);
+  const tagTemplate = useMemo(() => findSelectTemplate(children), [children]);
   const visibleOptions = useMemo(
     () => (showSearch ? filterSelectOptions(options, state.query, filterOption) : options),
     [options, state.query, filterOption, showSearch],
@@ -254,6 +258,8 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
             values={currentMultiple}
             options={options}
             disabled={disabled}
+            tagTemplate={tagTemplate}
+            fallbackSize={size}
             onRemove={(tagValue, event) =>
               state.toggle(tagValue, event, findSelectOption(options, tagValue))
             }
@@ -302,4 +308,4 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   );
 });
 
-export const Select = Object.assign(SelectRoot, { Option: SelectOption });
+export const Select = Object.assign(SelectRoot, { Option: SelectOption, Template: SelectTemplate });

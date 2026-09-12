@@ -1,5 +1,5 @@
-import type { KeyboardEvent, MouseEvent, ReactNode, RefObject } from 'react';
-import type { SelectOptionRecord } from './component';
+import type { KeyboardEvent, MouseEvent, ReactElement, ReactNode, RefObject } from 'react';
+import type { SelectOptionRecord, SelectSize } from './component';
 
 export type SelectControlRef = HTMLInputElement | HTMLButtonElement;
 
@@ -33,7 +33,11 @@ export interface SelectTagsProps {
   /** The compiled members — text lookup for chip labels. */
   options: readonly SelectOptionRecord[];
   disabled: boolean;
-  onRemove: (value: string, event: MouseEvent<HTMLButtonElement>) => void;
+  /** The captured Select.Template('tag') component; null renders the default chip. */
+  tagTemplate: ReactElement | null;
+  /** The parent tier for synthesizing records of values outside the compiled members. */
+  fallbackSize: SelectSize;
+  onRemove: (value: string, event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>) => void;
 }
 
 export interface SelectClearButtonProps {

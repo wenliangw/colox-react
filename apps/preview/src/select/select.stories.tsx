@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { Container, Select, Stack } from '@colox/react';
+import type { SelectTagTemplateProps } from '@colox/react';
 import { Section, Hint } from '../showcase/section';
 
 const fruits = [
@@ -98,6 +99,78 @@ const MultipleFoldDemo = () => (
   >
     {FruitOptions}
   </Select>
+);
+
+// The tag template channel: Select.Template('tag') wraps a single
+// component; the library clones it per chip and injects the slot
+// contract — `props` (the required-attribute bag, spread first),
+// `option` (the member's record) and `onRemove` (the internal
+// removal channel). The component owns all chip visuals.
+const TagTemplateDemo = () => {
+  const [value, setValue] = useState<string[]>(['apple', 'date']);
+  return (
+    <Stack direction="column" gap="2">
+      <Select
+        mode="multiple"
+        placeholder="Custom chips"
+        value={value}
+        onChange={({ value: next }) => setValue(next as string[])}
+      >
+        {FruitOptions}
+        <Select.Template name="tag">
+          <EmojiTag />
+        </Select.Template>
+      </Select>
+      <Hint>
+        The template replaces the whole chip: an emoji avatar, the member <code>text</code> and a
+        custom remove button wired to the injected <code>onRemove</code> (the standard{' '}
+        <code>onChange</code> payload).
+      </Hint>
+    </Stack>
+  );
+};
+
+const EMOJI: Record<string, string> = {
+  apple: '🍎',
+  banana: '🍌',
+  cherry: '🍒',
+  date: '🌴',
+  elderberry: '🫐',
+  fig: '🍈',
+  grapefruit: '🍊',
+};
+
+// The template is a plain component typed with SelectTagTemplateProps:
+// `props` (the required-attribute bag) spreads onto the root first —
+// when the chip folds, the bag carries the hidden style and wins —
+// `option` is the member record and `onRemove` the removal channel.
+const EmojiTag = ({ props = {}, option, onRemove }: SelectTagTemplateProps) => (
+  <span
+    {...props}
+    style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 'var(--colox-spacing-0-5)',
+      height: 'var(--colox-size-5)',
+      paddingInline: 'var(--colox-spacing-1-5)',
+      borderRadius: 'var(--colox-radius-full)',
+      background: 'var(--colox-color-bg-muted)',
+      whiteSpace: 'nowrap',
+      flexShrink: 0,
+      ...props.style,
+    }}
+  >
+    <span aria-hidden="true">{EMOJI[option?.value ?? ''] ?? '🍇'}</span>
+    <span>{option?.text}</span>
+    <button
+      type="button"
+      className="colox-select__tag-remove"
+      aria-label={`Remove ${option?.text ?? ''}`}
+      onClick={onRemove}
+    >
+      ×
+    </button>
+  </span>
 );
 
 const RichOptionsDemo = () => {
@@ -219,6 +292,10 @@ export const Overview: Story = {
         <Section title="Multiple selection">
           <MultipleDemo />
           <MultipleFoldDemo />
+        </Section>
+
+        <Section title="Tag template">
+          <TagTemplateDemo />
         </Section>
 
         <Section title="Rich option content">

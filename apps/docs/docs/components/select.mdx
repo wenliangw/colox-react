@@ -3,6 +3,7 @@ sidebar_position: 9
 ---
 
 import { Select } from '@colox/react';
+import { TagTemplateDemo } from '../../src/components/select/tag-template-demo';
 import '@colox/react/style.css';
 
 export const fruits = [
@@ -154,6 +155,28 @@ manageable.
 Multi chips show `text` too — even for members with rich `children`, the chip
 stays a plain-text pill.
 
+## Tag template
+
+The default chip is replaceable: `<Select.Template name="tag">` declares the
+template slot with exactly one component child. The library clones it once
+per selected member and injects the slot contract — `props` (the
+required-attribute bag), `option` (the member record) and `onRemove` (the
+internal removal channel, firing the standard `onChange` payload).
+
+{TagTemplateDemo}
+
+Three author rules:
+
+- the child must be a component (not a host element) rendering a **single
+  root element** — fragments break the fold measurement;
+- `{...props}` spreads first onto the root and its `aria-hidden`/`style` are
+  never overridden — they carry the fold channel (folded chips leave the flow
+  and the a11y tree yet stay mounted, so they grow back when the shell
+  widens);
+- interactive controls inside the template stop propagation (the injected
+  `onRemove` already does) — otherwise the click bubbles into the shell and
+  opens the panel.
+
 ## Form collection
 
 `name` mounts hidden native inputs — one in single mode, one per value in
@@ -168,21 +191,21 @@ multiple mode — so native `FormData` collects the selection:
 | Prop         | Type                                                     | Default    |
 | ------------ | -------------------------------------------------------- | ---------- |
 | mode         | `'single' \| 'multiple'`                                 | `'single'` |
-| filterOption | `(query: string, option: SelectOptionRecord) => boolean` | —          |
 | showSearch   | `boolean`                                                | `false`    |
 | value        | `string \| string[]`                                     | —          |
 | defaultValue | `string \| string[]`                                     | —          |
-| onChange     | `(payload: SelectChangePayload) => void`                 | —          |
-| onSearch     | `(query: string) => void`                                | —          |
 | placeholder  | `ReactNode`                                              | —          |
 | clearable    | `boolean`                                                | `false`    |
 | open         | `boolean`                                                | —          |
 | defaultOpen  | `boolean`                                                | `false`    |
-| onOpenChange | `(open: boolean) => void`                                | —          |
 | name         | `string`                                                 | —          |
 | size         | `'xs' \| 'sm' \| 'md' \| 'lg'`                           | `'md'`     |
 | invalid      | `boolean`                                                | `false`    |
 | disabled     | `boolean`                                                | `false`    |
+| filterOption | `(query: string, option: SelectOptionRecord) => boolean` | —          |
+| onChange     | `(payload: SelectChangePayload) => void`                 | —          |
+| onSearch     | `(query: string) => void`                                | —          |
+| onOpenChange | `(open: boolean) => void`                                | —          |
 
 ### Select.Option
 
@@ -193,6 +216,29 @@ multiple mode — so native `FormData` collects the selection:
 | disabled | `boolean`                      | Skipped by keyboard walk; clicks are inert.                   |
 | size     | `'xs' \| 'sm' \| 'md' \| 'lg'` | Row tier override, defaults to the parent `size`.             |
 | children | `ReactNode`                    | Optional rich panel row render; defaults to rendering `text`. |
+
+### Select.Template
+
+A compile-time template leaf; only the `tag` slot is open (multiple-mode
+chips).
+
+| Prop     | Type               | Notes                                                                                                                              |
+| -------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| name     | `'tag'`            | Required. The render slot — unknown slots error.                                                                                   |
+| children | `ReactElement`     | Required. Exactly one component child (host elements error) cloned per chip.                                                       |
+| —        | injected at render | `props` (required-attribute bag), `option` (`SelectOptionRecord`), `onRemove` (the removal channel). See `SelectTagTemplateProps`. |
+
+### SelectTagTemplateProps
+
+The slot contract injected into the template component. Keys are optional
+in the type **only because the author never passes them** — the library
+injects all three at render time.
+
+| Key      | Type                                                        | Notes                                                                                                                 |
+| -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| props    | `SelectTagRequiredProps`                                    | The required-attribute bag: `aria-hidden`/`style` carry the fold channel. Spread first onto the root, never override. |
+| option   | `SelectOptionRecord`                                        | The member's compiled record; values outside the members synthesize `{ value, text: value, disabled: false }`.        |
+| onRemove | `(event: MouseEvent \| KeyboardEvent<HTMLElement>) => void` | The internal removal channel — fires the standard `onChange` payload and stops propagation.                           |
 
 ### SelectChangePayload
 

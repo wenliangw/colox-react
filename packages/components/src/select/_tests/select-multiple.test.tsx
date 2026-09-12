@@ -1,7 +1,9 @@
 import { createRef } from 'react';
+import type { ReactElement } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Select } from '../select';
+import type { SelectTagTemplateProps } from '../types';
 import { countFittingTags } from '../utils/tag-fitting';
 
 // A fragment member block: the compiler walks fragments, arrays and
@@ -408,5 +410,239 @@ describe('Select multiple tag folding', () => {
 
     getComputedStyle.mockRestore();
     vi.unstubAllGlobals();
+  });
+});
+
+// The tag template contract: the Select.Template('tag') child is
+// cloned per chip with { props, option, onRemove } injected; the
+// default chip path stays untouched when no template exists.
+const DemoTagTemplate = ({ props = {}, option, onRemove }: SelectTagTemplateProps) => (
+  <span {...props} className="demo-tag">
+    <span className="demo-tag-label">{option?.text}</span>
+    <button
+      type="button"
+      className="demo-tag-remove"
+      aria-label={`Remove ${option?.text ?? ''}`}
+      onClick={onRemove}
+    >
+      X
+    </button>
+  </span>
+);
+
+const silentConsole = () => {
+  const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  return () => spy.mockRestore();
+};
+
+describe('Select tag templates', () => {
+  it('clones the template per chip and injects the option record', () => {
+    render(
+      <Select mode="multiple" defaultValue={['apple', 'cherry']}>
+        {FruitOptions}
+        <Select.Template name="tag">
+          <DemoTagTemplate />
+        </Select.Template>
+      </Select>,
+    );
+
+    expect(screen.getByText('Apple', { selector: '.demo-tag-label' })).toBeInTheDocument();
+    expect(screen.getByText('Cherry', { selector: '.demo-tag-label' })).toBeInTheDocument();
+    // No default chips rendered on the template channel.
+    expect(document.querySelectorAll('.colox-select__tag')).toHaveLength(0);
+  });
+
+  it('discovers the template through fragments and pass-through wrappers', () => {
+    const Wrapper = ({ children }: { children?: React.ReactNode }) => (
+      <div className="member-wrapper">{children}</div>
+    );
+    render(
+      <Select mode="multiple" defaultValue={['apple']}>
+        {FruitOptions}
+        <Wrapper>
+          <Select.Template name="tag">
+            <DemoTagTemplate />
+          </Select.Template>
+        </Wrapper>
+      </Select>,
+    );
+
+    expect(screen.getByText('Apple', { selector: '.demo-tag-label' })).toBeInTheDocument();
+  });
+
+  it('synthesizes a raw record for values outside the compiled members', () => {
+    render(
+      <Select mode="multiple" defaultValue={['apple', 'raw-value']}>
+        {FruitOptions}
+        <Select.Template name="tag">
+          <DemoTagTemplate />
+        </Select.Template>
+      </Select>,
+    );
+
+    expect(screen.getByText('raw-value', { selector: '.demo-tag-label' })).toBeInTheDocument();
+  });
+
+  it('fires the standard onChange payload through onRemove and keeps the panel shut', () => {
+    const onChange = vi.fn();
+    render(
+      <Select mode="multiple" defaultValue={['apple', 'banana']} onChange={onChange}>
+        {FruitOptions}
+        <Select.Template name="tag">
+          <DemoTagTemplate />
+        </Select.Template>
+      </Select>,
+    );
+
+    const combobox = screen.getByRole('combobox');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Apple' }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    const [payload] = onChange.mock.calls[0];
+    expect(payload.value).toEqual(['banana']);
+    expect(payload).toMatchObject({ option: { value: 'apple', text: 'Apple' } });
+    expect(payload.event).toBeDefined();
+    // The injected onRemove stops the click from bubbling to the shell.
+    expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('hydrates the fold bag onto the custom root when the row tightens', () => {
+    const observers: Array<{ callback: () => void }> = [];
+    class CapturingResizeObserver {
+      public readonly callback: () => void;
+      constructor(callback: () => void) {
+        this.callback = callback;
+        observers.push(this);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', CapturingResizeObserver);
+
+    const { container } = render(
+      <Select mode="multiple" defaultValue={['o1', 'o2', 'o3', 'o4']}>
+        <Select.Option value="o1" text="One" />
+        <Select.Option value="o2" text="Two" />
+        <Select.Option value="o3" text="Three" />
+        <Select.Option value="o4" text="Four" />
+        <Select.Template name="tag">
+          <DemoTagTemplate />
+        </Select.Template>
+      </Select>,
+    );
+    const inner = container.querySelector('.colox-select__inner') as HTMLElement;
+    const row = container.querySelector('.colox-select__tags') as HTMLElement;
+    const control = container.querySelector('.colox-select__control') as HTMLElement;
+    const trailing = container.querySelector('.colox-select__trailing') as HTMLElement;
+    const badge = container.querySelector('.colox-select__tag-overflow') as HTMLElement;
+
+    const defineWidth = (
+      el: HTMLElement,
+      prop: 'clientWidth' | 'offsetWidth',
+      value: () => number,
+    ) => {
+      Object.defineProperty(el, prop, { configurable: true, get: value });
+    };
+    defineWidth(inner, 'clientWidth', () => 140);
+    defineWidth(control, 'offsetWidth', () => 60);
+    defineWidth(trailing, 'offsetWidth', () => 20);
+    defineWidth(badge, 'offsetWidth', () => 26);
+    Array.from(row.querySelectorAll('.demo-tag')).forEach((chip) => {
+      defineWidth(chip as HTMLElement, 'offsetWidth', () => 50);
+    });
+
+    const realGetComputedStyle = window.getComputedStyle;
+    const getComputedStyle = vi
+      .spyOn(window, 'getComputedStyle')
+      .mockImplementation((el: Element) => {
+        const base = realGetComputedStyle(el);
+        if (el === inner) {
+          return { ...base, columnGap: '4px' } as CSSStyleDeclaration;
+        }
+        if (el === control) {
+          return { ...base, minWidth: '8px' } as CSSStyleDeclaration;
+        }
+        return base;
+      });
+
+    // budget = 140 - 8 - 20 - 8 = 104; chips 50 with gap 0:
+    // 4 x 50 = 200 > 104 -> fold limit 104 - 26 = 78 -> one chip
+    // fits, the tail carries the bag.
+    act(() => {
+      for (const { callback } of observers) {
+        callback();
+      }
+    });
+    const chips = Array.from(row.querySelectorAll('.demo-tag')) as HTMLElement[];
+    expect(chips.filter((chip) => !chip.hasAttribute('aria-hidden'))).toHaveLength(1);
+    const hiddenChips = chips.filter((chip) => chip.hasAttribute('aria-hidden'));
+    expect(hiddenChips).toHaveLength(3);
+    expect(hiddenChips[0].style.visibility).toBe('hidden');
+    expect(hiddenChips[0].style.position).toBe('absolute');
+
+    getComputedStyle.mockRestore();
+    vi.unstubAllGlobals();
+  });
+
+  it('errors when the template child is a host element', () => {
+    const restore = silentConsole();
+    expect(() =>
+      render(
+        <Select mode="multiple">
+          {FruitOptions}
+          <Select.Template name="tag">
+            <span />
+          </Select.Template>
+        </Select>,
+      ),
+    ).toThrow('must be a component');
+    restore();
+  });
+
+  it('errors when the template has no element child', () => {
+    const restore = silentConsole();
+    expect(() =>
+      render(
+        <Select mode="multiple">
+          {FruitOptions}
+          <Select.Template name="tag">{null as unknown as ReactElement}</Select.Template>
+        </Select>,
+      ),
+    ).toThrow('exactly one component child');
+    restore();
+  });
+
+  it('errors on a second template', () => {
+    const restore = silentConsole();
+    expect(() =>
+      render(
+        <Select mode="multiple">
+          {FruitOptions}
+          <Select.Template name="tag">
+            <DemoTagTemplate />
+          </Select.Template>
+          <Select.Template name="tag">
+            <DemoTagTemplate />
+          </Select.Template>
+        </Select>,
+      ),
+    ).toThrow('at most one');
+    restore();
+  });
+
+  it('errors on an unknown slot name', () => {
+    const restore = silentConsole();
+    expect(() =>
+      render(
+        <Select mode="multiple">
+          {FruitOptions}
+          <Select.Template name={'bogus' as 'tag'}>
+            <DemoTagTemplate />
+          </Select.Template>
+        </Select>,
+      ),
+    ).toThrow('unknown slot');
+    restore();
   });
 });
