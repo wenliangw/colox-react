@@ -18,7 +18,8 @@
  * Artifacts today:
  * - index.ts           aggregated code-facing constants: the responsive
  *                      contract defaultBreakpoints, the spacing key
- *                      list spacingKeys, and the SpacingKey union
+ *                      list spacingKeys, the size key list sizeKeys,
+ *                      and their union types (SpacingKey, SizeKey)
  *                      -> written into the declared runtime `output`
  * - variables.scss     the theme SCSS surface: the same key lists for
  *                      component SCSS @each loops, consumed as
@@ -70,6 +71,16 @@ if (spacingKeys.length === 0) {
   process.exit(1);
 }
 
+// Component size scale keys: the geometric block scale (width/height
+// family) — square footprints such as icon buttons pin their size
+// tokens through this list.
+const sizeGroup = size.colox?.size ?? {};
+const sizeKeys = Object.keys(sizeGroup);
+if (sizeKeys.length === 0) {
+  console.error('emit-runtime: no size keys found in size.tokens.json');
+  process.exit(1);
+}
+
 const kebab = (s) => s.replaceAll('_', '-');
 
 const generatedHeader = (source) =>
@@ -107,6 +118,15 @@ const artifacts = [
         '] as const;',
         '',
         'export type SpacingKey = (typeof spacingKeys)[number];',
+        '',
+        '// Component size scale keys, single-sourced like the spacing',
+        '// list: square footprints (icon buttons, control chasses) pin',
+        '// their size tokens through this union.',
+        'export const sizeKeys = [',
+        ...sizeKeys.map((key) => `  '${key}',`),
+        '] as const;',
+        '',
+        'export type SizeKey = (typeof sizeKeys)[number];',
       ].join('\n'),
   },
   {
@@ -117,10 +137,14 @@ const artifacts = [
         generatedHeader('size.tokens.json'),
         '// The theme SCSS surface for the design language. Consume it as',
         "// `@use '@colox/theme/variables' as tokens;` — component SCSS",
-        '// reads the emitted key lists (spacing today; further fragment',
-        '// blocks land in this file as the language grows).',
+        '// reads the emitted key lists (spacing and size today; further',
+        '// fragment blocks land in this file as the language grows).',
         '$colox-spacing-keys: (',
         ...spacingKeys.map((key) => `  '${key}',`),
+        ');',
+        '',
+        '$colox-size-keys: (',
+        ...sizeKeys.map((key) => `  '${key}',`),
         ');',
       ].join('\n'),
   },
