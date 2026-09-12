@@ -57,7 +57,7 @@ packages/components/src/select/
 ## 样式约定
 
 - 面板全部用既有 token：`--colox-color-bg-overlay`/`--colox-color-border-muted`/`--colox-shadow-md`；hover/键盘高亮 `--colox-color-gray-wash-hover`。**选中不做背景染色**（用户指正：行尾 IconCheck 已是选中信号，brand-wash 背景 + brand 文字多余）——`--selected` 类仍挂在行 DOM 上（测试/API 钩子），仅一条视觉规则：check 图标上主色 `--colox-color-brand-solid`、行文字保持默认（用户第二轮指正：「IconCheck 应该是主色，但文字保持默认的文字颜色」）；**选中行也不接受 hover/active 的灰底**（第三轮指正：单选重开时键盘高亮初始化落在选中行，灰底误读为选中染色——多选初始高亮为 -1 故无此现象；CSS 以 `--selected:hover`/`--selected.--active` 归零覆盖）；`aria-selected` 照旧背书。
-- **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。
+- **clear 与 chevron 不并排**（用户指正）：根壳带 `colox-select--clearable` 状态类（有值且 clearable 且未 disabled 时挂上）——默认只显示 chevron，`:hover`/`:focus-within` 时 X 替换箭头（focus-within 保证键盘用户可达）；空值/disabled 无 X，chevron 常驻。**命中原罪（四轮修复）**：chevron 渐隐（opacity→0）仍保持层叠上下文 + DOM 序在 × 之后 → 永远压住 × 的命中面，`elementFromPoint` 命中 chevron SVG——真实点击从不落在 × 上（「点不到」+ 面板开着时焦点被拽走）；修复 = chevron 显式 `pointer-events: none`（命中穿过装饰件），Playwright 实弹验证双场景（关/开面板）全通。
 - z-index 无设计 token → cdk 内 `var(--colox-z-popup, 1000)` 内部变量 + 回落。
 - 面板最大高 256px + 滚动；chip 高度 `--colox-size-5` 恒定（不随 tier）。
 - 行 tier `colox-select__option--{tier}` 每行按成员解析发射（继承父级或本人覆盖）。
@@ -76,5 +76,6 @@ packages/components/src/select/
 - 2026-09 Select 折叠形态改判：叠加徽标被指「视觉污染（断 pill）」→ 视觉切片 + 行内 +M chip（挂载全量、尾部脱流隐藏兼任测量源；详见决策 1c6ee3a7，59ee6358 被其 supersede）。
 - 2026-09 Select 折叠测量 bug 修复：首版把「行自身宽」当折叠预算，行随切片回缩 → 计数自我坍塌归零（用户现象：继续选中后空间够却只剩 +M、全选后零 chip）；改预算 = inner − control 底线 − trailing − 2×gap，RO 观察 inner/control/row 三方（纠错条款见 corrections/measurement.md）。
 - 2026-09 Select 折叠测量 bug 修复二轮（重构版）：上一版的「control 当前宽 > 底线则受让」分支是第二次坍塌（control flex:1/0% 基底在折叠后吸收空余，分支恒真 → 预算坍回切片内容宽 → 一个 option 都不展示只剩 +M）；终版抽 `useTagFold` hook：预算 = inner − control computed min-width − trailing − 2×gap，全恒定占位、RO 只观察 inner；回归测试把 control 模拟为贪婪宽 220（前版 mock 8px 等于底线，盲区漏测）。纠错条款 corrections/measurement.md 已二轮补全。
+- 2026-09 Select clear × 命中修复：渐隐中的 chevron（opacity<1 的层叠上下文，DOM 序后于 ×）吃掉 × 的全部点击——真实点不中（jsdom 测不出，Playwright elementFromPoint 实证）；chevron 加 `pointer-events: none`。纠错条款 corrections/hit-testing.md。
 - 2026-09 Select 交互评审三轮：选中行灰底再修正——单选重开时初始键盘高亮落在选中行，`--active` 灰底误读为选中染色（多选初始高亮 -1 无此相）；选中行 hover/active 一律不染灰底（check 仍是唯一选中信号）。
 - 2026-09 Select tag 定制定案：`Select.Template name="tag"` 模板叶 + cloneElement 注入 `{ props, option, onRemove }`（用户否决 tagRender 回调形式，props 背包 = 无壳 + 前向兼容；详见决策 c7778102）；docs 演示组件落 `apps/docs/src/components/select/tag-template-demo.tsx`（MDX ESM 对箭头函数组件导出解析极脆——注释里的 `<EmojiTag />` 字面量都会被当正文 JSX 解析，教训：docs 复杂 demo 一律 app 侧文件）。
