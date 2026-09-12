@@ -160,7 +160,7 @@
 - **简单图形不引图标**：单选点 CSS 化（`::before` 40% + currentColor，随 tier 零字面量缩放），不给它新增图标——按需追加纪律；disabled 时点转 text-disabled。
 - 来源：Radio 交付时的形态裁决（对照 antd/MUI 同为环+点模型；反方选择「与 Checkbox 同实心模型」被否）；用户反馈「border 和实心圆比例差异过大」后点径 50%→40% 定案。
 
-## 弹层是独立排版语境：面板字号不随触发器漂移，专 prop 控制
+## 弹层面板行型沿 size 继承：叶子继承、本人优先
 
-- **Select 的弹层面板字号不跟随 trigger 的 size 档**：触发器 xs 与 lg 的面板内容各自漂移会过度放大差异、也不成立（弹层不是触发器的延长，是另一个排版平面）。面板行型有自己独立缺省（md 档排版），组件提供 **`optionSize` 专 prop**（默认 md、四档同源）让消费方有精确控制点——「弹层行型」与「触发器尺寸」两条轴解耦（用户拍板「面板字号先不跟随 size」）。
+- **选项行型不再与触发器割裂**：Select 面板的选项行型（字级/行高）默认继承父级 `size` 档——`<Select size="sm">` 全组面板 sm 排版；`Select.Option` 持 `size` 可单独覆盖（本人优先、四档同源），逐选项异档是显式 opt-in。这与 Radio/Checkbox 组成员直接继承 size 的家族契合同构。原「面板字号不跟随 size + `optionSize` 专 prop」解耦案已被用户改判废除（叶子化重设计时翻案）：弹层仍是独立定位平面（portal/overflow 逃逸、z 独立不变），但排版档位归入家族 size 继承轴。
 - 面板视觉零新增 token：`bg-overlay` 底 + `border-muted` 1px + `shadow-md` + radius-md；选项交互态走 `wash-hover`/`wash-active`，选中标记 `brand-wash-active` + IconCheck 尾标。z-index 无 token——面板 z 用组件内变量起步（设计语言补 `--colox-z-*` 后再收编）。

@@ -23,7 +23,7 @@ input/
 ├── _tests/                  # 6 个测试文件：state/size/slots/builtins/filter/contract
 ├── types/index.ts           # InputProps（全量扩展）+ InputSize + InputRef
 ├── styles/
-│   ├── base.scss              # 外壳契约（focus-within 环/invalid/disabled）+ 裸 control + 插槽条
+│   ├── base.scss              # 外壳契约（focus-within 环/invalid/disabled）+ 插槽条（裸 control reset 已随 cdk 迁出）
 │   ├── slots.scss             # 内置按钮复位样式（clear/toggle）
 │   ├── size.scss              # 尺寸类 colox-input--xs/sm/md/lg（作用于外壳）
 │   └── index.scss             # @use base + slots + size
@@ -38,7 +38,7 @@ input/
 
 ### 外壳 DOM 契约
 
-`div.colox-input > span.colox-input__leading? + input.colox-input__control + span.colox-input__trailing?`
+`div.colox-input > span.colox-input__leading? + input.colox-input-control + span.colox-input__trailing?`
 块类名 = `colox-input`（组件自身名字空间）；`colox-input-group*` 名字空间预留给未来的 InputGroup 组件（兄弟组件，不抢注）。空插槽不渲染 span；内置控件追加在消费者 `trailing` 内容**之后**。`className`/`style` 落外壳；`size` 类与 `--invalid`/`--disabled` 修饰类落外壳；`aria-invalid` 落内层 input。焦点视觉从 `:focus` 上移到外壳 `:focus-within`（焦点停留在插槽按钮上时环不灭）。
 
 ### 尺寸与图标继承
@@ -65,7 +65,7 @@ input/
 
 ## 调用关系
 
-- 依赖：`@colox/icons`（IconSearch/IconX/IconEye/IconEyeOff，运行时依赖、vite 打包 external 保树摇）、`clsx`、`class-variance-authority`、`./styles/index.scss`、全局 token 层。
+- 依赖：`@colox/cdk/input-control`（裸 control 单元：`colox-input-control` 基础类 + 裸化 reset + webkit search 装饰抑制——Input 与 Select 共享的通用能力，v2 从 input/ 私有件迁入 cdk）、`@colox/icons`（IconSearch/IconX/IconEye/IconEyeOff，运行时依赖、vite 打包 external 保树摇）、`clsx`、`class-variance-authority`、`./styles/index.scss`、全局 token 层。
 - 被依赖：`@colox/react` barrel、preview 应用 stories。
 
 ## 对外接口
