@@ -7,8 +7,8 @@
  * families in palette.scss (private palette variables, mirroring the
  * Button namespace). The chrome variants (ghost/outline/surface/
  * subtle/solid) ride the token-pinned square footprint and `rounded`
- * switches it to a full circle; the plain variant skips the box
- * entirely — it hugs the icon and feeds the size channel to the
+ * switches it to a full circle; the plain and muted variants skip the
+ * box entirely — they hug the icon and feed the size channel to the
  * font-size instead.
  */
 .colox-icon-button {

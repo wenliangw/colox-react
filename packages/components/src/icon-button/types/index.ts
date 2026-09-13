@@ -28,12 +28,15 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   size?: IconButtonSize;
   /**
    * Visual form of the icon button — the strength ladder: plain (pure
-   * icon, default), ghost, outline, surface, subtle, solid. Plain's
-   * box hugs the icon, `size` sizes the icon itself and the icon is
-   * painted in the palette color, darkening to the palette hover/
-   * active shade (no background feedback); the filled variants
-   * (subtle/surface/solid) swap tiers on hover/active, ghost/outline
-   * layer a wash.
+   * icon, default), muted (the quiet context tier), ghost, outline,
+   * surface, subtle, solid. Plain's box hugs the icon, `size` sizes
+   * the icon itself and the icon is painted in the palette color,
+   * darkening to the palette hover/active shade (no background
+   * feedback); muted is the same zero-chrome form but speaks at the
+   * muted text volume at rest, lifting to the default text volume on
+   * hover/active — the palette-independent context tier for
+   * field-interior symbols; the filled variants (subtle/surface/solid)
+   * swap tiers on hover/active, ghost/outline layer a wash.
    * @default 'plain'
    */
   variant?: IconButtonVariant;

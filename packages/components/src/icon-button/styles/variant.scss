@@ -1,12 +1,15 @@
 /**
- * Variant paint — the six-member strength ladder over the private
+ * Variant paint — the seven-member strength ladder over the private
  * palette variables (the palette layer maps them onto the color
  * families). Feedback language: filled variants swap tiers on
  * hover/active (solid → solid-hover/active, subtle/surface → muted),
- * unfilled variants layer a wash (outline/ghost), and plain recolors
- * the icon itself — its box hugs the icon (the size channel feeds the
- * font-size) and never paints a background. Disabled keeps the shared
- * muted treatment plus a variant-appropriate fill/border.
+ * unfilled variants layer a wash (outline/ghost), and the two
+ * zero-chrome icon-tone members recolor the icon itself — plain in
+ * the palette color, muted at the muted text volume (the one
+ * palette-independent context tier: it speaks with the surrounding
+ * content and lifts to the default text volume on hover/active).
+ * Disabled keeps the shared muted treatment plus a variant-appropriate
+ * fill/border.
  */
 .colox-icon-button--plain {
   background-color: transparent;
@@ -21,6 +24,26 @@
 
   &:active:not(:disabled) {
     color: var(--colox-icon-button-palette-solid-active);
+  }
+}
+
+.colox-icon-button--muted {
+  // The quiet icon-tone tier: the same zero-chrome, icon-hugging form
+  // as plain, but the context's muted text volume at rest
+  // (independently of palette), lifting to the default text volume on
+  // hover/active.
+  background-color: transparent;
+  width: auto;
+  height: auto;
+  font-size: var(--colox-icon-button-block);
+  color: var(--colox-color-text-muted);
+
+  &:hover:not(:disabled) {
+    color: var(--colox-color-text-default);
+  }
+
+  &:active:not(:disabled) {
+    color: var(--colox-color-text-default);
   }
 }
 

@@ -67,6 +67,7 @@ describe('IconButton semantics', () => {
 describe('IconButton variant', () => {
   it.each([
     ['plain', 'colox-icon-button--plain'],
+    ['muted', 'colox-icon-button--muted'],
     ['ghost', 'colox-icon-button--ghost'],
     ['outline', 'colox-icon-button--outline'],
     ['surface', 'colox-icon-button--surface'],

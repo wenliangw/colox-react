@@ -88,6 +88,7 @@ export const SelectTags = ({
               <span className="colox-select__tag-label">{option.text}</span>
               <IconButton
                 size="4"
+                variant="muted"
                 className="colox-select__tag-remove"
                 aria-label={`Remove ${option.text}`}
                 disabled={disabled}

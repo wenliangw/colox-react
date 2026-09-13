@@ -35,6 +35,7 @@ export const VisibilityToggle = ({
   return (
     <IconButton
       size="4"
+      variant="muted"
       className="colox-input__toggle"
       aria-label={revealed ? 'Hide password' : 'Show password'}
       onMouseDown={keepFocus}

@@ -13,6 +13,7 @@ import type { SelectClearButtonProps } from '../../types';
 export const SelectClearButton = ({ onClick }: SelectClearButtonProps) => (
   <IconButton
     size="4"
+    variant="muted"
     className="colox-select__clear"
     aria-label="Clear selection"
     onMouseDown={(event) => event.preventDefault()}

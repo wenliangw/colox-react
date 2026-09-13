@@ -23,6 +23,7 @@ export const ClearButton = ({ onClear, icon = <IconX /> }: ClearButtonProps) => 
   return (
     <IconButton
       size="4"
+      variant="muted"
       className="colox-input__clear"
       aria-label="Clear input"
       onMouseDown={keepFocus}

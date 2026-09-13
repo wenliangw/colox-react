@@ -134,12 +134,8 @@
 
 .colox-select__tag-remove {
   // Reset, hit shape, focus ring and disabled semantics ride the shared
-  // IconButton base; the site layer keeps the chip-interior coloring.
-  color: var(--colox-color-text-muted);
-
-  &:hover {
-    color: var(--colox-color-text-default);
-  }
+  // IconButton base; the muted variant carries the quiet chip-interior
+  // coloring (muted volume at rest, default volume on hover/active).
 }
 
 .colox-select__trailing {
@@ -166,17 +162,14 @@
 
 .colox-select__clear {
   // Reset, hit shape, focus ring and disabled semantics ride the shared
-  // IconButton base; this site class only places the button over the
-  // chevron slot and runs the swap reveal.
+  // IconButton base; the muted variant colors it (muted at rest,
+  // default volume on hover/active). This site class only places the
+  // button over the chevron slot and runs the swap reveal.
   position: absolute;
   inset: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
-
-  &:hover {
-    color: var(--colox-color-text-default);
-  }
 }
 
 // The clear affordance swaps in for the chevron instead of pairing
