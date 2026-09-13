@@ -36,7 +36,7 @@
 
 ## 站点契约（换装后的分工）
 
-- **IconButton 基座**：复位、方形足迹、hover/active wash + 按压、focus-visible 环、disabled 语义、type="button" 默认。
+- **IconButton 基座**：复位、方形足迹、hover/active wash + 按压、focus-visible 环、disabled 语义、type="button" 默认；过渡约定收成私有 hook `--colox-icon-button-transition`（站点组合追加成员用，不整条覆盖）。
 - **站点保留**（都经 className 落在按钮上，类名不变，测例零迁移）：
   - Input clear/toggle 的 `onMouseDown preventDefault` 防失焦（这是「控件在输入框上下文」的行为，不是图标按钮本分——工具栏图标钮恰恰要正常获得焦点，故不上提基座）；`slots.scss` 退役删除（复位全在基座）。
   - Select clear 的 absolute inset-0 换位 + opacity/pointer-events swap reveal；tag-remove 的 chip 内 muted 着色 + hover solid（与基座 ghost wash 叠加）。

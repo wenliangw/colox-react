@@ -52,7 +52,7 @@ packages/components/src/select/
 ### 跨组件复用
 
 - 搜索 control = **cdk 的 `src/cdk/input-control/`**（forwardRef 裸 `<input>`，`colox-input-control` 基础类 + className 合并），自带裸化 reset、自足工作于任何外壳——Input 与 Select 双消费者实锤，迁出 input/ 私有件位置。
-- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。按钮本体与 tag-remove 均为 IconButton（`size="4"` `variant="muted"`）——复位/方形足迹/聚焦环/禁用态上提基座、muted 音色档承载 chip 内语境色（静止 text-muted/hover·active text-default，决策 07ea9169 → 视觉轴落地链 → 决策 49d74585）；站点类只留换位 reveal（clear）——原 tag-remove/clear 两条站点色规则已删除，站点层回归纯结构。
+- 清除按钮 Select 自建（`colox-select__clear`），复用 Input 的 keepFocus 模式（mousedown preventDefault + click 清除）。按钮本体与 tag-remove 均为 IconButton（`size="4"` `variant="muted"`）——复位/方形足迹/聚焦环/禁用态上提基座、muted 音色档承载 chip 内语境色（静止 text-muted/hover·active text-default，决策 07ea9169 → 视觉轴落地链 → 决策 49d74585）；站点类只留换位 reveal（clear）+ 基座过渡 hook 组合（`transition: var(--colox-icon-button-transition), opacity fast`——先组合后追加，整条覆盖会杀 color 过渡，corrections/style-class-consistency.md）——原 tag-remove/clear 两条站点色规则已删除，站点层回归纯结构。
 
 ## 样式约定
 
