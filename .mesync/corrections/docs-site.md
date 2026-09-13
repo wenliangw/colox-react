@@ -37,3 +37,9 @@
 - **改这里**：动 customCss/clientModules 后构建报出来自 `.docusaurus` 里的旧字符串。
 - **必须检查那里**：`pnpm clear`（或手删 `.docusaurus` + node_modules/.cache）；docusaurus 持久缓存会吃旧配置解析结果，报错行和当前配置对不上。
 - 为什么：webpack persistent cache 记的是解析产物，配置变更不触发失效。
+
+## 交付视觉稿前 → 必须自己看过（或明确声明未验收）
+
+- **改这里**：任何影响观感的站点改动（首页版图、组件页排版、配色/密度）准备交付时。
+- **必须检查那里**：① 主模型带视觉时（deepseek-v4-flash-vision-exp 可用 read_image；pro / flash-0731 均报 `does not declare image input`）——**先重拍截图**（旧图不代表当前构建）、再看参照站同类页、对照后交付；② 无视觉时不得交付视觉稿，用计算样式探针验结构并明确告知「视觉未验收，请目视」；③ 子代理可用 read_image（实测 HAS_VISION，可承担评审），但需确认其模型是否带视觉。
+- 为什么：上一版 homepage 只做了结构探针就交付，用户目视后判定「效果并不好」——密度/留白/icon ladder 换行/卡片高度不齐等问题探针全都测不出来。

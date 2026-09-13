@@ -1,36 +1,38 @@
 # docs 官网设计品味
 
-2026-09 与用户对齐（四刀拍板）后确立的产品级设计方向；执行时逐条对照。
+2026-09 方向修正后确立：**参考锚点 = Ant Design / MUI 这类成熟组件库官网的信息架构与密度纪律**；皮肤仍走自家 token/palette/variant 三轴。上一版「Radix 式极简留白」已被用户否定（决策 b6231811），不要回退。
 
-## 气质：工程克制（类 Radix/TanStack）
+## 密度纪律（最重要的纠正）
 
-- 黑白灰骨架 + palette 点缀：唯一允许的彩色 = 语义色的**展示性**使用（三轴陈列、组件 demo）；版式本身的颜色全部来自 surface 档（bg/border/text 的 default/muted/subtle）
-- 大量留白、组件是主角：官网的卖点 = 组件 + 三轴，不是花哨的 skin
-- 英文文案、简洁短句；不喊口号
-- 徽章化/渐变 hero = 「品牌氛围」方向，未被选择，不要加回来
+- 克制 ≠ 大留白：antd 的克制是**信息架构规整 + 高密度专业排版**
+- 正文 14px 级、行高 ~1.6；H1 ~32px；H2 ~24px **带细规则线**（bottom hairline）；层次靠字号/字重/规则线，不靠空旷
+- 分节间距规整（40-48px 级），禁止「有的区块挤在一起、有的空一大片」
+- 卡片网格紧凑：卡片内边距适中，内容与盒子匹配，不留大块死白
+- 禁止海报感：不出现 56px+ 巨型标题配大面积空白
 
-## 动效：轻（只表达层级与反馈）
+## 组件文档页 = 官网灵魂（第一优先级）
 
-- 三类允许：① 反馈类（hover/active/focus——组件自带过渡足矣）；② 明暗切换渐隐（表面色 transition，用 motion token 时长）；③ hero 一次性入场（淡入 + 微上移，一次性、不循环）
-- 不允许：滚动显影、卡片 hover 微抬升、视差、粒子、循环背景动画（被排除的「中/重」档）
-- 所有动效时长用 `--colox-motion-duration-*` token——reduced-motion 门径（motion.css 归零时长）自动生效，不必另写媒体查询
-- 首页入场动画当前直接挂在 `main`（.page 类），不走 scroll 触发
+每个组件页由下列区块构成，button 页先打样再铺开：
 
-## 版式：用自家组件搭骨架（dogfood 纪律）
+1. **页头**：H1（组件名）+ 一行描述 + `import { X } from '@colox/react';` 代码行（可复制）+ 元信息行（GitHub / Edit this page / Design 等）
+2. **H2 分节**（带细规则线）：`When to use`（适用场景 prose + 能力清单）/ `Examples`（demo 块）/ `API`（属性表）/ `Design tokens`
+3. **demo 块**：预览区 + 标题 + 描述 + **可折叠代码**（代码默认收起、一键展开）+ 复制入口；demo 块之间规整分隔
+4. **API 属性表**：Prop / Type / Default / 说明 四列（现有 mdx 表格已具备，需样式对齐 antd 密度）
+5. **分组侧栏**：9 组件按类目分组（General / Form / Layout 之类），分组标题 = 小号 muted 大写字母；活动项 = 主色文字 + 浅色底 + 左侧色条
+6. **右栏 TOC**：保留 docusaurus 默认能力，样式驯化到 antd 密度
 
-- 版式骨架 = Container/Grid/Stack + 展示性 Button/IconButton；不得为首页写裸 div 板车
-- 自家 token 名词走 CSS 模块类（className + CSS 变量），**严禁 inline style 对象**——demo 本身就是 doctrine #1 的示范
-- 三轴陈列区 = 官网的灵魂版面：palette 六族 / Button 五档阶梯 / IconButton 七音阶 + mono 标签 / size 四档——按钮正文即档名（Button 阶梯不用下标签，IconButton 阶梯配 mono 下标签）
-- 画廊卡片 hover 只做 border-default + bg-subtle 反馈；不抬升、不加阴影
-- 组件库展示必须默认 gray 哲学可见：文案里明说「Components default to gray — an accent is always opt-in.」
+## 首页（antd 式，第二优先级）
 
-## 主题接线（docusaurus ↔ colox）
+结构（自上而下）：紧凑 hero（标题 + 副标 + 2 按钮，无巨型留白）→ 公告/特性卡横排 → **主题定制展示块**（用自家组件做整块富视觉 demo，最像官方组件库的部分）→ 组件陈列卡（每卡 = 组件名 + 迷你 demo + 入口）→ 设计语言卡（三轴 / 图标 / 主题 / CDK 网格）→ 多列页脚。
 
-- docusaurus 的 toggle / 配置是唯一主题真相；ColoxTheme `theme` prop 受控，clientModules 同步 data-theme → data-colox-theme
-- 全局样式表加载走 clientModules（`import '@colox/react/style.css'`）；customCss 只放自身 scss
-- customCss/scss 里**绝不写死 token 值**——颜色一律 var(--colox-*) 引用
+## 皮肤仍走自家设计语言（抄结构不抄皮肤）
 
-## 交付节奏
+- 颜色/圆角/间距/动效一律 `--colox-*` token；不复制 antd 的品牌色、插画、阴影
+- 版式骨架用自家 Container/Grid/Stack；展示用自家 Button/IconButton；无裸 div 板车、无 inline style
+- 动效维持「轻」：反馈 + 明暗切换渐隐 + 一次性入场，时长走 motion token
 
-- 首页先交付、双主题 + 结构性探针验收；playground 样板单独一批；每批小、可评审
-- 视觉终审以用户目视为准（模型不可读图时用计算样式探针做结构验收，明确汇报验证范围）
+## 视觉验收纪律（本次教训）
+
+- **能看图就必须自己先看**：先看参照（ant.design 同类页）再看成品，对照后再交付；截图前先重拍（旧截图不代表当前构建）
+- 不能看图时（模型无视觉输入）不交付视觉稿；改用计算样式探针 + 明确告知用户「视觉未验收」
+- 评审与编码可分工：视觉评审走视觉模型/子代理，编码走 v4-pro；子代理可用 read_image（已实测 HAS_VISION）
