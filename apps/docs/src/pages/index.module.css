@@ -211,29 +211,60 @@
 .installChip {
   display: inline-flex;
   align-items: center;
-  gap: var(--colox-spacing-3);
+  gap: var(--colox-spacing-2);
   margin-top: var(--colox-spacing-1);
-  padding: var(--colox-spacing-2) var(--colox-spacing-3);
+  padding: var(--colox-spacing-2) var(--colox-spacing-2) var(--colox-spacing-2)
+    var(--colox-spacing-3);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-md);
   background-color: var(--colox-color-bg-default);
-  font-family: var(--colox-font-mono);
-  font-size: 0.8125rem;
-  color: var(--colox-color-text-muted);
   cursor: pointer;
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 }
 
 .installChip:hover {
   border-color: var(--colox-color-border-default);
+  background-color: var(--colox-color-bg-subtle);
+  box-shadow: var(--colox-shadow-sm);
   transform: translateY(-1px);
 }
 
-.installState {
+.installPrompt {
   font-family: var(--colox-font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--colox-color-brand-solid);
+  user-select: none;
+}
+
+.installCode {
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-default);
+}
+
+.installState {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-1);
+  padding: 0 var(--colox-spacing-2);
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--colox-color-bg-muted);
+  font-family: var(--colox-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--colox-color-text-muted);
+  transition:
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.installStateOn {
+  background-color: var(--colox-color-brand-subtle);
   color: var(--colox-color-brand-solid);
 }
 
@@ -271,30 +302,27 @@
   background-color: var(--colox-color-bg-muted);
 }
 
+/* The playground's code line is a real highlighted block (Prism via
+   @theme/CodeBlock); it remounts on every pick, so the pulse replays
+   and the line acknowledges the change. */
 .stageCode {
-  display: block;
   margin: 0;
-  padding: var(--colox-spacing-3);
-  overflow-x: auto;
-  border-radius: var(--colox-radius-sm);
-  background-color: var(--colox-color-bg-muted);
-  font-family: var(--colox-font-mono);
-  font-size: 0.75rem;
-  color: var(--colox-color-text-muted);
-  white-space: pre;
-  /* Remounted on every pick, so the pulse replays — the code line
-     acknowledges the change. */
   animation: code-pulse var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
+}
+
+.stageCode :global(.theme-code-block) {
+  margin-bottom: 0;
+  font-size: 0.75rem;
 }
 
 @keyframes code-pulse {
   from {
-    background-color: var(--colox-color-brand-subtle);
-    color: var(--colox-color-text-default);
+    opacity: 0.5;
+    transform: translateY(2px);
   }
   to {
-    background-color: var(--colox-color-bg-muted);
-    color: var(--colox-color-text-muted);
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -344,6 +372,10 @@
 
 .quickCode :global(.theme-code-block) {
   margin-bottom: 0;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  overflow: hidden;
+  font-size: 0.8125rem;
 }
 
 /* ---------- design principles ---------- */

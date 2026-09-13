@@ -7,7 +7,7 @@ import { useColorMode } from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
 import { Button, Container, Grid, IconButton, Input, Stack } from '@colox/react';
 import { ColoxTheme } from '@colox/theme';
-import { IconChevronRight, IconPlus } from '@colox/icons';
+import { IconCheck, IconChevronRight, IconPlus } from '@colox/icons';
 import Reveal from '../components/reveal';
 import '@colox/react/style.css';
 import styles from './index.module.css';
@@ -298,8 +298,12 @@ function CopyChip({ command }: { command: string }): ReactNode {
         window.setTimeout(() => setCopied(false), 1600);
       }}
     >
-      <code>{command}</code>
-      <span className={styles.installState}>{copied ? 'copied' : 'copy'}</span>
+      <span className={styles.installPrompt}>$</span>
+      <code className={styles.installCode}>{command}</code>
+      <span className={`${styles.installState} ${copied ? styles.installStateOn : ''}`}>
+        {copied ? <IconCheck aria-hidden="true" /> : null}
+        {copied ? 'copied' : 'copy'}
+      </span>
     </button>
   );
 }
@@ -378,9 +382,11 @@ function Playground(): ReactNode {
           </Button>
         </Stack>
       </div>
-      <code className={styles.stageCode} key={`${palette}-${variant}-${size}`}>
-        {`<Button variant="${variant}" palette="${palette}" size="${size}">Create</Button>`}
-      </code>
+      <CodeBlock
+        language="tsx"
+        className={styles.stageCode}
+        key={`${palette}-${variant}-${size}`}
+      >{`<Button variant="${variant}" palette="${palette}" size="${size}">Create</Button>`}</CodeBlock>
     </div>
   );
 }
@@ -594,7 +600,7 @@ function HomeContent(): ReactNode {
               </Stack>
             </Reveal>
             <Reveal delay={1} className={styles.quickCode}>
-              <CodeBlock language="tsx">{`import { Button } from '@colox/react';
+              <CodeBlock language="tsx" title="App.tsx">{`import { Button } from '@colox/react';
 import '@colox/react/style.css';
 
 <Button variant="solid" palette="primary">Create</Button>`}</CodeBlock>
