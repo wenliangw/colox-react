@@ -10,16 +10,17 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@colox/icons": "workspace:*",
     "@colox/react": "workspace:*",
     "@colox/theme": "workspace:*",
     "@docusaurus/core": "^3.7.0",
     "@docusaurus/preset-classic": "^3.7.0",
+    "@easyops-cn/docusaurus-search-local": "^0.55.3",
     "@mdx-js/react": "^3.1.0",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@colox/icons": "workspace:*"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.7.0",

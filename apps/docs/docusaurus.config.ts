@@ -86,6 +86,24 @@ const config: Config = {
     }),
   ],
 
+  // Offline full-text search: the index is built from the docs at build
+  // time, so there is no Algolia account and no network dependency.
+  themes: [
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        language: ['en'],
+        indexBlog: false,
+        docsRouteBasePath: '/docs',
+        highlightSearchTermsOnTargetPage: true,
+        searchBarShortcut: true,
+        searchBarShortcutHint: true,
+        searchResultLimits: 8,
+      },
+    ],
+  ],
+
   themeConfig: {
     colorMode: {
       defaultMode: 'light',

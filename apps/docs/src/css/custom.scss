@@ -111,6 +111,88 @@ body {
   color: var(--colox-color-text-default);
 }
 
+/* ---- TopBar search (offline index). The input is dressed through
+   Infima's own search variables, so no hashed selectors are needed;
+   the results dropdown is the plugin's CSS-module surface, so it is
+   matched by its stable class prefixes. ---- */
+
+:root {
+  --ifm-navbar-search-input-background-color: var(--colox-color-bg-subtle);
+  --ifm-navbar-search-input-color: var(--colox-color-text-default);
+  --ifm-navbar-search-input-placeholder-color: var(--colox-color-text-muted);
+  --ifm-navbar-search-input-icon: var(--colox-color-text-muted);
+}
+
+/* The search plugin publishes its own variables — theme it there instead
+   of fighting its CSS modules (order-independent, upgrade-safe). */
+:root {
+  --search-local-highlight-color: var(--colox-color-brand-subtle);
+  --search-local-hit-active-color: var(--colox-color-brand-solid);
+  --search-local-hit-background: var(--colox-color-bg-default);
+  --search-local-hit-color: var(--colox-color-text-default);
+  --search-local-hit-shadow: none;
+  --search-local-muted-color: var(--colox-color-text-muted);
+  --search-local-modal-background: var(--colox-color-bg-default);
+  --search-local-modal-shadow: var(--colox-shadow-md);
+  --search-local-input-active-border-color: var(--colox-color-brand-solid);
+  --search-local-spacing: var(--colox-spacing-3);
+}
+
+.navbar__search-input {
+  height: 2rem;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  font-size: 0.8125rem;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.navbar__search-input:focus {
+  border-color: var(--colox-color-brand-solid);
+  background-color: var(--colox-color-bg-default);
+  outline: none;
+}
+
+[class*='dropdownMenu_'] {
+  overflow: hidden;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-default);
+  box-shadow: var(--colox-shadow-md);
+}
+
+[class*='suggestion_'] {
+  border-radius: var(--colox-radius-sm);
+}
+
+[class*='suggestion_']:hover,
+[class*='suggestion_'][class*='cursor_'] {
+  background-color: var(--colox-color-bg-subtle);
+}
+
+[class*='hitTitle_'] {
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-default);
+}
+
+[class*='hitPath_'],
+[class*='hitIcon_'] {
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+[class*='hitFooter_'] a {
+  font-size: 0.8125rem;
+  color: var(--colox-color-brand-solid);
+}
+
+[class*='searchClearButton_'] {
+  border: none;
+  background-color: transparent;
+  color: var(--colox-color-text-muted);
+}
+
 /* The gentle fade when the light/dark toggle hands over; the motion
    gate (prefers-reduced-motion) zeroes the duration tokens, so this
    collapses to an instant swap for reduced-motion users. */

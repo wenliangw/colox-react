@@ -39,7 +39,7 @@
 10. 页脚
     **信息剂量纪律（用户反馈「重复内容多」后确立）**：每条信息只讲一次——安装命令/双 CTA/GitHub 归 hero（快速上手只教用法、只留一段代码）；token 主题故事归 theming 章节；AI 故事归 04 章节；Figma 管线归 toolchain 章节；收尾带只留一个行动 + 组件 pill + 包名 chip。
 
-**TopBar 规范**：品牌标记 = 六族色块 SVG（`static/img/colox-mark.svg`，2×3 排布、按页面色谱顺序，是品牌资产故用固定色值）+ 标题；导航 = Docs（docSidebar）+ **Components 下拉（9 个文档）** + **Toolchain 下拉（wiki/mcp/theme-builder/theme 四个包的 GitHub）**；右侧 = **GitHub 图标链接（mask SVG 走 token 着色，随主题变色）** + 主题开关；下拉菜单按产品菜单打扮（发丝边 + 圆角 + 柔和影 + hover 染主色）。
+**TopBar 规范**：品牌标记 = 六族色块 SVG（`static/img/colox-mark.svg`，2×3 排布、按页面色谱顺序，是品牌资产故用固定色值）+ 标题；导航 = Docs（docSidebar）+ **Components 下拉（9 个文档）** + **Toolchain 下拉（wiki/mcp/theme-builder/theme 四个包的 GitHub）**；右侧 = **GitHub 图标链接（mask SVG 走 token 着色，随主题变色）** + 主题开关 + **离线全文搜索**（@easyops-cn/docusaurus-search-local，构建期建索引、无需 Algolia；桌面为 ⌘K 提示的胶囊输入框，移动端收成搜索图标）；下拉菜单按产品菜单打扮（发丝边 + 圆角 + 柔和影 + hover 染主色）。
 
 滚动显现：统一用 src/components/reveal 包（一次性、支持 delay 0-3 交错、reduced-motion 自动收敛）
 
