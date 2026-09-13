@@ -1,13 +1,13 @@
 .colox-button--solid {
-  background-color: var(--colox-button-intent-solid);
-  color: var(--colox-button-intent-inverse);
+  background-color: var(--colox-button-palette-solid);
+  color: var(--colox-button-palette-inverse);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-solid-hover);
+    background-color: var(--colox-button-palette-solid-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-solid-active);
+    background-color: var(--colox-button-palette-solid-active);
   }
 
   &:disabled {
@@ -17,16 +17,16 @@
 }
 
 .colox-button--outline {
-  border-color: var(--colox-button-intent-solid);
+  border-color: var(--colox-button-palette-solid);
   background-color: transparent;
-  color: var(--colox-button-intent-solid);
+  color: var(--colox-button-palette-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-wash-hover);
+    background-color: var(--colox-button-palette-wash-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-wash-active);
+    background-color: var(--colox-button-palette-wash-active);
   }
 
   &:disabled {
@@ -37,14 +37,14 @@
 
 .colox-button--ghost {
   background-color: transparent;
-  color: var(--colox-button-intent-solid);
+  color: var(--colox-button-palette-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-button-intent-wash-hover);
+    background-color: var(--colox-button-palette-wash-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-button-intent-wash-active);
+    background-color: var(--colox-button-palette-wash-active);
   }
 
   &:disabled {

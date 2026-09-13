@@ -3,7 +3,7 @@ import type { IconButtonVariants } from '../variants';
 
 export type IconButtonSize = NonNullable<IconButtonVariants['size']>;
 export type IconButtonVariant = NonNullable<IconButtonVariants['variant']>;
-export type IconButtonIntent = NonNullable<IconButtonVariants['intent']>;
+export type IconButtonPalette = NonNullable<IconButtonVariants['palette']>;
 
 /**
  * The square bare-button primitive for icon-only controls — the reset,
@@ -28,20 +28,20 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   /**
    * Visual form. Text is the default — pure icon, no chrome: the box
    * hugs the icon, `size` sizes the icon itself and the icon is
-   * painted in the intent color, darkening to the intent hover/active
-   * shade (no background feedback); ghost is the intent-tinted icon
+   * painted in the palette color, darkening to the palette hover/active
+   * shade (no background feedback); ghost is the palette-tinted icon
    * with a wash on hover; solid/outline carry filled/bordered chrome
-   * in the intent color.
+   * in the palette color.
    * @default 'text'
    */
   variant?: IconButtonVariant;
   /**
-   * Semantic intent — the color family for the icon, the hover
+   * Semantic palette — the color family for the icon, the hover
    * feedback, the focus ring, and the solid/outline paint. Mirrors
-   * the Button intent axis.
-   * @default 'neutral'
+   * the Button palette axis; primary is the brand color.
+   * @default 'gray'
    */
-  intent?: IconButtonIntent;
+  palette?: IconButtonPalette;
   /**
    * Fully-round footprint (circle) instead of the square with small
    * radius. The hover/active wash follows the shape.

@@ -3,8 +3,8 @@
  *
  * Base scope: token-pinned hit shape, the button reset, the focus ring,
  * disabled semantics and the interaction motion (hover/active wash and
- * press scale). Variant paint lives in variant.scss, intent color
- * families in intent.scss (private intent variables, mirroring the
+ * press scale). Variant paint lives in variant.scss, palette color
+ * families in palette.scss (private palette variables, mirroring the
  * Button namespace). The chrome variants (ghost/outline/solid) ride
  * the token-pinned square footprint and `rounded` switches it to a
  * full circle; the text variant skips the box entirely — it hugs the
@@ -14,14 +14,14 @@
   // md fallback: the size channel normally feeds this var through a
   // size class, but the base keeps a sane footprint on its own.
   --colox-icon-button-block: var(--colox-size-10);
-  // Intent fallback: the intent layer overrides these; the brand
-  // family keeps the paint alive even without an intent class.
-  --colox-icon-button-intent-solid: var(--colox-color-brand-solid);
-  --colox-icon-button-intent-inverse: var(--colox-color-brand-inverse);
-  --colox-icon-button-intent-solid-hover: var(--colox-color-brand-solid-hover);
-  --colox-icon-button-intent-solid-active: var(--colox-color-brand-solid-active);
-  --colox-icon-button-intent-wash-hover: var(--colox-color-brand-wash-hover);
-  --colox-icon-button-intent-wash-active: var(--colox-color-brand-wash-active);
+  // Palette fallback: the palette layer overrides these; the brand
+  // family keeps the paint alive even without a palette class.
+  --colox-icon-button-palette-solid: var(--colox-color-brand-solid);
+  --colox-icon-button-palette-inverse: var(--colox-color-brand-inverse);
+  --colox-icon-button-palette-solid-hover: var(--colox-color-brand-solid-hover);
+  --colox-icon-button-palette-solid-active: var(--colox-color-brand-solid-active);
+  --colox-icon-button-palette-wash-hover: var(--colox-color-brand-wash-hover);
+  --colox-icon-button-palette-wash-active: var(--colox-color-brand-wash-active);
 
   display: inline-flex;
   align-items: center;
@@ -56,7 +56,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--colox-icon-button-intent-solid);
+    outline: 2px solid var(--colox-icon-button-palette-solid);
     outline-offset: 2px;
   }
 

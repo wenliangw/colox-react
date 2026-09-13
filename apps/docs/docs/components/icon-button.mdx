@@ -25,7 +25,7 @@ tech — always pass `aria-label` (or valid `aria-labelledby`).
 <IconButton aria-label="Close" variant="solid">
   <IconX />
 </IconButton>
-<IconButton aria-label="Close" variant="solid" intent="danger">
+<IconButton aria-label="Close" variant="solid" palette="error">
   <IconX />
 </IconButton>
 <IconButton aria-label="Close" disabled>
@@ -56,16 +56,16 @@ footprint to that token, so theme overrides flow through.
 </IconButton>
 renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
 
-## Variant & intent
+## Variant & palette
 
 `variant` sets the icon color, not only the chrome: `text` (default) is the
 pure icon — the box hugs the icon (`size` sizes the icon itself) and the icon
-is painted in the intent color, darkening to the intent hover/active shade;
-`ghost` tints the icon in the intent color with a wash on hover; `outline` and
-`solid` carry bordered/filled paint in the intent color. `intent` is the
-Button five-axis palette (primary/neutral/danger/warning/success) — **neutral
-by default** — it drives the icon color, the hover feedback, the focus ring
-and the variant paint.
+is painted in the palette color, darkening to the palette hover/active shade;
+`ghost` tints the icon in the palette color with a wash on hover; `outline` and
+`solid` carry bordered/filled paint in the palette color. `palette` is the
+design-language six-family axis (primary/gray/info/error/warning/success) —
+**gray by default** — it drives the icon color, the hover feedback, the focus
+ring and the variant paint.
 
 ## Rounded
 
@@ -81,12 +81,12 @@ switches it to a full circle — the hover/active wash follows the shape.
 
 ## Props
 
-| Prop    | Type                                                           | Default     |
-| ------- | -------------------------------------------------------------- | ----------- |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)       | `'md'`      |
-| variant | `'text' \| 'ghost' \| 'outline' \| 'solid'`                    | `'text'`    |
-| intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'neutral'` |
-| rounded | `boolean`                                                      | `false`     |
+| Prop    | Type                                                                 | Default  |
+| ------- | -------------------------------------------------------------------- | -------- |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)             | `'md'`   |
+| variant | `'text' \| 'ghost' \| 'outline' \| 'solid'`                          | `'text'` |
+| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'` |
+| rounded | `boolean`                                                            | `false`  |
 
 It also accepts all native `<button>` attributes (`type` defaults to
 `'button'`).

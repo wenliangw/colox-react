@@ -29,7 +29,7 @@ const meta: Meta<typeof IconButton> = {
     docs: {
       description: {
         component:
-          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; text (default) is the pure icon — its box hugs the icon, size sizes the icon itself and the icon is painted in the intent color (neutral by default), darkening to the intent hover/active shade — while ghost/outline/solid carry intent-tinted chrome and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
+          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; text (default) is the pure icon — its box hugs the icon, size sizes the icon itself and the icon is painted in the palette color (gray by default), darkening to the palette hover/active shade — while ghost/outline/solid carry palette-tinted chrome and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
       },
     },
   },
@@ -77,21 +77,24 @@ export const Overview: Story = {
           </Stack>
         </Section>
 
-        <Section title="Intents — solid over the five-axis palette">
+        <Section title="Palettes — the six design-language families over solid">
           <Stack direction="row" gap="4">
-            <IconButton aria-label="Primary" variant="solid" intent="primary">
+            <IconButton aria-label="Primary" variant="solid" palette="primary">
               <IconChevronDown />
             </IconButton>
-            <IconButton aria-label="Neutral" variant="solid" intent="neutral">
+            <IconButton aria-label="Gray" variant="solid" palette="gray">
               <IconChevronDown />
             </IconButton>
-            <IconButton aria-label="Danger" variant="solid" intent="danger">
+            <IconButton aria-label="Info" variant="solid" palette="info">
+              <IconEye />
+            </IconButton>
+            <IconButton aria-label="Error" variant="solid" palette="error">
               <IconX />
             </IconButton>
-            <IconButton aria-label="Warning" variant="solid" intent="warning">
+            <IconButton aria-label="Warning" variant="solid" palette="warning">
               <IconX />
             </IconButton>
-            <IconButton aria-label="Success" variant="solid" intent="success">
+            <IconButton aria-label="Success" variant="solid" palette="success">
               <IconEye />
             </IconButton>
           </Stack>

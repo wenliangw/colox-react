@@ -15,7 +15,7 @@ describe('Button shadow', () => {
 
   it('keeps the shadow class alongside the axe classes', () => {
     render(
-      <Button shadow size="lg" variant="outline" intent="danger">
+      <Button shadow size="lg" variant="outline" palette="error">
         Save
       </Button>,
     );
@@ -23,7 +23,7 @@ describe('Button shadow', () => {
       'colox-button--shadow',
       'colox-button--lg',
       'colox-button--outline',
-      'colox-button--danger',
+      'colox-button--error',
     );
   });
 });

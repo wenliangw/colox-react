@@ -1,6 +1,6 @@
 export { IconButton } from './icon-button';
 export type {
-  IconButtonIntent,
+  IconButtonPalette,
   IconButtonProps,
   IconButtonRef,
   IconButtonSize,

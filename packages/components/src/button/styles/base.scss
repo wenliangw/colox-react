@@ -31,8 +31,8 @@
 
   &:focus-visible {
     outline: none;
-    border-color: var(--colox-button-intent-solid);
-    box-shadow: 0 0 0 2px var(--colox-button-intent-muted);
+    border-color: var(--colox-button-palette-solid);
+    box-shadow: 0 0 0 2px var(--colox-button-palette-muted);
   }
 
   &:disabled {

@@ -3,7 +3,7 @@ import type { ButtonVariants } from '../variants';
 
 export type ButtonSize = NonNullable<ButtonVariants['size']>;
 export type ButtonVariant = NonNullable<ButtonVariants['variant']>;
-export type ButtonIntent = NonNullable<ButtonVariants['intent']>;
+export type ButtonPalette = NonNullable<ButtonVariants['palette']>;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
@@ -17,10 +17,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    */
   variant?: ButtonVariant;
   /**
-   * Semantic intent of the button.
-   * @default 'primary'
+   * Semantic palette of the button — the color family for the
+   * fill/border/text. primary is the brand color.
+   * @default 'gray'
    */
-  intent?: ButtonIntent;
+  palette?: ButtonPalette;
   /**
    * Adds a theme shadow (shadow-md, lifting to shadow-lg on hover).
    * @default false

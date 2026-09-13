@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--colox-spacing-2);
   font-family: var(--colox-font-sans);
-  color: var(--colox-color-text-solid);
+  color: var(--colox-color-text-default);
   cursor: pointer;
 
   &--disabled {
@@ -40,7 +40,7 @@
   flex: none;
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-full);
-  background-color: var(--colox-color-bg-solid);
+  background-color: var(--colox-color-bg-default);
   cursor: pointer;
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),

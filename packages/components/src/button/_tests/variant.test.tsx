@@ -18,28 +18,20 @@ describe('Button variants', () => {
     expect(screen.getByRole('button')).toHaveClass('colox-button--ghost');
   });
 
-  it('applies the primary intent class by default', () => {
+  it('applies the gray palette class by default', () => {
     render(<Button>Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--primary');
+    expect(screen.getByRole('button')).toHaveClass('colox-button--gray');
   });
 
-  it('applies the neutral intent class', () => {
-    render(<Button intent="neutral">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--neutral');
-  });
-
-  it('applies the danger intent class', () => {
-    render(<Button intent="danger">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--danger');
-  });
-
-  it('applies the warning intent class', () => {
-    render(<Button intent="warning">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--warning');
-  });
-
-  it('applies the success intent class', () => {
-    render(<Button intent="success">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--success');
+  it.each([
+    ['primary', 'colox-button--primary'],
+    ['gray', 'colox-button--gray'],
+    ['info', 'colox-button--info'],
+    ['error', 'colox-button--error'],
+    ['warning', 'colox-button--warning'],
+    ['success', 'colox-button--success'],
+  ] as const)('applies the %s palette class', (palette, expectedClass) => {
+    render(<Button palette={palette}>Save</Button>);
+    expect(screen.getByRole('button')).toHaveClass(expectedClass);
   });
 });

@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import { iconButtonIntentStyles } from './intent';
+import { iconButtonPaletteStyles } from './palette';
 import { iconButtonSizeStyles } from './size';
 import { iconButtonVariantStyles } from './variant';
 
@@ -7,7 +7,7 @@ export const iconButtonVariants = cva('colox-icon-button', {
   variants: {
     size: iconButtonSizeStyles,
     variant: iconButtonVariantStyles,
-    intent: iconButtonIntentStyles,
+    palette: iconButtonPaletteStyles,
     rounded: {
       true: 'colox-icon-button--rounded',
     },
@@ -15,7 +15,7 @@ export const iconButtonVariants = cva('colox-icon-button', {
   defaultVariants: {
     size: 'md',
     variant: 'text',
-    intent: 'neutral',
+    palette: 'gray',
   },
 });
 

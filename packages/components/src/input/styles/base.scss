@@ -7,8 +7,8 @@
   border-radius: var(--colox-radius-lg);
   font-family: var(--colox-font-sans);
   line-height: var(--colox-line-height-sm);
-  color: var(--colox-color-text-solid);
-  background-color: var(--colox-color-bg-solid);
+  color: var(--colox-color-text-default);
+  background-color: var(--colox-color-bg-default);
   cursor: text;
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),

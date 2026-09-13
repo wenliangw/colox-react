@@ -14,11 +14,11 @@ Buttons trigger user actions.
 <Button variant="solid">Solid</Button> <Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 
-## Intents
+## Palettes
 
-<Button intent="primary">Primary</Button> <Button intent="neutral">Neutral</Button>
-<Button intent="danger">Danger</Button> <Button intent="warning">Warning</Button>
-<Button intent="success">Success</Button>
+<Button palette="primary">Primary</Button> <Button palette="gray">Gray</Button>
+<Button palette="info">Info</Button> <Button palette="error">Error</Button>
+<Button palette="warning">Warning</Button> <Button palette="success">Success</Button>
 
 ## Sizes
 
@@ -34,11 +34,11 @@ respects the motion gate like every other transition.
 
 ## Props
 
-| Prop    | Type                                                           | Default     |
-| ------- | -------------------------------------------------------------- | ----------- |
-| variant | `'solid' \| 'outline' \| 'ghost'`                              | `'solid'`   |
-| intent  | `'primary' \| 'neutral' \| 'danger' \| 'warning' \| 'success'` | `'primary'` |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                 | `'md'`      |
-| shadow  | `boolean`                                                      | `false`     |
+| Prop    | Type                                                                 | Default   |
+| ------- | -------------------------------------------------------------------- | --------- |
+| variant | `'solid' \| 'outline' \| 'ghost'`                                    | `'solid'` |
+| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'`  |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                       | `'md'`    |
+| shadow  | `boolean`                                                            | `false`   |
 
 It also accepts all native `<button>` attributes; `type` defaults to `'button'`.

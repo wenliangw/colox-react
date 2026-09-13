@@ -81,21 +81,22 @@ describe('IconButton variant', () => {
   });
 });
 
-describe('IconButton intent', () => {
+describe('IconButton palette', () => {
   it.each([
     ['primary', 'colox-icon-button--primary'],
-    ['neutral', 'colox-icon-button--neutral'],
-    ['danger', 'colox-icon-button--danger'],
+    ['gray', 'colox-icon-button--gray'],
+    ['info', 'colox-icon-button--info'],
+    ['error', 'colox-icon-button--error'],
     ['warning', 'colox-icon-button--warning'],
     ['success', 'colox-icon-button--success'],
-  ] as const)('applies the %s intent class', (intent, expectedClass) => {
-    render(<IconButton variant="solid" intent={intent} aria-label="close" />);
+  ] as const)('applies the %s palette class', (palette, expectedClass) => {
+    render(<IconButton variant="solid" palette={palette} aria-label="close" />);
     expect(screen.getByRole('button', { name: 'close' })).toHaveClass(expectedClass);
   });
 
-  it('defaults to neutral', () => {
+  it('defaults to gray', () => {
     render(<IconButton aria-label="close" />);
-    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--neutral');
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--gray');
   });
 });
 

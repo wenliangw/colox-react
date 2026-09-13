@@ -1,0 +1,67 @@
+/**
+ * Palette color families — the six design-language families mapped
+ * onto the private button palette variables. Each family carries its
+ * solid level (fill / border / text), the inverse on-fill, the
+ * solid-hover/active states and the wash pair for ghost/outline
+ * feedback. Base.scss holds the brand fallback so the paint survives
+ * even without a palette class.
+ */
+.colox-button--primary {
+  --colox-button-palette-solid: var(--colox-color-brand-solid);
+  --colox-button-palette-muted: var(--colox-color-brand-muted);
+  --colox-button-palette-inverse: var(--colox-color-brand-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-brand-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-brand-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-brand-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-brand-wash-active);
+}
+
+.colox-button--gray {
+  --colox-button-palette-solid: var(--colox-color-gray-solid);
+  --colox-button-palette-muted: var(--colox-color-gray-muted);
+  --colox-button-palette-inverse: var(--colox-color-gray-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-gray-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-gray-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-gray-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-gray-wash-active);
+}
+
+.colox-button--info {
+  --colox-button-palette-solid: var(--colox-color-blue-solid);
+  --colox-button-palette-muted: var(--colox-color-blue-muted);
+  --colox-button-palette-inverse: var(--colox-color-blue-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-blue-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-blue-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-blue-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-blue-wash-active);
+}
+
+.colox-button--error {
+  --colox-button-palette-solid: var(--colox-color-red-solid);
+  --colox-button-palette-muted: var(--colox-color-red-muted);
+  --colox-button-palette-inverse: var(--colox-color-red-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-red-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-red-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-red-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-red-wash-active);
+}
+
+.colox-button--warning {
+  --colox-button-palette-solid: var(--colox-color-orange-solid);
+  --colox-button-palette-muted: var(--colox-color-orange-muted);
+  --colox-button-palette-inverse: var(--colox-color-orange-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-orange-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-orange-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-orange-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-orange-wash-active);
+}
+
+.colox-button--success {
+  --colox-button-palette-solid: var(--colox-color-green-solid);
+  --colox-button-palette-muted: var(--colox-color-green-muted);
+  --colox-button-palette-inverse: var(--colox-color-green-inverse);
+  --colox-button-palette-solid-hover: var(--colox-color-green-solid-hover);
+  --colox-button-palette-solid-active: var(--colox-color-green-solid-active);
+  --colox-button-palette-wash-hover: var(--colox-color-green-wash-hover);
+  --colox-button-palette-wash-active: var(--colox-color-green-wash-active);
+}

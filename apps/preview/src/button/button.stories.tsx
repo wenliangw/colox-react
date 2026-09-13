@@ -9,7 +9,7 @@ const meta: Meta<typeof Button> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Action trigger on the variant/intent/size triple axis.',
+        component: 'Action trigger on the variant/palette/size triple axis.',
       },
     },
   },
@@ -40,13 +40,14 @@ export const Overview: Story = {
           </Stack>
         </Section>
 
-        <Section title="Intents">
+        <Section title="Palettes">
           <Stack gap="3" wrap>
-            <Button intent="primary">Primary</Button>
-            <Button intent="neutral">Neutral</Button>
-            <Button intent="danger">Danger</Button>
-            <Button intent="warning">Warning</Button>
-            <Button intent="success">Success</Button>
+            <Button palette="primary">Primary</Button>
+            <Button palette="gray">Gray</Button>
+            <Button palette="info">Info</Button>
+            <Button palette="error">Error</Button>
+            <Button palette="warning">Warning</Button>
+            <Button palette="success">Success</Button>
           </Stack>
         </Section>
 
