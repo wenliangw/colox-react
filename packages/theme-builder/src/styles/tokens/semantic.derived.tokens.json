@@ -108,6 +108,24 @@
           "$value": "color-mix(in srgb, var(--colox-color-brand-solid) 15%, transparent)",
           "$type": "color"
         }
+      },
+      "blue": {
+        "solid-hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-blue-solid) 85%, #000000)",
+          "$type": "color"
+        },
+        "solid-active": {
+          "$value": "color-mix(in srgb, var(--colox-color-blue-solid) 75%, #000000)",
+          "$type": "color"
+        },
+        "wash-hover": {
+          "$value": "color-mix(in srgb, var(--colox-color-blue-solid) 8%, transparent)",
+          "$type": "color"
+        },
+        "wash-active": {
+          "$value": "color-mix(in srgb, var(--colox-color-blue-solid) 15%, transparent)",
+          "$type": "color"
+        }
       }
     }
   }

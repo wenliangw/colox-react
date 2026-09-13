@@ -166,8 +166,18 @@ for (const file of files) {
     continue;
   }
   const raw = JSON.parse(await readFile(path.join(META_DIR, file), 'utf8'));
-  const converted = convert(raw, SPECS[basename]);
+  // Pass-through: a source already carrying the `colox` namespace is a
+  // pre-converted import (Figma export with references resolved to the
+  // colox.* design-language wire). Write it into the workspace verbatim;
+  // name conversion does not apply and values stay alias references —
+  // Style Dictionary resolves both natively.
   const dest = path.join(OUT_DIR, file);
+  if (raw.colox !== undefined) {
+    await writeFile(dest, JSON.stringify(raw, null, 2) + '\n');
+    console.log(`[ok] ${META_DIR}/${file} -> tokens workspace (colox namespace kept)`);
+    continue;
+  }
+  const converted = convert(raw, SPECS[basename]);
   await writeFile(dest, JSON.stringify(converted, null, 2) + '\n');
   console.log(`[ok] ${META_DIR}/${file} -> tokens workspace`);
 }
