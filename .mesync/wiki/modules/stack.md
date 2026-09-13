@@ -6,7 +6,7 @@
 
 - **`Stack`**：`colox-stack` 根类（`display: flex`），轴 = direction（row/column/row-reverse/column-reverse，默认 row）+ gap + align + justify + wrap；CSS 忠实默认（row/stretch/start/无 gap/不 wrap）
 - **`Stack.Item`**（dot part）：`colox-stack-item`，`grow` 吸收主轴剩余空间（Spacer 语义）。兼任标准子项容器——div 替身（原生属性/事件/ref/className 全透传、DOM 层级相同），示例统一以它代裸 div，用户可基于它封装自定义块；组件型子项（Button 等）直接放、不再裹 Item
-- **`Stack.Responsive`**（dot part）：挂载式响应 gap——读 theme context 断点名解析 `{ sm?, md?, lg?, xl? }` 配置（键固定 = 断点契约、无 base 槽；min-width 激活语义：档位自其带起生效、向上延续，未配置带取最近已配置值，低于首个配置带回落静态 gap，超宽 >1280 base 态延续最后一档；解析器 = @colox/theme 公共出口 `resolveResponsiveValue(value, breakpoint, fallback)`），注册结果给父 Stack；卸载还原静态 gap；渲染 null。**只有挂载件碰 theme context，静态 Stack 零 context**
+- **`Stack.Responsive`**（dot part）：挂载式响应 gap——读 theme context 断点名解析 `{ sm?, md?, lg?, xl? }` 配置（键固定 = 断点契约、无 base 槽；**max-width 分桶语义**（传感器 = 首个命中的 max-width 查询：sm 桶 <640、md 640-768、lg 768-1024、xl 1024-1280、>1280 = base 态延续最后一档）：解析器从当前桶向下取最近已配置值 = 该带配置自其桶起向上继承、未命中回落静态 gap；解析器 = @colox/theme 公共出口 `resolveResponsiveValue(value, breakpoint, fallback)`），注册结果给父 Stack；卸载还原静态 gap；渲染 null。**只有挂载件碰 theme context，静态 Stack 零 context**
 
 ## 修饰类
 
