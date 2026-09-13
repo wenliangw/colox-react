@@ -11,6 +11,7 @@ Figma 变量新增/改名集合组、或动 `scripts/figma-to-tokens.mjs` 的 sp
 - **宽度语义不碰断点**：`--colox-breakpoint-*`（light.css 只读副本 + 运行时 JS 面）只归响应式判定；任何「宽度/尺寸」需求用 `--colox-size-*` / `--colox-spacing-*`。Container 已从断点变量改源为 `--colox-size-160/192/256/320`。
 - **spacing 键表不许在组件里复制**：键表由 emit-runtime 发射（`tokens/index.ts` 给 variants 层、`dist/variables.scss` 给 scss 面经 exports `./variables`）；组件消费 `spacingKeys` / `@use '@colox/theme/variables'`。设计语言增删 spacing 档后只需重烤 theme→components 链，不得回退成组件内手写 `$xxx-keys` 枚举（前科：Container gutter/Stack gap 曾各自复制 20 键表，用户指出不合规范）。
 - **改完必须重烤全链**：builder build → theme build → react build（style.css 级联 theme index.css，只烤一层会断引用）。
+- **两种导入格式并存，pass-through 是枢纽**：converter 顶层见 `colox` 命名空间即原样透传（Figma 预转换导出：alias 引用值 + colox 包装）；其余按 flat 导出 walk。预转换导入塞回 flat 假设会 TypeError 解构 undefined。判别点在「文件顶层有没有 `colox` 键」，改输入格式/导出插件设置时先验这条分支。
 
 ## 为什么
 

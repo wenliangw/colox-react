@@ -40,6 +40,19 @@
 - **汇报篇幅服从增量**：没有新变化不写长报告。
 - 为什么：用户 2026-09 连续指出三件事——自问自答占满对话、中英混排、重复输出、任务时长变长；共同根源是「为产出而产出」而非「为用户而产出」。
 
+# git commit message：CJK 与行长硬门禁
+
+## 改这里
+
+每次 `git commit` 写 message（header 与 body 都算）。
+
+## 必须检查
+
+- **CJK 全禁**：`.husky/check-commit-message.mjs` 检测到中日韩字符即拒——**body 里的中文同样被拒**（前科：mesync 文档提交把中文映射说明写进 body，header 全英文仍被 husky 拦下两次）。中文内容只进文件与汇报，不进 commit message。
+- **行长 ≤100 双约束**：header ≤100（commitlint header-max-length）**且 body 每行 ≤100**（body-max-line-length 未关闭）——mesync 里「CJK 放 body」的理解与此冲突，以仓库 hook 实测为准。
+- **拦截后的正解**：把 body 按 ~90 字符手动折行、全英文重提；不关 hook、不 `--no-verify`。
+- 为什么：commitlint 配置把 body-max-line-length 保在默认值，hook 层又全量扫 CJK；两条都是实测踩实的硬门禁。
+
 # 编辑工具回执 vs 磁盘真实状态（静默回退）
 
 ## 改这里
