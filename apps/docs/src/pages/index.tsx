@@ -38,9 +38,9 @@ const AXES: {
     summary:
       'Colors answer meaning, never mood. Components default to gray — an accent is always opt-in.',
     demo: (
-      <Stack direction="row" gap="2" wrap>
+      <Stack direction="row" gap="1-5" wrap>
         {PALETTES.map((palette) => (
-          <Button key={palette} variant="solid" palette={palette} size="sm">
+          <Button key={palette} variant="solid" palette={palette} size="xs">
             {palette}
           </Button>
         ))}
@@ -80,7 +80,7 @@ const AXES: {
             <IconButton
               variant={variant}
               palette="primary"
-              size="4"
+              size="5"
               aria-label={`variant ${variant}`}
             >
               <IconPlus />
@@ -239,12 +239,18 @@ function ThemeShowcase(): ReactNode {
           Pick a family, then flip the site theme in the corner — the same words hold in both.
         </p>
       </Stack>
-      <Stack direction="column" gap="5" align="start" className={styles.showcasePanel}>
-        <Stack direction="row" gap="2" wrap>
+      <Stack
+        direction="column"
+        gap="5"
+        align="start"
+        justify="center"
+        className={styles.showcasePanel}
+      >
+        <Stack direction="row" gap="1-5" wrap>
           {PALETTES.map((p) => (
             <Button
               key={p}
-              size="sm"
+              size="xs"
               variant={p === palette ? 'solid' : 'ghost'}
               palette={p}
               onClick={() => setPalette(p)}
@@ -280,24 +286,26 @@ function HomeContent({ title, tagline }: { title: string; tagline: string }): Re
   return (
     <ColoxTheme theme={colorMode === 'dark' ? 'dark' : 'light'}>
       <main className={styles.page}>
-        <Container size="md" align="center" className={styles.hero}>
-          <p className={styles.eyebrow}>React 19 · TypeScript · Tree-shakable</p>
-          <h1 className={styles.title}>{title}</h1>
-          <p className={styles.tagline}>{tagline}</p>
-          <Stack direction="row" gap="3" justify="center" className={styles.actions}>
-            <Link to="/docs/intro">
-              <Button variant="solid" palette="primary" size="lg">
-                Get Started
-              </Button>
-            </Link>
-            <Link to="https://github.com/wenliangw/colox-react">
-              <Button variant="outline" size="lg">
-                GitHub
-              </Button>
-            </Link>
-          </Stack>
-          <p className={styles.heroMeta}>9 components · 10 icons · 6 palettes · 1 token layer</p>
-        </Container>
+        <div className={styles.heroBand}>
+          <Container size="md" align="center" className={styles.hero}>
+            <p className={styles.eyebrow}>React 19 · TypeScript · Tree-shakable</p>
+            <h1 className={styles.title}>{title}</h1>
+            <p className={styles.tagline}>{tagline}</p>
+            <Stack direction="row" gap="3" justify="center" className={styles.actions}>
+              <Link to="/docs/intro">
+                <Button variant="solid" palette="primary" size="lg">
+                  Get Started
+                </Button>
+              </Link>
+              <Link to="https://github.com/wenliangw/colox-react">
+                <Button variant="outline" size="lg">
+                  GitHub
+                </Button>
+              </Link>
+            </Stack>
+            <p className={styles.heroMeta}>9 components · 10 icons · 6 palettes · 1 token layer</p>
+          </Container>
+        </div>
 
         <Container size="lg" align="center" className={styles.section}>
           <h2 className={styles.sectionTitle}>One design language, three axes</h2>
@@ -307,13 +315,7 @@ function HomeContent({ title, tagline }: { title: string; tagline: string }): Re
           </p>
           <Stack direction="column" gap="6" className={styles.axes}>
             {AXES.map((axis) => (
-              <Grid
-                key={axis.eyebrow}
-                columns={{ sm: 1, md: 2 }}
-                gap="6"
-                align="center"
-                className={styles.axis}
-              >
+              <Stack key={axis.eyebrow} direction="column" gap="4" className={styles.axis}>
                 <Stack direction="column" gap="1" className={styles.axisHead}>
                   <span className={styles.eyebrow}>{axis.eyebrow}</span>
                   <h3 className={styles.axisTitle}>{axis.title}</h3>
@@ -322,7 +324,7 @@ function HomeContent({ title, tagline }: { title: string; tagline: string }): Re
                 <Stack direction="row" justify="start" align="center" className={styles.axisDemo}>
                   {axis.demo}
                 </Stack>
-              </Grid>
+              </Stack>
             ))}
           </Stack>
         </Container>
