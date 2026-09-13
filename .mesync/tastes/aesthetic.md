@@ -36,6 +36,7 @@
 | 技术细节 | mono 字体承担所有「工程感」信息（版本、token 名、命令行、属性名）                                                                                                                                                                 |
 | 动效     | 滚动显现（一次性 fade+rise，见 src/components/reveal）、hero 一次性入场、卡片 hover 轻抬（-3px + shadow-md）、状态变化微动画（playground 代码行 pulse、终端逐行进、详情面板淡入）——一律走 motion token，reduced-motion 门自动收敛 |
 | 图文     | **每个卖点配一个 figure**：流程/管线用 mono 节点 + 箭头、场景用 CSS 画的迷你示意图（表格骨架/多主题面板/对话气泡）、概念用 token 上色的方块；纯文案段落 = 未完成                                                                  |
+| 信息剂量 | **每条信息只讲一次**：同一卖点不得在 pill / hero sub / 卡片 / 章节标题里反复出现；CTA 按钮与安装命令也各只留一处主位（hero 承担安装与双 CTA，收尾带只留一个行动）；页面越精炼越显得可信                                           |
 | 章节节奏 | 区块编号（01 — start、02 — design language…）+ 交替 surface（白 / bg-subtle 带）+ 每章一句 sub；禁止一长条白底到底                                                                                                                |
 
 ## 四、动手前的检查清单

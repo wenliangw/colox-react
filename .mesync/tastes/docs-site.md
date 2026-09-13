@@ -30,14 +30,16 @@
 1. **hero**：家族渐变 wash + pill + 45.5px 双色标题 + 定位文案 + 双 CTA + 可复制安装 chip｜右侧 **playground**（palette/variant/size 驱动真实场景 + 实时 JSX 行，换值时代码行 pulse）
 2. **六族色谱条**（色彩签名）
 3. **01 — start**：紧贴 hero 的双栏快速上手（左文案 + 双按钮｜右两段代码）——不放页尾居中，避免与上方割裂
-4. **02 — design language**：设计理念三卡，每卡带 figure
-5. **03 — fit**（bg-subtle 带）：适用场景四卡，每卡带 figure
+4. **02 — design language**：设计理念三卡（语义优先 / 每条轴一个命名词 / 按入口树摇），每卡带 figure
+5. **03 — fit**（bg-subtle 带）：适用场景三卡（数据密集 / 多主题 / 设计系统基座），正文各一行 + figure
 6. **04 — AI-native**：flow 图（agent → mcp → wiki → 正确代码）+ wiki 浏览器 + MCP 浏览器 + harness 接线卡
 7. **05 — toolchain**（bg-subtle 带）：flow 图（Figma → theme-builder → CSS/TS → app）+ CLI 终端
 8. **06 — theming**：token 说明 + palette 切换器
 9. **07 — explore**（渐变 wash 收尾带）：大标题 + 双按钮 + 9 组件 pill 链接 + 6 个包名 chip
 10. 页脚
-    滚动显现：统一用 src/components/reveal 包（一次性、支持 delay 0-3 交错、reduced-motion 自动收敛）
+    **信息剂量纪律（用户反馈「重复内容多」后确立）**：每条信息只讲一次——安装命令/双 CTA/GitHub 归 hero（快速上手只教用法、只留一段代码）；token 主题故事归 theming 章节；AI 故事归 04 章节；Figma 管线归 toolchain 章节；收尾带只留一个行动 + 组件 pill + 包名 chip。
+
+滚动显现：统一用 src/components/reveal 包（一次性、支持 delay 0-3 交错、reduced-motion 自动收敛）
 
 交互纪律：**每个卖点配一个能玩的真实交互**（playground / wiki 面板 / MCP 面板 / harness 切换 / CLI 终端 / 主题切换 / copy 按钮），一律走自家组件与 token，SSG 安全（useState 即可，无需客户端专用组件）。
 
