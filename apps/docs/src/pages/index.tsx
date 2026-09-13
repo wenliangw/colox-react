@@ -68,18 +68,19 @@ const PRINCIPLES: { eyebrow: string; title: string; body: string; figure: ReactN
     ),
   },
   {
-    eyebrow: 'tokens all the way down',
-    title: 'The skin belongs to the product',
-    body: 'Colors, radii, shadows and durations live in the token layer. Swap a token, ship a theme — light and dark are complete suites, and the motion gate honours reduced-motion for free.',
+    eyebrow: 'one entry per component',
+    title: 'Import only what you render',
+    body: 'Every primitive ships as its own entry point and side-effect-free stylesheet, so a page with two buttons never pays for the rest of the system.',
     figure: (
       <div className={styles.figure}>
-        <span className={styles.figRow}>
-          <span className={`${styles.figCell} ${styles.familyBrand}`} data-accent="true" />
-          <span className={`${styles.figCell} ${styles.familyBlue}`} data-accent="true" />
-          <span className={`${styles.figCell} ${styles.familyGreen}`} data-accent="true" />
-          <span className={styles.figCell} />
+        <span className={styles.figFlow}>
+          <span className={`${styles.figNode} ${styles.figNodeBrand}`}>/button</span>
+          <span className={styles.figNode}>/input</span>
+          <span className={styles.figNode}>/grid</span>
         </span>
-        <span className={styles.figCaption}>one token layer, any skin</span>
+        <span className={styles.figCaption}>
+          import {'@colox/react/button'} — nothing else loads
+        </span>
       </div>
     ),
   },
@@ -88,7 +89,7 @@ const PRINCIPLES: { eyebrow: string; title: string; body: string; figure: ReactN
 const USE_CASES: { title: string; body: string; tag: string; tone: string; figure: ReactNode }[] = [
   {
     title: 'Data-dense products',
-    body: 'Dashboards and admin surfaces where controls must read the same in every corner of the app: one ladder, one size scale, no drift.',
+    body: 'Dashboards where every corner of the app must read the same — one ladder, one scale, no drift.',
     tag: 'console · admin',
     tone: styles.familyBrand,
     figure: (
@@ -113,7 +114,7 @@ const USE_CASES: { title: string; body: string; tag: string; tone: string; figur
   },
   {
     title: 'Multi-theme products',
-    body: 'White-label and customer-branded apps: the six families re-tint through tokens, so a partner skin is a config change, not a fork.',
+    body: 'A partner skin is a config change, not a fork.',
     tag: 'white-label',
     tone: styles.familyBlue,
     figure: (
@@ -126,7 +127,7 @@ const USE_CASES: { title: string; body: string; tag: string; tone: string; figur
   },
   {
     title: 'Design-system foundations',
-    body: 'Start from a token contract instead of a component pile: the Figma pipeline compiles the design language into CSS variables your team can own.',
+    body: 'Start from a token contract your team owns, instead of a component pile.',
     tag: 'tokens · figma',
     tone: styles.familyGreen,
     figure: (
@@ -138,18 +139,6 @@ const USE_CASES: { title: string; body: string; tag: string; tone: string; figur
           <span className={styles.figArrow}>→</span>
           <span className={styles.figNode}>CSS</span>
         </span>
-      </div>
-    ),
-  },
-  {
-    title: 'Interfaces written with AI',
-    body: 'Agents ship correct Colox code because the doctrine is packaged for them: a wiki bundle plus an MCP server that answers rules and APIs on demand.',
-    tag: 'agents · mcp',
-    tone: styles.familyOrange,
-    figure: (
-      <div className={styles.figure}>
-        <span className={styles.figBubble}>make the primary action solid</span>
-        <span className={styles.figCode}>{'<Button variant="solid" />'}</span>
       </div>
     ),
   },
@@ -561,8 +550,8 @@ function HomeContent(): ReactNode {
                   A component library with <span className={styles.hl}>one design language</span>
                 </h1>
                 <p className={styles.tagline}>
-                  Nine primitives, one token layer, and the doctrine your agents read — so every
-                  screen a team ships looks like it came from the same hand.
+                  One vocabulary for colour, weight and scale — the reason every screen a team ships
+                  reads like it came from the same hand.
                 </p>
                 <Stack direction="row" gap="3" wrap className={styles.actions}>
                   <Link to="/docs/intro">
@@ -597,28 +586,14 @@ function HomeContent(): ReactNode {
             <Reveal className={styles.quickText}>
               <Stack direction="column" gap="4" align="start">
                 <span className={styles.sectionIndex}>01 — start</span>
-                <h2 className={styles.quickTitle}>A running setup in two lines</h2>
+                <h2 className={styles.quickTitle}>Usage in two lines</h2>
                 <p className={styles.quickBody}>
-                  One dependency and one stylesheet import bring the whole language along: tokens,
-                  light and dark suites, and the motion gate. No theme provider is required for the
-                  components to look right.
+                  Import the aggregate stylesheet once and every control reads the token layer — no
+                  provider of your own required.
                 </p>
-                <Stack direction="row" gap="3" wrap>
-                  <Link to="/docs/intro">
-                    <Button variant="solid" palette="primary" size="sm">
-                      Read the introduction
-                    </Button>
-                  </Link>
-                  <Link to="https://github.com/wenliangw/colox-react">
-                    <Button variant="outline" size="sm">
-                      GitHub
-                    </Button>
-                  </Link>
-                </Stack>
               </Stack>
             </Reveal>
             <Reveal delay={1} className={styles.quickCode}>
-              <CodeBlock language="bash">{`pnpm add @colox/react`}</CodeBlock>
               <CodeBlock language="tsx">{`import { Button } from '@colox/react';
 import '@colox/react/style.css';
 
@@ -654,7 +629,7 @@ import '@colox/react/style.css';
               title="Built for"
               sub="Where a single design language pays for itself — dense products, skinned products, and products written with agents."
             />
-            <Grid columns={{ sm: 1, md: 2 }} gap="6" className={styles.useCases}>
+            <Grid columns={{ sm: 1, md: 3 }} gap="6" className={styles.useCases}>
               {USE_CASES.map((useCase, index) => (
                 <Reveal key={useCase.title} delay={(index % 2) as 0 | 1}>
                   <Stack
@@ -678,8 +653,8 @@ import '@colox/react/style.css';
         <Container size="xl" align="center" className={styles.section}>
           <SectionHead
             index="04 — AI-native"
-            title="The doctrine ships with the code"
-            sub="The same rules that govern us, packaged as data for your agents: a wiki bundle they read, and an MCP server that answers on demand."
+            title="Agents that already know the rules"
+            sub="Point an agent at the doctrine instead of prompting your way to consistency."
           />
           <Reveal className={styles.flowWrap}>
             <Flow steps={['your agent', '@colox/mcp', 'wiki bundles', 'correct Colox code']} />
@@ -721,7 +696,7 @@ import '@colox/react/style.css';
             <SectionHead
               index="05 — toolchain"
               title="Compile your own design language"
-              sub="Figma tokens in, CSS variables and typed constants out — the pipeline is a package, not a service."
+              sub="A package, not a service."
             />
             <Reveal className={styles.flowWrap}>
               <Flow
@@ -765,20 +740,14 @@ import '@colox/react/style.css';
           <Container size="lg">
             <Reveal className={styles.cta}>
               <span className={styles.sectionIndex}>07 — explore</span>
-              <h2 className={styles.ctaTitle}>Nine primitives, one language to learn</h2>
+              <h2 className={styles.ctaTitle}>Start with the docs</h2>
               <p className={styles.ctaBody}>
-                Every component is documented with live examples, an API table and the design tokens
-                it consumes — and the doctrine behind them is yours to wire into your agents.
+                Live examples, an API table and the design tokens behind every primitive.
               </p>
               <Stack direction="row" gap="3" wrap justify="center" className={styles.ctaActions}>
                 <Link to="/docs/intro">
                   <Button variant="solid" palette="primary" size="lg">
                     Read the introduction
-                  </Button>
-                </Link>
-                <Link to="https://github.com/wenliangw/colox-react">
-                  <Button variant="outline" size="lg">
-                    GitHub
                   </Button>
                 </Link>
               </Stack>
