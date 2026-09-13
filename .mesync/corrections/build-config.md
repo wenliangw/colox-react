@@ -66,3 +66,9 @@
 - **改这里**：`apps/docs/package.json` 的 `dev`/`serve` 脚本（`docusaurus start`/`docusaurus serve`），或任何新加的本地 dev server。
 - **必须检查那里**：显式带 `--port 3100`——3000 被 dsh 的 Web GUI 占死（docusaurus 默认 3000，起服即撞、用户跑 `npm run docs:dev` 失败）；先 `ss -tln | grep 端口` 确认目标空闲再选端口。
 - 为什么：docusaurus start 撞已有端口不会换口重试，直接失败。
+
+## docs dev 的 build:watch 与 docusaurus 并行 → 必须空窗免疫 + 哨兵门控
+
+- **改这里**：react 包的 `build:watch` 脚本，或 docs 的 `dev` 并发编排，或 vite 的 outDir 落点。
+- **必须检查那里**：① `build:watch` 必须带 `--emptyOutDir=false`——`vite build --watch` 启动会先做一次全量重建，且默认每次**先清空 dist**，docs dev 里 docusaurus 与它并行启动，webpack 恰在空窗解析 `@colox/react` 就报 `Module not found: Package path . ... no valid target file`（exports 目标缺失，实例事后自愈只能靠 reload）；② docusaurus 启动必须由哨兵脚本门控（`apps/docs/scripts/wait-dist.mjs`：轮询 dist 三个关键产物 stat 稳定 ~800ms 才放行），不得与 watch 无门控并行。
+- 为什么：全量清空后逐文件重写有「一瞬整个包不存在」的窗口，且 watch 初始重建与 pre-build 内容相同纯属重复劳动——空窗免疫（不清空、只原位覆盖）+ 门控（产物稳定后再起 docs）双保险。
