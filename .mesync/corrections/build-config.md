@@ -60,3 +60,9 @@
 - **改这里**：交付含 `createPortal(…, document.body)` 的组件（Select 起经 cdk Popup；将来 DatePicker/Dropdown 同），或给这类组件在 docs 里写 `defaultOpen` 之类的「初始即开」示例。
 - **必须检查那里**：storybook 构建 + jsdom 测试全绿**不足证**——两者都有 `document`（纯 CSR/jsdom），SSR 崩溃只在 Docusaurus SSG 暴露（Select 首版：docs 一加 `defaultOpen` 示例，SSG 立刻 `ReferenceError: document is not defined`，而组件包测试/typecheck/storybook 全绿）。验证必须包含 `apps/docs` 的 `CI=true pnpm run build`。
 - 为什么：portal 目标 `document.body` 在渲染期求值；storybook 是纯客户端、jsdom 有 document，两条链路都测不到 SSR。正解在 Popup 基建层（mounted 守卫：客户端挂载后再渲染 portal），后续弹层组件自动免疫——但 docs 的 SSG 冒烟仍必须留在验证链里。
+
+## docs 启动端口 → 必须避开 3000（dsh GUI 占用）
+
+- **改这里**：`apps/docs/package.json` 的 `dev`/`serve` 脚本（`docusaurus start`/`docusaurus serve`），或任何新加的本地 dev server。
+- **必须检查那里**：显式带 `--port 3100`——3000 被 dsh 的 Web GUI 占死（docusaurus 默认 3000，起服即撞、用户跑 `npm run docs:dev` 失败）；先 `ss -tln | grep 端口` 确认目标空闲再选端口。
+- 为什么：docusaurus start 撞已有端口不会换口重试，直接失败。
