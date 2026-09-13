@@ -26,13 +26,17 @@ type Size = (typeof SIZES)[number];
  * variables, so one class drives the spectrum strip and any accent dot.
  */
 const FAMILIES = [
-  { palette: 'primary', tone: styles.familyBrand },
-  { palette: 'gray', tone: styles.familyGray },
-  { palette: 'info', tone: styles.familyBlue },
-  { palette: 'error', tone: styles.familyRed },
-  { palette: 'warning', tone: styles.familyOrange },
-  { palette: 'success', tone: styles.familyGreen },
+  { palette: 'primary', label: 'Primary', tone: styles.familyBrand },
+  { palette: 'gray', label: 'Gray', tone: styles.familyGray },
+  { palette: 'info', label: 'Info', tone: styles.familyBlue },
+  { palette: 'error', label: 'Error', tone: styles.familyRed },
+  { palette: 'warning', label: 'Warning', tone: styles.familyOrange },
+  { palette: 'success', label: 'Success', tone: styles.familyGreen },
 ] as const;
+
+/** Sentence-case display label for a palette prop word. */
+const familyLabel = (palette: Palette): string =>
+  FAMILIES.find((family) => family.palette === palette)?.label ?? palette;
 
 /** The design philosophy: three ideas, each with its own figure. */
 const PRINCIPLES: { eyebrow: string; title: string; body: string; figure: ReactNode }[] = [
@@ -337,7 +341,7 @@ function Playground(): ReactNode {
               palette={p}
               onClick={() => setPalette(p)}
             >
-              {p}
+              {familyLabel(p)}
             </Button>
           ))}
         </Stack>
@@ -353,7 +357,7 @@ function Playground(): ReactNode {
               palette="gray"
               onClick={() => setVariant(v)}
             >
-              {v}
+              {v.charAt(0).toUpperCase() + v.slice(1)}
             </Button>
           ))}
         </Stack>
@@ -369,7 +373,7 @@ function Playground(): ReactNode {
               palette="gray"
               onClick={() => setSize(s)}
             >
-              {s}
+              {s.toUpperCase()}
             </Button>
           ))}
         </Stack>
@@ -516,7 +520,7 @@ function ThemeSwitcher(): ReactNode {
             palette={p}
             onClick={() => setPalette(p)}
           >
-            {p}
+            {familyLabel(p)}
           </Button>
         ))}
       </Stack>

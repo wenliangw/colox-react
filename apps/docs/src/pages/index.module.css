@@ -306,6 +306,8 @@
   font-family: var(--colox-font-mono);
   font-size: 0.75rem;
   color: var(--colox-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .stage {
