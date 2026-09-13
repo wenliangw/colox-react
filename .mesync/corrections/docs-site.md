@@ -43,3 +43,9 @@
 - **改这里**：任何影响观感的站点改动（首页版图、组件页排版、配色/密度）准备交付时。
 - **必须检查那里**：① 主模型带视觉时（deepseek-v4-flash-vision-exp 可用 read_image；pro / flash-0731 均报 `does not declare image input`）——**先重拍截图**（旧图不代表当前构建）、再看参照站同类页、对照后交付；② 无视觉时不得交付视觉稿，用计算样式探针验结构并明确告知「视觉未验收，请目视」；③ 子代理可用 read_image（实测 HAS_VISION，可承担评审），但需确认其模型是否带视觉。
 - 为什么：上一版 homepage 只做了结构探针就交付，用户目视后判定「效果并不好」——密度/留白/icon ladder 换行/卡片高度不齐等问题探针全都测不出来。
+
+## 侧栏活动样式 → 分类标题会和文档项一起拿 --active
+
+- **改这里**：给 docusaurus 侧栏做活动项 accent（色条/浅底/主色文字）。
+- **必须检查那里**：当前文档归属的分类标题也会被标 `.menu__link--active`（「mirror」行为），且 `.menu__list-item-collapsible` 类挂在分类标题的**内层 div** 上、不在 li 上——用 li 级 `:not()` 排除会落空。**正解** = 先给 `.menu__link--active` 全量 accent，再对 `.menu__list-item-collapsible > .menu__link--active` 显式复位回 muted 平实样式（复位块必须放 accent 块之后，其特异性 (0,3,1) 压过 accent）。
+- 为什么：docusaurus 把父分类标 active 是为了导航可发现性；accent 若不加区分，分组标题会抢走活动项的主色视觉（实测 General 拿到主色+左条）。
