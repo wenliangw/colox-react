@@ -527,7 +527,7 @@ function ThemeSwitcher(): ReactNode {
         <Button size="md" variant="outline" palette={palette}>
           Secondary
         </Button>
-        <IconButton size="4" variant="solid" palette={palette} aria-label="confirm">
+        <IconButton size="10" variant="solid" palette={palette} aria-label="confirm">
           <IconPlus />
         </IconButton>
       </Stack>
