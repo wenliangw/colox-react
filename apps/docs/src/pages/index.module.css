@@ -208,51 +208,62 @@
   margin-top: var(--colox-spacing-1);
 }
 
+/* The install command: a split control — the command reads like a
+   terminal line ($ muted, binary muted, package in the brand tint) and
+   the divider-separated right side is the copy action with its own
+   state chip. */
 .installChip {
   display: inline-flex;
-  align-items: center;
-  gap: var(--colox-spacing-2);
+  align-items: stretch;
   margin-top: var(--colox-spacing-1);
-  padding: var(--colox-spacing-2) var(--colox-spacing-2) var(--colox-spacing-2)
-    var(--colox-spacing-3);
+  padding: 0;
+  overflow: hidden;
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-md);
   background-color: var(--colox-color-bg-default);
   cursor: pointer;
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
-    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 }
 
 .installChip:hover {
   border-color: var(--colox-color-border-default);
-  background-color: var(--colox-color-bg-subtle);
   box-shadow: var(--colox-shadow-sm);
   transform: translateY(-1px);
 }
 
-.installPrompt {
+.installCommand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-2) var(--colox-spacing-3);
   font-family: var(--colox-font-mono);
   font-size: 0.8125rem;
-  color: var(--colox-color-brand-solid);
+}
+
+.installPrompt {
+  color: var(--colox-color-text-muted);
   user-select: none;
 }
 
-.installCode {
-  font-family: var(--colox-font-mono);
-  font-size: 0.8125rem;
-  color: var(--colox-color-text-default);
+.installBin {
+  color: var(--colox-color-text-muted);
+}
+
+.installPkg {
+  color: var(--colox-color-brand-solid);
+  font-weight: var(--colox-font-weight-medium);
 }
 
 .installState {
   display: inline-flex;
   align-items: center;
   gap: var(--colox-spacing-1);
-  padding: 0 var(--colox-spacing-2);
-  border-radius: var(--colox-radius-sm);
-  background-color: var(--colox-color-bg-muted);
+  padding: 0 var(--colox-spacing-3);
+  border-left: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
   font-family: var(--colox-font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
@@ -261,6 +272,10 @@
   transition:
     background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
     color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.installChip:hover .installState {
+  color: var(--colox-color-text-default);
 }
 
 .installStateOn {

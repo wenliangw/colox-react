@@ -286,20 +286,23 @@ function Flow({ steps }: { steps: string[] }): ReactNode {
 }
 
 /** A copyable install command — the smallest useful interaction. */
-function CopyChip({ command }: { command: string }): ReactNode {
+function CopyChip({ bin, pkg }: { bin: string; pkg: string }): ReactNode {
   const [copied, setCopied] = useState(false);
   return (
     <button
       type="button"
       className={styles.installChip}
       onClick={() => {
-        navigator.clipboard?.writeText(command).catch(() => undefined);
+        navigator.clipboard?.writeText(`${bin} ${pkg}`).catch(() => undefined);
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1600);
       }}
     >
-      <span className={styles.installPrompt}>$</span>
-      <code className={styles.installCode}>{command}</code>
+      <span className={styles.installCommand}>
+        <span className={styles.installPrompt}>$</span>
+        <span className={styles.installBin}>{bin}</span>
+        <span className={styles.installPkg}>{pkg}</span>
+      </span>
       <span className={`${styles.installState} ${copied ? styles.installStateOn : ''}`}>
         {copied ? <IconCheck aria-hidden="true" /> : null}
         {copied ? 'copied' : 'copy'}
@@ -571,7 +574,7 @@ function HomeContent(): ReactNode {
                     </Button>
                   </Link>
                 </Stack>
-                <CopyChip command="pnpm add @colox/react" />
+                <CopyChip bin="pnpm add" pkg="@colox/react" />
               </Stack>
               <Playground />
             </Grid>

@@ -94,6 +94,12 @@ const config: Config = {
     },
     navbar: {
       title: 'Colox React',
+      logo: {
+        src: 'img/colox-mark.svg',
+        alt: 'Colox',
+        width: 24,
+        height: 24,
+      },
       items: [
         {
           type: 'docSidebar',
@@ -102,9 +108,49 @@ const config: Config = {
           label: 'Docs',
         },
         {
+          type: 'dropdown',
+          position: 'left',
+          label: 'Components',
+          items: [
+            { type: 'doc', docId: 'components/button', label: 'Button' },
+            { type: 'doc', docId: 'components/icon-button', label: 'IconButton' },
+            { type: 'doc', docId: 'components/input', label: 'Input' },
+            { type: 'doc', docId: 'components/select', label: 'Select' },
+            { type: 'doc', docId: 'components/checkbox', label: 'Checkbox' },
+            { type: 'doc', docId: 'components/radio', label: 'Radio' },
+            { type: 'doc', docId: 'components/container', label: 'Container' },
+            { type: 'doc', docId: 'components/grid', label: 'Grid' },
+            { type: 'doc', docId: 'components/stack', label: 'Stack' },
+          ],
+        },
+        {
+          type: 'dropdown',
+          position: 'left',
+          label: 'Toolchain',
+          items: [
+            {
+              label: '@colox/wiki — the AI doctrine',
+              href: 'https://github.com/wenliangw/colox-react/tree/master/packages/wiki',
+            },
+            {
+              label: '@colox/mcp — the MCP server',
+              href: 'https://github.com/wenliangw/colox-react/tree/master/packages/mcp',
+            },
+            {
+              label: '@colox/theme-builder — the CLI',
+              href: 'https://github.com/wenliangw/colox-react/tree/master/packages/theme-builder',
+            },
+            {
+              label: '@colox/theme — the runtime',
+              href: 'https://github.com/wenliangw/colox-react/tree/master/packages/theme',
+            },
+          ],
+        },
+        {
           href: 'https://github.com/wenliangw/colox-react',
-          label: 'GitHub',
           position: 'right',
+          className: 'colox-github-link',
+          'aria-label': 'GitHub repository',
         },
       ],
     },
