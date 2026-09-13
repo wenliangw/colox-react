@@ -3,8 +3,13 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
   title: 'Colox React',
-  tagline: 'A modern React component library',
+  tagline:
+    'A component library governed by one design language — three axes name every visual choice.',
   favicon: 'img/favicon.svg',
+
+  // Syncs the docs light/dark toggle onto the colox theme suites
+  // (data-colox-theme), so components and tokens follow it verbatim.
+  clientModules: ['./src/clientModules/colox-theme-sync'],
 
   // Set the production url of your site here.
   url: 'https://colox-react.dev',
@@ -25,6 +30,10 @@ const config: Config = {
         },
         blog: false,
         theme: {
+          // The colox aggregate css (tokens + component styles) is
+          // loaded through the client module instead: customCss
+          // resolves fs paths only (path.resolve(siteDir, p)) and
+          // cannot reach package exports.
           customCss: './src/css/custom.scss',
         },
       },

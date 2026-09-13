@@ -1,25 +1,183 @@
+/* Token-driven homepage skin: every color, radius, spacing and motion
+   value below chains onto the --colox-* layer, so the page inherits
+   the light/dark swap and the reduced-motion gate for free. */
+
+.page {
+  padding-block: var(--colox-spacing-16) var(--colox-spacing-20);
+  animation: page-enter var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- shared section type ---------- */
+
+.section {
+  margin-block-start: var(--colox-spacing-20);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-4xl);
+  font-weight: var(--colox-font-weight-bold);
+  color: var(--colox-color-text-default);
+}
+
+.sectionSub {
+  margin: var(--colox-spacing-3) auto 0;
+  max-width: 34rem;
+  font-size: var(--colox-font-size-md);
+  color: var(--colox-color-text-muted);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--colox-font-mono);
+  font-size: var(--colox-font-size-sm);
+  color: var(--colox-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- hero ---------- */
+
 .hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: 2rem;
   text-align: center;
 }
 
 .title {
-  font-size: 3rem;
-  margin: 0 0 0.5rem;
+  margin: var(--colox-spacing-4) 0 0;
+  font-size: var(--colox-font-size-8xl);
+  font-weight: var(--colox-font-weight-bold);
+  color: var(--colox-color-text-default);
 }
 
 .tagline {
-  font-size: 1.25rem;
-  color: var(--ifm-color-emphasis-700);
-  margin: 0 0 2rem;
+  margin: var(--colox-spacing-4) 0 0;
+  max-width: 36rem;
+  font-size: var(--colox-font-size-lg);
+  color: var(--colox-color-text-muted);
 }
 
 .actions {
+  margin-top: var(--colox-spacing-8);
+}
+
+.strip {
+  margin-top: var(--colox-spacing-10);
+}
+
+/* ---------- axes ---------- */
+
+.axes {
+  margin-top: var(--colox-spacing-10);
+  text-align: center;
+}
+
+.axis {
+  padding: var(--colox-spacing-8);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+}
+
+.axisTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-xl);
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-text-default);
+}
+
+.axisSummary {
+  margin: 0 auto;
+  max-width: 30rem;
+  font-size: var(--colox-font-size-sm);
+  color: var(--colox-color-text-muted);
+}
+
+.ladderItem {
+  min-width: 3.5rem;
+}
+
+.ladderLabel {
+  font-family: var(--colox-font-mono);
+  font-size: var(--colox-font-size-xs);
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- gallery ---------- */
+
+.gallery {
+  margin-top: var(--colox-spacing-10);
+  text-align: start;
+}
+
+.card {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: var(--colox-spacing-3);
+  padding: var(--colox-spacing-4) var(--colox-spacing-5);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  text-decoration: none;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.card:hover {
+  border-color: var(--colox-color-border-default);
+  background-color: var(--colox-color-bg-subtle);
+  text-decoration: none;
+}
+
+.cardBody {
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: var(--colox-font-size-md);
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-text-default);
+}
+
+.cardDesc {
+  font-size: var(--colox-font-size-sm);
+  color: var(--colox-color-text-muted);
+}
+
+.cardArrow {
+  color: var(--colox-color-text-muted);
+  transition: color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.card:hover .cardArrow {
+  color: var(--colox-color-text-default);
+}
+
+/* ---------- quick start ---------- */
+
+.code {
+  max-width: 34rem;
+  margin-inline: auto;
+  margin-top: var(--colox-spacing-6);
+  text-align: start;
+}
+
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-1);
+  margin-top: var(--colox-spacing-6);
+  font-weight: var(--colox-font-weight-medium);
 }

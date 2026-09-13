@@ -4,14 +4,16 @@ import type { BreakpointKey, BreakpointName, ResponsiveValue } from '../types';
 /**
  * Resolves a responsive value against the current breakpoint name.
  *
- * Band semantics are min-width activation points: a configured key takes
- * effect from its band upward ("lg starts at lg"), so the effective value
- * is the LAST configured key at or narrower than the current band. Wider
- * bands without their own key keep the latest configured one — including
- * the 'base' state beyond the widest cap. When no key is configured at or
- * narrower than the current band, the component's static default
- * (`fallback`) applies. A plain (non-object) value is static and returns
- * unchanged.
+ * Band semantics are max-width tiers (the sensors match the first —
+ * that is, narrowest — max-width query that holds): 'sm' covers
+ * everything below its bound, each next key the following slice, and
+ * 'base' means beyond the widest cap. The effective value is the LAST
+ * configured key at or narrower than the current band (walking from
+ * the current band down toward sm), so a wider band without its own
+ * key inherits the nearest narrower one — a mobile-first cascade.
+ * When no key is configured at or narrower than the current band, the
+ * component's static default (`fallback`) applies. A plain
+ * (non-object) value is static and returns unchanged.
  */
 export function resolveResponsiveValue<T>(
   value: ResponsiveValue<T>,

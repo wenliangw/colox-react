@@ -59,6 +59,9 @@ importers:
       '@colox/react':
         specifier: workspace:*
         version: link:../../packages/components
+      '@colox/theme':
+        specifier: workspace:*
+        version: link:../../packages/theme
       '@docusaurus/core':
         specifier: ^3.7.0
         version: 3.10.2(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.8))(postcss@8.5.25)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)

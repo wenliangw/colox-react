@@ -1,25 +1,46 @@
 /**
- * Docusaurus theme overrides.
+ * The docs site skin. The colox aggregate stylesheet (tokens + component
+ * styles) is loaded globally through src/clientModules/colox-theme-sync.ts
+ * (the webpack module graph — the same channel the MDX pages use), so every
+ * override below chains onto the colox token layer: light/dark swaps ride
+ * the data-colox-theme attribute kept in step with the docusaurus toggle by
+ * the same client module — no hand-copied hex anywhere.
  */
+
+/* Infima brand channel → colox family tokens. */
 :root {
-  --ifm-color-primary: #4f46e5;
-  --ifm-color-primary-dark: #4438ca;
-  --ifm-color-primary-darker: #3f34c0;
-  --ifm-color-primary-darkest: #352b9e;
-  --ifm-color-primary-light: #6366f1;
-  --ifm-color-primary-lighter: #7275f3;
-  --ifm-color-primary-lightest: #9094f6;
+  --ifm-color-primary: var(--colox-color-brand-solid);
+  --ifm-color-primary-dark: var(--colox-color-brand-solid-hover);
+  --ifm-color-primary-darker: var(--colox-color-brand-solid-active);
+  --ifm-color-primary-darkest: var(--colox-color-brand-solid-active);
+  --ifm-color-primary-light: var(--colox-color-brand-subtle);
+  --ifm-color-primary-lighter: var(--colox-color-brand-subtle);
+  --ifm-color-primary-lightest: var(--colox-color-brand-subtle);
   --ifm-code-font-size: 95%;
 }
 
-[data-theme='dark'] {
-  --ifm-color-primary: #818cf8;
-  --ifm-color-primary-dark: #6366f1;
-  --ifm-color-primary-darker: #4f46e5;
-  --ifm-color-primary-darkest: #4338ca;
-  --ifm-color-primary-light: #a5b0fa;
-  --ifm-color-primary-lighter: #b8c1fb;
-  --ifm-color-primary-lightest: #d4d9fd;
+/* Surfaces ride the token layer so the whole skin follows the toggle. */
+body {
+  background-color: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+}
+
+.navbar {
+  background-color: var(--colox-color-bg-default);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+  box-shadow: none;
+}
+
+/* The gentle fade when the light/dark toggle hands over; the motion
+   gate (prefers-reduced-motion) zeroes the duration tokens, so this
+   collapses to an instant swap for reduced-motion users. */
+body,
+.navbar,
+.footer {
+  transition:
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
 }
 
 .docusaurus-highlight-code-line {
