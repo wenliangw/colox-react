@@ -19,10 +19,11 @@
 
 ## 视觉轴（决策 05b83bed）
 
-`variant?: 'plain' | 'ghost' | 'outline' | 'surface' | 'subtle' | 'solid'`（默认 **plain**，决策 a42ba861 → c066fcc2 补齐六档强度阶梯并 text→plain 改名；旧 text 名废止）× `palette?: 'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`（默认 **gray**——design-language 六族轴，与 Button 同款，决策「intent→palette 设计语言对齐」：primary→brand / gray→gray / info→blue / error→red / warning→orange / success→green；旧 intent 轴 primary/neutral/danger/warning/success 废止）× `rounded?: boolean`（默认 false）：
+`variant?: 'plain' | 'muted' | 'ghost' | 'outline' | 'surface' | 'subtle' | 'solid'`（默认 **plain**，决策 a42ba861 → c066fcc2 补齐六档强度阶梯并 text→plain 改名 → 决策 49d74585 补 muted 静音档成就七档阶梯；旧 text 名废止）× `palette?: 'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`（默认 **gray**——design-language 六族轴，与 Button 同款，决策「intent→palette 设计语言对齐」：primary→brand / gray→gray / info→blue / error→red / warning→orange / success→green；旧 intent 轴 primary/neutral/danger/warning/success 废止）× `rounded?: boolean`（默认 false）：
 
 - **变体决定图标色**（用户定调「设置 variant 后，图标的颜色也应该跟着变」）：
   - **plain**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；**着色图标语义（决策 666d8aa8 定稿）**：静止即涂 palette-solid（默认 gray 灰），hover/active = 同族 palette-solid-hover/active 加深，背景恒透明（用户否决链：无反馈 → wash → 继承+palette hover → 静止 palette + 同族加深）。
+  - **muted**（决策 49d74585）：plain 同构零盒铬（盒子拥抱图标、size 直驱图标尺寸）；音色 = context 档——静止 text-muted（#9E9E9E light / #A3A3A3 dark，与 placeholder/chevron 同语境）、hover/active 提音量到 text-default（#191919 / #E8E8E8，大偏移可见）；**palette 不参与着色**（唯一非 palette 成员，具名例外）；disabled 走基座、焦点环仍随 palette。
   - **ghost**：图标色 = palette solid（照 Button ghost 语义）；hover/active = palette wash 方形浅底。**plain/ghost 的界线 = 静止色与反馈通道俱异**：plain = palette 色静止→同族加深无底；ghost = palette 色静止→wash。
   - **solid**：palette 实底三态（solid → solid-hover/active）+ palette-inverse 图标；disabled = bg-disabled。
   - **outline**：1px palette border + palette 图标 + 透明底，hover/active = wash，disabled = border-disabled。
@@ -31,7 +32,7 @@
 - **方形圆角**：默认 `radius-lg`(8px)——用户反馈 radius-xs(2px) 视觉上等于没有，且 Button/Input 家族基准就是 radius-lg，同源对齐；**圆形不做默认**，`rounded` prop 才切 `radius-full`(9999px)。wash/fill 跟随足迹。
 - **实现形状同 Button**：palette.scss 注解私有变量族 `--colox-icon-button-palette-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
 - **动效与 Button 同步**：base 双段 transition（normal 全轴 + active 快速段）、`scale(0.97)` 按压。
-- **内部四站零代码变更**：默认即 plain+gray、size="4"——plain 的 size 通道兑现 16px 设计意图（此前是上下文字号 1em：原版 slots 只标了盒、没标字号）。站点视线：tag-remove 静止 muted/hover solid 全为站点色规则、经站点类胜出不变；Select clear 静止随基座 gray 灰、hover 站点规则 text-solid 胜出；Input clear/toggle 无站点色规则 → 静止 gray 灰、hover 灰加深。
+- **内部四站换装 muted（决策 49d74585）**：默认即 plain+gray、size="4" 不变（plain 的 size 通道兑现 16px 设计意图——此前是上下文字号 1em：原版 slots 只标了盒、没标字号）；四站（Input clear/toggle、Select clear/tag-remove）显式 `variant="muted"`，Select 侧两条站点色规则（tag-remove 静止 muted/hover solid、clear hover text-solid→default）删除——站点层回归纯结构（定位/reveal），色档职责收进 IconButton 音色轴，一致性由 variant 字面量保证（DatePicker/TimePicker 将来同一句）。
 
 ## 站点契约（换装后的分工）
 
@@ -42,7 +43,7 @@
 
 ## 门禁与文件
 
-`_tests/icon-button.test.tsx` 29 例（预设四档/裸键 5 例（0-5/4/7/16/360）/默认 md/children/type 默认/透传/variant 6 例 + plain 默认/palette 6 例 + gray 默认/rounded 2 例），全仓 258 例。文件：`icon-button.tsx`（forwardRef + cva + `{...rest}` 展开在后）、`types/index.ts`（`ButtonHTMLAttributes` 全透传 + size 注释含 token 双通道说明）、`variants/{index,size,variant,palette}.ts`（cva + sizeKeys 键映射 + 视觉轴类表）、`styles/{base,size,variant,palette,index}.scss`（基座 + @each 键类 + 涂装 + 色板变量族）、preview `apps/preview/src/icon-button/`（Overview story：States/Variants/Palettes/Rounded/预设四档/裸键 5 值/行为 demo）、docs `icon-button.mdx`（sidebar_position 10，含 Variant & palette / Rounded 两节）。构建入口 `vite.config.ts` + `exports["./icon-button"]` 子路径（`@colox/react/icon-button` 树摇）。
+`_tests/icon-button.test.tsx` 30 例（预设四档/裸键 5 例（0-5/4/7/16/360）/默认 md/children/type 默认/透传/variant 7 例 + plain 默认/palette 6 例 + gray 默认/rounded 2 例），全仓 259 例。文件：`icon-button.tsx`（forwardRef + cva + `{...rest}` 展开在后）、`types/index.ts`（`ButtonHTMLAttributes` 全透传 + size 注释含 token 双通道说明）、`variants/{index,size,variant,palette}.ts`（cva + sizeKeys 键映射 + 视觉轴类表）、`styles/{base,size,variant,palette,index}.scss`（基座 + @each 键类 + 涂装 + 色板变量族）、preview `apps/preview/src/icon-button/`（Overview story：States/Variants/Palettes/Rounded/预设四档/裸键 5 值/行为 demo）、docs `icon-button.mdx`（sidebar_position 10，含 Variant & palette / Rounded 两节）。构建入口 `vite.config.ts` + `exports["./icon-button"]` 子路径（`@colox/react/icon-button` 树摇）。
 
 ## 边界
 
