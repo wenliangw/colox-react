@@ -1,23 +1,40 @@
 /* Token-driven homepage skin. The aesthetic doctrine this file
    embodies (see .mesync/tastes/aesthetic.md): a real product visual in
-   the hero, one atmospheric gradient wash, the six-family spectrum as
-   the colour signature, floating panels with soft shadows, and
-   typography carrying the hierarchy — every value chains onto the
-   --colox-* layer, so both themes and the motion gate come for free.
-   
-   The page sells the library's reasons to exist (design language,
-   use cases, the AI-native wiki + MCP toolchain, the theme CLI) and
-   puts real interaction in front of each — a catalogue lives in the
-   docs, not here. */
+   the hero, atmospheric gradient washes, the six-family spectrum as the
+   colour signature, floating panels with soft shadows, figures paired
+   with every claim, and typography carrying the hierarchy — every value
+   chains onto the --colox-* layer, so both themes and the motion gate
+   come for free.
+
+   Motion budget (updated with the "still too plain" pass): scroll
+   reveals (see src/components/reveal), hover lifts on cards, a pulse on
+   the playground's code line, and typed-out terminal lines — all token
+   driven, so reduced-motion collapses them. */
 
 .page {
-  padding-block: 0 var(--colox-spacing-16);
+  padding-block: 0;
 }
 
 /* ---------- shared type ---------- */
 
 .section {
-  margin-block-start: var(--colox-spacing-16);
+  margin-block-start: var(--colox-spacing-14);
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  height: auto;
+}
+
+.sectionIndex {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-brand-solid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .sectionTitle {
@@ -29,7 +46,7 @@
 }
 
 .sectionSub {
-  margin: var(--colox-spacing-2) auto 0;
+  margin: 0 auto;
   max-width: 40rem;
   font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
@@ -43,6 +60,15 @@
   color: var(--colox-color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+/* Full-bleed subtle band: chapters alternate surface, so the page reads
+   as sections rather than one long scroll. */
+.band {
+  margin-block-start: var(--colox-spacing-14);
+  padding-block: var(--colox-spacing-14);
+  border-block: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
 }
 
 /* ---------- shared panel chrome ---------- */
@@ -65,6 +91,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--colox-spacing-5);
+  height: 100%;
 }
 
 .panelHead {
@@ -136,13 +163,15 @@
   text-decoration: none;
   transition:
     color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 }
 
 .pill:hover {
   color: var(--colox-color-text-default);
   border-color: var(--colox-color-border-default);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .title {
@@ -184,7 +213,6 @@
   align-items: center;
   gap: var(--colox-spacing-3);
   margin-top: var(--colox-spacing-1);
-  cursor: pointer;
   padding: var(--colox-spacing-2) var(--colox-spacing-3);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-md);
@@ -192,11 +220,15 @@
   font-family: var(--colox-font-mono);
   font-size: 0.8125rem;
   color: var(--colox-color-text-muted);
-  transition: border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+  cursor: pointer;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 }
 
 .installChip:hover {
   border-color: var(--colox-color-border-default);
+  transform: translateY(-1px);
 }
 
 .installState {
@@ -250,6 +282,20 @@
   font-size: 0.75rem;
   color: var(--colox-color-text-muted);
   white-space: pre;
+  /* Remounted on every pick, so the pulse replays — the code line
+     acknowledges the change. */
+  animation: code-pulse var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
+}
+
+@keyframes code-pulse {
+  from {
+    background-color: var(--colox-color-brand-subtle);
+    color: var(--colox-color-text-default);
+  }
+  to {
+    background-color: var(--colox-color-bg-muted);
+    color: var(--colox-color-text-muted);
+  }
 }
 
 /* ---------- the six-family spectrum: the library's signature ---------- */
@@ -264,19 +310,66 @@
   background-color: var(--f-solid);
 }
 
+/* ---------- quick start band (directly under the hero) ---------- */
+
+.quickGrid {
+  text-align: start;
+}
+
+.quickText {
+  height: auto;
+}
+
+.quickTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-2xl);
+  font-weight: var(--colox-font-weight-bold);
+  color: var(--colox-color-text-default);
+}
+
+.quickBody {
+  margin: 0;
+  max-width: 32rem;
+  font-size: var(--colox-font-size-sm);
+  line-height: 1.65;
+  color: var(--colox-color-text-muted);
+}
+
+.quickCode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-3);
+  height: auto;
+}
+
+.quickCode :global(.theme-code-block) {
+  margin-bottom: 0;
+}
+
 /* ---------- design principles ---------- */
 
 .principles {
-  margin-top: var(--colox-spacing-8);
+  margin-top: var(--colox-spacing-10);
   text-align: start;
 }
 
 .principle {
+  height: 100%;
   padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
   background-color: var(--colox-color-bg-default);
   text-align: start;
+  transition:
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}
+
+.principle:hover {
+  transform: translateY(-3px);
+  border-color: var(--colox-color-border-default);
+  box-shadow: var(--colox-shadow-md);
 }
 
 .principleTitle {
@@ -288,6 +381,7 @@
 
 .principleBody {
   margin: 0;
+  flex: 1;
   font-size: var(--colox-font-size-sm);
   line-height: 1.65;
   color: var(--colox-color-text-muted);
@@ -296,16 +390,27 @@
 /* ---------- use cases ---------- */
 
 .useCases {
-  margin-top: var(--colox-spacing-8);
+  margin-top: var(--colox-spacing-10);
   text-align: start;
 }
 
 .useCase {
+  height: 100%;
   padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
   background-color: var(--colox-color-bg-default);
   text-align: start;
+  transition:
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}
+
+.useCase:hover {
+  transform: translateY(-3px);
+  border-color: var(--colox-color-border-default);
+  box-shadow: var(--colox-shadow-md);
 }
 
 .useCaseDot {
@@ -325,6 +430,7 @@
 
 .useCaseBody {
   margin: 0;
+  flex: 1;
   font-size: var(--colox-font-size-sm);
   line-height: 1.65;
   color: var(--colox-color-text-muted);
@@ -335,6 +441,143 @@
   padding: var(--colox-spacing-1) var(--colox-spacing-2);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-full);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- figures: the text/graphic pairing ---------- */
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-2);
+  width: 100%;
+  padding: var(--colox-spacing-3);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-muted);
+}
+
+.figRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--colox-spacing-1-5);
+}
+
+.figCell {
+  display: block;
+  height: 0.75rem;
+  border-radius: var(--colox-radius-xs);
+  background-color: var(--colox-color-bg-default);
+}
+
+.figCell[data-accent='true'] {
+  background-color: var(--f-solid);
+}
+
+.figSplit {
+  flex-direction: row;
+}
+
+.figPanel {
+  display: block;
+  flex: 1;
+  height: 2.5rem;
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--f-solid);
+  opacity: 0.85;
+}
+
+.figNode {
+  align-self: start;
+  padding: var(--colox-spacing-1) var(--colox-spacing-2);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-default);
+}
+
+.figNodeBrand {
+  border-color: var(--colox-color-brand-solid);
+  color: var(--colox-color-brand-solid);
+}
+
+.figFlow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+}
+
+.figArrow {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+.figBubble {
+  align-self: start;
+  padding: var(--colox-spacing-1) var(--colox-spacing-2);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-default);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-default);
+}
+
+.figCode {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-brand-solid);
+}
+
+.figCaption {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- flow diagram (AI wiring / token pipeline) ---------- */
+
+.flowWrap {
+  margin-top: var(--colox-spacing-8);
+  height: auto;
+}
+
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--colox-spacing-2);
+}
+
+.flowPair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+}
+
+.flowNode {
+  padding: var(--colox-spacing-2) var(--colox-spacing-3);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-default);
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.flowNode:hover {
+  border-color: var(--colox-color-brand-solid);
+  color: var(--colox-color-brand-solid);
+}
+
+.flowArrow {
   font-family: var(--colox-font-mono);
   font-size: 0.75rem;
   color: var(--colox-color-text-muted);
@@ -382,6 +625,18 @@
   padding: var(--colox-spacing-4);
   border-radius: var(--colox-radius-md);
   background-color: var(--colox-color-bg-muted);
+  animation: detail-in var(--colox-motion-duration-normal) var(--colox-motion-easing-out) both;
+}
+
+@keyframes detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .explorerKind {
@@ -427,6 +682,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--colox-spacing-4);
+  height: auto;
   margin-top: var(--colox-spacing-6);
 }
 
@@ -445,14 +701,16 @@
   line-height: 1.7;
   color: var(--colox-color-text-default);
   white-space: pre-wrap;
+  animation: detail-in var(--colox-motion-duration-normal) var(--colox-motion-easing-out) both;
 }
 
 /* ---------- CLI terminal ---------- */
 
 .terminal {
-  margin-top: var(--colox-spacing-8);
+  margin-top: var(--colox-spacing-6);
   overflow: hidden;
   text-align: start;
+  height: auto;
 }
 
 .terminalBar {
@@ -508,6 +766,44 @@
   color: var(--colox-color-brand-solid);
 }
 
+/* Lines type in, one after another, when a command tab is picked. */
+.terminalCmd,
+.terminalLine {
+  display: block;
+  animation: line-in var(--colox-motion-duration-normal) var(--colox-motion-easing-out) both;
+}
+
+.terminalLine:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.terminalLine:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.terminalLine:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.terminalLine:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.terminalLine:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .terminalNote {
   margin: 0;
   padding: var(--colox-spacing-4) var(--colox-spacing-5);
@@ -518,6 +814,15 @@
 }
 
 /* ---------- theming showcase ---------- */
+
+.showcaseGrid {
+  margin-top: var(--colox-spacing-10);
+  text-align: start;
+}
+
+.showcaseText {
+  height: auto;
+}
 
 .showcaseTitle {
   margin: 0;
@@ -535,6 +840,7 @@
 }
 
 .showcasePanel {
+  height: 100%;
   padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
@@ -546,47 +852,85 @@
   );
 }
 
-/* ---------- quick start ---------- */
+/* ---------- closing CTA band ---------- */
 
-.code {
-  max-width: 40rem;
-  margin-inline: auto;
-  margin-top: var(--colox-spacing-6);
-  text-align: start;
+.ctaBand {
+  margin-block-start: var(--colox-spacing-16);
+  padding-block: var(--colox-spacing-16);
+  border-top: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
+  background-image:
+    radial-gradient(60% 80% at 20% 0%, var(--colox-color-brand-subtle) 0%, transparent 60%),
+    radial-gradient(50% 70% at 85% 100%, var(--colox-color-blue-subtle) 0%, transparent 58%);
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--colox-spacing-3);
+  height: auto;
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-3xl);
+  font-weight: var(--colox-font-weight-bold);
+  letter-spacing: -0.01em;
+  color: var(--colox-color-text-default);
+}
+
+.ctaBody {
+  margin: 0;
+  max-width: 38rem;
+  font-size: var(--colox-font-size-md);
+  line-height: 1.65;
+  color: var(--colox-color-text-muted);
+}
+
+.ctaActions {
+  margin-top: var(--colox-spacing-3);
 }
 
 .componentNav {
-  margin-top: var(--colox-spacing-6);
+  margin-top: var(--colox-spacing-5);
 }
 
 .componentLink {
   padding: var(--colox-spacing-1) var(--colox-spacing-3);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
   font-size: 0.8125rem;
   color: var(--colox-color-text-muted);
   text-decoration: none;
   transition:
     color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
 }
 
 .componentLink:hover {
   color: var(--colox-color-text-default);
   border-color: var(--colox-color-border-default);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
-.readMore {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--colox-spacing-1);
-  margin-top: var(--colox-spacing-6);
-  font-weight: var(--colox-font-weight-medium);
+.metaChips {
+  margin-top: var(--colox-spacing-4);
+}
+
+.metaChip {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
 }
 
 /* ---------- family tone trios: one class carries solid/muted/subtle
-   through CSS variables, so the spectrum strip and accent dots share it ---------- */
+   through CSS variables, so the spectrum strip, figures and accent dots
+   share it ---------- */
 
 .familyBrand {
   --f-solid: var(--colox-color-brand-solid);

@@ -8,6 +8,7 @@ import Layout from '@theme/Layout';
 import { Button, Container, Grid, IconButton, Input, Stack } from '@colox/react';
 import { ColoxTheme } from '@colox/theme';
 import { IconChevronRight, IconPlus } from '@colox/icons';
+import Reveal from '../components/reveal';
 import '@colox/react/style.css';
 import styles from './index.module.css';
 
@@ -20,62 +21,137 @@ type Variant = (typeof VARIANTS)[number];
 type Size = (typeof SIZES)[number];
 
 /**
- * The six semantic families — the library's color signature. `tone`
+ * The six semantic families — the library's colour signature. `tone`
  * carries a family's token trio (solid / muted / subtle) through CSS
  * variables, so one class drives the spectrum strip and any accent dot.
  */
 const FAMILIES = [
-  { palette: 'primary', label: 'primary', tone: styles.familyBrand },
-  { palette: 'gray', label: 'gray', tone: styles.familyGray },
-  { palette: 'info', label: 'info', tone: styles.familyBlue },
-  { palette: 'error', label: 'error', tone: styles.familyRed },
-  { palette: 'warning', label: 'warning', tone: styles.familyOrange },
-  { palette: 'success', label: 'success', tone: styles.familyGreen },
+  { palette: 'primary', tone: styles.familyBrand },
+  { palette: 'gray', tone: styles.familyGray },
+  { palette: 'info', tone: styles.familyBlue },
+  { palette: 'error', tone: styles.familyRed },
+  { palette: 'warning', tone: styles.familyOrange },
+  { palette: 'success', tone: styles.familyGreen },
 ] as const;
 
-/** The design philosophy: three ideas, not a component catalogue. */
-const PRINCIPLES = [
+/** The design philosophy: three ideas, each with its own figure. */
+const PRINCIPLES: { eyebrow: string; title: string; body: string; figure: ReactNode }[] = [
   {
     eyebrow: 'meaning, not mood',
     title: 'Semantics before decoration',
     body: 'Palette answers what an action means, never how it feels. Every control defaults to gray, so an accent is always an opt-in decision — a page can only shout where it deserves to.',
+    figure: (
+      <div className={styles.figure}>
+        <span className={styles.figRow}>
+          <span className={styles.figCell} />
+          <span className={`${styles.figCell} ${styles.familyBrand}`} data-accent="true" />
+          <span className={styles.figCell} />
+        </span>
+        <span className={styles.figRow}>
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+        </span>
+      </div>
+    ),
   },
   {
     eyebrow: 'one axis per question',
     title: 'Every choice is one named word',
     body: 'Variant answers how loud, size how big, palette what it means. Three closed vocabularies replace a thousand ad-hoc class names, and any combination stays predictable.',
+    figure: (
+      <div className={styles.figure}>
+        <span className={`${styles.figNode} ${styles.figNodeBrand}`}>variant</span>
+        <span className={styles.figNode}>size</span>
+        <span className={styles.figNode}>palette</span>
+      </div>
+    ),
   },
   {
     eyebrow: 'tokens all the way down',
     title: 'The skin belongs to the product',
     body: 'Colors, radii, shadows and durations live in the token layer. Swap a token, ship a theme — light and dark are complete suites, and the motion gate honours reduced-motion for free.',
+    figure: (
+      <div className={styles.figure}>
+        <span className={styles.figRow}>
+          <span className={`${styles.figCell} ${styles.familyBrand}`} data-accent="true" />
+          <span className={`${styles.figCell} ${styles.familyBlue}`} data-accent="true" />
+          <span className={`${styles.figCell} ${styles.familyGreen}`} data-accent="true" />
+          <span className={styles.figCell} />
+        </span>
+        <span className={styles.figCaption}>one token layer, any skin</span>
+      </div>
+    ),
   },
 ];
 
-const USE_CASES: { title: string; body: string; tag: string; tone: string }[] = [
+const USE_CASES: { title: string; body: string; tag: string; tone: string; figure: ReactNode }[] = [
   {
     title: 'Data-dense products',
     body: 'Dashboards and admin surfaces where controls must read the same in every corner of the app: one ladder, one size scale, no drift.',
     tag: 'console · admin',
     tone: styles.familyBrand,
+    figure: (
+      <div className={styles.figure}>
+        <span className={styles.figRow}>
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+        </span>
+        <span className={styles.figRow}>
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+        </span>
+        <span className={styles.figRow}>
+          <span className={styles.figCell} />
+          <span className={styles.figCell} />
+          <span className={`${styles.figCell} ${styles.familyBrand}`} data-accent="true" />
+        </span>
+      </div>
+    ),
   },
   {
     title: 'Multi-theme products',
     body: 'White-label and customer-branded apps: the six families re-tint through tokens, so a partner skin is a config change, not a fork.',
     tag: 'white-label',
     tone: styles.familyBlue,
+    figure: (
+      <div className={`${styles.figure} ${styles.figSplit}`}>
+        <span className={`${styles.figPanel} ${styles.familyBrand}`} />
+        <span className={`${styles.figPanel} ${styles.familyBlue}`} />
+        <span className={`${styles.figPanel} ${styles.familyGreen}`} />
+      </div>
+    ),
   },
   {
     title: 'Design-system foundations',
     body: 'Start from a token contract instead of a component pile: the Figma pipeline compiles the design language into CSS variables your team can own.',
     tag: 'tokens · figma',
     tone: styles.familyGreen,
+    figure: (
+      <div className={styles.figure}>
+        <span className={styles.figFlow}>
+          <span className={styles.figNode}>Figma</span>
+          <span className={styles.figArrow}>→</span>
+          <span className={styles.figNode}>tokens</span>
+          <span className={styles.figArrow}>→</span>
+          <span className={styles.figNode}>CSS</span>
+        </span>
+      </div>
+    ),
   },
   {
     title: 'Interfaces written with AI',
     body: 'Agents ship correct Colox code because the doctrine is packaged for them: a wiki bundle plus an MCP server that answers rules and APIs on demand.',
     tag: 'agents · mcp',
     tone: styles.familyOrange,
+    figure: (
+      <div className={styles.figure}>
+        <span className={styles.figBubble}>make the primary action solid</span>
+        <span className={styles.figCode}>{'<Button variant="solid" />'}</span>
+      </div>
+    ),
   },
 ];
 
@@ -187,6 +263,39 @@ const COMPONENTS = [
   { name: 'Stack', slug: 'stack' },
 ] as const;
 
+/** A section header: mono index, title, sub — the page's chapter mark. */
+function SectionHead({
+  index,
+  title,
+  sub,
+}: {
+  index: string;
+  title: string;
+  sub: string;
+}): ReactNode {
+  return (
+    <Reveal className={styles.sectionHead}>
+      <span className={styles.sectionIndex}>{index}</span>
+      <h2 className={styles.sectionTitle}>{title}</h2>
+      <p className={styles.sectionSub}>{sub}</p>
+    </Reveal>
+  );
+}
+
+/** A horizontal flow of mono nodes — the pipeline / wiring figures. */
+function Flow({ steps }: { steps: string[] }): ReactNode {
+  return (
+    <div className={styles.flow}>
+      {steps.map((step, index) => (
+        <span key={step} className={styles.flowPair}>
+          <span className={styles.flowNode}>{step}</span>
+          {index < steps.length - 1 ? <span className={styles.flowArrow}>→</span> : null}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /** A copyable install command — the smallest useful interaction. */
 function CopyChip({ command }: { command: string }): ReactNode {
   const [copied, setCopied] = useState(false);
@@ -208,8 +317,8 @@ function CopyChip({ command }: { command: string }): ReactNode {
 
 /**
  * The hero playground: three axes on the left, a real product scene on
- * the right — and the JSX it takes to build it, updating as you pick.
- * Interaction is the product demo.
+ * the right — and the JSX it takes to build it, updating as you pick
+ * (each change re-triggers the code line's pulse).
  */
 function Playground(): ReactNode {
   const [palette, setPalette] = useState<Palette>('primary');
@@ -280,7 +389,7 @@ function Playground(): ReactNode {
           </Button>
         </Stack>
       </div>
-      <code className={styles.stageCode}>
+      <code className={styles.stageCode} key={`${palette}-${variant}-${size}`}>
         {`<Button variant="${variant}" palette="${palette}" size="${size}">Create</Button>`}
       </code>
     </div>
@@ -310,7 +419,7 @@ function WikiExplorer(): ReactNode {
             </button>
           ))}
         </Stack>
-        <div className={styles.explorerDetail}>
+        <div className={styles.explorerDetail} key={bundle.name}>
           <span className={styles.explorerKind}>{bundle.kind}</span>
           <p className={styles.explorerText}>{bundle.summary}</p>
         </div>
@@ -342,7 +451,7 @@ function McpExplorer(): ReactNode {
             </button>
           ))}
         </Stack>
-        <div className={styles.explorerDetail}>
+        <div className={styles.explorerDetail} key={tool.name}>
           <code className={styles.explorerSignature}>{tool.signature}</code>
           <p className={styles.explorerText}>{tool.summary}</p>
           <pre className={styles.explorerSample}>{tool.sample}</pre>
@@ -352,7 +461,7 @@ function McpExplorer(): ReactNode {
   );
 }
 
-/** CLI terminal: pick a command, watch the pipeline report. */
+/** CLI terminal: pick a command, watch the pipeline report type out. */
 function CliTerminal(): ReactNode {
   const [active, setActive] = useState(0);
   const run = CLI_RUNS[active];
@@ -373,11 +482,16 @@ function CliTerminal(): ReactNode {
         </Stack>
         <span className={styles.panelHint}>@colox/theme-builder</span>
       </div>
-      <pre className={styles.terminalBody}>
-        <span className={styles.terminalPrompt}>$ </span>
-        {run.name}
-        {'\n'}
-        {run.output.join('\n')}
+      <pre className={styles.terminalBody} key={active}>
+        <span className={styles.terminalCmd}>
+          <span className={styles.terminalPrompt}>$ </span>
+          {run.name}
+        </span>
+        {run.output.map((line) => (
+          <span key={line} className={styles.terminalLine}>
+            {line}
+          </span>
+        ))}
       </pre>
       <p className={styles.terminalNote}>{run.note}</p>
     </div>
@@ -470,67 +584,115 @@ function HomeContent(): ReactNode {
         </div>
         <div className={styles.spectrum} aria-hidden="true">
           {FAMILIES.map((family) => (
-            <span key={family.palette} className={`${styles.spectrumPart} ${family.tone}`} />
+            <span
+              key={family.palette}
+              className={`${styles.spectrumPart} ${family.tone}`}
+              data-accent="true"
+            />
           ))}
         </div>
 
-        <Container size="lg" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>A language, not a pile of styles</h2>
-          <p className={styles.sectionSub}>
-            Three ideas decide every pixel; the components are just where they show up.
-          </p>
+        <Container size="xl" className={styles.section}>
+          <Grid columns={{ sm: 1, lg: 2 }} gap="10" align="center" className={styles.quickGrid}>
+            <Reveal className={styles.quickText}>
+              <Stack direction="column" gap="4" align="start">
+                <span className={styles.sectionIndex}>01 — start</span>
+                <h2 className={styles.quickTitle}>A running setup in two lines</h2>
+                <p className={styles.quickBody}>
+                  One dependency and one stylesheet import bring the whole language along: tokens,
+                  light and dark suites, and the motion gate. No theme provider is required for the
+                  components to look right.
+                </p>
+                <Stack direction="row" gap="3" wrap>
+                  <Link to="/docs/intro">
+                    <Button variant="solid" palette="primary" size="sm">
+                      Read the introduction
+                    </Button>
+                  </Link>
+                  <Link to="https://github.com/wenliangw/colox-react">
+                    <Button variant="outline" size="sm">
+                      GitHub
+                    </Button>
+                  </Link>
+                </Stack>
+              </Stack>
+            </Reveal>
+            <Reveal delay={1} className={styles.quickCode}>
+              <CodeBlock language="bash">{`pnpm add @colox/react`}</CodeBlock>
+              <CodeBlock language="tsx">{`import { Button } from '@colox/react';
+import '@colox/react/style.css';
+
+<Button variant="solid" palette="primary">Create</Button>`}</CodeBlock>
+            </Reveal>
+          </Grid>
+        </Container>
+
+        <Container size="xl" align="center" className={styles.section}>
+          <SectionHead
+            index="02 — design language"
+            title="A language, not a pile of styles"
+            sub="Three ideas decide every pixel; the components are just where they show up."
+          />
           <Grid columns={{ sm: 1, md: 3 }} gap="6" className={styles.principles}>
-            {PRINCIPLES.map((principle) => (
-              <Stack
-                key={principle.title}
-                direction="column"
-                gap="2"
-                align="start"
-                className={styles.principle}
-              >
-                <span className={styles.eyebrow}>{principle.eyebrow}</span>
-                <h3 className={styles.principleTitle}>{principle.title}</h3>
-                <p className={styles.principleBody}>{principle.body}</p>
-              </Stack>
+            {PRINCIPLES.map((principle, index) => (
+              <Reveal key={principle.title} delay={(index % 3) as 0 | 1 | 2}>
+                <Stack direction="column" gap="3" align="start" className={styles.principle}>
+                  <span className={styles.eyebrow}>{principle.eyebrow}</span>
+                  <h3 className={styles.principleTitle}>{principle.title}</h3>
+                  <p className={styles.principleBody}>{principle.body}</p>
+                  {principle.figure}
+                </Stack>
+              </Reveal>
             ))}
           </Grid>
         </Container>
 
-        <Container size="xl" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Built for</h2>
-          <p className={styles.sectionSub}>
-            Where a single design language pays for itself — dense products, skinned products, and
-            products written with agents.
-          </p>
-          <Grid columns={{ sm: 1, md: 2 }} gap="6" className={styles.useCases}>
-            {USE_CASES.map((useCase) => (
-              <Stack
-                key={useCase.title}
-                direction="column"
-                gap="3"
-                align="start"
-                className={`${styles.useCase} ${useCase.tone}`}
-              >
-                <span className={styles.useCaseDot} aria-hidden="true" />
-                <h3 className={styles.useCaseTitle}>{useCase.title}</h3>
-                <p className={styles.useCaseBody}>{useCase.body}</p>
-                <span className={styles.useCaseTag}>{useCase.tag}</span>
-              </Stack>
-            ))}
-          </Grid>
-        </Container>
+        <div className={styles.band}>
+          <Container size="xl" align="center">
+            <SectionHead
+              index="03 — fit"
+              title="Built for"
+              sub="Where a single design language pays for itself — dense products, skinned products, and products written with agents."
+            />
+            <Grid columns={{ sm: 1, md: 2 }} gap="6" className={styles.useCases}>
+              {USE_CASES.map((useCase, index) => (
+                <Reveal key={useCase.title} delay={(index % 2) as 0 | 1}>
+                  <Stack
+                    direction="column"
+                    gap="3"
+                    align="start"
+                    className={`${styles.useCase} ${useCase.tone}`}
+                  >
+                    <span className={styles.useCaseDot} aria-hidden="true" data-accent="true" />
+                    <h3 className={styles.useCaseTitle}>{useCase.title}</h3>
+                    <p className={styles.useCaseBody}>{useCase.body}</p>
+                    {useCase.figure}
+                    <span className={styles.useCaseTag}>{useCase.tag}</span>
+                  </Stack>
+                </Reveal>
+              ))}
+            </Grid>
+          </Container>
+        </div>
 
         <Container size="xl" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>AI-native by design</h2>
-          <p className={styles.sectionSub}>
-            The same doctrine that governs us ships as data for your agents: a wiki bundle they
-            read, and an MCP server that answers on demand.
-          </p>
+          <SectionHead
+            index="04 — AI-native"
+            title="The doctrine ships with the code"
+            sub="The same rules that govern us, packaged as data for your agents: a wiki bundle they read, and an MCP server that answers on demand."
+          />
+          <Reveal className={styles.flowWrap}>
+            <Flow steps={['your agent', '@colox/mcp', 'wiki bundles', 'correct Colox code']} />
+          </Reveal>
           <Grid columns={{ sm: 1, lg: 2 }} gap="6" className={styles.aiGrid}>
-            <WikiExplorer />
-            <McpExplorer />
+            <Reveal>
+              <WikiExplorer />
+            </Reveal>
+            <Reveal delay={1}>
+              <McpExplorer />
+            </Reveal>
           </Grid>
-          <div className={styles.harness}>
+          <Reveal delay={1} className={styles.harness}>
             <div className={styles.panelHead}>
               <span className={styles.panelLabel}>wire it into your harness</span>
               <span className={styles.panelHint}>one line</span>
@@ -548,62 +710,100 @@ function HomeContent(): ReactNode {
                 </Button>
               ))}
             </Stack>
-            <pre className={styles.harnessBody}>{HARNESSES[harness].line}</pre>
-          </div>
+            <pre className={styles.harnessBody} key={harness}>
+              {HARNESSES[harness].line}
+            </pre>
+          </Reveal>
         </Container>
 
-        <Container size="xl" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Compile your own design language</h2>
-          <p className={styles.sectionSub}>
-            Figma tokens in, CSS variables and typed constants out — the pipeline is a package, not
-            a service.
-          </p>
-          <CliTerminal />
-        </Container>
+        <div className={styles.band}>
+          <Container size="xl" align="center">
+            <SectionHead
+              index="05 — toolchain"
+              title="Compile your own design language"
+              sub="Figma tokens in, CSS variables and typed constants out — the pipeline is a package, not a service."
+            />
+            <Reveal className={styles.flowWrap}>
+              <Flow
+                steps={['Figma tokens', '@colox/theme-builder', 'CSS variables + TS', 'your app']}
+              />
+            </Reveal>
+            <Reveal>
+              <CliTerminal />
+            </Reveal>
+          </Container>
+        </div>
 
         <Container size="lg" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Themes ship as suites</h2>
-          <p className={styles.sectionSub}>
-            Light and dark are complete token sets, not filters — pick a family and watch real
-            controls re-tint, then flip the site theme in the corner.
-          </p>
+          <SectionHead
+            index="06 — theming"
+            title="Themes ship as suites"
+            sub="Light and dark are complete token sets, not filters — pick a family and watch real controls re-tint."
+          />
           <Grid columns={{ sm: 1, lg: 2 }} gap="8" align="stretch" className={styles.showcaseGrid}>
-            <Stack direction="column" gap="3" className={styles.showcaseText}>
-              <span className={styles.eyebrow}>token layer</span>
-              <h3 className={styles.showcaseTitle}>One variable swap, the whole skin follows</h3>
-              <p className={styles.showcaseBody}>
-                Components never carry raw colors — they read semantic tokens, so a theme change is
-                a variable change. That is what makes white-labelling a config file instead of a
-                fork.
-              </p>
-            </Stack>
-            <ThemeSwitcher />
+            <Reveal className={styles.showcaseText}>
+              <Stack direction="column" gap="3">
+                <span className={styles.eyebrow}>token layer</span>
+                <h3 className={styles.showcaseTitle}>One variable swap, the whole skin follows</h3>
+                <p className={styles.showcaseBody}>
+                  Components never carry raw colors — they read semantic tokens, so a theme change
+                  is a variable change. That is what makes white-labelling a config file instead of
+                  a fork.
+                </p>
+                <p className={styles.showcaseBody}>
+                  Flip the site theme in the corner: the same words hold in both suites.
+                </p>
+              </Stack>
+            </Reveal>
+            <Reveal delay={1}>
+              <ThemeSwitcher />
+            </Reveal>
           </Grid>
         </Container>
 
-        <Container size="md" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Get started</h2>
-          <p className={styles.sectionSub}>
-            One dependency, one line of CSS — tokens, themes and the motion gate ride along.
-          </p>
-          <CodeBlock language="bash" className={styles.code}>{`pnpm add @colox/react`}</CodeBlock>
-          <CodeBlock language="tsx" className={styles.code}>{`import { Button } from '@colox/react';
-import '@colox/react/style.css';`}</CodeBlock>
-          <Stack direction="row" gap="2" wrap justify="center" className={styles.componentNav}>
-            {COMPONENTS.map((component) => (
-              <Link
-                key={component.slug}
-                to={`/docs/components/${component.slug}`}
-                className={styles.componentLink}
-              >
-                {component.name}
-              </Link>
-            ))}
-          </Stack>
-          <Link to="/docs/intro" className={styles.readMore}>
-            Read the introduction <IconChevronRight aria-hidden="true" />
-          </Link>
-        </Container>
+        <div className={styles.ctaBand}>
+          <Container size="lg">
+            <Reveal className={styles.cta}>
+              <span className={styles.sectionIndex}>07 — explore</span>
+              <h2 className={styles.ctaTitle}>Nine primitives, one language to learn</h2>
+              <p className={styles.ctaBody}>
+                Every component is documented with live examples, an API table and the design tokens
+                it consumes — and the doctrine behind them is yours to wire into your agents.
+              </p>
+              <Stack direction="row" gap="3" wrap justify="center" className={styles.ctaActions}>
+                <Link to="/docs/intro">
+                  <Button variant="solid" palette="primary" size="lg">
+                    Read the introduction
+                  </Button>
+                </Link>
+                <Link to="https://github.com/wenliangw/colox-react">
+                  <Button variant="outline" size="lg">
+                    GitHub
+                  </Button>
+                </Link>
+              </Stack>
+              <Stack direction="row" gap="2" wrap justify="center" className={styles.componentNav}>
+                {COMPONENTS.map((component) => (
+                  <Link
+                    key={component.slug}
+                    to={`/docs/components/${component.slug}`}
+                    className={styles.componentLink}
+                  >
+                    {component.name}
+                  </Link>
+                ))}
+              </Stack>
+              <Stack direction="row" gap="2" wrap justify="center" className={styles.metaChips}>
+                <span className={styles.metaChip}>@colox/react</span>
+                <span className={styles.metaChip}>@colox/theme</span>
+                <span className={styles.metaChip}>@colox/theme-builder</span>
+                <span className={styles.metaChip}>@colox/icons</span>
+                <span className={styles.metaChip}>@colox/wiki</span>
+                <span className={styles.metaChip}>@colox/mcp</span>
+              </Stack>
+            </Reveal>
+          </Container>
+        </div>
       </main>
     </ColoxTheme>
   );
