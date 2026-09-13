@@ -165,6 +165,11 @@ internal removal channel, firing the standard `onChange` payload).
 
 {TagTemplateDemo}
 
+The chip visuals belong to the author, but the remove control should ride
+the same `IconButton` (`size="4"`, `variant="muted"`) as the built-in chip —
+the `colox-select__tag-remove` site class carries no structure or box of its
+own (a raw `<button>` keeps its UA size and overflows the chip).
+
 Three author rules:
 
 - the child must be a component (not a host element) rendering a **single

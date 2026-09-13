@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { Container, Select, Stack } from '@colox/react';
+import { Container, IconButton, Select, Stack } from '@colox/react';
 import type { SelectTagTemplateProps } from '@colox/react';
 import { Section, Hint } from '../showcase/section';
 
@@ -123,8 +123,9 @@ const TagTemplateDemo = () => {
       </Select>
       <Hint>
         The template replaces the whole chip: an emoji avatar, the member <code>text</code> and a
-        custom remove button wired to the injected <code>onRemove</code> (the standard{' '}
-        <code>onChange</code> payload).
+        remove control riding the same <code>IconButton</code> (<code>size="4"</code>,{' '}
+        <code>variant="muted"</code>) as the built-in chips, wired to the injected{' '}
+        <code>onRemove</code> (the standard <code>onChange</code> payload).
       </Hint>
     </Stack>
   );
@@ -162,14 +163,15 @@ const EmojiTag = ({ props = {}, option, onRemove }: SelectTagTemplateProps) => (
   >
     <span aria-hidden="true">{EMOJI[option?.value ?? ''] ?? '🍇'}</span>
     <span>{option?.text}</span>
-    <button
-      type="button"
+    <IconButton
+      size="4"
+      variant="muted"
       className="colox-select__tag-remove"
       aria-label={`Remove ${option?.text ?? ''}`}
       onClick={onRemove}
     >
       ×
-    </button>
+    </IconButton>
   </span>
 );
 

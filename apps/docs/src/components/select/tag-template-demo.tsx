@@ -1,12 +1,13 @@
-import { Select } from '@colox/react';
+import { IconButton, Select } from '@colox/react';
 import type { SelectTagTemplateProps } from '@colox/react';
 
 /**
  * The tag template demo: a plain component typed with
  * SelectTagTemplateProps. `props` is the required-attribute bag (spread
  * first — its hidden style must win), `option` the member record,
- * `onRemove` the removal channel (custom × button visuals, library
- * behavior — the standard `onChange` payload fires).
+ * `onRemove` the removal channel (the remove control rides the same
+ * IconButton — size 4, muted — as the built-in chip; the library fires
+ * the standard `onChange` payload).
  */
 const EmojiTag = ({ props = {}, option, onRemove }: SelectTagTemplateProps) => (
   <span
@@ -26,14 +27,15 @@ const EmojiTag = ({ props = {}, option, onRemove }: SelectTagTemplateProps) => (
   >
     <span aria-hidden="true">{option?.value === 'apple' ? '🍎' : '🍉'}</span>
     <span>{option?.text}</span>
-    <button
-      type="button"
+    <IconButton
+      size="4"
+      variant="muted"
       className="colox-select__tag-remove"
       aria-label={`Remove ${option?.text ?? ''}`}
       onClick={onRemove}
     >
       ×
-    </button>
+    </IconButton>
   </span>
 );
 
