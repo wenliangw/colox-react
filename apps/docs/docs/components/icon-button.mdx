@@ -58,14 +58,17 @@ renders a 16px square; `size="7"` renders 28px — any `sizeKeys` value works.
 
 ## Variant & palette
 
-`variant` sets the icon color, not only the chrome: `text` (default) is the
-pure icon — the box hugs the icon (`size` sizes the icon itself) and the icon
-is painted in the palette color, darkening to the palette hover/active shade;
-`ghost` tints the icon in the palette color with a wash on hover; `outline` and
-`solid` carry bordered/filled paint in the palette color. `palette` is the
-design-language six-family axis (primary/gray/info/error/warning/success) —
-**gray by default** — it drives the icon color, the hover feedback, the focus
-ring and the variant paint.
+`variant` is the strength ladder, and it sets the icon color, not only the
+chrome: `plain` (default) is the pure icon — the box hugs the icon (`size`
+sizes the icon itself) and the icon is painted in the palette color,
+darkening to the palette hover/active shade; `ghost` tints the icon with a
+wash on hover; `outline` carries a palette border; `surface` a muted ring
+over a subtle tint; `subtle` the tint fill; `solid` the filled paint.
+Filled variants swap tiers on hover/active (`subtle/surface → muted`),
+unfilled ones layer a wash. `palette` is the design-language six-family
+axis (primary/gray/info/error/warning/success) — **gray by default** — it
+drives the icon color, the hover feedback, the focus ring and the variant
+paint.
 
 ## Rounded
 
@@ -81,12 +84,12 @@ switches it to a full circle — the hover/active wash follows the shape.
 
 ## Props
 
-| Prop    | Type                                                                 | Default  |
-| ------- | -------------------------------------------------------------------- | -------- |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)             | `'md'`   |
-| variant | `'text' \| 'ghost' \| 'outline' \| 'solid'`                          | `'text'` |
-| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'` |
-| rounded | `boolean`                                                            | `false`  |
+| Prop    | Type                                                                  | Default   |
+| ------- | --------------------------------------------------------------------- | --------- |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg' \| SizeKey` (theme tokens)              | `'md'`    |
+| variant | `'plain' \| 'ghost' \| 'outline' \| 'surface' \| 'subtle' \| 'solid'` | `'plain'` |
+| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'`  | `'gray'`  |
+| rounded | `boolean`                                                             | `false`   |
 
 It also accepts all native `<button>` attributes (`type` defaults to
 `'button'`).

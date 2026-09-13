@@ -29,7 +29,7 @@ const meta: Meta<typeof IconButton> = {
     docs: {
       description: {
         component:
-          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; text (default) is the pure icon — its box hugs the icon, size sizes the icon itself and the icon is painted in the palette color (gray by default), darkening to the palette hover/active shade — while ghost/outline/solid carry palette-tinted chrome and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
+          'The square bare-button primitive for icon-only controls. The reset, token-pinned hit shape, hover/active feedback, focus ring and disabled semantics live in one place. The size prop takes preset form tiers (xs/sm/md/lg) or any theme size-token key; plain (default) is the pure icon — its box hugs the icon, size sizes the icon itself and the icon is painted in the palette color (gray by default), darkening to the palette hover/active shade — while the chrome variants (ghost/outline/surface/subtle/solid) carry palette-tinted paint and `rounded` switches the footprint to a full circle. Icon-only buttons are nameless to assistive tech, so an aria-label is part of the contract.',
       },
     },
   },
@@ -62,13 +62,19 @@ export const Overview: Story = {
 
         <Section title="Variants">
           <Stack direction="row" gap="4">
-            <IconButton aria-label="Text">
+            <IconButton aria-label="Plain">
               <IconX />
             </IconButton>
             <IconButton aria-label="Ghost" variant="ghost">
               <IconX />
             </IconButton>
             <IconButton aria-label="Outline" variant="outline">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Surface" variant="surface">
+              <IconX />
+            </IconButton>
+            <IconButton aria-label="Subtle" variant="subtle">
               <IconX />
             </IconButton>
             <IconButton aria-label="Solid" variant="solid">

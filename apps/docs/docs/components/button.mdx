@@ -11,7 +11,13 @@ Buttons trigger user actions.
 
 ## Variants
 
-<Button variant="solid">Solid</Button> <Button variant="outline">Outline</Button>
+The variant axis is a single strength ladder — from the filled `solid` down
+to the wash-only `ghost`. Filled variants swap tiers on hover/active
+(`solid → solid-hover/active`, `subtle/surface → muted`); the unfilled
+ones layer a wash.
+
+<Button variant="solid">Solid</Button> <Button variant="subtle">Subtle</Button>
+<Button variant="surface">Surface</Button> <Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 
 ## Palettes
@@ -36,7 +42,7 @@ respects the motion gate like every other transition.
 
 | Prop    | Type                                                                 | Default   |
 | ------- | -------------------------------------------------------------------- | --------- |
-| variant | `'solid' \| 'outline' \| 'ghost'`                                    | `'solid'` |
+| variant | `'solid' \| 'subtle' \| 'surface' \| 'outline' \| 'ghost'`           | `'solid'` |
 | palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'`  |
 | size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                       | `'md'`    |
 | shadow  | `boolean`                                                            | `false`   |

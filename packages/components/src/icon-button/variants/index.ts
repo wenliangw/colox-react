@@ -14,7 +14,7 @@ export const iconButtonVariants = cva('colox-icon-button', {
   },
   defaultVariants: {
     size: 'md',
-    variant: 'text',
+    variant: 'plain',
     palette: 'gray',
   },
 });

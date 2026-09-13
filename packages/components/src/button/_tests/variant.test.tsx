@@ -8,14 +8,15 @@ describe('Button variants', () => {
     expect(screen.getByRole('button')).toHaveClass('colox-button--solid');
   });
 
-  it('applies the outline variant class', () => {
-    render(<Button variant="outline">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--outline');
-  });
-
-  it('applies the ghost variant class', () => {
-    render(<Button variant="ghost">Save</Button>);
-    expect(screen.getByRole('button')).toHaveClass('colox-button--ghost');
+  it.each([
+    ['solid', 'colox-button--solid'],
+    ['subtle', 'colox-button--subtle'],
+    ['surface', 'colox-button--surface'],
+    ['outline', 'colox-button--outline'],
+    ['ghost', 'colox-button--ghost'],
+  ] as const)('applies the %s variant class', (variant, expectedClass) => {
+    render(<Button variant={variant}>Save</Button>);
+    expect(screen.getByRole('button')).toHaveClass(expectedClass);
   });
 
   it('applies the gray palette class by default', () => {

@@ -16,6 +16,44 @@
   }
 }
 
+.colox-button--subtle {
+  background-color: var(--colox-button-palette-subtle);
+  color: var(--colox-button-palette-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-button-palette-muted);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-button-palette-muted);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+.colox-button--surface {
+  border-color: var(--colox-button-palette-muted);
+  background-color: var(--colox-button-palette-subtle);
+  color: var(--colox-button-palette-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-button-palette-muted);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-button-palette-muted);
+  }
+
+  &:disabled {
+    border-color: var(--colox-color-border-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    color: var(--colox-color-text-disabled);
+  }
+}
+
 .colox-button--outline {
   border-color: var(--colox-button-palette-solid);
   background-color: transparent;

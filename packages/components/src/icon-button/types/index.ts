@@ -19,20 +19,22 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   /**
    * Size: a preset tier aligned with the form family (xs 24 / sm 32 /
    * md 40 / lg 48) or any theme size-token key — `size="4"` means
-   * 16px, `size="0-5"` 2px. For the text variant (default) the box
-   * hugs the icon, so size is the rendered icon size; for ghost/
-   * outline/solid it is the footprint of the box.
+   * 16px, `size="0-5"` 2px. For the plain variant (default) the box
+   * hugs the icon, so size is the rendered icon size; for the chrome
+   * variants (ghost/outline/surface/subtle/solid) it is the footprint
+   * of the box.
    * @default 'md'
    */
   size?: IconButtonSize;
   /**
-   * Visual form. Text is the default — pure icon, no chrome: the box
-   * hugs the icon, `size` sizes the icon itself and the icon is
-   * painted in the palette color, darkening to the palette hover/active
-   * shade (no background feedback); ghost is the palette-tinted icon
-   * with a wash on hover; solid/outline carry filled/bordered chrome
-   * in the palette color.
-   * @default 'text'
+   * Visual form of the icon button — the strength ladder: plain (pure
+   * icon, default), ghost, outline, surface, subtle, solid. Plain's
+   * box hugs the icon, `size` sizes the icon itself and the icon is
+   * painted in the palette color, darkening to the palette hover/
+   * active shade (no background feedback); the filled variants
+   * (subtle/surface/solid) swap tiers on hover/active, ghost/outline
+   * layer a wash.
+   * @default 'plain'
    */
   variant?: IconButtonVariant;
   /**

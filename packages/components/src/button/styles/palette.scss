@@ -8,6 +8,7 @@
  */
 .colox-button--primary {
   --colox-button-palette-solid: var(--colox-color-brand-solid);
+  --colox-button-palette-subtle: var(--colox-color-brand-subtle);
   --colox-button-palette-muted: var(--colox-color-brand-muted);
   --colox-button-palette-inverse: var(--colox-color-brand-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-brand-solid-hover);
@@ -18,6 +19,7 @@
 
 .colox-button--gray {
   --colox-button-palette-solid: var(--colox-color-gray-solid);
+  --colox-button-palette-subtle: var(--colox-color-gray-subtle);
   --colox-button-palette-muted: var(--colox-color-gray-muted);
   --colox-button-palette-inverse: var(--colox-color-gray-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-gray-solid-hover);
@@ -28,6 +30,7 @@
 
 .colox-button--info {
   --colox-button-palette-solid: var(--colox-color-blue-solid);
+  --colox-button-palette-subtle: var(--colox-color-blue-subtle);
   --colox-button-palette-muted: var(--colox-color-blue-muted);
   --colox-button-palette-inverse: var(--colox-color-blue-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-blue-solid-hover);
@@ -38,6 +41,7 @@
 
 .colox-button--error {
   --colox-button-palette-solid: var(--colox-color-red-solid);
+  --colox-button-palette-subtle: var(--colox-color-red-subtle);
   --colox-button-palette-muted: var(--colox-color-red-muted);
   --colox-button-palette-inverse: var(--colox-color-red-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-red-solid-hover);
@@ -48,6 +52,7 @@
 
 .colox-button--warning {
   --colox-button-palette-solid: var(--colox-color-orange-solid);
+  --colox-button-palette-subtle: var(--colox-color-orange-subtle);
   --colox-button-palette-muted: var(--colox-color-orange-muted);
   --colox-button-palette-inverse: var(--colox-color-orange-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-orange-solid-hover);
@@ -58,6 +63,7 @@
 
 .colox-button--success {
   --colox-button-palette-solid: var(--colox-color-green-solid);
+  --colox-button-palette-subtle: var(--colox-color-green-subtle);
   --colox-button-palette-muted: var(--colox-color-green-muted);
   --colox-button-palette-inverse: var(--colox-color-green-inverse);
   --colox-button-palette-solid-hover: var(--colox-color-green-solid-hover);

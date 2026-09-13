@@ -66,18 +66,20 @@ describe('IconButton semantics', () => {
 
 describe('IconButton variant', () => {
   it.each([
-    ['text', 'colox-icon-button--text'],
-    ['solid', 'colox-icon-button--solid'],
-    ['outline', 'colox-icon-button--outline'],
+    ['plain', 'colox-icon-button--plain'],
     ['ghost', 'colox-icon-button--ghost'],
+    ['outline', 'colox-icon-button--outline'],
+    ['surface', 'colox-icon-button--surface'],
+    ['subtle', 'colox-icon-button--subtle'],
+    ['solid', 'colox-icon-button--solid'],
   ] as const)('applies the %s variant class', (variant, expectedClass) => {
     render(<IconButton variant={variant} aria-label="close" />);
     expect(screen.getByRole('button', { name: 'close' })).toHaveClass(expectedClass);
   });
 
-  it('defaults to text', () => {
+  it('defaults to plain', () => {
     render(<IconButton aria-label="close" />);
-    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--text');
+    expect(screen.getByRole('button', { name: 'close' })).toHaveClass('colox-icon-button--plain');
   });
 });
 

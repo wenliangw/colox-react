@@ -5,10 +5,11 @@
  * disabled semantics and the interaction motion (hover/active wash and
  * press scale). Variant paint lives in variant.scss, palette color
  * families in palette.scss (private palette variables, mirroring the
- * Button namespace). The chrome variants (ghost/outline/solid) ride
- * the token-pinned square footprint and `rounded` switches it to a
- * full circle; the text variant skips the box entirely — it hugs the
- * icon and feeds the size channel to the font-size instead.
+ * Button namespace). The chrome variants (ghost/outline/surface/
+ * subtle/solid) ride the token-pinned square footprint and `rounded`
+ * switches it to a full circle; the plain variant skips the box
+ * entirely — it hugs the icon and feeds the size channel to the
+ * font-size instead.
  */
 .colox-icon-button {
   // md fallback: the size channel normally feeds this var through a
@@ -17,6 +18,8 @@
   // Palette fallback: the palette layer overrides these; the brand
   // family keeps the paint alive even without a palette class.
   --colox-icon-button-palette-solid: var(--colox-color-brand-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-brand-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-brand-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-brand-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-brand-solid-active);

@@ -1,15 +1,14 @@
 /**
- * Variant paint — text/solid/outline/ghost over the private palette
- * variables (the palette layer maps them onto the color families). Text
- * is the default pure-icon form: no chrome, the box hugs the icon
- * (the size channel feeds the font-size, so `size` sizes the icon
- * itself) and the icon is painted in the palette color, darkening to
- * the palette hover/active shades — no background involved; ghost is
- * the palette-tinted icon with a wash on hover; solid/outline carry
- * filled/bordered chrome in the palette color. Disabled keeps the
- * shared muted treatment plus a variant-appropriate fill/border.
+ * Variant paint — the six-member strength ladder over the private
+ * palette variables (the palette layer maps them onto the color
+ * families). Feedback language: filled variants swap tiers on
+ * hover/active (solid → solid-hover/active, subtle/surface → muted),
+ * unfilled variants layer a wash (outline/ghost), and plain recolors
+ * the icon itself — its box hugs the icon (the size channel feeds the
+ * font-size) and never paints a background. Disabled keeps the shared
+ * muted treatment plus a variant-appropriate fill/border.
  */
-.colox-icon-button--text {
+.colox-icon-button--plain {
   background-color: transparent;
   width: auto;
   height: auto;
@@ -25,20 +24,16 @@
   }
 }
 
-.colox-icon-button--solid {
-  background-color: var(--colox-icon-button-palette-solid);
-  color: var(--colox-icon-button-palette-inverse);
+.colox-icon-button--ghost {
+  background-color: transparent;
+  color: var(--colox-icon-button-palette-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-icon-button-palette-solid-hover);
+    background-color: var(--colox-icon-button-palette-wash-hover);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-icon-button-palette-solid-active);
-  }
-
-  &:disabled {
-    background-color: var(--colox-color-bg-disabled);
+    background-color: var(--colox-icon-button-palette-wash-active);
   }
 }
 
@@ -60,15 +55,55 @@
   }
 }
 
-.colox-icon-button--ghost {
-  background-color: transparent;
+.colox-icon-button--surface {
+  border: 1px solid var(--colox-icon-button-palette-muted);
+  background-color: var(--colox-icon-button-palette-subtle);
   color: var(--colox-icon-button-palette-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--colox-icon-button-palette-wash-hover);
+    background-color: var(--colox-icon-button-palette-muted);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--colox-icon-button-palette-wash-active);
+    background-color: var(--colox-icon-button-palette-muted);
+  }
+
+  &:disabled {
+    border-color: var(--colox-color-border-disabled);
+    background-color: var(--colox-color-bg-disabled);
+  }
+}
+
+.colox-icon-button--subtle {
+  background-color: var(--colox-icon-button-palette-subtle);
+  color: var(--colox-icon-button-palette-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-icon-button-palette-muted);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-icon-button-palette-muted);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
+  }
+}
+
+.colox-icon-button--solid {
+  background-color: var(--colox-icon-button-palette-solid);
+  color: var(--colox-icon-button-palette-inverse);
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-icon-button-palette-solid-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-icon-button-palette-solid-active);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
   }
 }

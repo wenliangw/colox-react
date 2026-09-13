@@ -12,7 +12,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    */
   size?: ButtonSize;
   /**
-   * Visual form of the button.
+   * Visual form of the button — the strength ladder: solid (filled),
+   * subtle (tint fill), surface (tint fill + muted ring), outline
+   * (border only), ghost (no chrome, wash on hover).
    * @default 'solid'
    */
   variant?: ButtonVariant;

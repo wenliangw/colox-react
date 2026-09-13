@@ -7,6 +7,8 @@
  */
 .colox-icon-button--primary {
   --colox-icon-button-palette-solid: var(--colox-color-brand-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-brand-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-brand-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-brand-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-brand-solid-active);
@@ -16,6 +18,8 @@
 
 .colox-icon-button--gray {
   --colox-icon-button-palette-solid: var(--colox-color-gray-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-gray-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-gray-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-gray-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-gray-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-gray-solid-active);
@@ -25,6 +29,8 @@
 
 .colox-icon-button--info {
   --colox-icon-button-palette-solid: var(--colox-color-blue-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-blue-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-blue-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-blue-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-blue-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-blue-solid-active);
@@ -34,6 +40,8 @@
 
 .colox-icon-button--error {
   --colox-icon-button-palette-solid: var(--colox-color-red-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-red-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-red-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-red-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-red-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-red-solid-active);
@@ -43,6 +51,8 @@
 
 .colox-icon-button--warning {
   --colox-icon-button-palette-solid: var(--colox-color-orange-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-orange-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-orange-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-orange-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-orange-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-orange-solid-active);
@@ -52,6 +62,8 @@
 
 .colox-icon-button--success {
   --colox-icon-button-palette-solid: var(--colox-color-green-solid);
+  --colox-icon-button-palette-subtle: var(--colox-color-green-subtle);
+  --colox-icon-button-palette-muted: var(--colox-color-green-muted);
   --colox-icon-button-palette-inverse: var(--colox-color-green-inverse);
   --colox-icon-button-palette-solid-hover: var(--colox-color-green-solid-hover);
   --colox-icon-button-palette-solid-active: var(--colox-color-green-solid-active);

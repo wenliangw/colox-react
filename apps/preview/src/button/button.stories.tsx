@@ -35,6 +35,8 @@ export const Overview: Story = {
         <Section title="Variants">
           <Stack gap="3">
             <Button variant="solid">Solid</Button>
+            <Button variant="subtle">Subtle</Button>
+            <Button variant="surface">Surface</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
           </Stack>
