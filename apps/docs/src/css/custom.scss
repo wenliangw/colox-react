@@ -79,15 +79,46 @@ html {
   border-bottom: 1px solid var(--colox-color-border-muted);
 }
 
-/* Markdown content column keeps a steady measure. */
+/* Markdown content column keeps a steady measure — the antd-style
+   narrow reading column, not a full-bleed line. */
+.theme-doc-markdown {
+  max-width: 48rem;
+}
+
 .theme-doc-markdown p,
 .theme-doc-markdown li {
   line-height: 1.6;
 }
 
+/* The import line hugs its content instead of spanning the column. */
+.theme-doc-markdown .colox-import .theme-code-block,
+.theme-doc-markdown .colox-import .theme-code-block pre {
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* The right-hand TOC reads as muted navigation; only the section in
+   view claims the accent. */
+.table-of-contents__link {
+  color: var(--colox-color-text-muted);
+}
+
+.table-of-contents__link--active,
+.table-of-contents__link:hover {
+  color: var(--colox-color-brand-solid);
+}
+
 /* ---- Grouped sidebar: muted small-caps group labels, the active item
    claims the accent with a left bar + tint — the library navigation
    vocabulary. ---- */
+
+.theme-doc-sidebar-menu .menu__list-item-collapsible {
+  margin-top: var(--colox-spacing-3);
+}
+
+.theme-doc-sidebar-menu > .menu__list > .menu__list-item:first-child {
+  margin-top: 0;
+}
 
 .theme-doc-sidebar-menu .menu__list-item-collapsible > .menu__link {
   font-size: 0.75rem;
@@ -98,6 +129,7 @@ html {
 }
 
 .theme-doc-sidebar-menu .menu__link {
+  padding-block: var(--colox-spacing-2);
   font-weight: var(--colox-font-weight-regular);
 }
 
@@ -155,8 +187,12 @@ html {
 }
 
 .colox-demo-code-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-1-5);
   padding: var(--colox-spacing-2) var(--colox-spacing-4);
   font-size: 0.8125rem;
+  font-weight: var(--colox-font-weight-medium);
   color: var(--colox-color-text-muted);
   list-style: none;
   cursor: pointer;
@@ -171,6 +207,14 @@ html {
   color: var(--colox-color-text-default);
 }
 
+.colox-demo-code-caret {
+  transition: transform var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out);
+}
+
+.colox-demo-code[open] .colox-demo-code-caret {
+  transform: rotate(180deg);
+}
+
 .colox-demo-code .theme-code-block {
   margin-bottom: 0;
   border: none;
@@ -178,6 +222,12 @@ html {
 }
 
 /* Doc header meta row (GitHub / tokens links under the import line). */
+.colox-meta-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--colox-spacing-4);
+}
+
 .colox-meta {
   font-size: 0.8125rem;
   color: var(--colox-color-text-muted);
@@ -185,4 +235,9 @@ html {
 
 .colox-meta:hover {
   color: var(--colox-color-text-default);
+}
+
+.colox-meta-sep {
+  margin: 0 var(--colox-spacing-1-5);
+  color: var(--colox-color-text-disabled);
 }

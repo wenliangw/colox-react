@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import CodeBlock from '@theme/CodeBlock';
+import { IconChevronDown } from '@colox/icons';
 
 type DemoProps = {
   /** Block title, rendered above the preview. */
@@ -31,7 +32,10 @@ export default function Demo({ title, description, code, language = 'tsx', child
       <div className="colox-demo-preview">{children}</div>
       {code ? (
         <details className="colox-demo-code">
-          <summary className="colox-demo-code-toggle">Code</summary>
+          <summary className="colox-demo-code-toggle">
+            <IconChevronDown className="colox-demo-code-caret" />
+            <span>Code</span>
+          </summary>
           <CodeBlock language={language}>{code}</CodeBlock>
         </details>
       ) : null}

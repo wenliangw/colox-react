@@ -8,17 +8,23 @@ import Demo from '@site/src/components/demo';
 Buttons trigger user actions — a single strength ladder, six semantic
 families, and one size scale across the whole library.
 
-<CodeBlock language="tsx">{`import { Button } from '@colox/react';
+<CodeBlock className="colox-import" language="tsx">{`import { Button } from '@colox/react';
 import '@colox/react/style.css';`}</CodeBlock>
 
-<a
-  class="colox-meta"
-  href="https://github.com/wenliangw/colox-react"
-  target="_blank"
-  rel="noreferrer"
->
-  GitHub
-</a>
+<div class="colox-meta-row">
+  <a
+    class="colox-meta"
+    href="https://github.com/wenliangw/colox-react"
+    target="_blank"
+    rel="noreferrer"
+  >
+    GitHub
+  </a>
+  <span class="colox-meta-sep">·</span>
+  <a class="colox-meta" href="#design-tokens">
+    Design tokens
+  </a>
+</div>
 
 ## When to use
 
@@ -41,7 +47,7 @@ import '@colox/react/style.css';`}</CodeBlock>
 import '@colox/react/style.css';
 
 export default () => (
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button variant="solid">Solid</Button>
     <Button variant="subtle">Subtle</Button>
     <Button variant="surface">Surface</Button>
@@ -49,7 +55,7 @@ export default () => (
     <Button variant="ghost">Ghost</Button>
   </Stack>
 );`}>
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button variant="solid">Solid</Button>
     <Button variant="subtle">Subtle</Button>
     <Button variant="surface">Surface</Button>
@@ -65,7 +71,7 @@ export default () => (
 import '@colox/react/style.css';
 
 export default () => (
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button palette="primary">Primary</Button>
     <Button palette="gray">Gray</Button>
     <Button palette="info">Info</Button>
@@ -74,7 +80,7 @@ export default () => (
     <Button palette="success">Success</Button>
   </Stack>
 );`}>
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button palette="primary">Primary</Button>
     <Button palette="gray">Gray</Button>
     <Button palette="info">Info</Button>
@@ -91,14 +97,14 @@ export default () => (
 import '@colox/react/style.css';
 
 export default () => (
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button size="xs">Tiny</Button>
     <Button size="sm">Small</Button>
     <Button size="md">Medium</Button>
     <Button size="lg">Large</Button>
   </Stack>
 );`}>
-  <Stack direction="row" gap="2">
+  <Stack direction="row" gap="2" wrap>
     <Button size="xs">Tiny</Button>
     <Button size="sm">Small</Button>
     <Button size="md">Medium</Button>
@@ -124,6 +130,26 @@ export default () => (
   </Stack>
 </Demo>
 
+<Demo
+  title="Disabled"
+  description="Disabled controls drop to the disabled surface tokens and leave the tab order untouched."
+  code={`import { Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+export default () => (
+  <Stack direction="row" gap="2">
+    <Button disabled>Solid</Button>
+    <Button variant="outline" disabled>Outline</Button>
+  </Stack>
+);`}>
+  <Stack direction="row" gap="2">
+    <Button disabled>Solid</Button>
+    <Button variant="outline" disabled>
+      Outline
+    </Button>
+  </Stack>
+</Demo>
+
 ## API
 
 | Prop    | Type                                                                 | Default   | Description                                                          |
@@ -134,3 +160,17 @@ export default () => (
 | shadow  | `boolean`                                                            | `false`   | Elevation via the theme shadow tokens (`md` at rest, `lg` on hover). |
 
 It also accepts all native `<button>` attributes; `type` defaults to `'button'`.
+
+## Design tokens
+
+Button draws every visual decision from the token layer — no hand-picked
+color or size lives in the component:
+
+| Token group                                                           | Drives                                                                     |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `--colox-color-{family}-solid` / `-solid-hover` / `-solid-active`     | The `solid` tier's fill, and the label of the tonal tiers.                 |
+| `--colox-color-{family}-subtle` / `-muted`                            | The `subtle` / `surface` fills — rest → hover/active tier swap.            |
+| `--colox-color-{family}-wash-hover` / `-wash-active`                  | The wash the unfilled tiers (`outline` / `ghost`) layer on hover/active.   |
+| `--colox-color-{bg,text,border}-{default,muted,subtle,disabled}`      | The unfilled ladder's surface, label, border, and disabled states.         |
+| `--colox-shadow-md` → `--colox-shadow-lg`                             | The `shadow` prop — `md` at rest, `lg` on hover.                           |
+| `--colox-motion-duration-{fast,normal}` + `--colox-motion-easing-out` | Every transition; the motion gate zeroes the durations for reduced motion. |
