@@ -59,3 +59,130 @@ body,
   border-radius: var(--colox-radius-sm);
   padding: var(--colox-spacing-3) var(--colox-spacing-4);
 }
+
+/* ---- Density discipline (the antd-style correction): the skin reads
+   dense and structured — 14px body scaling the whole Infima chain,
+   32px H1, 24px H2 with a hairline rule; hierarchy comes from
+   size/weight/rules, never from empty space. ---- */
+
+html {
+  font-size: 87.5%; /* 16px -> 14px body */
+}
+
+.theme-doc-markdown h1 {
+  font-size: 2.25rem; /* 31.5px ≈ 32px */
+}
+
+.theme-doc-markdown h2 {
+  font-size: 1.5rem; /* 24px */
+  padding-bottom: var(--colox-spacing-2);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+}
+
+/* Markdown content column keeps a steady measure. */
+.theme-doc-markdown p,
+.theme-doc-markdown li {
+  line-height: 1.6;
+}
+
+/* ---- Grouped sidebar: muted small-caps group labels, the active item
+   claims the accent with a left bar + tint — the library navigation
+   vocabulary. ---- */
+
+.theme-doc-sidebar-menu .menu__list-item-collapsible > .menu__link {
+  font-size: 0.75rem;
+  font-weight: var(--colox-font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--colox-color-text-muted);
+}
+
+.theme-doc-sidebar-menu .menu__link {
+  font-weight: var(--colox-font-weight-regular);
+}
+
+.theme-doc-sidebar-menu .menu__link--active {
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-brand-solid);
+  background-color: var(--colox-color-brand-subtle);
+  box-shadow: inset 3px 0 0 var(--colox-color-brand-solid);
+}
+
+/* The category heading mirrors `--active` while one of its members is
+   active — it stays in the muted group-label look instead of claiming
+   the accent. */
+.theme-doc-sidebar-menu .menu__list-item-collapsible > .menu__link--active {
+  color: var(--colox-color-text-muted);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* ---- Demo blocks: titled preview + collapsible code panel. ---- */
+
+.colox-demo {
+  margin-bottom: var(--colox-spacing-6);
+  overflow: hidden;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
+}
+
+.colox-demo-header {
+  padding: var(--colox-spacing-4) var(--colox-spacing-4) 0;
+}
+
+.colox-demo-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--colox-font-weight-semibold);
+}
+
+.colox-demo-desc {
+  margin: var(--colox-spacing-1) 0 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--colox-color-text-muted);
+}
+
+.colox-demo-preview {
+  padding: var(--colox-spacing-4);
+  overflow-x: auto;
+}
+
+.colox-demo-code {
+  border-top: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
+}
+
+.colox-demo-code-toggle {
+  padding: var(--colox-spacing-2) var(--colox-spacing-4);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-muted);
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out);
+}
+
+.colox-demo-code-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.colox-demo-code-toggle:hover {
+  color: var(--colox-color-text-default);
+}
+
+.colox-demo-code .theme-code-block {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Doc header meta row (GitHub / tokens links under the import line). */
+.colox-meta {
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-muted);
+}
+
+.colox-meta:hover {
+  color: var(--colox-color-text-default);
+}

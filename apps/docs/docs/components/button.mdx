@@ -1,50 +1,136 @@
----
-sidebar_position: 2
----
-
-import { Button } from '@colox/react';
+import { Button, Stack } from '@colox/react';
 import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+import Demo from '@site/src/components/demo';
 
 # Button
 
-Buttons trigger user actions.
+Buttons trigger user actions — a single strength ladder, six semantic
+families, and one size scale across the whole library.
 
-## Variants
+<CodeBlock language="tsx">{`import { Button } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
 
-The variant axis is a single strength ladder — from the filled `solid` down
-to the wash-only `ghost`. Filled variants swap tiers on hover/active
-(`solid → solid-hover/active`, `subtle/surface → muted`); the unfilled
-ones layer a wash.
+<a
+  class="colox-meta"
+  href="https://github.com/wenliangw/colox-react"
+  target="_blank"
+  rel="noreferrer"
+>
+  GitHub
+</a>
 
-<Button variant="solid">Solid</Button> <Button variant="subtle">Subtle</Button>
-<Button variant="surface">Surface</Button> <Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
+## When to use
 
-## Palettes
+- Use a Button for every visible action: submit, confirm, open, navigate.
+- Strong actions sit high on the ladder (`solid`); quieter ones step down
+  (`subtle` → `surface` → `outline` → `ghost`) so the page keeps one
+  loudest control.
+- Semantic color is opt-in — every control defaults to `gray`. Declare a
+  `palette` when the action actually means something (`error` for
+  destructive, `success` for confirmatory).
+- Need an icon-only control? That is an [IconButton](/docs/components/icon-button),
+  not a Button.
 
-<Button palette="primary">Primary</Button> <Button palette="gray">Gray</Button>
-<Button palette="info">Info</Button> <Button palette="error">Error</Button>
-<Button palette="warning">Warning</Button> <Button palette="success">Success</Button>
+## Examples
 
-## Sizes
+<Demo
+  title="Variants"
+  description="Five strengths on one axis. Filled tiers swap color tiers on hover/active, unfilled ones layer a wash."
+  code={`import { Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
 
-<Button size="xs">Tiny</Button> <Button size="sm">Small</Button> <Button size="md">Medium</Button>
-<Button size="lg">Large</Button>
+export default () => (
+  <Stack direction="row" gap="2">
+    <Button variant="solid">Solid</Button>
+    <Button variant="subtle">Subtle</Button>
+    <Button variant="surface">Surface</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+  </Stack>
+);`}>
+  <Stack direction="row" gap="2">
+    <Button variant="solid">Solid</Button>
+    <Button variant="subtle">Subtle</Button>
+    <Button variant="surface">Surface</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+  </Stack>
+</Demo>
 
-## Shadow
+<Demo
+  title="Palettes"
+  description="Six semantic families — gray keeps the action quiet, the rest claim attention. The default is gray."
+  code={`import { Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
 
-<Button shadow>Elevated</Button> <Button>Flat</Button>
+export default () => (
+  <Stack direction="row" gap="2">
+    <Button palette="primary">Primary</Button>
+    <Button palette="gray">Gray</Button>
+    <Button palette="info">Info</Button>
+    <Button palette="error">Error</Button>
+    <Button palette="warning">Warning</Button>
+    <Button palette="success">Success</Button>
+  </Stack>
+);`}>
+  <Stack direction="row" gap="2">
+    <Button palette="primary">Primary</Button>
+    <Button palette="gray">Gray</Button>
+    <Button palette="info">Info</Button>
+    <Button palette="error">Error</Button>
+    <Button palette="warning">Warning</Button>
+    <Button palette="success">Success</Button>
+  </Stack>
+</Demo>
 
-The `shadow` prop uses the theme shadow tokens (`md` at rest, lifting to `lg` on hover) and
-respects the motion gate like every other transition.
+<Demo
+  title="Sizes"
+  description="Four size tiers, shared with every other control in the library."
+  code={`import { Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
 
-## Props
+export default () => (
+  <Stack direction="row" gap="2">
+    <Button size="xs">Tiny</Button>
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
+  </Stack>
+);`}>
+  <Stack direction="row" gap="2">
+    <Button size="xs">Tiny</Button>
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
+  </Stack>
+</Demo>
 
-| Prop    | Type                                                                 | Default   |
-| ------- | -------------------------------------------------------------------- | --------- |
-| variant | `'solid' \| 'subtle' \| 'surface' \| 'outline' \| 'ghost'`           | `'solid'` |
-| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'`  |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                       | `'md'`    |
-| shadow  | `boolean`                                                            | `false`   |
+<Demo
+  title="Shadow"
+  description="Optional elevation on the theme shadow tokens — `md` at rest, `lg` on hover — gated by the reduced-motion preference like every other transition."
+  code={`import { Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+export default () => (
+  <Stack direction="row" gap="2">
+    <Button shadow>Elevated</Button>
+    <Button>Flat</Button>
+  </Stack>
+);`}>
+  <Stack direction="row" gap="2">
+    <Button shadow>Elevated</Button>
+    <Button>Flat</Button>
+  </Stack>
+</Demo>
+
+## API
+
+| Prop    | Type                                                                 | Default   | Description                                                          |
+| ------- | -------------------------------------------------------------------- | --------- | -------------------------------------------------------------------- |
+| variant | `'solid' \| 'subtle' \| 'surface' \| 'outline' \| 'ghost'`           | `'solid'` | Strength rung — `solid` heaviest, `ghost` lightest.                  |
+| palette | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'`  | Semantic family — every control defaults to `gray`; color is opt-in. |
+| size    | `'xs' \| 'sm' \| 'md' \| 'lg'`                                       | `'md'`    | Size tier, shared with the other controls.                           |
+| shadow  | `boolean`                                                            | `false`   | Elevation via the theme shadow tokens (`md` at rest, `lg` on hover). |
 
 It also accepts all native `<button>` attributes; `type` defaults to `'button'`.
