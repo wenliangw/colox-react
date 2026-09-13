@@ -23,3 +23,9 @@ export interface ResolveButtonDisplayParams {
   currentSingle: string;
   placeholder: ReactNode;
 }
+
+export interface ResolveActiveDescendantIdParams {
+  isOpen: boolean;
+  activeIndex: number;
+  optionIdPrefix: string;
+}

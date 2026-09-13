@@ -25,6 +25,7 @@ import {
   findSelectTemplate,
 } from './utils/select-options';
 import {
+  resolveActiveDescendantId,
   resolveButtonDisplay,
   resolveControlLabel,
   resolveInputValue,
@@ -182,10 +183,11 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     placeholder,
   });
 
-  let activeDescendantId: string | undefined;
-  if (state.isOpen && keyboard.activeIndex >= 0) {
-    activeDescendantId = `${optionIdPrefix}-${keyboard.activeIndex}`;
-  }
+  const activeDescendantId = resolveActiveDescendantId({
+    isOpen: state.isOpen,
+    activeIndex: keyboard.activeIndex,
+    optionIdPrefix,
+  });
 
   const buttonDisplay = resolveButtonDisplay({
     selectedRecord,

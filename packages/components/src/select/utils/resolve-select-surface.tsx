@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type {
+  ResolveActiveDescendantIdParams,
   ResolveButtonDisplayParams,
   ResolveControlLabelParams,
   ResolveInputValueParams,
@@ -52,6 +53,22 @@ export function resolveControlLabel({
     return currentSingle;
   }
   return stringPlaceholder(placeholder);
+}
+
+/**
+ * The ARIA active-descendant pointer: present only while the panel is
+ * open AND the keyboard walk sits on a row (multiple selects start
+ * above the list, index -1).
+ */
+export function resolveActiveDescendantId({
+  isOpen,
+  activeIndex,
+  optionIdPrefix,
+}: ResolveActiveDescendantIdParams): string | undefined {
+  if (!isOpen || activeIndex < 0) {
+    return undefined;
+  }
+  return `${optionIdPrefix}-${activeIndex}`;
 }
 
 /**
