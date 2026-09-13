@@ -21,13 +21,15 @@
 
 ### IconButton 视觉轴：variant/palette 复用 Button 轴 + hover 反馈基座化（用户反转裁决）
 
+- **variant = 六档强度阶梯与 Button 同构**（决策 c066fcc2）：Button solid/subtle/surface/outline/ghost 五档、IconButton 同轴补齐并 plain 打头（Chakra 对齐：用户「Button 组件的 variables 还有 subtle 和 surface…确认都补，IconButton 也对齐」）。每档语义唯一：solid=实底、subtle=浅底、surface=浅底+描边、outline=纯描边、ghost=wash、plain=纯图标/素面。
+
 - **反馈默认进基座、覆盖留给站点**：hover/active wash + 按压缩放是图标钮通用契约，基座默认提供（最初「hover 不进基座」是过度保守——独立组件零反馈被用户指摘「IconButton 好像没有 hover 效果」后反转）；站点要克制时用自己的类覆盖，而不是逼所有消费方自己上 hover。
 - **形状开关显式化**：方形圆角（radius-xs）是默认足迹；圆形是 `rounded` prop 的显式选择——用户「圆底应该使用 rounded prop 来设置，默认应该是方形（圆角）」。
-- **视觉轴词汇与 Button 同源**：variant = text/ghost/solid/outline（默认 text），palette = design-language 六族轴（primary/gray/info/error/warning/success，默认 gray）——不发明 IconButton 私有颜色表/档名；旧 intent 五色轴（primary/neutral/danger/warning/success）已由 intent→palette 对齐决策废止。
-- **变体决定图标色**（用户「设置 variant 后，图标的颜色也应该跟着变；ghost 的图标颜色好像不正确」）：text/ghost/outline 涂 palette solid、solid 涂 inverse——色随变体走，不留给语境猜（text 的继承版被用户反转：决策 666d8aa8「图标默认颜色就是 primary」）。变体反馈通道各异但都可见：text = 图标同族加深（无底）、ghost/outline = 浅底、solid = 深浅涂装——「无反馈」才是问题，反馈形态跟变体走。
-- **text 类型零盒子**：盒子拥抱图标（宽高 auto），size 通道以 font-size 直驱图标尺寸——纯图标钮不携带静止包装（用户「只以图标大小展示，而不是有额外的宽高」）——size 对默认变体仍然诚实。
+- **视觉轴词汇与 Button 同源**：variant = plain/ghost/outline/surface/subtle/solid 六档（默认 plain），palette = design-language 六族轴（primary/gray/info/error/warning/success，默认 gray）——不发明 IconButton 私有颜色表/档名；旧 intent 五色轴与旧 text 变体名均已废止。
+- **变体决定图标色**（用户「设置 variant 后，图标的颜色也应该跟着变；ghost 的图标颜色好像不正确」）：plain/surface/subtle 与 outline/ghost 涂 palette solid、solid 涂 inverse——色随变体走，不留给语境猜（plain 的继承版被用户反转：决策 666d8aa8「图标默认颜色就是 primary」）。变体反馈通道各异但都可见：plain = 图标同族加深（无底）、ghost/outline = wash 浅底、subtle/surface = 换档 muted、solid = 派生深涂装——「无反馈」才是问题，反馈形态跟变体走；总则「**有底换档、无底 wash**」（决策 c066fcc2）。
+- **plain 类型零盒子**：盒子拥抱图标（宽高 auto），size 通道以 font-size 直驱图标尺寸——纯图标钮不携带静止包装（用户「只以图标大小展示，而不是有额外的宽高」）——size 对默认变体仍然诚实。
 - **状态色同族加深恒优于跨族跳色**：静止已是 palette 色的组件，hover/active 取同族 solid-hover/active（决策 666d8aa8，用户「hover 应该使用 primary-hover」）——不做黑→蓝式的色跳跃；老规则「hover 色偏移要可见」仍成立：静止黑 + hover 黑 = 无反馈，所以静止要么给 palette 色、要么给可见的加深目标。
-- **默认形态最小化**：纯图标 text 是默认（无静止铬），加铬（ghost 色/outline 边/solid 底）是显式选择（用户「variant 需要增加 text 形式……并且默认应该为 text」）。
+- **默认形态最小化**：纯图标 plain 是默认（无静止铬），加铬（ghost 色/outline 边/surface 描边/subtle 底/solid 实底）是显式选择（用户「variant 需要增加 text 形式……并且默认应该为 text」，后改 plain——Chakra 词、语义更准）。
 - **形状参数家族同源**：方形默认圆角对齐 Button/Input 的 radius-lg(8px)——radius-xs(2px) 视觉上等于没有（用户指正）；圆形仍是 rounded prop 显式开关。
 - 将来 shape 类组件（Avatar/Badge 等）沿用：显式 rounded 开关、家族轴词汇复用、反馈基座默认化。
 

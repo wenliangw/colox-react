@@ -6,7 +6,7 @@
 
 ## 功能逻辑
 
-- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'outline' | 'ghost'`，默认 `solid`）、`palette`（`'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`，默认 `gray`，design-language 六族轴：primary→brand（动态品牌主色，用户 palette 定制可整体覆盖）、gray→gray、info→blue、error→red、warning→orange、success→green——决策「intent→palette 设计语言对齐」）、`size`（`'xs' | 'sm' | 'md' | 'lg'`，默认 `md`）、`shadow`（`boolean`，默认 `false`——投影装饰轴：常态 `--colox-shadow-md`、hover 升 `--colox-shadow-lg`、按压紧收 `--colox-shadow-sm`，三形态通吃，值零硬编码）。**微动效**：hover 起浮（shadow 按钮）+ 按压收缩 `scale(0.97)`、shadow 按钮同期收紧到 `--colox-shadow-sm`（快进 100ms/慢出 200ms 双过渡清单，disabled 排除）；按压视觉全部由状态切换层构成（颜色档 solid-active/wash-active + 阴影档 + 缩放），无伪元素绘制层（波光/凹陷两轮尝试已移除）；门控由 theme motion.css 统一执行，off/reduced-motion 下移除按压缩放。
+- `ButtonProps` = `ButtonHTMLAttributes<HTMLButtonElement>` + 三轴可选 prop：`variant`（`'solid' | 'subtle' | 'surface' | 'outline' | 'ghost'`，默认 `solid`——强度阶梯，决策 c066fcc2：solid 实底最重 → subtle 浅底 → surface 浅底+描边 → outline 纯描边 → ghost wash 最轻；反馈总则「有底换档、无底 wash」：solid hover/active 换 solid-hover/active 派生档、subtle/surface 换 muted 档、outline/ghost 叠 wash 档）、`palette`（`'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`，默认 `gray`，design-language 六族轴：primary→brand（动态品牌主色，用户 palette 定制可整体覆盖）、gray→gray、info→blue、error→red、warning→orange、success→green——决策「intent→palette 设计语言对齐」）、`size`（`'xs' | 'sm' | 'md' | 'lg'`，默认 `md`）、`shadow`（`boolean`，默认 `false`——投影装饰轴：常态 `--colox-shadow-md`、hover 升 `--colox-shadow-lg`、按压紧收 `--colox-shadow-sm`，三形态通吃，值零硬编码）。**微动效**：hover 起浮（shadow 按钮）+ 按压收缩 `scale(0.97)`、shadow 按钮同期收紧到 `--colox-shadow-sm`（快进 100ms/慢出 200ms 双过渡清单，disabled 排除）；按压视觉全部由状态切换层构成（颜色档 solid-active/wash-active + 阴影档 + 缩放），无伪元素绘制层（波光/凹陷两轮尝试已移除）；门控由 theme motion.css 统一执行，off/reduced-motion 下移除按压缩放。
 - `forwardRef` 暴露 `ButtonRef = HTMLButtonElement`；`type` 默认 `'button'`（可用 props 覆盖，不沿原生 submit 默认值）。
 - 类名 = `cva('colox-button')` 三轴变体 + `clsx` 拼接透传 `className`。
 
@@ -33,8 +33,8 @@ stories 已迁 `apps/preview/src/button/`（variant/palette/size/state 四页，
 
 ## 样式
 
-- **组件零硬编码颜色、零内联派生**：palette 轴把主题色组映射为组件局部变量（`--colox-button-palette-solid/muted/inverse` + 交互态 `solid-/wash-hover/active`），variant 轴只读这些局部变量；换肤只换主题层色组。
-- 交互态全部消费 theme derived 双档 token：实底档 `solid-hover/active`（向黑混 85%/75%，dark 向白）与罩层档 `wash-hover/active`（向透明混 8%/15%）；outline/ghost 的 hover/active 用 wash 档浅底。
+- **组件零硬编码颜色、零内联派生**：palette 轴把主题色组映射为组件局部变量（`--colox-button-palette-solid/subtle/muted/inverse` + 交互态 `solid-/wash-hover/active`），variant 轴只读这些局部变量；换肤只换主题层色组。
+- 交互态全部消费 theme derived 双档 token：实底档 `solid-hover/active`（向黑混 85%/75%，dark 向白）与罩层档 `wash-hover/active`（向透明混 8%/15%）；outline/ghost 的 hover/active 用 wash 档浅底；subtle/surface 的 hover/active 换档到 muted（有底不叠 wash，避免双重变深）；surface 的一圈边界用 border-color: muted（基座 1px transparent 边框承载，与 shadow prop 共存、不吃布局）。
 - focus-visible：`outline:none` + palette solid 边框 + `0 0 0 2px palette-muted` 环（error 轴自动跟 red 组）。
 - disabled：消费语义三件套 `text.disabled` / `bg.disabled`（solid）/ `border.disabled`（outline），弃 opacity 惯例。
 - 尺寸四档（8px 格点、4 的倍数基准）：xs/sm/md/lg = 24/32/40/48px，高度消费 `--colox-size-6/8/10/12`，padding-inline 走 spacing-2/3/4/6，字号 lineHeight 同名对位（fontSize.xs/sm/md/lg）；md=40 与 M3 单档基准对齐，sm=32 承接全球主流默认。Input 现阶梯（26/36/48）本轮未动，同格点对齐留待后续。
