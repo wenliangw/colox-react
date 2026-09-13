@@ -302,6 +302,22 @@
   align-items: center;
 }
 
+/* Optical centring for the vocabulary chips: the eye centres the
+   x-height band of a sentence-case label, not the font's ascent/descent
+   box, so the label box is trimmed to x-height..baseline before the
+   flex centring runs. Unsupported browsers keep the metric centring. */
+.chipLabel {
+  text-box-trim: trim-both;
+  text-box-edge: ex alphabetic;
+}
+
+/* All-caps labels have no lowercase mass to mis-centre, so they keep the
+   metric centring (the cap band is what the eye measures there). */
+.chipLabelCaps {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
 .ctlKey {
   font-family: var(--colox-font-mono);
   font-size: 0.75rem;

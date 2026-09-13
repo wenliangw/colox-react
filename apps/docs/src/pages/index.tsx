@@ -339,9 +339,10 @@ function Playground(): ReactNode {
               size="xs"
               variant={p === palette ? 'solid' : 'ghost'}
               palette={p}
+              className={styles.chip}
               onClick={() => setPalette(p)}
             >
-              {familyLabel(p)}
+              <span className={styles.chipLabel}>{familyLabel(p)}</span>
             </Button>
           ))}
         </Stack>
@@ -355,9 +356,10 @@ function Playground(): ReactNode {
               size="xs"
               variant={v === variant ? 'solid' : 'ghost'}
               palette="gray"
+              className={styles.chip}
               onClick={() => setVariant(v)}
             >
-              {v.charAt(0).toUpperCase() + v.slice(1)}
+              <span className={styles.chipLabel}>{v.charAt(0).toUpperCase() + v.slice(1)}</span>
             </Button>
           ))}
         </Stack>
@@ -371,9 +373,10 @@ function Playground(): ReactNode {
               size="xs"
               variant={s === size ? 'solid' : 'ghost'}
               palette="gray"
+              className={styles.chip}
               onClick={() => setSize(s)}
             >
-              {s.toUpperCase()}
+              <span className={styles.chipLabelCaps}>{s.toUpperCase()}</span>
             </Button>
           ))}
         </Stack>
