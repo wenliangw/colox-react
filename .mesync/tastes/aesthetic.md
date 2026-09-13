@@ -24,17 +24,19 @@
 
 ## 三、落到具体手法（token 级）
 
-| 层面     | 手法                                                                                                              |
-| -------- | ----------------------------------------------------------------------------------------------------------------- |
-| 氛围     | hero 区一层柔和渐变 wash（`brand-subtle` → transparent 之类），分区之间用 bg-default / bg-subtle 交替形成「章节」 |
-| 主色     | 主行动与关键高亮用 `--colox-color-brand-solid`；六族只做展示性、成串出现                                          |
-| 标题     | hero 48px 级、字距 -0.02em、两色处理（默认色 + 一处 brand 或 muted 强调）；section 标题 24px                      |
-| 正文     | 14-15px、`text-muted`、行高 1.6                                                                                   |
-| 卡片     | `border-muted` 发丝边 + `radius-lg` + `shadow-sm/md` 柔和影；hover 时换边色（可加 `shadow-md`）                   |
-| 浮起场景 | 真实控件组合成「标本面板」，用 `shadow-lg` 轻微叠压，制造纵深                                                     |
-| 按钮     | 实心（brand solid）+ ghost/outline 成对出现                                                                       |
-| 技术细节 | mono 字体承担所有「工程感」信息（版本、token 名、命令行、属性名）                                                 |
-| 动效     | 只有层级与反馈；hero 一次性入场；一律走 motion token                                                              |
+| 层面     | 手法                                                                                                                                                                                                                              |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 氛围     | hero 区一层柔和渐变 wash（`brand-subtle` → transparent 之类），分区之间用 bg-default / bg-subtle 交替形成「章节」                                                                                                                 |
+| 主色     | 主行动与关键高亮用 `--colox-color-brand-solid`；六族只做展示性、成串出现                                                                                                                                                          |
+| 标题     | hero 48px 级、字距 -0.02em、两色处理（默认色 + 一处 brand 或 muted 强调）；section 标题 24px                                                                                                                                      |
+| 正文     | 14-15px、`text-muted`、行高 1.6                                                                                                                                                                                                   |
+| 卡片     | `border-muted` 发丝边 + `radius-lg` + `shadow-sm/md` 柔和影；hover 时换边色（可加 `shadow-md`）                                                                                                                                   |
+| 浮起场景 | 真实控件组合成「标本面板」，用 `shadow-lg` 轻微叠压，制造纵深                                                                                                                                                                     |
+| 按钮     | 实心（brand solid）+ ghost/outline 成对出现                                                                                                                                                                                       |
+| 技术细节 | mono 字体承担所有「工程感」信息（版本、token 名、命令行、属性名）                                                                                                                                                                 |
+| 动效     | 滚动显现（一次性 fade+rise，见 src/components/reveal）、hero 一次性入场、卡片 hover 轻抬（-3px + shadow-md）、状态变化微动画（playground 代码行 pulse、终端逐行进、详情面板淡入）——一律走 motion token，reduced-motion 门自动收敛 |
+| 图文     | **每个卖点配一个 figure**：流程/管线用 mono 节点 + 箭头、场景用 CSS 画的迷你示意图（表格骨架/多主题面板/对话气泡）、概念用 token 上色的方块；纯文案段落 = 未完成                                                                  |
+| 章节节奏 | 区块编号（01 — start、02 — design language…）+ 交替 surface（白 / bg-subtle 带）+ 每章一句 sub；禁止一长条白底到底                                                                                                                |
 
 ## 四、动手前的检查清单
 

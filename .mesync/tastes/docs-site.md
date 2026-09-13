@@ -25,15 +25,19 @@
 
 用户定位（2026-09）：**组件种类与样式的陈列归文档**；首页只讲「为什么用它」并**用真实交互证明**。
 
-七段结构：
+章节结构（编号 + 交替 surface）：
 
-1. **hero**：家族渐变 wash + announcement pill + 45.5px 双色标题 + 定位文案 + 双 CTA + 可复制安装 chip｜右侧 **playground 活演示**（palette/variant/size 选择器驱动真实控件场景，并实时显示对应 JSX）
+1. **hero**：家族渐变 wash + pill + 45.5px 双色标题 + 定位文案 + 双 CTA + 可复制安装 chip｜右侧 **playground**（palette/variant/size 驱动真实场景 + 实时 JSX 行，换值时代码行 pulse）
 2. **六族色谱条**（色彩签名）
-3. **设计理念**三卡：语义优先 / 单维词表 / token 全链路（纯文案，不放组件示例）
-4. **适用场景**四卡：数据密集产品 / 多主题与白标 / 设计系统基座 / AI 写界面（带族色圆点 + mono 标签）
-5. **AI 原生**（核心差异化）：@colox/wiki 分层浏览器 + @colox/mcp 四工具浏览器 + harness 接线卡（Claude / Codex / Cursor·dsh 三标签）
-6. **CLI 终端**：`colox theme build` 与其 `-c` 变体两标签切换的模拟输出
-7. **主题套件**（palette 选择器驱动真实控件）+ **快速上手**（两段代码 + 9 个组件 pill 链接）
+3. **01 — start**：紧贴 hero 的双栏快速上手（左文案 + 双按钮｜右两段代码）——不放页尾居中，避免与上方割裂
+4. **02 — design language**：设计理念三卡，每卡带 figure
+5. **03 — fit**（bg-subtle 带）：适用场景四卡，每卡带 figure
+6. **04 — AI-native**：flow 图（agent → mcp → wiki → 正确代码）+ wiki 浏览器 + MCP 浏览器 + harness 接线卡
+7. **05 — toolchain**（bg-subtle 带）：flow 图（Figma → theme-builder → CSS/TS → app）+ CLI 终端
+8. **06 — theming**：token 说明 + palette 切换器
+9. **07 — explore**（渐变 wash 收尾带）：大标题 + 双按钮 + 9 组件 pill 链接 + 6 个包名 chip
+10. 页脚
+    滚动显现：统一用 src/components/reveal 包（一次性、支持 delay 0-3 交错、reduced-motion 自动收敛）
 
 交互纪律：**每个卖点配一个能玩的真实交互**（playground / wiki 面板 / MCP 面板 / harness 切换 / CLI 终端 / 主题切换 / copy 按钮），一律走自家组件与 token，SSG 安全（useState 即可，无需客户端专用组件）。
 

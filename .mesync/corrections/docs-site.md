@@ -55,3 +55,9 @@
 - **改这里**：想在 mdx 里排一行行内的裸 HTML（如 `<a>·<a>` 之类的元信息行）。
 - **必须检查那里**：每个顶层 JSX/HTML 元素各自成块（浏览器实测三项各占一行）；**正解** = 包一个 `<div class="...row">` 容器 + flex 排布（prettier 会把属性拆多行，不影响块性）。
 - 为什么：MDX 把顶层元素当块级节点编译，与 markdown 行内上下文无关。
+
+## `@site/...` 别名 → webpack 认、tsc 不认
+
+- **改这里**：页面/组件里 import 站点自身的组件（如 `@site/src/components/reveal`）。
+- **必须检查那里**：docusaurus 的 webpack 图谱解析 `@site/*`（构建能过），但独立的 `tsc -p tsconfig.json --noEmit` 报 TS2307 Cannot find module。**正解** = 站内组件用相对路径 import（或往 tsconfig paths 补 `@site/*`）。
+- 为什么：别名属于构建期配置，TS 独立检查不共享；MDX 里能用是因为 MDX 走 webpack。
