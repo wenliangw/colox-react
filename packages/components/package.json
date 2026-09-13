@@ -75,7 +75,7 @@
   },
   "scripts": {
     "build": "pnpm --filter @colox/theme run build && vite build",
-    "build:watch": "vite build --watch",
+    "build:watch": "vite build --watch --emptyOutDir=false",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
