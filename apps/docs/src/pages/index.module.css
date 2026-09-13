@@ -1,18 +1,23 @@
 /* Token-driven homepage skin. The aesthetic doctrine this file
-   embodies (see .mesync/tastes/aesthetic.md): real product visuals in
+   embodies (see .mesync/tastes/aesthetic.md): a real product visual in
    the hero, one atmospheric gradient wash, the six-family spectrum as
-   the color signature, floating panels with soft shadows, and
+   the colour signature, floating panels with soft shadows, and
    typography carrying the hierarchy — every value chains onto the
-   --colox-* layer, so both themes and the motion gate come for free. */
+   --colox-* layer, so both themes and the motion gate come for free.
+   
+   The page sells the library's reasons to exist (design language,
+   use cases, the AI-native wiki + MCP toolchain, the theme CLI) and
+   puts real interaction in front of each — a catalogue lives in the
+   docs, not here. */
 
 .page {
   padding-block: 0 var(--colox-spacing-16);
 }
 
-/* ---------- shared section type ---------- */
+/* ---------- shared type ---------- */
 
 .section {
-  margin-block-start: var(--colox-spacing-14);
+  margin-block-start: var(--colox-spacing-16);
 }
 
 .sectionTitle {
@@ -25,7 +30,7 @@
 
 .sectionSub {
   margin: var(--colox-spacing-2) auto 0;
-  max-width: 38rem;
+  max-width: 40rem;
   font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
   text-align: center;
@@ -40,13 +45,58 @@
   letter-spacing: 0.08em;
 }
 
-/* ---------- hero: gradient wash + text | specimen ---------- */
+/* ---------- shared panel chrome ---------- */
+
+.panel,
+.playground,
+.harness,
+.terminal {
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
+}
+
+.panel,
+.harness {
+  padding: var(--colox-spacing-6);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-5);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--colox-spacing-3);
+  padding-bottom: var(--colox-spacing-3);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+}
+
+.panelLabel {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-default);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.panelHint {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- hero: gradient wash + copy | playground ---------- */
 
 .heroBand {
   padding-block: var(--colox-spacing-14);
   background-color: var(--colox-color-bg-subtle);
-  /* Two soft family washes give the page its atmosphere — the tints
-     follow the theme, so dark mode gets its own glow. */
+  /* Soft family washes give the page its atmosphere — the tints follow
+     the theme, so dark mode gets its own glow. */
   background-image:
     radial-gradient(50% 65% at 10% 0%, var(--colox-color-brand-subtle) 0%, transparent 62%),
     radial-gradient(45% 60% at 92% 6%, var(--colox-color-blue-subtle) 0%, transparent 58%),
@@ -105,6 +155,14 @@
   color: var(--colox-color-text-default);
 }
 
+/* On phone widths the hero steps down a tier — the 45px contrast is a
+   desktop device, not a phone one (band bound matches the sm bucket). */
+@media (max-width: 640px) {
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
 .hl {
   color: var(--colox-color-brand-solid);
 }
@@ -124,7 +182,9 @@
 .installChip {
   display: inline-flex;
   align-items: center;
+  gap: var(--colox-spacing-3);
   margin-top: var(--colox-spacing-1);
+  cursor: pointer;
   padding: var(--colox-spacing-2) var(--colox-spacing-3);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-md);
@@ -132,54 +192,64 @@
   font-family: var(--colox-font-mono);
   font-size: 0.8125rem;
   color: var(--colox-color-text-muted);
+  transition: border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
 }
 
-/* ---------- specimen panel (the hero's product visual) ---------- */
+.installChip:hover {
+  border-color: var(--colox-color-border-default);
+}
 
-.specimen {
+.installState {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-brand-solid);
+}
+
+/* ---------- the hero playground ---------- */
+
+.playground {
   align-self: center;
   display: flex;
   flex-direction: column;
   gap: var(--colox-spacing-4);
   padding: var(--colox-spacing-6);
-  border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-xl);
-  background-color: var(--colox-color-bg-default);
   box-shadow: var(--colox-shadow-lg);
 }
 
-.specimenHead {
-  padding-bottom: var(--colox-spacing-3);
-  border-bottom: 1px solid var(--colox-color-border-muted);
-}
-
-.specimenLabel {
-  font-family: var(--colox-font-mono);
-  font-size: 0.75rem;
-  color: var(--colox-color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.specimenRow {
+.ctlRow {
   display: grid;
   grid-template-columns: 4.5rem 1fr;
   gap: var(--colox-spacing-3);
   align-items: center;
 }
 
-.specimenKey {
+.ctlKey {
   font-family: var(--colox-font-mono);
   font-size: 0.75rem;
   color: var(--colox-color-text-muted);
 }
 
-.specChip {
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-4);
+  padding: var(--colox-spacing-5);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-muted);
+}
+
+.stageCode {
   display: block;
-  width: 1.25rem;
-  height: 1.25rem;
+  margin: 0;
+  padding: var(--colox-spacing-3);
+  overflow-x: auto;
   border-radius: var(--colox-radius-sm);
-  background-color: var(--f-solid);
+  background-color: var(--colox-color-bg-muted);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+  white-space: pre;
 }
 
 /* ---------- the six-family spectrum: the library's signature ---------- */
@@ -194,92 +264,256 @@
   background-color: var(--f-solid);
 }
 
-/* ---------- the six family cards ---------- */
+/* ---------- design principles ---------- */
 
-.families {
+.principles {
   margin-top: var(--colox-spacing-8);
   text-align: start;
 }
 
-.family {
-  padding: var(--colox-spacing-5);
-  border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-lg);
-  background-color: var(--f-subtle);
-}
-
-.familyBody {
-  flex: 1;
-}
-
-.familyName {
-  font-family: var(--colox-font-mono);
-  font-size: 0.8125rem;
-  color: var(--colox-color-text-default);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.swatch {
-  display: block;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-sm);
-}
-
-.swatchSolid {
-  background-color: var(--f-solid);
-}
-
-.swatchMuted {
-  background-color: var(--f-muted);
-}
-
-.swatchSubtle {
-  background-color: var(--f-subtle);
-}
-
-/* ---------- ladders: text above, demo on an inset panel ---------- */
-
-.ladders {
-  margin-top: var(--colox-spacing-8);
-}
-
-.ladder {
+.principle {
   padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
   text-align: start;
 }
 
-.ladderTitle {
+.principleTitle {
   margin: 0;
   font-size: var(--colox-font-size-lg);
   font-weight: var(--colox-font-weight-semibold);
   color: var(--colox-color-text-default);
 }
 
-.ladderSummary {
+.principleBody {
   margin: 0;
-  max-width: 28rem;
   font-size: var(--colox-font-size-sm);
+  line-height: 1.65;
   color: var(--colox-color-text-muted);
 }
 
-.ladderDemo {
+/* ---------- use cases ---------- */
+
+.useCases {
+  margin-top: var(--colox-spacing-8);
+  text-align: start;
+}
+
+.useCase {
+  padding: var(--colox-spacing-6);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
+  text-align: start;
+}
+
+.useCaseDot {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--colox-radius-full);
+  background-color: var(--f-solid);
+}
+
+.useCaseTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-lg);
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-text-default);
+}
+
+.useCaseBody {
+  margin: 0;
+  font-size: var(--colox-font-size-sm);
+  line-height: 1.65;
+  color: var(--colox-color-text-muted);
+}
+
+.useCaseTag {
+  align-self: start;
+  padding: var(--colox-spacing-1) var(--colox-spacing-2);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- the AI-native explorers ---------- */
+
+.aiGrid {
+  margin-top: var(--colox-spacing-8);
+  text-align: start;
+}
+
+.explorer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-4);
+}
+
+.explorerItem {
+  padding: var(--colox-spacing-2) var(--colox-spacing-3);
+  border: none;
+  border-radius: var(--colox-radius-sm);
+  background-color: transparent;
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-muted);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out),
+    color var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out);
+}
+
+.explorerItem:hover {
+  color: var(--colox-color-text-default);
+}
+
+.explorerItemActive {
+  background-color: var(--colox-color-brand-subtle);
+  color: var(--colox-color-brand-solid);
+  font-weight: var(--colox-font-weight-semibold);
+}
+
+.explorerDetail {
   padding: var(--colox-spacing-4);
   border-radius: var(--colox-radius-md);
   background-color: var(--colox-color-bg-muted);
 }
 
-.ladderItem {
-  min-width: 3.25rem;
-}
-
-.ladderLabel {
+.explorerKind {
+  display: block;
+  margin-bottom: var(--colox-spacing-2);
   font-family: var(--colox-font-mono);
   font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.explorerText {
+  margin: 0;
+  font-size: var(--colox-font-size-sm);
+  line-height: 1.65;
+  color: var(--colox-color-text-default);
+}
+
+.explorerSignature {
+  display: block;
+  margin-bottom: var(--colox-spacing-2);
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-default);
+  overflow-wrap: anywhere;
+}
+
+.explorerSample {
+  margin: var(--colox-spacing-3) 0 0;
+  padding: var(--colox-spacing-3);
+  overflow-x: auto;
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--colox-color-bg-default);
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--colox-color-text-muted);
+  white-space: pre-wrap;
+}
+
+.harness {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-4);
+  margin-top: var(--colox-spacing-6);
+}
+
+.harnessTabs {
+  margin-top: calc(-1 * var(--colox-spacing-1));
+}
+
+.harnessBody {
+  margin: 0;
+  padding: var(--colox-spacing-4);
+  overflow-x: auto;
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-muted);
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--colox-color-text-default);
+  white-space: pre-wrap;
+}
+
+/* ---------- CLI terminal ---------- */
+
+.terminal {
+  margin-top: var(--colox-spacing-8);
+  overflow: hidden;
+  text-align: start;
+}
+
+.terminalBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--colox-spacing-3);
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
+}
+
+.terminalTabs {
+  align-items: center;
+}
+
+.terminalTab {
+  padding: var(--colox-spacing-1) var(--colox-spacing-2);
+  border: none;
+  border-radius: var(--colox-radius-sm);
+  background-color: transparent;
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out),
+    color var(--colox-motion-duration-fast) var(--colox-motion-easing-in-out);
+}
+
+.terminalTab:hover {
+  color: var(--colox-color-text-default);
+}
+
+.terminalTabActive {
+  background-color: var(--colox-color-brand-subtle);
+  color: var(--colox-color-brand-solid);
+  font-weight: var(--colox-font-weight-semibold);
+}
+
+.terminalBody {
+  margin: 0;
+  padding: var(--colox-spacing-5);
+  overflow-x: auto;
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  color: var(--colox-color-text-default);
+  white-space: pre-wrap;
+}
+
+.terminalPrompt {
+  color: var(--colox-color-brand-solid);
+}
+
+.terminalNote {
+  margin: 0;
+  padding: var(--colox-spacing-4) var(--colox-spacing-5);
+  border-top: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-subtle);
+  font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
 }
 
@@ -287,7 +521,7 @@
 
 .showcaseTitle {
   margin: 0;
-  font-size: var(--colox-font-size-2xl);
+  font-size: var(--colox-font-size-xl);
   font-weight: var(--colox-font-weight-semibold);
   color: var(--colox-color-text-default);
 }
@@ -296,7 +530,7 @@
   margin: 0;
   max-width: 30rem;
   font-size: var(--colox-font-size-sm);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--colox-color-text-muted);
 }
 
@@ -312,105 +546,6 @@
   );
 }
 
-/* ---------- component gallery: live mini demos ---------- */
-
-.gallery {
-  margin-top: var(--colox-spacing-8);
-  text-align: start;
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-lg);
-  background-color: var(--colox-color-bg-default);
-  transition: border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
-}
-
-.card:hover {
-  border-color: var(--colox-color-border-default);
-}
-
-.cardDemo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--colox-spacing-3);
-  min-height: 4rem;
-  padding: var(--colox-spacing-4) var(--colox-spacing-5);
-  border-bottom: 1px solid var(--colox-color-border-muted);
-  background-color: var(--colox-color-bg-muted);
-}
-
-.cardLink {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: var(--colox-spacing-3);
-  padding: var(--colox-spacing-4) var(--colox-spacing-5);
-  text-decoration: none;
-  transition: background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
-}
-
-.cardLink:hover {
-  background-color: var(--colox-color-bg-subtle);
-  text-decoration: none;
-}
-
-.cardBody {
-  flex: 1;
-}
-
-.cardTitle {
-  font-size: var(--colox-font-size-md);
-  font-weight: var(--colox-font-weight-semibold);
-  color: var(--colox-color-text-default);
-}
-
-.cardDesc {
-  font-size: var(--colox-font-size-sm);
-  color: var(--colox-color-text-muted);
-}
-
-.cardArrow {
-  color: var(--colox-color-text-muted);
-  transition: color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
-}
-
-.cardLink:hover .cardArrow {
-  color: var(--colox-color-text-default);
-}
-
-/* ---------- mini demo cells (grid/container scaffolds) ---------- */
-
-.demoStrip {
-  width: 100%;
-}
-
-.miniCell {
-  display: block;
-  height: 0.75rem;
-  background-color: var(--colox-color-bg-default);
-  border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-xs);
-}
-
-.miniPanel {
-  border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-sm);
-  background-color: var(--colox-color-bg-default);
-}
-
-.miniPanelLabel {
-  display: block;
-  padding: var(--colox-spacing-2);
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--colox-color-text-muted);
-}
-
 /* ---------- quick start ---------- */
 
 .code {
@@ -418,6 +553,28 @@
   margin-inline: auto;
   margin-top: var(--colox-spacing-6);
   text-align: start;
+}
+
+.componentNav {
+  margin-top: var(--colox-spacing-6);
+}
+
+.componentLink {
+  padding: var(--colox-spacing-1) var(--colox-spacing-3);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-muted);
+  text-decoration: none;
+  transition:
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.componentLink:hover {
+  color: var(--colox-color-text-default);
+  border-color: var(--colox-color-border-default);
+  text-decoration: none;
 }
 
 .readMore {
@@ -429,7 +586,7 @@
 }
 
 /* ---------- family tone trios: one class carries solid/muted/subtle
-   through CSS variables, so cards, swatches and the spectrum share it ---------- */
+   through CSS variables, so the spectrum strip and accent dots share it ---------- */
 
 .familyBrand {
   --f-solid: var(--colox-color-brand-solid);
