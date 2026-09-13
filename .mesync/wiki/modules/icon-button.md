@@ -5,8 +5,8 @@
 ## 定位（为什么独立成组件，不并入 Button）
 
 - **rule of two 满员触发**：仓库里手写图标按钮曾有四站（Input 清除/可见性、Select 清除/chip 移除）+ docs/preview 演示手写 ×——复位块（inline-flex 居中/padding 0/border none/background transparent/cursor/disabled）拷了 5 份，聚焦态与可达名契约每站自己重复实现。
-- **与 Button 语义分层**：Button 管内容（intent/variant/shadow/字重），IconButton 管图标（方形、ghost 基底、图标尺寸）——混成 shape 变体只会污染两个 API（MUI/Base UI 同款拆分）。
-- **通用契约收进基座**：纯图标按钮的 aria-label 可达名契约（组件文档声明，消费方必传）、`focus-visible` outline 2px intent-solid + offset 2（沿用表单惯例，焦点环随 intent 换色）、disabled 态、token 钉住的方形足迹。hover/active 反馈也在基座——**最初「有意不进基座」是过度保守**：用户指摘「IconButton 好像没有 hover 效果」后反转——座位式反馈（wash + 按压）是基座默认契约，站点有理由再用类覆盖（决策 05b83bed）。
+- **与 Button 语义分层**：Button 管内容（palette/variant/shadow/字重），IconButton 管图标（方形、text 基底、图标尺寸）——混成 shape 变体只会污染两个 API（MUI/Base UI 同款拆分）。
+- **通用契约收进基座**：纯图标按钮的 aria-label 可达名契约（组件文档声明，消费方必传）、`focus-visible` outline 2px palette-solid + offset 2（沿用表单惯例，焦点环随 palette 换色）、disabled 态、token 钉住的方形足迹。hover/active 反馈也在基座——**最初「有意不进基座」是过度保守**：用户指摘「IconButton 好像没有 hover 效果」后反转——座位式反馈（wash + 按压）是基座默认契约，站点有理由再用类覆盖（决策 05b83bed）。
 
 ## 尺寸双通道
 
@@ -19,17 +19,17 @@
 
 ## 视觉轴（决策 05b83bed）
 
-`variant?: 'text' | 'ghost' | 'outline' | 'solid'`（默认 **text**，决策 a42ba861）× `intent?: 'primary' | 'neutral' | 'danger' | 'warning' | 'success'`（默认 **neutral**——决策 666d8aa8，用户「intent 默认为 neutral」；Button 同款五色轴，不缩水）× `rounded?: boolean`（默认 false）：
+`variant?: 'text' | 'ghost' | 'outline' | 'solid'`（默认 **text**，决策 a42ba861）× `palette?: 'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`（默认 **gray**——design-language 六族轴，与 Button 同款，决策「intent→palette 设计语言对齐」：primary→brand / gray→gray / info→blue / error→red / warning→orange / success→green；旧 intent 轴 primary/neutral/danger/warning/success 废止）× `rounded?: boolean`（默认 false）：
 
 - **变体决定图标色**（用户定调「设置 variant 后，图标的颜色也应该跟着变」）：
-  - **text**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；**着色图标语义（决策 666d8aa8 定稿）**：静止即涂 intent-solid（默认 neutral 灰），hover/active = 同族 intent-solid-hover/active 加深，背景恒透明（用户否决链：无反馈 → wash → 继承+intent hover → 静止 intent + 同族加深）。
-  - **ghost**：图标色 = intent solid（照 Button ghost 语义）；hover/active = intent wash 方形浅底。**text/ghost 的界线 = 静止色与反馈通道俱异**：text = context 色静止→intent 色 hover 无底；ghost = intent 色静止→wash。
-  - **solid**：intent 实底三态（solid → solid-hover/active）+ intent-inverse 图标；disabled = bg-disabled。
-  - **outline**：1px intent border + intent 图标 + 透明底，hover/active = wash，disabled = border-disabled。
+  - **text**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；**着色图标语义（决策 666d8aa8 定稿）**：静止即涂 palette-solid（默认 gray 灰），hover/active = 同族 palette-solid-hover/active 加深，背景恒透明（用户否决链：无反馈 → wash → 继承+palette hover → 静止 palette + 同族加深）。
+  - **ghost**：图标色 = palette solid（照 Button ghost 语义）；hover/active = palette wash 方形浅底。**text/ghost 的界线 = 静止色与反馈通道俱异**：text = palette 色静止→同族加深无底；ghost = palette 色静止→wash。
+  - **solid**：palette 实底三态（solid → solid-hover/active）+ palette-inverse 图标；disabled = bg-disabled。
+  - **outline**：1px palette border + palette 图标 + 透明底，hover/active = wash，disabled = border-disabled。
 - **方形圆角**：默认 `radius-lg`(8px)——用户反馈 radius-xs(2px) 视觉上等于没有，且 Button/Input 家族基准就是 radius-lg，同源对齐；**圆形不做默认**，`rounded` prop 才切 `radius-full`(9999px)。wash/fill 跟随足迹。
-- **实现形状同 Button**：intent.scss 注解私有变量族 `--colox-icon-button-intent-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
+- **实现形状同 Button**：palette.scss 注解私有变量族 `--colox-icon-button-palette-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
 - **动效与 Button 同步**：base 双段 transition（normal 全轴 + active 快速段）、`scale(0.97)` 按压。
-- **内部四站零代码变更**：默认即 text+neutral、size="4"——text 的 size 通道兑现 16px 设计意图（此前是上下文字号 1em：原版 slots 只标了盒、没标字号）。站点视线：tag-remove 静止 muted/hover solid 全为站点色规则、经站点类胜出不变；Select clear 静止随基座 neutral 灰、hover 站点规则 text-solid 胜出；Input clear/toggle 无站点色规则 → 静止 neutral 灰、hover 灰加深。
+- **内部四站零代码变更**：默认即 text+gray、size="4"——text 的 size 通道兑现 16px 设计意图（此前是上下文字号 1em：原版 slots 只标了盒、没标字号）。站点视线：tag-remove 静止 muted/hover solid 全为站点色规则、经站点类胜出不变；Select clear 静止随基座 gray 灰、hover 站点规则 text-solid 胜出；Input clear/toggle 无站点色规则 → 静止 gray 灰、hover 灰加深。
 
 ## 站点契约（换装后的分工）
 
@@ -40,7 +40,7 @@
 
 ## 门禁与文件
 
-`_tests/icon-button.test.tsx` 25 例（预设四档/裸键 5 例（0-5/4/7/16/360）/默认 md/children/type 默认/透传/variant 3 例 + ghost 默认/intent 5 例 + primary 默认/rounded 2 例），全仓 249 例。文件：`icon-button.tsx`（forwardRef + cva + `{...rest}` 展开在后）、`types/index.ts`（`ButtonHTMLAttributes` 全透传 + size 注释含 token 双通道说明）、`variants/{index,size,variant,intent}.ts`（cva + sizeKeys 键映射 + 视觉轴类表）、`styles/{base,size,variant,intent,index}.scss`（基座 + @each 键类 + 涂装 + 意图变量族）、preview `apps/preview/src/icon-button/`（Overview story：States/Variants/Intents/Rounded/预设四档/裸键 5 值/行为 demo）、docs `icon-button.mdx`（sidebar_position 10，含 Variant & intent / Rounded 两节）。构建入口 `vite.config.ts` + `exports["./icon-button"]` 子路径（`@colox/react/icon-button` 树摇）。
+`_tests/icon-button.test.tsx` 27 例（预设四档/裸键 5 例（0-5/4/7/16/360）/默认 md/children/type 默认/透传/variant 3 例 + text 默认/palette 6 例 + gray 默认/rounded 2 例），全仓 253 例。文件：`icon-button.tsx`（forwardRef + cva + `{...rest}` 展开在后）、`types/index.ts`（`ButtonHTMLAttributes` 全透传 + size 注释含 token 双通道说明）、`variants/{index,size,variant,palette}.ts`（cva + sizeKeys 键映射 + 视觉轴类表）、`styles/{base,size,variant,palette,index}.scss`（基座 + @each 键类 + 涂装 + 色板变量族）、preview `apps/preview/src/icon-button/`（Overview story：States/Variants/Palettes/Rounded/预设四档/裸键 5 值/行为 demo）、docs `icon-button.mdx`（sidebar_position 10，含 Variant & palette / Rounded 两节）。构建入口 `vite.config.ts` + `exports["./icon-button"]` 子路径（`@colox/react/icon-button` 树摇）。
 
 ## 边界
 

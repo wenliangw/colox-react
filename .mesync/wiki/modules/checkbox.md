@@ -51,7 +51,7 @@ checkbox/
 
 ### indeterminate（第三态）
 
-**纯视觉横条**（CSS 2px bar，不新增图标）：勾选态与不确定态共享 brand-solid 底 + brand-inverse 前景（Button solid-intent 模型），仅 mark 形状不同（check vs bar）。它是 DOM property 而非 HTML attribute：React 类型里没有它，`useIndeterminate` 用 `useLayoutEffect` 把 prop 镜像到 `input.indeterminate`（官方推荐做法）。清除语义：浏览器在下次点击时自动清掉 indeterminate 再翻转 checked——「全选」行点击即进入决定态；表单值/事件流始终只看 `checked`。级联数学归消费方（见 SelectAllDemo）。
+**纯视觉横条**（CSS 2px bar，不新增图标）：勾选态与不确定态共享 brand-solid 底 + brand-inverse 前景（Button solid-palette 模型），仅 mark 形状不同（check vs bar）。它是 DOM property 而非 HTML attribute：React 类型里没有它，`useIndeterminate` 用 `useLayoutEffect` 把 prop 镜像到 `input.indeterminate`（官方推荐做法）。清除语义：浏览器在下次点击时自动清掉 indeterminate 再翻转 checked——「全选」行点击即进入决定态；表单值/事件流始终只看 `checked`。级联数学归消费方（见 SelectAllDemo）。
 
 ### Group 成员判定（resolveCheckboxState）
 

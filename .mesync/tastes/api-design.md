@@ -19,14 +19,14 @@
 
 来源：IconButton 设计讨论（用户先后定下「四档但不套 Input 复合语义、允许裸 token 值」「键表像 spacingKeys 一样由 theme 提供」「内部站点用别的裸键」三节奏；决策见 `IconButton size 双通道`）。
 
-### IconButton 视觉轴：variant/intent 复用 Button 轴 + hover 反馈基座化（用户反转裁决）
+### IconButton 视觉轴：variant/palette 复用 Button 轴 + hover 反馈基座化（用户反转裁决）
 
 - **反馈默认进基座、覆盖留给站点**：hover/active wash + 按压缩放是图标钮通用契约，基座默认提供（最初「hover 不进基座」是过度保守——独立组件零反馈被用户指摘「IconButton 好像没有 hover 效果」后反转）；站点要克制时用自己的类覆盖，而不是逼所有消费方自己上 hover。
 - **形状开关显式化**：方形圆角（radius-xs）是默认足迹；圆形是 `rounded` prop 的显式选择——用户「圆底应该使用 rounded prop 来设置，默认应该是方形（圆角）」。
-- **视觉轴词汇与 Button 同源**：variant = text/ghost/solid/outline（默认 text），intent = Button 全套五色轴（primary/neutral/danger/warning/success，不缩水）——不发明 IconButton 私有颜色表/档名。
-- **变体决定图标色**（用户「设置 variant 后，图标的颜色也应该跟着变；ghost 的图标颜色好像不正确」）：text/ghost/outline 涂 intent solid、solid 涂 inverse——色随变体走，不留给语境猜（text 的继承版被用户反转：决策 666d8aa8「图标默认颜色就是 primary」）。变体反馈通道各异但都可见：text = 图标同族加深（无底）、ghost/outline = 浅底、solid = 深浅涂装——「无反馈」才是问题，反馈形态跟变体走。
+- **视觉轴词汇与 Button 同源**：variant = text/ghost/solid/outline（默认 text），palette = design-language 六族轴（primary/gray/info/error/warning/success，默认 gray）——不发明 IconButton 私有颜色表/档名；旧 intent 五色轴（primary/neutral/danger/warning/success）已由 intent→palette 对齐决策废止。
+- **变体决定图标色**（用户「设置 variant 后，图标的颜色也应该跟着变；ghost 的图标颜色好像不正确」）：text/ghost/outline 涂 palette solid、solid 涂 inverse——色随变体走，不留给语境猜（text 的继承版被用户反转：决策 666d8aa8「图标默认颜色就是 primary」）。变体反馈通道各异但都可见：text = 图标同族加深（无底）、ghost/outline = 浅底、solid = 深浅涂装——「无反馈」才是问题，反馈形态跟变体走。
 - **text 类型零盒子**：盒子拥抱图标（宽高 auto），size 通道以 font-size 直驱图标尺寸——纯图标钮不携带静止包装（用户「只以图标大小展示，而不是有额外的宽高」）——size 对默认变体仍然诚实。
-- **状态色同族加深恒优于跨族跳色**：静止已是 intent 色的组件，hover/active 取同族 solid-hover/active（决策 666d8aa8，用户「hover 应该使用 primary-hover」）——不做黑→蓝式的色跳跃；老规则「hover 色偏移要可见」仍成立：静止黑 + hover 黑 = 无反馈，所以静止要么给 intent 色、要么给可见的加深目标。
+- **状态色同族加深恒优于跨族跳色**：静止已是 palette 色的组件，hover/active 取同族 solid-hover/active（决策 666d8aa8，用户「hover 应该使用 primary-hover」）——不做黑→蓝式的色跳跃；老规则「hover 色偏移要可见」仍成立：静止黑 + hover 黑 = 无反馈，所以静止要么给 palette 色、要么给可见的加深目标。
 - **默认形态最小化**：纯图标 text 是默认（无静止铬），加铬（ghost 色/outline 边/solid 底）是显式选择（用户「variant 需要增加 text 形式……并且默认应该为 text」）。
 - **形状参数家族同源**：方形默认圆角对齐 Button/Input 的 radius-lg(8px)——radius-xs(2px) 视觉上等于没有（用户指正）；圆形仍是 rounded prop 显式开关。
 - 将来 shape 类组件（Avatar/Badge 等）沿用：显式 rounded 开关、家族轴词汇复用、反馈基座默认化。
