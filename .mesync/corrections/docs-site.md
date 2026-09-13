@@ -49,3 +49,9 @@
 - **改这里**：给 docusaurus 侧栏做活动项 accent（色条/浅底/主色文字）。
 - **必须检查那里**：当前文档归属的分类标题也会被标 `.menu__link--active`（「mirror」行为），且 `.menu__list-item-collapsible` 类挂在分类标题的**内层 div** 上、不在 li 上——用 li 级 `:not()` 排除会落空。**正解** = 先给 `.menu__link--active` 全量 accent，再对 `.menu__list-item-collapsible > .menu__link--active` 显式复位回 muted 平实样式（复位块必须放 accent 块之后，其特异性 (0,3,1) 压过 accent）。
 - 为什么：docusaurus 把父分类标 active 是为了导航可发现性；accent 若不加区分，分组标题会抢走活动项的主色视觉（实测 General 拿到主色+左条）。
+
+## MDX 里并列的裸 HTML 元素 → 每个都成独立块，行内元素要包一层容器
+
+- **改这里**：想在 mdx 里排一行行内的裸 HTML（如 `<a>·<a>` 之类的元信息行）。
+- **必须检查那里**：每个顶层 JSX/HTML 元素各自成块（浏览器实测三项各占一行）；**正解** = 包一个 `<div class="...row">` 容器 + flex 排布（prettier 会把属性拆多行，不影响块性）。
+- 为什么：MDX 把顶层元素当块级节点编译，与 markdown 行内上下文无关。
