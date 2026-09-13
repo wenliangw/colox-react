@@ -1,9 +1,9 @@
-/* Token-driven homepage skin: every color, radius, spacing and motion
-   value below chains onto the --colox-* layer, so the page inherits
-   the light/dark swap and the reduced-motion gate for free. The
-   correction this file embodies: density — sections read as packed
-   product rows (horizontal axis cards, live demo strips), not poster
-   whitespace. */
+/* Token-driven homepage skin. The aesthetic doctrine this file
+   embodies (see .mesync/tastes/aesthetic.md): real product visuals in
+   the hero, one atmospheric gradient wash, the six-family spectrum as
+   the color signature, floating panels with soft shadows, and
+   typography carrying the hierarchy — every value chains onto the
+   --colox-* layer, so both themes and the motion gate come for free. */
 
 .page {
   padding-block: 0 var(--colox-spacing-16);
@@ -25,7 +25,7 @@
 
 .sectionSub {
   margin: var(--colox-spacing-2) auto 0;
-  max-width: 36rem;
+  max-width: 38rem;
   font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
   text-align: center;
@@ -34,34 +34,33 @@
 .eyebrow {
   margin: 0;
   font-family: var(--colox-font-mono);
-  font-size: var(--colox-font-size-xs);
+  font-size: 0.75rem;
   color: var(--colox-color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-/* ---------- hero ---------- */
+/* ---------- hero: gradient wash + text | specimen ---------- */
 
-/* The full-bleed structural band: the hero gets its own surface so the
-   page opens with a designed area instead of bare background. */
 .heroBand {
-  padding-block: var(--colox-spacing-12);
-  border-bottom: 1px solid var(--colox-color-border-muted);
+  padding-block: var(--colox-spacing-14);
   background-color: var(--colox-color-bg-subtle);
+  /* Two soft family washes give the page its atmosphere — the tints
+     follow the theme, so dark mode gets its own glow. */
+  background-image:
+    radial-gradient(50% 65% at 10% 0%, var(--colox-color-brand-subtle) 0%, transparent 62%),
+    radial-gradient(45% 60% at 92% 6%, var(--colox-color-blue-subtle) 0%, transparent 58%),
+    radial-gradient(50% 60% at 78% 100%, var(--colox-color-brand-subtle) 0%, transparent 62%);
 }
 
 .hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
   animation: hero-enter var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
 }
 
 @keyframes hero-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -69,65 +68,209 @@
   }
 }
 
+.heroText {
+  text-align: start;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-1);
+  padding: var(--colox-spacing-1) var(--colox-spacing-3);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
+  font-size: 0.75rem;
+  font-weight: var(--colox-font-weight-medium);
+  color: var(--colox-color-text-muted);
+  text-decoration: none;
+  transition:
+    color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.pill:hover {
+  color: var(--colox-color-text-default);
+  border-color: var(--colox-color-border-default);
+  text-decoration: none;
+}
+
 .title {
-  margin: var(--colox-spacing-3) 0 0;
-  font-size: 2.75rem; /* 38.5px — the antd-scale product name, not a poster */
+  margin: 0;
+  max-width: 30rem;
+  font-size: 3.25rem; /* 45.5px — the hero's extreme type contrast */
   font-weight: var(--colox-font-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--colox-color-text-default);
 }
 
+.hl {
+  color: var(--colox-color-brand-solid);
+}
+
 .tagline {
-  margin: var(--colox-spacing-3) 0 0;
-  max-width: 36rem;
-  font-size: var(--colox-font-size-md);
+  margin: 0;
+  max-width: 32rem;
+  font-size: var(--colox-font-size-lg);
+  line-height: 1.6;
   color: var(--colox-color-text-muted);
 }
 
 .actions {
-  margin-top: var(--colox-spacing-6);
+  margin-top: var(--colox-spacing-1);
 }
 
-.heroMeta {
-  margin: var(--colox-spacing-6) 0 0;
-  max-width: 100%;
+.installChip {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--colox-spacing-1);
+  padding: var(--colox-spacing-2) var(--colox-spacing-3);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-default);
   font-family: var(--colox-font-mono);
-  font-size: 0.75rem; /* 12px — the token xs shrinks to 10.5px on the 87.5% base */
+  font-size: 0.8125rem;
   color: var(--colox-color-text-muted);
 }
 
-/* ---------- axes: horizontal product rows (text | live demo) ---------- */
+/* ---------- specimen panel (the hero's product visual) ---------- */
 
-.axes {
+.specimen {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-4);
+  padding: var(--colox-spacing-6);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-xl);
+  background-color: var(--colox-color-bg-default);
+  box-shadow: var(--colox-shadow-lg);
+}
+
+.specimenHead {
+  padding-bottom: var(--colox-spacing-3);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+}
+
+.specimenLabel {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.specimenRow {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: var(--colox-spacing-3);
+  align-items: center;
+}
+
+.specimenKey {
+  font-family: var(--colox-font-mono);
+  font-size: 0.75rem;
+  color: var(--colox-color-text-muted);
+}
+
+.specChip {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--f-solid);
+}
+
+/* ---------- the six-family spectrum: the library's signature ---------- */
+
+.spectrum {
+  display: flex;
+}
+
+.spectrumPart {
+  flex: 1;
+  height: 4px;
+  background-color: var(--f-solid);
+}
+
+/* ---------- the six family cards ---------- */
+
+.families {
+  margin-top: var(--colox-spacing-8);
+  text-align: start;
+}
+
+.family {
+  padding: var(--colox-spacing-5);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--f-subtle);
+}
+
+.familyBody {
+  flex: 1;
+}
+
+.familyName {
+  font-family: var(--colox-font-mono);
+  font-size: 0.8125rem;
+  color: var(--colox-color-text-default);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.swatch {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-sm);
+}
+
+.swatchSolid {
+  background-color: var(--f-solid);
+}
+
+.swatchMuted {
+  background-color: var(--f-muted);
+}
+
+.swatchSubtle {
+  background-color: var(--f-subtle);
+}
+
+/* ---------- ladders: text above, demo on an inset panel ---------- */
+
+.ladders {
   margin-top: var(--colox-spacing-8);
 }
 
-.axis {
+.ladder {
   padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
   text-align: start;
 }
 
-/* Each feature row carries its demo on an inset surface — the antd
-   feature-card shape (text above, demo panel below). */
-.axisDemo {
-  padding: var(--colox-spacing-4);
-  border-radius: var(--colox-radius-md);
-  background-color: var(--colox-color-bg-muted);
-}
-
-.axisTitle {
+.ladderTitle {
   margin: 0;
   font-size: var(--colox-font-size-lg);
   font-weight: var(--colox-font-weight-semibold);
   color: var(--colox-color-text-default);
 }
 
-.axisSummary {
+.ladderSummary {
   margin: 0;
   max-width: 28rem;
   font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
+}
+
+.ladderDemo {
+  padding: var(--colox-spacing-4);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-muted);
 }
 
 .ladderItem {
@@ -162,6 +305,11 @@
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
   background-color: var(--colox-color-bg-subtle);
+  background-image: radial-gradient(
+    70% 90% at 100% 0%,
+    var(--colox-color-brand-subtle) 0%,
+    transparent 60%
+  );
 }
 
 /* ---------- component gallery: live mini demos ---------- */
@@ -278,4 +426,43 @@
   gap: var(--colox-spacing-1);
   margin-top: var(--colox-spacing-6);
   font-weight: var(--colox-font-weight-medium);
+}
+
+/* ---------- family tone trios: one class carries solid/muted/subtle
+   through CSS variables, so cards, swatches and the spectrum share it ---------- */
+
+.familyBrand {
+  --f-solid: var(--colox-color-brand-solid);
+  --f-muted: var(--colox-color-brand-muted);
+  --f-subtle: var(--colox-color-brand-subtle);
+}
+
+.familyGray {
+  --f-solid: var(--colox-color-gray-solid);
+  --f-muted: var(--colox-color-gray-muted);
+  --f-subtle: var(--colox-color-gray-subtle);
+}
+
+.familyBlue {
+  --f-solid: var(--colox-color-blue-solid);
+  --f-muted: var(--colox-color-blue-muted);
+  --f-subtle: var(--colox-color-blue-subtle);
+}
+
+.familyRed {
+  --f-solid: var(--colox-color-red-solid);
+  --f-muted: var(--colox-color-red-muted);
+  --f-subtle: var(--colox-color-red-subtle);
+}
+
+.familyOrange {
+  --f-solid: var(--colox-color-orange-solid);
+  --f-muted: var(--colox-color-orange-muted);
+  --f-subtle: var(--colox-color-orange-subtle);
+}
+
+.familyGreen {
+  --f-solid: var(--colox-color-green-solid);
+  --f-muted: var(--colox-color-green-muted);
+  --f-subtle: var(--colox-color-green-subtle);
 }

@@ -26,27 +26,34 @@ const BUTTON_VARIANTS = ['solid', 'subtle', 'surface', 'outline', 'ghost'] as co
 const ICON_VARIANTS = ['plain', 'muted', 'ghost', 'outline', 'surface', 'subtle', 'solid'] as const;
 const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 
-const AXES: {
+/**
+ * The six semantic families — the library's color signature. `palette`
+ * is the prop word, `tone` carries the family's token trio (solid /
+ * muted / subtle) through CSS variables, so one class drives the card
+ * tint, the swatches and the spectrum strip alike.
+ */
+const FAMILIES = [
+  { palette: 'primary', label: 'primary', tone: styles.familyBrand },
+  { palette: 'gray', label: 'gray', tone: styles.familyGray },
+  { palette: 'info', label: 'info', tone: styles.familyBlue },
+  { palette: 'error', label: 'error', tone: styles.familyRed },
+  { palette: 'warning', label: 'warning', tone: styles.familyOrange },
+  { palette: 'success', label: 'success', tone: styles.familyGreen },
+] as const;
+
+const TONE_SWATCHES = [
+  { key: 'solid', className: styles.swatchSolid },
+  { key: 'muted', className: styles.swatchMuted },
+  { key: 'subtle', className: styles.swatchSubtle },
+] as const;
+
+/** The scale-and-loudness ladders (palette is the color axis, below). */
+const LADDERS: {
   eyebrow: string;
   title: string;
   summary: string;
   demo: ReactNode;
 }[] = [
-  {
-    eyebrow: 'palette — what it means',
-    title: 'Six semantic families',
-    summary:
-      'Colors answer meaning, never mood. Components default to gray — an accent is always opt-in.',
-    demo: (
-      <Stack direction="row" gap="1-5" wrap>
-        {PALETTES.map((palette) => (
-          <Button key={palette} variant="solid" palette={palette} size="xs">
-            {palette}
-          </Button>
-        ))}
-      </Stack>
-    ),
-  },
   {
     eyebrow: 'variant — how loud',
     title: 'One intensity ladder per control',
@@ -218,10 +225,72 @@ const COMPONENTS: { name: string; summary: string; slug: string; demo: ReactNode
 ];
 
 /**
+ * The hero specimen: the whole design language as one real scene —
+ * palette spectrum, variant ladder, icon tones and size tiers built
+ * from actual components. The floating panel is the hero's product
+ * visual (never hero whitespace).
+ */
+function Specimen(): ReactNode {
+  return (
+    <div className={styles.specimen}>
+      <div className={styles.specimenHead}>
+        <span className={styles.specimenLabel}>design language · specimen</span>
+      </div>
+      <div className={styles.specimenRow}>
+        <span className={styles.specimenKey}>palette</span>
+        <Stack direction="row" gap="1-5" wrap>
+          {FAMILIES.map((family) => (
+            <span
+              key={family.palette}
+              className={`${styles.specChip} ${family.tone}`}
+              aria-hidden="true"
+            />
+          ))}
+        </Stack>
+      </div>
+      <div className={styles.specimenRow}>
+        <span className={styles.specimenKey}>variant</span>
+        <Stack direction="row" gap="1-5" wrap>
+          {BUTTON_VARIANTS.map((variant) => (
+            <Button key={variant} variant={variant} palette="primary" size="xs">
+              {variant}
+            </Button>
+          ))}
+        </Stack>
+      </div>
+      <div className={styles.specimenRow}>
+        <span className={styles.specimenKey}>tone</span>
+        <Stack direction="row" gap="2" wrap>
+          {ICON_VARIANTS.map((variant) => (
+            <IconButton
+              key={variant}
+              variant={variant}
+              palette="primary"
+              size="4"
+              aria-label={`tone ${variant}`}
+            >
+              <IconPlus />
+            </IconButton>
+          ))}
+        </Stack>
+      </div>
+      <div className={styles.specimenRow}>
+        <span className={styles.specimenKey}>size</span>
+        <Stack direction="row" gap="1-5" align="center" wrap>
+          {SIZES.map((size) => (
+            <Button key={size} variant="solid" palette="primary" size={size}>
+              {size}
+            </Button>
+          ))}
+        </Stack>
+      </div>
+    </div>
+  );
+}
+
+/**
  * The live theming showcase: an interactive palette picker driving real
- * controls — the "product" moment of the page. Picks render solid,
- * the rest ghost; the trio below proves the same palette travels
- * through different control shapes.
+ * controls — the "product" moment of the page.
  */
 function ThemeShowcase(): ReactNode {
   const [palette, setPalette] = useState<(typeof PALETTES)[number]>('primary');
@@ -281,48 +350,97 @@ function ThemeShowcase(): ReactNode {
 // (Grid/Stack bands) and owns the data-colox-theme attribute; the
 // theme prop is controlled by the docusaurus toggle, so both channels
 // stay in step.
-function HomeContent({ title, tagline }: { title: string; tagline: string }): ReactNode {
+function HomeContent({ tagline }: { tagline: string }): ReactNode {
   const { colorMode } = useColorMode();
   return (
     <ColoxTheme theme={colorMode === 'dark' ? 'dark' : 'light'}>
       <main className={styles.page}>
         <div className={styles.heroBand}>
-          <Container size="md" align="center" className={styles.hero}>
-            <p className={styles.eyebrow}>React 19 · TypeScript · Tree-shakable</p>
-            <h1 className={styles.title}>{title}</h1>
-            <p className={styles.tagline}>{tagline}</p>
-            <Stack direction="row" gap="3" justify="center" className={styles.actions}>
-              <Link to="/docs/intro">
-                <Button variant="solid" palette="primary" size="lg">
-                  Get Started
-                </Button>
-              </Link>
-              <Link to="https://github.com/wenliangw/colox-react">
-                <Button variant="outline" size="lg">
-                  GitHub
-                </Button>
-              </Link>
-            </Stack>
-            <p className={styles.heroMeta}>9 components · 10 icons · 6 palettes · 1 token layer</p>
+          <Container size="xl" className={styles.heroWrap}>
+            <Grid columns={{ sm: 1, lg: 2 }} gap="10" align="center" className={styles.hero}>
+              <Stack direction="column" gap="5" align="start" className={styles.heroText}>
+                <Link to="/docs/intro" className={styles.pill}>
+                  Nine primitives shipped — read the introduction
+                  <IconChevronRight aria-hidden="true" />
+                </Link>
+                <h1 className={styles.title}>
+                  A component library with <span className={styles.hl}>one design language</span>
+                </h1>
+                <p className={styles.tagline}>{tagline}</p>
+                <Stack direction="row" gap="3" wrap className={styles.actions}>
+                  <Link to="/docs/intro">
+                    <Button variant="solid" palette="primary" size="lg">
+                      Get Started
+                    </Button>
+                  </Link>
+                  <Link to="https://github.com/wenliangw/colox-react">
+                    <Button variant="outline" size="lg">
+                      GitHub
+                    </Button>
+                  </Link>
+                </Stack>
+                <code className={styles.installChip}>pnpm add @colox/react</code>
+              </Stack>
+              <Specimen />
+            </Grid>
           </Container>
+        </div>
+        <div className={styles.spectrum} aria-hidden="true">
+          {FAMILIES.map((family) => (
+            <span key={family.palette} className={`${styles.spectrumPart} ${family.tone}`} />
+          ))}
         </div>
 
         <Container size="lg" align="center" className={styles.section}>
-          <h2 className={styles.sectionTitle}>One design language, three axes</h2>
+          <h2 className={styles.sectionTitle}>Six semantic families</h2>
           <p className={styles.sectionSub}>
-            Palette for meaning, variant for weight, size for scale — every visual choice is one
-            named word.
+            The color axis answers meaning, never mood — every control defaults to gray, and an
+            accent is always opt-in.
           </p>
-          <Stack direction="column" gap="6" className={styles.axes}>
-            {AXES.map((axis) => (
-              <Stack key={axis.eyebrow} direction="column" gap="4" className={styles.axis}>
-                <Stack direction="column" gap="1" className={styles.axisHead}>
-                  <span className={styles.eyebrow}>{axis.eyebrow}</span>
-                  <h3 className={styles.axisTitle}>{axis.title}</h3>
-                  <p className={styles.axisSummary}>{axis.summary}</p>
+          <Grid columns={{ sm: 1, md: 2, lg: 3 }} gap="5" className={styles.families}>
+            {FAMILIES.map((family) => (
+              <Stack
+                key={family.palette}
+                direction="column"
+                gap="4"
+                align="start"
+                className={`${styles.family} ${family.tone}`}
+              >
+                <Stack direction="column" gap="3" align="start" className={styles.familyBody}>
+                  <span className={styles.familyName}>{family.label}</span>
+                  <Stack direction="row" gap="1-5">
+                    {TONE_SWATCHES.map((swatch) => (
+                      <span
+                        key={swatch.key}
+                        className={`${styles.swatch} ${swatch.className}`}
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </Stack>
                 </Stack>
-                <Stack direction="row" justify="start" align="center" className={styles.axisDemo}>
-                  {axis.demo}
+                <Button variant="solid" palette={family.palette} size="sm">
+                  {family.label}
+                </Button>
+              </Stack>
+            ))}
+          </Grid>
+        </Container>
+
+        <Container size="lg" align="center" className={styles.section}>
+          <h2 className={styles.sectionTitle}>One ladder per control</h2>
+          <p className={styles.sectionSub}>
+            Variant for weight, size for scale — every visual choice is one named word.
+          </p>
+          <Stack direction="column" gap="6" className={styles.ladders}>
+            {LADDERS.map((ladder) => (
+              <Stack key={ladder.eyebrow} direction="column" gap="4" className={styles.ladder}>
+                <Stack direction="column" gap="1" className={styles.ladderHead}>
+                  <span className={styles.eyebrow}>{ladder.eyebrow}</span>
+                  <h3 className={styles.ladderTitle}>{ladder.title}</h3>
+                  <p className={styles.ladderSummary}>{ladder.summary}</p>
+                </Stack>
+                <Stack direction="row" justify="start" align="center" className={styles.ladderDemo}>
+                  {ladder.demo}
                 </Stack>
               </Stack>
             ))}
@@ -376,7 +494,7 @@ export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout title="Colox React" description={siteConfig.tagline}>
-      <HomeContent title={siteConfig.title} tagline={siteConfig.tagline} />
+      <HomeContent tagline={siteConfig.tagline} />
     </Layout>
   );
 }
