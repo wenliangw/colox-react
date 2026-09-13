@@ -1,47 +1,38 @@
 /* Token-driven homepage skin: every color, radius, spacing and motion
    value below chains onto the --colox-* layer, so the page inherits
-   the light/dark swap and the reduced-motion gate for free. */
+   the light/dark swap and the reduced-motion gate for free. The
+   correction this file embodies: density — sections read as packed
+   product rows (horizontal axis cards, live demo strips), not poster
+   whitespace. */
 
 .page {
-  padding-block: var(--colox-spacing-16) var(--colox-spacing-20);
-  animation: page-enter var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  padding-block: var(--colox-spacing-10) var(--colox-spacing-16);
 }
 
 /* ---------- shared section type ---------- */
 
 .section {
-  margin-block-start: var(--colox-spacing-20);
+  margin-block-start: var(--colox-spacing-14);
 }
 
 .sectionTitle {
   margin: 0;
-  font-size: var(--colox-font-size-4xl);
+  font-size: var(--colox-font-size-2xl);
   font-weight: var(--colox-font-weight-bold);
   color: var(--colox-color-text-default);
 }
 
 .sectionSub {
-  margin: var(--colox-spacing-3) auto 0;
-  max-width: 34rem;
-  font-size: var(--colox-font-size-md);
+  margin: var(--colox-spacing-2) auto 0;
+  max-width: 36rem;
+  font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
 }
 
 .eyebrow {
   margin: 0;
   font-family: var(--colox-font-mono);
-  font-size: var(--colox-font-size-sm);
+  font-size: var(--colox-font-size-xs);
   color: var(--colox-color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -54,59 +45,75 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding-block-start: var(--colox-spacing-10);
+  animation: hero-enter var(--colox-motion-duration-slow) var(--colox-motion-easing-out) both;
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .title {
-  margin: var(--colox-spacing-4) 0 0;
-  font-size: var(--colox-font-size-8xl);
+  margin: var(--colox-spacing-3) 0 0;
+  font-size: 2.75rem; /* 38.5px — the antd-scale product name, not a poster */
   font-weight: var(--colox-font-weight-bold);
   color: var(--colox-color-text-default);
 }
 
 .tagline {
-  margin: var(--colox-spacing-4) 0 0;
+  margin: var(--colox-spacing-3) 0 0;
   max-width: 36rem;
-  font-size: var(--colox-font-size-lg);
+  font-size: var(--colox-font-size-md);
   color: var(--colox-color-text-muted);
 }
 
 .actions {
+  margin-top: var(--colox-spacing-6);
+}
+
+.heroMeta {
+  margin: var(--colox-spacing-6) 0 0;
+  font-family: var(--colox-font-mono);
+  font-size: var(--colox-font-size-xs);
+  color: var(--colox-color-text-muted);
+}
+
+/* ---------- axes: horizontal product rows (text | live demo) ---------- */
+
+.axes {
   margin-top: var(--colox-spacing-8);
 }
 
-.strip {
-  margin-top: var(--colox-spacing-10);
-}
-
-/* ---------- axes ---------- */
-
-.axes {
-  margin-top: var(--colox-spacing-10);
-  text-align: center;
-}
-
 .axis {
-  padding: var(--colox-spacing-8);
+  padding: var(--colox-spacing-6);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
+  text-align: start;
 }
 
 .axisTitle {
   margin: 0;
-  font-size: var(--colox-font-size-xl);
+  font-size: var(--colox-font-size-lg);
   font-weight: var(--colox-font-weight-semibold);
   color: var(--colox-color-text-default);
 }
 
 .axisSummary {
-  margin: 0 auto;
-  max-width: 30rem;
+  margin: 0;
+  max-width: 28rem;
   font-size: var(--colox-font-size-sm);
   color: var(--colox-color-text-muted);
 }
 
 .ladderItem {
-  min-width: 3.5rem;
+  min-width: 3.25rem;
 }
 
 .ladderLabel {
@@ -115,28 +122,72 @@
   color: var(--colox-color-text-muted);
 }
 
-/* ---------- gallery ---------- */
+/* ---------- theming showcase ---------- */
+
+.showcaseTitle {
+  margin: 0;
+  font-size: var(--colox-font-size-2xl);
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-text-default);
+}
+
+.showcaseBody {
+  margin: 0;
+  max-width: 30rem;
+  font-size: var(--colox-font-size-sm);
+  line-height: 1.6;
+  color: var(--colox-color-text-muted);
+}
+
+.showcasePanel {
+  padding: var(--colox-spacing-6);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
+}
+
+/* ---------- component gallery: live mini demos ---------- */
 
 .gallery {
-  margin-top: var(--colox-spacing-10);
+  margin-top: var(--colox-spacing-8);
   text-align: start;
 }
 
 .card {
   display: flex;
-  align-items: center;
-  gap: var(--colox-spacing-3);
-  padding: var(--colox-spacing-4) var(--colox-spacing-5);
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--colox-color-border-muted);
-  border-radius: var(--colox-radius-md);
-  text-decoration: none;
-  transition:
-    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out),
-    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+  border-radius: var(--colox-radius-lg);
+  background-color: var(--colox-color-bg-default);
+  transition: border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
 }
 
 .card:hover {
   border-color: var(--colox-color-border-default);
+}
+
+.cardDemo {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-3);
+  min-height: 4rem;
+  padding: var(--colox-spacing-4) var(--colox-spacing-5);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-muted);
+}
+
+.cardLink {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--colox-spacing-3);
+  padding: var(--colox-spacing-4) var(--colox-spacing-5);
+  text-decoration: none;
+  transition: background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
+}
+
+.cardLink:hover {
   background-color: var(--colox-color-bg-subtle);
   text-decoration: none;
 }
@@ -161,14 +212,42 @@
   transition: color var(--colox-motion-duration-normal) var(--colox-motion-easing-in-out);
 }
 
-.card:hover .cardArrow {
+.cardLink:hover .cardArrow {
   color: var(--colox-color-text-default);
+}
+
+/* ---------- mini demo cells (grid/container scaffolds) ---------- */
+
+.demoStrip {
+  width: 100%;
+}
+
+.miniCell {
+  display: block;
+  height: 0.75rem;
+  background-color: var(--colox-color-bg-default);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-xs);
+}
+
+.miniPanel {
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--colox-color-bg-default);
+}
+
+.miniPanelLabel {
+  display: block;
+  padding: var(--colox-spacing-2);
+  text-align: center;
+  font-size: var(--colox-font-size-xs);
+  color: var(--colox-color-text-muted);
 }
 
 /* ---------- quick start ---------- */
 
 .code {
-  max-width: 34rem;
+  max-width: 40rem;
   margin-inline: auto;
   margin-top: var(--colox-spacing-6);
   text-align: start;
