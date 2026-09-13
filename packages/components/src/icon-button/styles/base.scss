@@ -41,11 +41,16 @@
   color: inherit;
   border-radius: var(--colox-radius-lg);
   cursor: pointer;
-  transition:
+  // The full transition contract. Sites composing extra members — e.g.
+  // the Select clear reveal appends its opacity leg — reuse this hook
+  // instead of replacing the list (a replace silently kills the color
+  // feedback ride).
+  --colox-icon-button-transition:
     background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+  transition: var(--colox-icon-button-transition);
 
   &:active:not(:disabled) {
     transform: scale(0.97);

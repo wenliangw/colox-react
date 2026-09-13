@@ -161,15 +161,20 @@
 }
 
 .colox-select__clear {
-  // Reset, hit shape, focus ring and disabled semantics ride the shared
-  // IconButton base; the muted variant colors it (muted at rest,
-  // default volume on hover/active). This site class only places the
-  // button over the chevron slot and runs the swap reveal.
+  // Reset, hit shape, focus ring, disabled semantics and the muted
+  // variant colors ride the shared IconButton base; this site class
+  // only places the button over the chevron slot and runs the swap
+  // reveal. The transition COMPOSES the shared base hook (so the color
+  // feedback keeps its animated ride) and appends the fast opacity leg
+  // for the reveal — overriding the shorthand would kill the base's
+  // members.
   position: absolute;
   inset: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+  transition:
+    var(--colox-icon-button-transition),
+    opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 }
 
 // The clear affordance swaps in for the chevron instead of pairing
