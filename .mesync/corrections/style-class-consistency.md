@@ -3,6 +3,7 @@
 ## 现状
 
 - jsdom 测试只断言「类名挂到 DOM 上」，**不验证 CSS 里存在对应选择器**——类名写错前缀时测试全绿、视觉效果全失效。
+- **Tag template 演示前科（2026-10）**：自定义 chip 的清除钮用裸 `<button>` 挂站点类 `colox-select__tag-remove`——站点类只承载语境语义（muted 换装后连色规则都删了，仅剩注释），**不含结构盒**；裸按钮顶着 UA 默认字号/padding（~24px 高）溢出 20px 的 chip。修复 = 演示改成 `IconButton size="4" variant="muted"`（与内置 chip 同构），docs 加一条作者指引。
 - **Select clear 过渡前科（2026-10）**：站点类写 `transition: opacity …` shorthand，把 IconButton 基座的完整过渡列表**整条覆盖**——muted 档 hover 的 color 过渡被静默杀掉（Input 侧无覆盖所以有过渡，肉眼误判为「两组件行为不一致」）。修复 = 基座把过渡约定收成私有 hook `--colox-icon-button-transition`，站点组合它（`transition: var(--hook), opacity fast …`）而非替换。
 - Input 前科（两条）：
   1. **invalid/disabled 不生效**：cva base 是 `colox-input-group`，但 TSX 修饰类误写 `colox-input--invalid`/`colox-input--disabled`，与 base.scss 的 `&--invalid`（编译 `.colox-input-group--invalid`）前缀不一致 → storybook 里 invalid 不红、禁用不变灰，测试却全绿（断言同错）。
@@ -11,6 +12,7 @@
 ## 改这里
 
 - 给组件新增/改名「落 DOM 的类」（状态修饰类、变体类、块名、插槽结构类）。
+- 在演示/docs 里给裸元素挂**站点类名**（`colox-select__tag-remove` 等）。
 - 在站点类里覆盖基座的 CSS **shorthand**（`transition`/`background`/`inset`/`animation`…）。
 
 ## 必须检查
@@ -19,5 +21,6 @@
 - [ ] 修饰类前缀与 **cva base 类**一致（`<block>--<modifier>`）；类名在 `input.tsx` 的 clsx、`variants/` 映射、`styles/*.scss` 选择器**三处同字符串**。
 - [ ] 构建后 grep 产物确认选择器真实存在：`dist/style.css` 里每个新类名（正确名 ≥1、旧错误名 =0）。
 - [ ] jsdom 测试挡住的是「挂载正确」，挡不住「CSS 生效」——状态样式（invalid/disabled/focus 环）改完必须 storybook 肉眼过一遍。
+- [ ] 站点类**不含结构**（盒/尺寸/复位都在 IconButton 基座）——demo/模板若挂站点类，元素本身必须是 IconButton（`size="4" variant="muted"`），否则 UA 样式溢出（tag-remove 前科）；改完探针对比内置 chip 的按钮盒尺寸。
 - [ ] 覆盖 shorthand 前先确认站点还依赖基座的其他成员（Select clear 需要基座 color/transform 过渡 + 自己的 opacity reveal）：依赖就**组合基座 hook**（`var(--colox-icon-button-transition)`）或逐成员赋值，绝不整条替换。
 - [ ] 改完探针断言过渡成员列表（computed `transitionProperty`/`transitionDuration` 应含基座成员），storybook 里 hover 过渡肉眼过一遍。
