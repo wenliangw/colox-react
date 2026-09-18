@@ -1,0 +1,181 @@
+.colox-textarea {
+  position: relative;
+  display: block;
+  width: 100%;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-default);
+  background-color: var(--colox-color-bg-default);
+  cursor: text;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  // The shell owns the appearance contract: the ring stays lit while focus
+  // sits anywhere inside (control, footer clear or the drag handle).
+  &:focus-within {
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-within {
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+// The naked textarea reset: no visual identity of its own — the shell
+// injects the border, focus ring and state styling. Unlike `<input>`, a
+// bare `<textarea>` carries a UA preferred width (~20 cols), so it fills
+// the shell's content box explicitly; its inline padding rides the
+// shell's size tiers (same as Input) and the block padding is the
+// constant that separates the text from the shell edge. The library owns
+// the sizing strategy: the UA drag grip would resize only the inner
+// control while the shell (border/radius/focus ring) cannot follow,
+// tearing the visual contract — so native resize is switched off and the
+// consumer escape hatch is restyling this class (`resize: vertical`).
+//
+// The inline padding lives HERE (not on the shell) so the scrollbar
+// hugs the shell edge: a reserved platform gutter renders at the control
+// border and would otherwise float inside the shell padding.
+.colox-textarea-control {
+  display: block;
+  width: 100%;
+  padding-block: var(--colox-spacing-2);
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  resize: none;
+
+  // The custom scrollbar keeps the platform look consistent — Windows's
+  // reserved native gutter vs macOS overlay, all themed to the muted
+  // border token: `scrollbar-width/color` cover Firefox and Chrome 121+,
+  // the `::-webkit-scrollbar` family covers Safari.
+  scrollbar-width: thin;
+  scrollbar-color: var(--colox-color-border-muted) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--colox-color-border-muted);
+    border-radius: var(--colox-radius-lg);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &::placeholder {
+    color: var(--colox-color-text-subtle);
+  }
+}
+
+// The footer bar is an in-flow row inside the shell — the chrome never
+// floats over the text. Leading cluster: the character count with the
+// clear control pill; trailing end: the drag handle. No divider line:
+// 4px of air above and below, the handle end keeps a constant 4px corner
+// gap, and the leading side comes from the size tier (see size.scss) so
+// the pill's inner text starts exactly on the control's text column.
+// `flex-end` keeps the handle on the pill's bottom line.
+.colox-textarea__footer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--colox-spacing-1);
+  padding-block: var(--colox-spacing-1);
+  padding-inline-end: var(--colox-spacing-1);
+  cursor: default;
+}
+
+// The count inherits the pill's text color — the capsule content needs
+// full contrast to read against its own pale plate.
+.colox-textarea__count {
+  color: inherit;
+}
+
+// The pill capsule: one in-flow unit packing the chrome (count, hairline
+// divider, `清除` text button) off the text, in the leading footer
+// slot. Height rides the xs line-height + spacing-1 padding; the inline
+// padding is spacing-2 — the pill compensates exactly its own padding on
+// the leading side (size.scss), so the inner text starts on the control's
+// text column. Inside, the gap around the divider matches the inline
+// padding (spacing-2): one uniform 8px rhythm across the capsule. The
+// border-muted hairline gives the capsule its edge definition (the
+// family's surface semantics: pale fill + outline), and the text inside
+// rides gray-700 (the gray axis solid): ~4.5:1 on the pale plate (AA)
+// yet one notch below the body text's gray-900 — muted (2.5:1) washed
+// out, default (17:1) stole the floor from the content.
+.colox-textarea__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  padding-block: var(--colox-spacing-1);
+  padding-inline: var(--colox-spacing-2);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: 999px;
+  background-color: var(--colox-color-bg-muted);
+  color: var(--colox-color-gray-solid);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+// The clear control: a plain text button inside the pill — dark at rest
+// (inherits the pill's text color), the error red on hover (clearing is
+// a destructive action — the warning tone signals it before it lands),
+// the brand ring for keyboard focus.
+.colox-textarea__clear {
+  appearance: none;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--colox-color-text-error);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--colox-color-brand-solid);
+    outline-offset: 1px;
+  }
+}
+
+.colox-textarea__separator {
+  width: 1px;
+  height: 12px;
+  background-color: var(--colox-color-border-muted);
+}
+
+.colox-textarea__spacer {
+  flex: 1;
+}
+
+// The drag handle affordance: vertical-only resize cursor (the glyph
+// keeps the native corner-hatch look on purpose).
+.colox-textarea__resize {
+  cursor: ns-resize;
+}

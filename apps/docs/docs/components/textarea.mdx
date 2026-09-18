@@ -1,0 +1,91 @@
+---
+sidebar_position: 4
+---
+
+import { Textarea } from '@colox/react';
+import '@colox/react/style.css';
+
+# Textarea
+
+Textareas capture multi-line text. The same shell contract as Input — border, focus
+ring, size and state styling — around a bare native `<textarea>`. The library owns the
+sizing strategy: the height is content-driven by default (`rows` is the minimum
+baseline, the box grows with every line and a footer drag handle adds manual room on
+top), the width stays container-driven, and native resize is switched off.
+
+## Sizes
+
+<Textarea size="xs" rows={2} placeholder="Extra small" />
+<Textarea size="sm" rows={2} placeholder="Small" />
+<Textarea size="md" rows={2} placeholder="Medium" />
+<Textarea size="lg" rows={2} placeholder="Large" />
+
+## Autosize
+
+`autoSize` is **on by default**: the box grows without bound and never shows a
+scrollbar while typing — drag the footer handle for extra room (the dragged height
+becomes the new minimum).
+
+<Textarea rows={2} placeholder="The default world — type several lines, then drag the handle." />
+
+`{ minRows }` raises the minimum baseline:
+
+<Textarea rows={2} autoSize={{ minRows: 4 }} placeholder="Starts at four rows, grows from there." />
+
+`{ maxRows }` caps the growth and scrolls inside with a themed scrollbar (hugging the
+shell edge, consistent across platforms) — sizing this way intentionally has no drag
+handle:
+
+<Textarea
+  rows={2}
+  autoSize={{ maxRows: 4 }}
+  placeholder="Grows up to four rows, then scrolls inside."
+/>
+
+`autoSize={false}` returns the fixed `rows` world — native scrolling, no growth, no
+drag handle:
+
+<Textarea rows={3} autoSize={false} placeholder="Fixed rows with native scrolling." />
+
+## Footer bar
+
+The chrome lives in an in-flow footer row inside the shell — never floating over the
+text. The leading pill capsule packs the character count (`showCount`; paired with
+native `maxLength` it shows `n / max`) and the clear control (`clearable`, a text
+button labelled `清除`, hairline divider between them when both are on); the drag
+handle sits at the trailing end in the growth worlds.
+
+<Textarea
+  rows={3}
+  showCount
+  maxLength={80}
+  clearable
+  defaultValue="Count, clear and the drag handle share one footer row."
+/>
+
+<Textarea rows={3} clearable defaultValue="You can clear this." />
+
+## Invalid
+
+<Textarea rows={2} invalid placeholder="Invalid textarea" />
+
+## Disabled
+
+<Textarea rows={2} disabled placeholder="Disabled" />
+
+## Props
+
+| Prop      | Type                                | Default |
+| --------- | ----------------------------------- | ------- |
+| size      | `'xs' \| 'sm' \| 'md' \| 'lg'`      | `'md'`  |
+| invalid   | `boolean`                           | `false` |
+| clearable | `boolean`                           | `false` |
+| showCount | `boolean`                           | `false` |
+| autoSize  | `boolean \| { minRows?, maxRows? }` | `true`  |
+
+It also accepts all native `<textarea>` attributes.
+
+The drag handle appears in the unbounded growth worlds only (default / `true` /
+`{ minRows }`) — once growth is capped or switched off, the scrollbar is the overflow
+control. To re-enable the native UA drag grip (vertical only), restyle the control:
+`.colox-textarea-control { resize: vertical }`.

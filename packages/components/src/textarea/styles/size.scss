@@ -1,0 +1,61 @@
+// Size tiers = font size/line-height on the shell (inherited by the
+// control), inline padding on the control, and on the footer only its
+// leading inset: tier padding minus the pill's own inline padding
+// (spacing-2), so the pill's first glyph starts exactly on the control's
+// text column — the pill box overhangs the column by its own padding.
+// At the xs tier the overhang meets the shell edge (0px inset) — the
+// price of keeping 8px pill padding under an 8px text indent. The handle
+// end keeps the constant 4px corner gap from base.scss. No tier height —
+// the height is content-driven.
+
+.colox-textarea--xs {
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+
+  .colox-textarea-control {
+    padding-inline: var(--colox-spacing-2);
+  }
+
+  .colox-textarea__footer {
+    padding-inline-start: calc(var(--colox-spacing-2) - var(--colox-spacing-2));
+  }
+}
+
+.colox-textarea--sm {
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+
+  .colox-textarea-control {
+    padding-inline: var(--colox-spacing-3);
+  }
+
+  .colox-textarea__footer {
+    padding-inline-start: calc(var(--colox-spacing-3) - var(--colox-spacing-2));
+  }
+}
+
+.colox-textarea--md {
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+
+  .colox-textarea-control {
+    padding-inline: var(--colox-spacing-4);
+  }
+
+  .colox-textarea__footer {
+    padding-inline-start: calc(var(--colox-spacing-4) - var(--colox-spacing-2));
+  }
+}
+
+.colox-textarea--lg {
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+
+  .colox-textarea-control {
+    padding-inline: var(--colox-spacing-6);
+  }
+
+  .colox-textarea__footer {
+    padding-inline-start: calc(var(--colox-spacing-6) - var(--colox-spacing-2));
+  }
+}
