@@ -155,5 +155,6 @@
 - 受控词形 = `checked`/`defaultChecked`（原生属性词，家族布尔组件同词；不上 antd 的 `value`）。
 - `children` 即文案标签（label 根包裹，Checkbox 同构）；轨道内不放 ON/OFF 文字（小档装不下，checkedText 属扩展点）。
 - 「控件即它自己」的视觉表达：appearance:none 把轨道涂在 input 本体上，thumb 是 overlay——与 Checkbox「box 即 input」同一不变式。
+- 视觉轴词汇家族同词：开关的调色板叫 `palette`（Button 已有同轴，不引入 MUI 的 `color`）；语义 = **只染开态**（开关靠「开色」被读），关态面料与 invalid 红通道不随调色板漂移；接线同 Button 私有变量模式（类声明 `--colox-switch-palette-*`、绘制规则读变量，零特异性级联干扰）。
 
 来源：Switch 六问对齐定案（决策 Switch API 定案）。
