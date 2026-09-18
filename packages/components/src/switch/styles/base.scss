@@ -2,6 +2,9 @@
 // root that carries the font/color tiers, the track+thumb pair in the
 // first slot and the children text as the label.
 .colox-switch {
+  --colox-switch-palette-solid: var(--colox-color-brand-solid);
+  --colox-switch-palette-muted: var(--colox-color-brand-muted);
+
   display: inline-flex;
   align-items: center;
   gap: var(--colox-spacing-2);
@@ -25,8 +28,9 @@
 
 // The invalid signal paints the off state (red border + red focus
 // ring). It sits before the filled states on purpose: once the switch
-// is checked, the filled state owns the border back (brand) — the red
-// ring still marks the transient keyboard focus on an invalid switch.
+// is checked, the filled state owns the border back (the palette
+// solid) — the red ring still marks the transient keyboard focus on
+// an invalid switch.
 .colox-switch--invalid .colox-switch__control {
   border-color: var(--colox-color-red-solid);
 
@@ -38,8 +42,9 @@
 
 // The control IS the track: the native checkbox switch input drawn via
 // appearance none. Off = pale fill + hairline border (the family chip
-// fabric — a bare gray track dissolves on the shell white), on = brand
-// solid. The tier geometry lives in size.scss.
+// fabric — a bare gray track dissolves on the shell white), on = the
+// palette solid (brand by default). The tier geometry lives in
+// size.scss and the family mappings in palette.scss.
 .colox-switch__control {
   appearance: none;
   margin: 0;
@@ -56,16 +61,17 @@
 
   &:focus-visible {
     outline: none;
-    border-color: var(--colox-color-brand-solid);
-    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+    border-color: var(--colox-switch-palette-solid);
+    box-shadow: 0 0 0 2px var(--colox-switch-palette-muted);
   }
 
-  // Filled states paint the track border + background brand (same
-  // specificity as the invalid block, later in source order — so a
-  // checked invalid switch keeps the brand track).
+  // Filled states paint the track border + background in the palette
+  // solid (same specificity as the invalid block, later in source
+  // order — so a checked invalid switch keeps its palette track; the
+  // red ring still owns the transient focus signal).
   &:checked {
-    border-color: var(--colox-color-brand-solid);
-    background-color: var(--colox-color-brand-solid);
+    border-color: var(--colox-switch-palette-solid);
+    background-color: var(--colox-switch-palette-solid);
   }
 }
 

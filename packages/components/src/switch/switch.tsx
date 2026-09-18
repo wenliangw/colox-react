@@ -11,14 +11,15 @@ import './styles/index.scss';
  * there), dressed as the track via appearance none with the thumb
  * overlaid — `role="switch"` tells assistive tech the toggle
  * semantics, the native form keeps its zero-cost path. `children`
- * render as the label. States: checked (brand solid track), `invalid`
- * (red border/ring on the off state, same channel as Checkbox) and
- * disabled. Size tiers share the Button/Input/Checkbox design language
- * (xs/sm/md/lg).
+ * render as the label. States: checked (palette solid track — brand
+ * by default), `invalid` (red border/ring on the off state, same
+ * channel as Checkbox) and disabled. Size tiers share the
+ * Button/Input/Checkbox design language (xs/sm/md/lg).
  */
 const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
   const {
     size,
+    palette,
     invalid = false,
     checked,
     defaultChecked,
@@ -36,7 +37,7 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
   return (
     <label
       className={clsx(
-        switchVariants({ size }),
+        switchVariants({ size, palette }),
         { 'colox-switch--invalid': invalid, 'colox-switch--disabled': disabled },
         className,
       )}

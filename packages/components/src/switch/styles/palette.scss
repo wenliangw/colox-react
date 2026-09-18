@@ -1,0 +1,37 @@
+// Palette color families — the six Button families mapped onto the
+// private switch palette variables (same wiring as the button
+// palette: the class declares the vars, the paint rules read them).
+// The checked track fills the family solid and the focus ring rides
+// its muted pair. The off state stays palette-free on purpose — a
+// switch is read by its ON color, the off fabric keeps the neutral
+// shell vocabulary. Base.scss holds the brand fallbacks so the paint
+// survives even without a palette class.
+.colox-switch--primary {
+  --colox-switch-palette-solid: var(--colox-color-brand-solid);
+  --colox-switch-palette-muted: var(--colox-color-brand-muted);
+}
+
+.colox-switch--gray {
+  --colox-switch-palette-solid: var(--colox-color-gray-solid);
+  --colox-switch-palette-muted: var(--colox-color-gray-muted);
+}
+
+.colox-switch--info {
+  --colox-switch-palette-solid: var(--colox-color-blue-solid);
+  --colox-switch-palette-muted: var(--colox-color-blue-muted);
+}
+
+.colox-switch--error {
+  --colox-switch-palette-solid: var(--colox-color-red-solid);
+  --colox-switch-palette-muted: var(--colox-color-red-muted);
+}
+
+.colox-switch--warning {
+  --colox-switch-palette-solid: var(--colox-color-orange-solid);
+  --colox-switch-palette-muted: var(--colox-color-orange-muted);
+}
+
+.colox-switch--success {
+  --colox-switch-palette-solid: var(--colox-color-green-solid);
+  --colox-switch-palette-muted: var(--colox-color-green-muted);
+}

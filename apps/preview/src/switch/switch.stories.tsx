@@ -24,7 +24,7 @@ const meta: Meta<typeof Switch> = {
     docs: {
       description: {
         component:
-          'Single boolean switch on the Checkbox row contract: a native checkbox input dressed as a brand track with a sliding thumb (role="switch"), children as the label, four size tiers and the invalid/disabled states.',
+          'Single boolean switch on the Checkbox row contract: a native checkbox input dressed as a palette track with a sliding thumb (role="switch"), children as the label, four size tiers, six ON-state palettes and the invalid/disabled states.',
       },
     },
   },
@@ -58,6 +58,29 @@ export const Overview: Story = {
             <Switch disabled>Disabled off</Switch>
             <Switch defaultChecked disabled>
               Disabled on
+            </Switch>
+          </Stack>
+        </Section>
+
+        <Section title="Palettes">
+          <Stack direction="column" gap="2" style={demoWidth}>
+            <Switch defaultChecked palette="primary">
+              primary — brand
+            </Switch>
+            <Switch defaultChecked palette="gray">
+              gray
+            </Switch>
+            <Switch defaultChecked palette="info">
+              info — blue
+            </Switch>
+            <Switch defaultChecked palette="error">
+              error — red
+            </Switch>
+            <Switch defaultChecked palette="warning">
+              warning — orange
+            </Switch>
+            <Switch defaultChecked palette="success">
+              success — green
             </Switch>
           </Stack>
         </Section>

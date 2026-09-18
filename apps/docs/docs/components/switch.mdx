@@ -15,12 +15,43 @@ thumb are the visual dress. `children` render as the label.
 ## Sizes
 
 <Switch size="xs">Extra small</Switch>
+
 <Switch size="sm">Small</Switch>
+
 <Switch size="md">Medium</Switch>
+
 <Switch size="lg">Large</Switch>
 
 The four tiers share the Button/Input/Checkbox row heights (24/32/40/48) and
 font scale, so switch rows sit flush next to same-tier controls.
+
+## Palette
+
+`palette` colors the ON state from the six Button families — primary (brand),
+gray, info (blue), error (red), warning (orange), success (green). The off
+state keeps the neutral fabric and `invalid` keeps the red channel.
+
+<Switch defaultChecked>primary — brand</Switch>
+
+<Switch defaultChecked palette="gray">
+  gray
+</Switch>
+
+<Switch defaultChecked palette="info">
+  info — blue
+</Switch>
+
+<Switch defaultChecked palette="error">
+  error — red
+</Switch>
+
+<Switch defaultChecked palette="warning">
+  warning — orange
+</Switch>
+
+<Switch defaultChecked palette="success">
+  success — green
+</Switch>
 
 ## Controlled and uncontrolled
 
@@ -33,7 +64,9 @@ event stays the native one, the new value on `event.target.checked`.
 ## States
 
 <Switch invalid>Missing consent</Switch>
+
 <Switch disabled>Disabled</Switch>
+
 <Switch defaultChecked disabled>
   Disabled on
 </Switch>

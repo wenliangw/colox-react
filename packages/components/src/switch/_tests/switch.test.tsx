@@ -20,6 +20,27 @@ describe('Switch size', () => {
   });
 });
 
+describe('Switch palette', () => {
+  it.each([
+    ['primary', 'colox-switch--primary'],
+    ['gray', 'colox-switch--gray'],
+    ['info', 'colox-switch--info'],
+    ['error', 'colox-switch--error'],
+    ['warning', 'colox-switch--warning'],
+    ['success', 'colox-switch--success'],
+  ] as const)('applies the %s palette class on the root label', (palette, expectedClass) => {
+    render(<Switch palette={palette} />);
+    expect(screen.getByRole('switch').closest('.colox-switch')).toHaveClass(expectedClass);
+  });
+
+  it('defaults to primary', () => {
+    render(<Switch defaultChecked />);
+    expect(screen.getByRole('switch').closest('.colox-switch')).toHaveClass(
+      'colox-switch--primary',
+    );
+  });
+});
+
 describe('Switch label', () => {
   it('renders children as the label', () => {
     render(<Switch>Dark mode</Switch>);

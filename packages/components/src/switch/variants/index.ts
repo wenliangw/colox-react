@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { switchPaletteStyles } from './palette';
 import { switchSizeStyles } from './size';
 
 // The variants target the root label (click target and visual
@@ -7,9 +8,11 @@ import { switchSizeStyles } from './size';
 export const switchVariants = cva('colox-switch', {
   variants: {
     size: switchSizeStyles,
+    palette: switchPaletteStyles,
   },
   defaultVariants: {
     size: 'md',
+    palette: 'primary',
   },
 });
 
