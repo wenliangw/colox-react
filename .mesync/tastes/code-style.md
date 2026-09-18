@@ -79,7 +79,7 @@
 - **双层出口**：`types/index.ts` 是**内部全量 barrel**（`export * from './component' | './hooks' | './children' | './utils'`）供组件内各单元互引；公共出口（`<component>/index.ts`）保持**选择性具名导出**，内部名字（`ResolveXxxParams`/children Props）一个不漏进 `@colox/react` 公共面。
 - **私有行组件留在原地**：不跨文件被引用的构件（面板内部的行组件 Props 等）类型随行组件自身走，不进 types/。
 - 协议来源（用户拍板）：类型的定义内容很长，混在实现文件里影响阅读实现的体验；「改内容需多读几个文件成本不高，且现在是 AI Coding——**代码为人的阅读体验服务**」。
-- 位序落库排首批：Select v2（component/hooks/children/utils 四层）；存量组件（radio/checkbox/input/theme 等）按「顺手迁移」逐组件收敛，不一次全仓扫平。
+- 位序落库：Select v2（component/hooks/children/utils 四层）、Textarea（component/controls/hooks/utils 四层，交付前归位——其中 `controls` 层是 Input/Textarea 的内置控件层，按「出现新层时按层加」入 `controls.ts`）；存量组件（radio/checkbox/input 等）按「顺手迁移」逐组件收敛，不一次全仓扫平。**新组件一律从第一版就按层归位**（用户重申：以后的组件都按照这个规范）。
 - `forwardRef` 的 ref 显式定义类型（如 `export type InputRef = HTMLInputElement`）。
 - 禁止任何 `any`。
 
@@ -108,6 +108,7 @@
 ## JSDoc 多行书写
 
 - props 注释放多行（`/**` 起、`*` 续行、` * @default 'md'` 一行一个 tag），不用单行挤写 `/** ... */`。
+- **所有 JSDoc 一律多行**（类型字段、接口成员、函数工具方法都算），**闭合 `*/` 独立成行**（`/** text\n * more. */` 的附尾式也不行）——注释短不是单行的理由；格式统一优先于省行。
 
 ## 干净演进：拒绝补丁式解决
 
