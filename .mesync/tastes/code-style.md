@@ -93,6 +93,7 @@
 - 接口、组件解构、调用点（`useXxx({...})` / JSX）三处同序：**属性块在前、事件块在后**，不混插（Select v2 首版把 `onChange`/`onSearch` 夹在 `value`/`defaultValue` 与视觉属性中间，被用户指正「属性 … 事件」）。事件块内部保持接口声明的相对顺序（如 `onChange` → `onSearch` → `onOpenChange`）。
 - 属性块内部按语义关系分组（模式 → 数据 → 视觉 → 状态），不做字母序。
 - 原生事件透传属性（`onClick` 等）随 `...rest` 末尾展开，不参与排序。
+- 2026 复发把控：Switch 交付把 `onChange` 夹在 `checked/defaultChecked` 与 `disabled` 之间（照抄 Checkbox/Radio 存量反例），用户再指正「onChange 事件应该写在属性之后，不要混着写」——七处解构（Switch/Checkbox/Radio/Textarea/Input/两 Group）+ 两处接口（`CheckboxGroupProps`/`RadioGroupProps` 的 onChange 曾夹在 defaultValue 与 size 间）一并归一。**新组件不得照抄现存反例**，以本条为准。
 
 ## 代码注释与提交全英文，mesync 中文
 

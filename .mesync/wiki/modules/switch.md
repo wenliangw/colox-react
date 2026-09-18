@@ -25,7 +25,7 @@ switch/
 
 ## 词形与语义（六问对齐）
 
-- `checked` / `defaultChecked`（受控/非受控，Checkbox 同词形）；`onChange` 原生事件透传，新值在 `event.target.checked`——用户拍板词形时对 defaultChecked 有保留（「没有必要吧」），**保留**：原生属性 + 非受控初始开唯一通道 + Checkbox/Radio 同构 + Form 集成要它；若仍要砍一句话可移除。
+- `checked` / `defaultChecked`（受控/非受控，Checkbox 同词形）；`onChange` 原生事件透传，新值在 `event.target.checked`——用户对 defaultChecked 曾有保留（「没有必要吧」），讲清道理后**正式拍板保留**：原生属性透传零成本 + 非受控初始开唯一通道（服务端预填设置页）+ Checkbox/Radio 同构 + Form 集成地基。
 - **真 input + role="switch"**（否决 antd button 路）：表单值零成本进 formdata，键盘/焦点/点击全原生。
 - `children` = 标签文案（Checkbox 同构），无 children 不渲染 label span。
 - 轨道内不带 ON/OFF 文字（xs 档装不下；扩展点 `checkedText/uncheckedText`）；loading 不带（扩展点）。
