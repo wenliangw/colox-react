@@ -9,6 +9,7 @@ import {
   IconChevronUp,
   IconEye,
   IconEyeOff,
+  IconGrip,
   IconPlus,
   IconSearch,
   IconX,
@@ -56,6 +57,7 @@ const BOUNDS: Record<string, [number, number, number, number]> = {
   plus: [5.25, 18.75, 5.25, 18.75],
   'eye-off': [3.25, 20.75, 4.25, 19.75],
   eye: [3.25, 20.75, 4.25, 19.75],
+  grip: [9.25, 21.75, 9.25, 21.75],
   search: [3.25, 20.75, 3.25, 20.75],
 };
 
@@ -104,6 +106,7 @@ const ICONS: IconSpec[] = [
     component: IconEyeOff,
     paths: [eyeOutlinePath, eyeSlashPath],
   },
+  { name: 'grip', component: IconGrip, paths: ['M10 21 L21 10 M14 21 L21 14 M18 21 L21 18'] },
   {
     name: 'search',
     component: IconSearch,

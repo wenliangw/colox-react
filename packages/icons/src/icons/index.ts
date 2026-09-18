@@ -5,6 +5,7 @@ export { IconChevronRight } from './chevron-right';
 export { IconChevronUp } from './chevron-up';
 export { IconEye } from './eye';
 export { IconEyeOff } from './eye-off';
+export { IconGrip } from './grip';
 export { IconPlus } from './plus';
 export { IconSearch } from './search';
 export { IconX } from './x';
