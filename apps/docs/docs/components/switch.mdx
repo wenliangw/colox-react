@@ -1,0 +1,42 @@
+---
+sidebar_position: 8
+---
+
+import { Switch } from '@colox/react';
+import '@colox/react/style.css';
+
+# Switch
+
+Switches toggle a single boolean — settings, feature flags, consent. The same
+row contract as Checkbox: a native `<input type="checkbox" role="switch">`
+carries the form value, the keyboard and the events; the track and the sliding
+thumb are the visual dress. `children` render as the label.
+
+## Sizes
+
+<Switch size="xs">Extra small</Switch>
+<Switch size="sm">Small</Switch>
+<Switch size="md">Medium</Switch>
+<Switch size="lg">Large</Switch>
+
+The four tiers share the Button/Input/Checkbox row heights (24/32/40/48) and
+font scale, so switch rows sit flush next to same-tier controls.
+
+## Controlled and uncontrolled
+
+Like Checkbox, the switch reads `checked` for controlled use and
+`defaultChecked` for the initial state of an uncontrolled one — the change
+event stays the native one, the new value on `event.target.checked`.
+
+<Switch defaultChecked>Starts on (uncontrolled)</Switch>
+
+## States
+
+<Switch invalid>Missing consent</Switch>
+<Switch disabled>Disabled</Switch>
+<Switch defaultChecked disabled>
+  Disabled on
+</Switch>
+
+Every prop on a native checkbox lands on the input — `name` and `value` feed
+the browser's form data untouched.

@@ -9,4 +9,5 @@ export * from './input';
 export * from './radio';
 export * from './select';
 export * from './stack';
+export * from './switch';
 export * from './textarea';

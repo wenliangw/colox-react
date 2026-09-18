@@ -27,6 +27,7 @@ const sidebars: SidebarsConfig = {
         { type: 'doc', id: 'components/textarea', label: 'Textarea' },
         { type: 'doc', id: 'components/select', label: 'Select' },
         { type: 'doc', id: 'components/checkbox', label: 'Checkbox' },
+        { type: 'doc', id: 'components/switch', label: 'Switch' },
         { type: 'doc', id: 'components/radio', label: 'Radio' },
       ],
     },

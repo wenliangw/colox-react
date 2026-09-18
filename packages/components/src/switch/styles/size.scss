@@ -1,0 +1,85 @@
+// The four tiers share the Button/Input/Checkbox design language:
+// fixed row heights (--colox-size-6/8/10/12) and the matching font
+// ladder. Track geometry follows 2h − 4 with a 2px thumb inset each
+// side, so the travel equals the thumb: xs 28×16 (thumb 12), sm 36×20
+// (16), md 44×24 (20), lg 52×28 (24). Every value rides the size scale
+// tokens.
+.colox-switch--xs {
+  height: var(--colox-size-6);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-switch--xs .colox-switch__control {
+  width: var(--colox-size-7);
+  height: var(--colox-size-4);
+}
+
+.colox-switch--xs .colox-switch__thumb {
+  width: var(--colox-size-3);
+  height: var(--colox-size-3);
+}
+
+.colox-switch--xs .colox-switch__control:checked ~ .colox-switch__thumb {
+  transform: translateX(var(--colox-size-3));
+}
+
+.colox-switch--sm {
+  height: var(--colox-size-8);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-switch--sm .colox-switch__control {
+  width: var(--colox-size-9);
+  height: var(--colox-size-5);
+}
+
+.colox-switch--sm .colox-switch__thumb {
+  width: var(--colox-size-4);
+  height: var(--colox-size-4);
+}
+
+.colox-switch--sm .colox-switch__control:checked ~ .colox-switch__thumb {
+  transform: translateX(var(--colox-size-4));
+}
+
+.colox-switch--md {
+  height: var(--colox-size-10);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-switch--md .colox-switch__control {
+  width: var(--colox-size-11);
+  height: var(--colox-size-6);
+}
+
+.colox-switch--md .colox-switch__thumb {
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
+}
+
+.colox-switch--md .colox-switch__control:checked ~ .colox-switch__thumb {
+  transform: translateX(var(--colox-size-5));
+}
+
+.colox-switch--lg {
+  height: var(--colox-size-12);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}
+
+.colox-switch--lg .colox-switch__control {
+  width: var(--colox-size-13);
+  height: var(--colox-size-7);
+}
+
+.colox-switch--lg .colox-switch__thumb {
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+}
+
+.colox-switch--lg .colox-switch__control:checked ~ .colox-switch__thumb {
+  transform: translateX(var(--colox-size-6));
+}

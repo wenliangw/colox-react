@@ -17,6 +17,7 @@ const entries = {
   grid: resolve(import.meta.dirname, 'src/grid/index.ts'),
   'icon-button': resolve(import.meta.dirname, 'src/icon-button/index.ts'),
   select: resolve(import.meta.dirname, 'src/select/index.ts'),
+  switch: resolve(import.meta.dirname, 'src/switch/index.ts'),
   textarea: resolve(import.meta.dirname, 'src/textarea/index.ts'),
 };
 

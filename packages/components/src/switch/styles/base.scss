@@ -1,0 +1,90 @@
+// The switch row matches the Checkbox row contract: an inline label
+// root that carries the font/color tiers, the track+thumb pair in the
+// first slot and the children text as the label.
+.colox-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-default);
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+  }
+}
+
+// The box is a positioning wrapper: the control itself is the native
+// input drawn via appearance none, and the thumb overlays it.
+.colox-switch__box {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+// The invalid signal paints the off state (red border + red focus
+// ring). It sits before the filled states on purpose: once the switch
+// is checked, the filled state owns the border back (brand) — the red
+// ring still marks the transient keyboard focus on an invalid switch.
+.colox-switch--invalid .colox-switch__control {
+  border-color: var(--colox-color-red-solid);
+
+  &:focus-visible {
+    border-color: var(--colox-color-red-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  }
+}
+
+// The control IS the track: the native checkbox switch input drawn via
+// appearance none. Off = pale fill + hairline border (the family chip
+// fabric — a bare gray track dissolves on the shell white), on = brand
+// solid. The tier geometry lives in size.scss.
+.colox-switch__control {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  flex: none;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    background-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  // Filled states paint the track border + background brand (same
+  // specificity as the invalid block, later in source order — so a
+  // checked invalid switch keeps the brand track).
+  &:checked {
+    border-color: var(--colox-color-brand-solid);
+    background-color: var(--colox-color-brand-solid);
+  }
+}
+
+.colox-switch--disabled .colox-switch__control {
+  border-color: var(--colox-color-border-disabled);
+  background-color: var(--colox-color-bg-disabled);
+  cursor: not-allowed;
+}
+
+// The thumb: a white knob riding the track edge, 2px inset, the shadow
+// keeping it lifted off the pale track; it slides across on :checked
+// (the travel distance lands per tier in size.scss).
+.colox-switch__thumb {
+  position: absolute;
+  top: var(--colox-spacing-0-5);
+  left: var(--colox-spacing-0-5);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
+  box-shadow: var(--colox-shadow-sm);
+  pointer-events: none;
+  transition: transform var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}

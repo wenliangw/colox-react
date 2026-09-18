@@ -75,6 +75,11 @@
       "import": "./dist/es/textarea.js",
       "require": "./dist/cjs/textarea.cjs"
     },
+    "./switch": {
+      "types": "./dist/types/switch/index.d.ts",
+      "import": "./dist/es/switch.js",
+      "require": "./dist/cjs/switch.cjs"
+    },
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
