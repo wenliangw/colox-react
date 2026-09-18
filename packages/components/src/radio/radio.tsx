@@ -28,12 +28,12 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     value: memberValue,
     checked,
     defaultChecked,
-    onChange,
     name,
     disabled,
     children,
     className,
     style,
+    onChange,
     ...rest
   } = props;
 

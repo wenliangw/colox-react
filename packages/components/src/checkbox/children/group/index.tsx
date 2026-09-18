@@ -17,13 +17,13 @@ export const CheckboxGroup = forwardRef<CheckboxGroupRef, CheckboxGroupProps>((p
   const {
     value,
     defaultValue,
-    onChange,
     size = 'md',
     disabled = false,
     name = '',
     className,
     style,
     children,
+    onChange,
     ...rest
   } = props;
 

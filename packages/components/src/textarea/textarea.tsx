@@ -40,11 +40,11 @@ export const Textarea = forwardRef<TextareaRef, TextareaProps>((props, ref) => {
     maxLength,
     value,
     defaultValue,
-    onChange,
     className,
     style,
     disabled,
     readOnly,
+    onChange,
     ...rest
   } = props;
 

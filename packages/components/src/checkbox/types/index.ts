@@ -60,14 +60,6 @@ export interface CheckboxGroupProps extends Omit<
   /** Uncontrolled initial selection array. */
   defaultValue?: string[];
   /**
-   * Fires on every member toggle. The payload carries the triggering
-   * member's native change event (which checkbox fired, propagation
-   * control) alongside the next selection array — the group's
-   * `onChange` is its own event face, so it hands over the original
-   * event object instead of only the value.
-   */
-  onChange?: (payload: CheckboxGroupChangePayload) => void;
-  /**
    * Visual size inherited by members that don't set their own — a
    * group's members usually share the same tier, so the group carries
    * the axis.
@@ -81,6 +73,14 @@ export interface CheckboxGroupProps extends Omit<
    * the form collects every member under it.
    */
   name?: string;
+  /**
+   * Fires on every member toggle. The payload carries the triggering
+   * member's native change event (which checkbox fired, propagation
+   * control) alongside the next selection array — the group's
+   * `onChange` is its own event face, so it hands over the original
+   * event object instead of only the value.
+   */
+  onChange?: (payload: CheckboxGroupChangePayload) => void;
 }
 
 export type CheckboxGroupRef = HTMLDivElement;

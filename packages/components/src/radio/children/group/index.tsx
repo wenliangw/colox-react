@@ -17,13 +17,13 @@ export const RadioGroup = forwardRef<RadioGroupRef, RadioGroupProps>((props, ref
   const {
     value,
     defaultValue,
-    onChange,
     size = 'md',
     disabled = false,
     name = '',
     className,
     style,
     children,
+    onChange,
     ...rest
   } = props;
 

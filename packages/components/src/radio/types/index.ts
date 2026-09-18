@@ -54,14 +54,6 @@ export interface RadioGroupProps extends Omit<
   /** Uncontrolled initial selection. */
   defaultValue?: string;
   /**
-   * Fires when the group's selection switches. The payload carries the
-   * triggering member's native change event (which radio fired,
-   * propagation control) alongside the next selection — the group's
-   * `onChange` is its own event face, so it hands over the original
-   * event object instead of only the value.
-   */
-  onChange?: (payload: RadioGroupChangePayload) => void;
-  /**
    * Visual size inherited by members that don't set their own — a
    * group's members usually share the same tier, so the group carries
    * the axis.
@@ -75,6 +67,14 @@ export interface RadioGroupProps extends Omit<
    * the form collects the checked member under it.
    */
   name?: string;
+  /**
+   * Fires when the group's selection switches. The payload carries the
+   * triggering member's native change event (which radio fired,
+   * propagation control) alongside the next selection — the group's
+   * `onChange` is its own event face, so it hands over the original
+   * event object instead of only the value.
+   */
+  onChange?: (payload: RadioGroupChangePayload) => void;
 }
 
 export type RadioGroupRef = HTMLDivElement;

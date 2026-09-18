@@ -23,11 +23,11 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
     invalid = false,
     checked,
     defaultChecked,
-    onChange,
     disabled,
     children,
     className,
     style,
+    onChange,
     ...rest
   } = props;
 

@@ -38,13 +38,13 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     type,
     value,
     defaultValue,
-    onChange,
-    onCompositionStart,
-    onCompositionEnd,
     className,
     style,
     disabled,
     readOnly,
+    onChange,
+    onCompositionStart,
+    onCompositionEnd,
     ...rest
   } = props;
 
