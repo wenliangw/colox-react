@@ -40,8 +40,10 @@ const sidebars: SidebarsConfig = {
       label: 'Layout',
       collapsed: false,
       items: [
+        { type: 'doc', id: 'components/anchor', label: 'Anchor' },
         { type: 'doc', id: 'components/container', label: 'Container' },
         { type: 'doc', id: 'components/grid', label: 'Grid' },
+        { type: 'doc', id: 'components/positioner', label: 'Positioner' },
         { type: 'doc', id: 'components/stack', label: 'Stack' },
       ],
     },

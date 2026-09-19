@@ -1,0 +1,58 @@
+// The nine anchors. Corner and edge-middle placements pin one or two
+// logical edges; the middles centre on the free axis with the
+// standalone `translate` property (size-agnostic and it never
+// clobbers a consumer transform).
+.colox-positioner--placement-top-start {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.colox-positioner--placement-top {
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}
+
+.colox-positioner--placement-top-end {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+}
+
+.colox-positioner--placement-start {
+  inset-inline-start: 0;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+}
+
+.colox-positioner--placement-center {
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+}
+
+.colox-positioner--placement-end {
+  inset-inline-end: 0;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+}
+
+.colox-positioner--placement-bottom-start {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+}
+
+.colox-positioner--placement-bottom {
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}
+
+.colox-positioner--placement-bottom-end {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+}
+
+// The cover preset: the scrim/overlay shape (all four edges pinned).
+.colox-positioner--fill {
+  inset: 0;
+}

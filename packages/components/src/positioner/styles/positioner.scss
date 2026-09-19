@@ -1,0 +1,10 @@
+// The positioned box's own positioning. It leaves the flow, so it
+// shrink-wraps its (in-flow) children; the reference is the nearest
+// positioned ancestor for `absolute`, the viewport for `fixed`.
+.colox-positioner--position-absolute {
+  position: absolute;
+}
+
+.colox-positioner--position-fixed {
+  position: fixed;
+}

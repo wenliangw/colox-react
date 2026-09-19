@@ -1,0 +1,7 @@
+// The reference frame: a box that only provides the positioning
+// relationship for absolutely positioned boxes — its own layout stays
+// neutral (flexbox/grid flow belongs to Stack/Grid).
+.colox-anchor {
+  position: relative;
+  display: block;
+}

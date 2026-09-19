@@ -1,0 +1,187 @@
+---
+sidebar_position: 12
+---
+
+import { Anchor, Button, Positioner, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Positioner
+
+The positioning mechanism comes as two names, one role each:
+
+- **`Anchor`** is the **reference frame** — a relative box; whatever is inside it
+  becomes the reference the nested boxes resolve against. `inline` makes it hug its
+  content, which is what pins an overlay to a control.
+- **`Positioner`** is the **positioned box** — it leaves the flow, shrink-wraps its
+  children and pins itself to an anchor of its reference box: the nearest positioned
+  ancestor (`Anchor`, or another positioned box) for `absolute` (the default), the
+  viewport for `fixed`.
+
+A positioned box is itself a reference for the boxes nested inside it, so frames
+compose without extra wrappers. It is the third layout mechanism beside `Stack`
+(flexbox) and `Grid` (tracks), and it is pure CSS: no measurement, no portal, no
+observers. Following an anchor, flipping and collision handling belong to the
+floating layer (`cdk/floating`'s `Popup` + `useFloatingPosition`) — this component
+answers "what does it pin to, and how far".
+
+## Anchors
+
+`placement` pins the positioned box to one of the nine anchors of its reference box.
+The block axis keeps the physical `top`/`bottom` words (they never mirror); the
+inline axis uses the logical `start`/`end` words, so the same placement mirrors
+correctly in RTL.
+
+<Stack direction="column" gap="1">
+  <Anchor
+    style={{
+      inlineSize: '100%',
+      blockSize: 96,
+      border: '1px dashed var(--colox-color-border-muted)',
+      borderRadius: 'var(--colox-radius-sm)',
+      background: 'var(--colox-color-bg-muted)',
+    }}
+  >
+    <Positioner
+      placement="top-end"
+      style={{
+        inlineSize: 12,
+        blockSize: 12,
+        borderRadius: 'var(--colox-radius-full)',
+        background: 'var(--colox-color-brand-solid)',
+      }}
+    />
+  </Anchor>
+</Stack>
+
+```tsx
+<Anchor inline>
+  <Button>Inbox</Button>
+  <Positioner placement="top-end" offset="1">
+    3
+  </Positioner>
+</Anchor>
+```
+
+The nine words are `top-start`, `top`, `top-end`, `start`, `center`, `end`,
+`bottom-start`, `bottom`, `bottom-end`. The four corners and four edge middles pin
+one or two edges; the middles centre on the free axis, and `center` sits on the box
+centre — both use the standalone `translate` property, so a consumer `transform` is
+never clobbered.
+
+Without a `placement` a positioned box keeps auto insets — pair it with `offset` to
+pin edges explicitly, or use `fill`.
+
+## Offset
+
+`offset` is the distance from the pinned edges, and it only takes spacing token keys
+(the same scale `gap` and `gutter` use) — never raw pixels.
+
+A bare key spaces **the edges the placement pins**:
+
+```tsx
+// top + inline-end: 2 spacing steps in from each pinned edge
+<Positioner placement="top-end" offset="2" />
+```
+
+An object states each edge on its own; naming an edge also pins it, so two edges of
+one axis stretch the box between them (CSS-faithful two-edge anchoring — the box's
+size on that axis must be `auto`, a definite size wins the usual over-constraint):
+
+```tsx
+<Positioner placement="top-end" offset={{ top: '1', end: '4' }} />
+<Positioner placement="top-start" offset={{ top: '2', bottom: '2' }} />
+```
+
+`center` pins no edge, so a bare key has nothing to measure from — use an object to
+nudge a specific edge (which then overrides the centre on that axis).
+
+## Frames and composition
+
+The frame is a box that only provides the reference — its own layout stays neutral
+(flexbox/grid flow belongs to `Stack`/`Grid`). `inline` makes it hug its content
+instead of filling the block flow, and the hug holds in any parent layout (a flex or
+grid parent blockifies an inline box, so the frame also carries `width: fit-content`).
+
+```tsx
+<Anchor inline>
+  <Button>Inbox</Button>
+  <Positioner placement="top-end" offset="1">
+    3
+  </Positioner>
+</Anchor>;
+
+{
+  /* Multiple pieces: one frame, as many positioned boxes as needed */
+}
+<Anchor>
+  <Card />
+  <Positioner fill />
+  <Positioner placement="top-end" offset="2" />
+</Anchor>;
+```
+
+A positioned box is its own reference, so a frame can be nested inside a frame
+without a second `Anchor`: the inner box pins into the outer one and its children
+anchor to _its_ box.
+
+```tsx
+<Anchor>
+  <Positioner placement="bottom-start" offset="3">
+    <Positioner placement="center" />
+  </Positioner>
+</Anchor>
+```
+
+## Page-level fixed
+
+`position="fixed"` resolves against the viewport, which is what page-level layers
+want — a floating action button, a fixed notice, a full-viewport scrim. No `Anchor`
+is involved:
+
+```tsx
+<Positioner position="fixed" placement="bottom-end" offset="5">…</Positioner>
+<Positioner position="fixed" fill />
+```
+
+Four facts worth knowing:
+
+- an ancestor with `transform`/`filter`/`contain`/`will-change` becomes the
+  containing block of a `fixed` box — the viewport reference silently changes (the
+  library's own popups ride the same rule);
+- `fixed` is not clipped by scroll containers, so it escapes them — right for
+  page-level layers, wrong for "pin inside this scroller" (that is sticky, and it is
+  not this mechanism);
+- a positioned box creates a stacking context: z-ordering stays the consumer's call
+  (the library exposes no z axis);
+- DOM order is never rearranged — the visual placement does not change reading or
+  tab order.
+
+## Props
+
+Both components accept every native `div` attribute and forward their `ref`.
+
+**Anchor** (the reference frame):
+
+| Prop   | Type      | Default |
+| ------ | --------- | ------- |
+| inline | `boolean` | `false` |
+
+**Positioner** (the positioned box):
+
+| Prop      | Type                                                                                                              | Default      |
+| --------- | ----------------------------------------------------------------------------------------------------------------- | ------------ |
+| position  | `'absolute' \| 'fixed'`                                                                                           | `'absolute'` |
+| placement | `'top-start' \| 'top' \| 'top-end' \| 'start' \| 'center' \| 'end' \| 'bottom-start' \| 'bottom' \| 'bottom-end'` | —            |
+| offset    | `PositionerOffsetKey \| { top?, bottom?, start?, end? }`                                                          | —            |
+| fill      | `boolean`                                                                                                         | `false`      |
+
+## Boundaries
+
+- **No measurement, no portal.** Following an anchor, flipping at edges or
+  teleporting out of an `overflow` ancestor are the floating layer's job.
+- **No sticky.** Pinning inside a scroll container is a scroll relationship, not an
+  absolute one; it belongs to the scroll component.
+- **Layout stays with the mechanisms.** A frame is not a flex/grid container —
+  compose it with `Stack`/`Grid` when the content needs flow.
+- **Overlay semantics are the consumer's.** `aria-hidden`, `role` and
+  `pointer-events` on a cover layer are application decisions.

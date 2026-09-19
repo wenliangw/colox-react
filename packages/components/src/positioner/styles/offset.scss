@@ -1,0 +1,22 @@
+@use '@colox/theme/variables' as tokens;
+
+// The offset axes: one class family per logical edge, every spacing
+// scale key. These rules sit after the placement presets, so an
+// explicit offset always wins over the anchor it adjusts.
+@each $key in tokens.$colox-spacing-keys {
+  .colox-positioner--offset-top-#{$key} {
+    inset-block-start: var(--colox-spacing-#{$key});
+  }
+
+  .colox-positioner--offset-bottom-#{$key} {
+    inset-block-end: var(--colox-spacing-#{$key});
+  }
+
+  .colox-positioner--offset-start-#{$key} {
+    inset-inline-start: var(--colox-spacing-#{$key});
+  }
+
+  .colox-positioner--offset-end-#{$key} {
+    inset-inline-end: var(--colox-spacing-#{$key});
+  }
+}

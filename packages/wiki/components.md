@@ -19,5 +19,6 @@ topic bundle's `references/component.md`.
 | AutoComplete | free-text combobox: injected host (Input family), Target/Suggestions/Option members, local filter + ARIA editable-combobox keyboard | shipped | pending      |
 | IconButton   | square icon-only button primitive (shared reset + token-pinned size)                                                                | shipped | pending      |
 | Grid         | grid layout mechanism                                                                                                               | shipped | skills/grid  |
-| Positioner   | absolute positioning context                                                                                                        | planned | —            |
+| Anchor       | reference frame: relative positioning context (+ hug), the reference for absolute children                                          | shipped | pending      |
+| Positioner   | positioning mechanism: Anchor reference frame + Positioner pinned box (placement + token offset), nestable                          | shipped | pending      |
 | Container    | semantic width shell (design-token widths, centered)                                                                                | shipped | pending      |

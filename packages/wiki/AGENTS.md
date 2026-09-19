@@ -77,6 +77,44 @@ exactly, apply the reason, not the letter.
 - `[featured cell]` → `<Grid.Item span={n}>`. Why: span is the item-axis
   vocabulary; it rides a custom property so arbitrary counts stay class-free.
 
+## Anchor — quick rules
+
+- `[positioning context]` → `<Anchor>`: a layout-neutral relative box; whatever is
+  inside becomes the reference for absolutely positioned children (a `Positioner`,
+  or a hand-written absolute box). Why: it owns only the positioning relationship —
+  flexbox/grid flow stays with Stack/Grid.
+- `[overlay on a control]` → `<Anchor inline>` so the frame box matches the
+  control's box, then pin a `<Positioner>` inside. Why: nothing extra appears in the
+  DOM beyond the positioned box.
+- `[frame inside a frame]` → no second Anchor: a positioned `Positioner` is itself a
+  reference for its children.
+
+## Positioner — quick rules
+
+- `[positioning mechanism]` → two names, one role each: `<Anchor>` is the reference
+  frame (a relative box; `inline` hugs the control so an overlay pins to it), and
+  `<Positioner>` is the positioned box — `absolute` by default (against the nearest
+  positioned ancestor) or `fixed` (against the viewport). A positioned box is itself
+  a reference, so frames compose without a second Anchor. Why: the third mechanism —
+  flexbox/grid flow stays with Stack/Grid, and it owns only the CSS positioning
+  relationship (no measurement, no portal).
+- `[anchor word]` → block axis is physical (`top`/`bottom` — they never mirror),
+  inline axis is logical (`start`/`end` — they mirror in RTL). Never physical
+  left/right. Why: one word family across `placement`, `offset` and the layout
+  components.
+- `[distance from an edge]` → `offset="2"` (spacing key) spaces the edges the
+  placement pins; `offset={{ top, bottom, start, end }}` states each edge and pins
+  the edges it names. Never raw px.
+- `[badge on a control]` → see the Anchor rules: `<Anchor inline>` around the
+  control, then a `<Positioner placement="top-end" offset="1">`.
+- `[page-level layer]` → `<Positioner position="fixed">` (`fill` for a full-viewport
+  scrim) — no Anchor involved. Why: fixed resolves against the viewport — mind
+  transformed ancestors, which become its containing block.
+- `[sticky / pin inside a scroller]` → not this mechanism: sticky is a scroll
+  relationship, owned by the scroll component.
+- `[follow an anchor / flip at edges / escape overflow]` → the floating layer owns
+  measurement and portals. Why: one mechanism per component.
+
 Full sources: `skills/doctrine/SKILL.md` (read order) ·
 `skills/doctrine/references/rules.md` (global rules) ·
 `skills/stack/references/rules.md` (stack rules) ·

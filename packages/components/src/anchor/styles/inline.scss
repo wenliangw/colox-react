@@ -1,0 +1,8 @@
+// Hug the content instead of filling the block flow (the badge wrap).
+// `fit-content` carries the intent across parent layouts: a flex or grid
+// item is blockified, so `inline-block` alone would stretch in a column
+// flow and lose the hug.
+.colox-anchor--inline {
+  display: inline-block;
+  width: fit-content;
+}

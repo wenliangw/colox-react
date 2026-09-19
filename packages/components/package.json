@@ -65,10 +65,20 @@
       "import": "./dist/es/date-picker.js",
       "require": "./dist/cjs/date-picker.cjs"
     },
+    "./anchor": {
+      "types": "./dist/types/anchor/index.d.ts",
+      "import": "./dist/es/anchor.js",
+      "require": "./dist/cjs/anchor.cjs"
+    },
     "./autocomplete": {
       "types": "./dist/types/autocomplete/index.d.ts",
       "import": "./dist/es/autocomplete.js",
       "require": "./dist/cjs/autocomplete.cjs"
+    },
+    "./positioner": {
+      "types": "./dist/types/positioner/index.d.ts",
+      "import": "./dist/es/positioner.js",
+      "require": "./dist/cjs/positioner.cjs"
     },
     "./radio": {
       "types": "./dist/types/radio/index.d.ts",

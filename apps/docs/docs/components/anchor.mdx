@@ -1,0 +1,63 @@
+---
+sidebar_position: 13
+---
+
+import { Anchor, Button, Positioner } from '@colox/react';
+import '@colox/react/style.css';
+
+# Anchor
+
+`Anchor` is the **reference frame**: a layout-neutral relative box whose own box is
+what absolutely positioned boxes resolve against. Reach for it when something needs
+a positioning context — a `Positioner` pinned to a control's corner, a scrim over a
+card, or any hand-written absolute child.
+
+It owns only the positioning relationship: flexbox/grid flow belongs to `Stack` and
+`Grid`, and `Anchor` never measures anything.
+
+## Hug
+
+By default the frame behaves like a block box and fills the line. `inline` makes it
+hug its content instead — which is what pins an overlay to a control, since the
+frame's box has to match the control's box:
+
+```tsx
+<Anchor inline>
+  <Button>Inbox</Button>
+  <Positioner placement="top-end" offset="1">
+    3
+  </Positioner>
+</Anchor>
+```
+
+The hug holds in any parent layout: a flex or grid parent blockifies an inline box,
+so the frame also carries `width: fit-content` and cannot be stretched back.
+
+Without `inline`, the same frame spans the block flow — right for a scrim over a
+card, wrong for an overlay on a button.
+
+## Reference box
+
+The frame serves any absolutely positioned child, not only `Positioner`:
+
+```tsx
+<Anchor>
+  <Card />
+  {/* hand-written absolute child, or… */}
+  <div style={{ position: 'absolute', insetBlockStart: 0, insetInlineStart: 0 }} />
+  {/* …a Positioner, which brings the token vocabulary */}
+  <Positioner placement="bottom-end" offset="2" />
+</Anchor>
+```
+
+A **positioned `Positioner` is itself a reference**, so a frame nested in a frame
+needs no second `Anchor` — see the [Positioner](positioner.mdx) page for the
+composition rules.
+
+## Props
+
+| Prop   | Type      | Default |
+| ------ | --------- | ------- |
+| inline | `boolean` | `false` |
+
+`Anchor` accepts every native `div` attribute and forwards its `ref`.
