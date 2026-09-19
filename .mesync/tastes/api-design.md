@@ -57,7 +57,7 @@
 
 - **组 = 值数组语义**：多选的状态形态就是 `string[]`（`value`/`defaultValue`/`onChange(value: string[])`），成员以原生 `value` prop 声明参与键（表单值 + 组键双职，不发明 `groupKey` 之类的平行 prop）；显式 `checked`/`defaultChecked` 的成员退出组（本人优先），`name`/`disabled` 组继承、本人优先、组 disabled 不可退出。
 - **组容器走 dot-part**（`<Checkbox.Group>`）：「内容必须在树中」判据成立——多选集合天然是父子树，成员需要在组上下文里生存；Leaf 三件（props/事件/ref）不动，组级语义（数组 onChange）是组自己的出口，叶子 onChange 始终原生透传。
-- **自造事件面与原生槽的边界**：事件通道分两种，各守各的——**组级 onChange 是库自造的自定义事件面**（无原生槽可忠实），载荷为对象 `{ event, value }`：event = 触发成员的原生合成事件（哪成员触发、stopPropagation 可控），value = 语义载荷（下一单选值/数组）。**叶子 onChange 是原生事件透传槽**，不包 `(event, checked)`/`(event, value)` 包装——MUI 式叶子包装仍不做，「原生忠实」在叶子成立。组内成员受控时 `event.target.checked` 是 React 受控语义（恢复后的受控值），真相从 Group 的 `{ event, value }` 读。这是「自造事件面才组装载荷、原生槽永远透传」的诚实边界。
+- **自造事件面与原生槽的边界**：事件通道分两种，各守各的——**组级 onChange 是库自造的自定义事件面**（无原生槽可忠实），载荷为对象 `{ event, value }`：event = 触发成员的原生合成事件（哪成员触发、stopPropagation 可控），value = 语义载荷（下一单选值/数组）。**叶子 onChange 是原生事件透传槽**，不包 `(event, checked)`/`(event, value)` 包装——MUI 式叶子包装仍不做，「原生忠实」在布尔叶子成立（**数字值叶子例外**：Slider 已由用户拍板自造 `{ event, value }`，见文末「数字值控件」节——原生 range 值是 string，数字契约的解析归库里）。组内成员受控时 `event.target.checked` 是 React 受控语义（恢复后的受控值），真相从 Group 的 `{ event, value }` 读。这是「自造事件面才组装载荷、原生槽永远透传」的诚实边界。
 - **载荷按组件语义扩展字段，对象形态免反查**：`{ event, value }` 是原模不是上限——Select 的载荷加 `option`（被选/被切换项从叶子编译出的记录，受控消费方不用拿着 value 反查选项集合）；对象形态加字段非破坏，趁未发布补齐。**行为词全家族同名同义**：`clearable` 对齐 Input 已定名，后续组件（DatePicker 等）有清除语义一律 `clearable`——命名对齐减少用户心智负担（用户拍板「后续组件命名全部对齐」）。
 - **indeterminate 是纯视觉通道**：第三态只改图形（bar vs check），真相永远在 `checked`（事件流、表单值、FormData 只认它）；「选中了几个孩子」的级联数学归消费方，库只负责可视化——「状态→图形映射归消费方」在复选框上的延续。
 
@@ -158,3 +158,13 @@
 - 视觉轴词汇家族同词：开关的调色板叫 `palette`（Button 已有同轴，不引入 MUI 的 `color`）；语义 = **只染开态**（开关靠「开色」被读），关态面料与 invalid 红通道不随调色板漂移；接线同 Button 私有变量模式（类声明 `--colox-switch-palette-*`、绘制规则读变量，零特异性级联干扰）。
 
 来源：Switch 六问对齐定案（决策 Switch API 定案）。
+
+## 数字值控件用真 range input + 自造事件面（Slider 先例）
+
+- Slider 兑现（2026）：**真 `<input type="range">` 即控件**——ref/键盘/焦点/表单全原生零成本；视觉绘制 appearance:none + 引擎伪元素（WebKit 用 gradient + background-clip: content-box，Firefox 用 `::-moz-range-progress`），组件算出已走百分比写入 `--colox-slider-progress` CSS 变量（受控/未受控都内同步）。
+- **事件面新档位（用户拍板「自造 { event, value }」）**：数字值叶子的 onChange 自造载荷 `{ event, value }`——event = 原生 change 事件（原生面完整保留进载荷：propagation、DOM 事实面），value = 提交数字（原生 range 的值是 string，库里解析后才交给消费方，消费方不背 `valueAsNumber`）。「叶子事件永远原生透传」的旧规则对**数字值控件失效**：原生 string 值与数字契约不符时，库解析比消费方解析更诚实。布尔叶子（Checkbox/Radio/Switch/Input）保持透传不变。**InputNumber 沿用此先例**。
+- `min`/`max`/`step` 收窄为 number：原生 `string | number` 联合不符合数字值契约，组件面收窄压过原生宽类型。
+- marks 纯显示层：刻度只做视觉、不碰 step（antd 的 step=null 隐式吸附不抄）；palette 六族只染已走条纹 + thumb 圈，未走段/刻度/禁用面料保持中性（同 Switch「只染开态」的语义克制）。
+- 几何同源家族不变式：条纹随档走 spacing 阶梯（4/6/8/10 与 thumb 12/16/20/24 同倍率，比例稳定 2.4-3:1——4px 恒定被用户目视否定后改档）、行高 24/32/40/48 四档、focus-visible = palette muted 环、motion 走 token。
+
+来源：Slider 六问对齐定案（决策「Slider API 定案」）；用户对「原生 range 是否能更好自定义视觉」发问后的确认（原生基座 + 伪元素绘制可行性，含 WebKit 进度渐变技巧）。
