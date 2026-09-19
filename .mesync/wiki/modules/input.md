@@ -2,9 +2,9 @@
 
 ## 职责
 
-带外壳的**基础 + 表单**双栖单行输入框：外壳（group shell）承载全部视觉契约（边框、焦点环、尺寸、invalid/disabled 态），内部是裸原生 `<input>`（ref、原生属性/事件全落于此）。提供前置/后置插槽（`leading`/`trailing` ReactNode）、三个内置控件（`clearable` 清除钮、`allowTogglePassword` 密码可见性切换、`type="search"` 自动搜索图标）、以及**输入限制通道** `filterPattern`（与原生 `pattern` 的校验通道正交）。类型的导出面保持 v1：`Input` / `InputSize` / `InputRef` / `InputProps` / `inputVariants` / `InputVariants`。
+带外壳的**基础 + 表单**双栖单行输入框：外壳（group shell）承载全部视觉契约（边框、焦点环、尺寸、invalid/disabled 态），内部是裸原生 `<input>`（ref、原生属性/事件全落于此）。提供前置/后置插槽（`leading`/`trailing` ReactNode）、三个内置控件（`clearable` 清除钮、`allowTogglePassword` 密码可见性切换、`type="search"` 自动搜索图标）、以及**输入限制通道** `filterPattern`（与原生 `pattern` 的校验通道正交）。类型的导出面保持 v1 并增一枚载荷类型：`Input` / `InputSize` / `InputRef` / `InputProps` / `InputChangePayload` / `inputVariants` / `InputVariants`。
 
-**不做校验引擎**：Input 是叶子组件。原生 constraint 校验属性（`pattern`/`required`/`min`/`max`/`maxLength`…）全透传、`invalid` 只提供手动状态上报通道、`:user-invalid` 用同一套红 token 渐进增强；规则/异步校验/错误消息/字段联动归未来的 Form/Field 层，动态表单是独立子系统（Form/Field/FieldArray/useForm），不与 Input 纠缠。Input 对表单层的承诺只有三件：受控/非受控对称、原生事件流、真 ref。
+**不做校验引擎**：Input 是叶子组件。原生 constraint 校验属性（`pattern`/`required`/`min`/`max`/`maxLength`…）全透传、`invalid` 只提供手动状态上报通道、`:user-invalid` 用同一套红 token 渐进增强；规则/异步校验/错误消息/字段联动归未来的 Form/Field 层，动态表单是独立子系统（Form/Field/FieldArray/useForm），不与 Input 纠缠。Input 对表单层的承诺只有三件：受控/非受控对称、统一事件载荷、真 ref。
 
 ## 目录结构
 
@@ -21,7 +21,7 @@ input/
 │   ├── clear-button.tsx       # ClearButton：换装 IconButton 基座（size="4"），站点保留 mousedown 防失焦、aria-label="Clear input"
 │   └── visibility-toggle.tsx  # VisibilityToggle：状态式图标（闭眼=隐藏/睁眼=可见）
 ├── _tests/                  # 6 个测试文件：state/size/slots/builtins/filter/contract
-├── types/index.ts           # InputProps（全量扩展）+ InputSize + InputRef
+├── types/index.ts           # InputProps（全量扩展）+ InputSize + InputChangePayload + InputRef
 ├── styles/
 │   ├── base.scss              # 外壳契约（focus-within 环/invalid/disabled）+ 插槽条（裸 control reset 已随 cdk 迁出）
 
@@ -51,10 +51,14 @@ input/
 
 `filterPattern` 的 RegExp 需无 `g`/`y` 旗标（`test` 有状态）；组件不做 clone——文档要求消费方传无状态模式或自行 reset。相关决策见决策链。
 
+### 事件面（全家族统一载荷）
+
+`onChange` 发布 `InputChangePayload = { event, value }`——`event` = 原生 change 事件（传播控制、DOM 事实面；清除钮路径为构造的事件形对象），`value` = 接受的下一文本。`InputProps` 因此 `Omit<'size' | 'onChange'>` 后自持 `onChange`；`filterPattern` 拒绝的跃迁不发。这是「组件层事件面统一自造 payload」总则的叶子兑现（本轮用户拍板「表单组件的事件产出的 Payload 要统一」，旧「叶子原生透传」豁免废除）。
+
 ### 受控/非受控与清除直通
 
 - 控制模式判定 `value !== undefined`（React 惯例）；受控/非受控完全对称——统一走消费者 onChange 单一事件流，无内部 value 状态。
-- **清除钮直通消费者 onChange**（构造 `{target, currentTarget, type:'change'}` 事件形对象直接调用），不向 DOM 派发事件再绕合成系统：React 的 change 插件对受控输入报告旧值（value tracker 未同步）并在无状态更新时回写 DOM，DOM 派发通道不可靠；这是 MUI/Ark 同款做法。非受控旁路先 `input.value = ''` 再通知。相关实现事实见 `.mesync/corrections/form-inputs.md`。
+- **清除钮直通消费者 onChange**（以构造的 `{target, currentTarget, type:'change'}` 事件形对象装进载荷直接调用），不向 DOM 派发事件再绕合成系统：React 的 change 插件对受控输入报告旧值（value tracker 未同步）并在无状态更新时回写 DOM，DOM 派发通道不可靠；这是 MUI/Ark 同款做法。非受控旁路先 `input.value = ''` 再通知。相关实现事实见 `.mesync/corrections/form-inputs.md`。
 - `filterPattern` 拒绝路径同样直接回写 DOM 值（受控回写 `restoreValue`；非受控回写 lastAccepted），不触发 onChange。
 
 ### 内置控件
@@ -70,6 +74,6 @@ input/
 
 ## 对外接口
 
-- 导出 `Input`、`InputSize`、`InputRef`、`InputProps`、`inputVariants`、`InputVariants`。
-- `InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>`，新增：`size?`（'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`leading?`、`trailing?`、`clearable?`、`allowTogglePassword?`、`clearIcon?`、`eyeIcon?`、`eyeOffIcon?`、`filterPattern?`。
+- 导出 `Input`、`InputSize`、`InputRef`、`InputProps`、`InputChangePayload`、`inputVariants`、`InputVariants`。
+- `InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'>`，新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`leading?`、`trailing?`、`clearable?`、`allowTogglePassword?`、`clearIcon?`、`eyeIcon?`、`eyeOffIcon?`、`filterPattern?`、`onChange?: (payload: InputChangePayload) => void`（事件块排在属性块之后）。
 - 保留扩展点（未建）：插槽渲染函数形态 `ReactNode | (state) => ReactNode`——主流库皆不做，遇到真实需求再挣（按需追加纪律）。

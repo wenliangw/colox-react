@@ -2,7 +2,7 @@
 
 ## 职责
 
-自由文本 combobox：**组合式结构壳**——`<AutoComplete>` 渲染自己的锚点 div，把 combobox 契约**注入**进宿主元素（唯一组件型子元素；Input 家族为默认宿主，全部静态词 size/invalid/placeholder/clearable 自持），选项面走 Select 血脉的**声明叶**（`Suggestions` 区域 + `Option` 叶子，编译记录词形同构）。**值 = 纯文本**：'' = 空，任何敲击都是合法提交——建议只是便捷通道、永不构成约束（与 Select 的本质差异：无「非法值/回滚」概念）。`onChange` 自造 **`{ event, value }`**（本轮确立的**全家族组件层事件面统一词形**总则的第一兑现：文本值控件不再原生透传；叶子直对原生控件的透传槽是唯一豁免），选行额外走 `onSelect({ event, value, option })`。**面板开合自管为默认**（聚焦/点击开、空 query 显全量、输入即过滤、无候选自动关、Escape/失焦/选中关），`open/defaultOpen/onOpenChange` 受控可覆；**焦点恒留宿主**（ARIA 1.2 editable combobox：rows 经 aria-activedescendant 巡行，行 mousedown preventDefault 防失焦——Select 焦点模型同构）。**行为内核沉 `cdk/combobox`**（rule of two：Select search 为第一消费者、AutoComplete 第二）：默认过滤 = contains 匹配 text **或 value**、大小写不敏感、trim（query 空 = 全量显示；`filterOption` 覆盖），编译记录 `ComboboxOption` 结构互通——Select 共享机器、将来 Mentions 等同源接入。面板 = cdk `Popup`（portal、matchWidth 跟壳宽——建议列表是输入框上下文的工具面板，无固有几何，与日历的固有宽语义相反）+ `useDismissible` + `useComboboxKeyboard`（↑↓ 环绕巡行、Home/End、Enter 选中、Space 输入穿越、闭合态箭头先开后巡行）。行固定 md 档（不继承宿主 size）、无持久选中态（选完填值关面板，antd 同构——填充即选中）、无 highlight（富渲染通道 children 归消费方）、无 palette 轴、disabled 行跳过巡行但保持可见。
+自由文本 combobox：**组合式结构壳**——`<AutoComplete>` 渲染自己的锚点 div，把 combobox 契约**注入**进宿主元素（唯一组件型子元素；Input 家族为默认宿主，全部静态词 size/invalid/placeholder/clearable 自持），选项面走 Select 血脉的**声明叶**（`Suggestions` 区域 + `Option` 叶子，编译记录词形同构）。**值 = 纯文本**：'' = 空，任何敲击都是合法提交——建议只是便捷通道、永不构成约束（与 Select 的本质差异：无「非法值/回滚」概念）。`onChange` 自造 **`{ event, value }`**（本轮确立的**全家族组件层事件面统一词形**总则的第一兑现：文本值控件不再原生透传；当时留的「叶子直对原生控件的透传槽」豁免**已于全家族收敛轮废除**——Input/Textarea/Checkbox/Radio/Switch 同样自造载荷，宿主注入契约的 `onChange` 随之收 `{ event, value }`），选行额外走 `onSelect({ event, value, option })`。**面板开合自管为默认**（聚焦/点击开、空 query 显全量、输入即过滤、无候选自动关、Escape/失焦/选中关），`open/defaultOpen/onOpenChange` 受控可覆；**焦点恒留宿主**（ARIA 1.2 editable combobox：rows 经 aria-activedescendant 巡行，行 mousedown preventDefault 防失焦——Select 焦点模型同构）。**行为内核沉 `cdk/combobox`**（rule of two：Select search 为第一消费者、AutoComplete 第二）：默认过滤 = contains 匹配 text **或 value**、大小写不敏感、trim（query 空 = 全量显示；`filterOption` 覆盖），编译记录 `ComboboxOption` 结构互通——Select 共享机器、将来 Mentions 等同源接入。面板 = cdk `Popup`（portal、matchWidth 跟壳宽——建议列表是输入框上下文的工具面板，无固有几何，与日历的固有宽语义相反）+ `useDismissible` + `useComboboxKeyboard`（↑↓ 环绕巡行、Home/End、Enter 选中、Space 输入穿越、闭合态箭头先开后巡行）。行固定 md 档（不继承宿主 size）、无持久选中态（选完填值关面板，antd 同构——填充即选中）、无 highlight（富渲染通道 children 归消费方）、无 palette 轴、disabled 行跳过巡行但保持可见。
 
 ## 目录结构
 
@@ -43,7 +43,7 @@ cdk 新面：`src/cdk/combobox/` ——建议行为完整内核，能力一律�
   'aria-activedescendant'?: string }
 ```
 
-cloneElement 注入**覆盖同名**（值词归 AutoComplete——作者在宿主上写 value/onChange/aria 会被覆盖，文档写明），**静态词自持**；宿主自己的 onFocus/onBlur/onKeyDown/onChange 被**链式调用**（库先做、作者回调随后）。`disabled/readOnly` 由 AutoComplete **读宿主 props 观测**（面板不弹、选择物禁）。锚点与 ref = 根自渲染的 div（`colox-autocomplete`），popup anchor 它而非宿主 ref——不依赖被包组件的 ref 语义。
+cloneElement 注入**覆盖同名**（值词归 AutoComplete——作者在宿主上写 value/onChange/aria 会被覆盖，文档写明），**静态词自持**；宿主自己的 onFocus/onBlur/onKeyDown/onChange 被**链式调用**（库先做、作者回调随后；宿主是 Input 家族，其 `onChange` 即家族载荷 `{ event, value }`，链式调用原样转发同一载荷）。`disabled/readOnly` 由 AutoComplete **读宿主 props 观测**（面板不弹、选择物禁）。锚点与 ref = 根自渲染的 div（`colox-autocomplete`），popup anchor 它而非宿主 ref——不依赖被包组件的 ref 语义。
 
 ### 状态机（use-autocomplete）
 

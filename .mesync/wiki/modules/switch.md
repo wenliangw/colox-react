@@ -25,7 +25,7 @@ switch/
 
 ## 词形与语义（六问对齐）
 
-- `checked` / `defaultChecked`（受控/非受控，Checkbox 同词形）；`onChange` 原生事件透传，新值在 `event.target.checked`——用户对 defaultChecked 曾有保留（「没有必要吧」），讲清道理后**正式拍板保留**：原生属性透传零成本 + 非受控初始开唯一通道（服务端预填设置页）+ Checkbox/Radio 同构 + Form 集成地基。
+- `checked` / `defaultChecked`（受控/非受控，Checkbox 同词形）；`onChange` 发布全家族载荷 `SwitchChangePayload = { event, value }`（value = 下一开态 boolean；`SwitchProps` 因此 `Omit<'onChange'>` 后自持 onChange，旧「原生透传、新值在 `event.target.checked`」表述已废）——用户对 defaultChecked 曾有保留（「没有必要吧」），讲清道理后**正式拍板保留**：原生属性透传零成本 + 非受控初始开唯一通道（服务端预填设置页）+ Checkbox/Radio 同构 + Form 集成地基。
 - **真 input + role="switch"**（否决 antd button 路）：表单值零成本进 formdata，键盘/焦点/点击全原生。
 - `children` = 标签文案（Checkbox 同构），无 children 不渲染 label span。
 - 轨道内不带 ON/OFF 文字（xs 档装不下；扩展点 `checkedText/uncheckedText`）；loading 不带（扩展点）。
@@ -42,7 +42,7 @@ switch/
 
 ## 测试
 
-24 例：size 四档类 + md 默认；palette 六族类 + primary 默认；label 文案可访问名 + 无 children 无 label span；states（defaultChecked 原生透传、默认未开、invalid aria/修饰类、缺省非 invalid、disabled 原生 + 修饰类）；native contract（type=checkbox + role=switch、ref 指向内层 input、change 事件透传原样、name/value 表单转发、className/style 合并到根 label）。
+24 例：size 四档类 + md 默认；palette 六族类 + primary 默认；label 文案可访问名 + 无 children 无 label span；states（defaultChecked 原生透传、默认未开、invalid aria/修饰类、缺省非 invalid、disabled 原生 + 修饰类）；native contract（type=checkbox + role=switch、ref 指向内层 input、change 走家族载荷（`{ event, value }`，value = 开态 boolean）、name/value 表单转发、className/style 合并到根 label）。
 
 ## 出口
 

@@ -80,7 +80,7 @@ src/slider/
 
 - Slider 六问对齐（词形 value/defaultValue + min/max/step 原生 / onChange {event, value} / v1 marks / invalid 不带 / palette 六族 / 几何草案）→ `Slider API 定案` 决策节点。
 - track 高度 4px 恒定 → **随档 4/6/8/10**（用户目视否定后三候选选 A）→ `track 高度随档阶梯` 决策节点（supersedes 上一节点）。
-- 事件面边界变化：**叶子组件首次出现非透传自造事件面**（此前规则 「叶子 onChange = 原生透传槽」对数字值控件失效，用户拍板「自造 { event, value }」）。Checkbox.Group 的组级先例在「自造面」侧；现在数字值叶子也有了这个面。InputNumber 预期同构。
+- 事件面边界变化：**叶子组件首次出现非透传自造事件面**（此前规则 「叶子 onChange = 原生透传槽」对数字值控件失效，用户拍板「自造 { event, value }」）。Checkbox.Group 的组级先例在「自造面」侧；现在数字值叶子也有了这个面。InputNumber 预期同构。**（后续收敛：该例外已作废——Input/Textarea/Checkbox/Radio/Switch 单件也统一为 `{ event, value }`，全家族无透传槽，见 api-design 总则）**
 
 ## 当前状态
 

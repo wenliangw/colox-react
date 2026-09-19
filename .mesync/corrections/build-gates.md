@@ -26,3 +26,4 @@ Colox monorepo 构建竞态的防护清单（Textarea 交付期的实测，三�
   - [ ] 管道的 exit code 来自最后一个命令（tail），不是被 filter 的那个——eslint 失败时 tail 仍 exit 0，「GREEN」照样打印。
   - [ ] 结论：门禁链要么 `set -o pipefail`，要么拆分判定（`pnpm typecheck && echo TYPECHECK-OK; pnpm exec eslint src/textarea && echo LINT-OK`），echo 紧跟在真实命令后。
 - **为什么**：错误链里 eslint 若失败会被 tail 吞掉，`FULL-GATE-GREEN` 不可信。
+- **2026 复发（表单载荷统一轮）**：`pnpm exec eslint packages/components/src apps/preview/src | tail -15 && echo "ESLINT exit=$?"` 再次把 3 个 `no-unused-vars` 报成 exit 0（`$?` 是 tail 的），直到 husky 预提交才红。**核对过的写法**：`set -o pipefail; pnpm exec eslint … ; echo "EXIT=$?"`——pipefail 让管道整体返回失败者的状态；或 echo 紧跟真实命令、不接管道。
