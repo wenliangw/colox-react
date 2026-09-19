@@ -97,6 +97,7 @@ footer 左簇是一个胶囊容器（`bg-muted` 浅底 + `border-muted` 1px 描�
 
 - 形态：纯文字按钮「清除」住在 footer 胶囊内计数右邻（细竖线分隔）——不悬浮（悬浮版被否：无界世界里末行贴底，右下角必定压字）、不用图标（用户拍板文字形式）、不走 IconButton 基座（纯文字，按钮 reset + 本站样式；胶囊承担容器视觉）。
 - 交互：静止 text-muted / hover text-default / focus-visible 品牌环；`onMouseDown` preventDefault 防抢焦点；`disabled`/`readOnly` 下不渲染（resolver 判别下沉）。
+- readOnly 走**原生** `readOnly`（文本控件自带只读语义）：只读时清除钮隐去；家族自造面见 `.mesync/tastes/api-design.md`「readOnly 家族面」。
 - **清除行为 = correction form-inputs 路径**：受控时直构造事件形对象（`{ target, currentTarget, type:'change' }`）装进 `TextareaChangePayload` 调用消费者 onChange，DOM 由 re-render 跟进；非受控先直写 DOM 再通知。不向 DOM 派发事件（React value tracker 对受控输入报旧值/吞事件，vitest 实测过的配方矩阵）。
 - **事后联动**：清除是唯一不产生 input 事件、非受控也不产生 re-render 的静默写路径——`onCleared` 回调在组件层复合 `adjust()` + `count.refresh()`，DOM 写空后立刻重测高度、刷新计数。
 

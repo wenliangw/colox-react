@@ -49,7 +49,7 @@ radio/
 
 ### Group 单值语义（resolveRadioState + useRadioGroup）
 
-成员 = 声明 `value` 且未显式 `checked`/`defaultChecked`：checked 派生自 `group.value === memberValue`，选中走组 context 的 `onChange` 事件槽（成员调 `group.onChange(value, event)`，背后是 hook 的 `selectValue` 命令）。**无移除语义**：radio 不可反选，重复点击已选中成员时 DOM 无 change 事件——onChange 槽由成员 change 驱动，天然不会重复上报（受控/非受控同构）。显式 control / 无 value 成员独立。组级 `onChange({ event, value })` 是组自造事件面：event = 触发成员的原生合成事件（哪成员触发/传播控制可见），value = 下一选中值；成员 `onChange` 也发布家族载荷 `RadioChangePayload = { event, value }`（value = 该成员下一勾选态 boolean；受控值语义，消费方从 Radio.Group 读 next）。`size`/`name`/`disabled`/`invalid` 组继承、本人优先（disabled 不可退出、invalid 可退出——能力剥夺 vs 状态类两种解析语义）。
+成员 = 声明 `value` 且未显式 `checked`/`defaultChecked`：checked 派生自 `group.value === memberValue`，选中走组 context 的 `onChange` 事件槽（成员调 `group.onChange(value, event)`，背后是 hook 的 `selectValue` 命令）。**无移除语义**：radio 不可反选，重复点击已选中成员时 DOM 无 change 事件——onChange 槽由成员 change 驱动，天然不会重复上报（受控/非受控同构）。显式 control / 无 value 成员独立。组级 `onChange({ event, value })` 是组自造事件面：event = 触发成员的原生合成事件（哪成员触发/传播控制可见），value = 下一选中值；成员 `onChange` 也发布家族载荷 `RadioChangePayload = { event, value }`（value = 该成员下一勾选态 boolean；受控值语义，消费方从 Radio.Group 读 next）。`size`/`name`/`disabled`/`invalid`/`readOnly` 组继承（`size`/`name`/`invalid` 本人优先；`disabled`/`readOnly` 能力限制、sticky 不可退出）。
 
 ### 受控/非受控对称
 
@@ -64,5 +64,6 @@ radio/
 
 - 导出 `Radio`（含 `Radio.Group`）、`useRadioGroupContext`、`radioVariants`、`RadioVariants`、`RadioProps`/`RadioSize`/`RadioRef`/`RadioGroupProps`/`RadioGroupRef`/`RadioGroupContextValue`。
 - `RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'value'>`（`type` 锁死 radio、`value` 收紧为 string），新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`value?: string`（成员键 + 表单值）。
+- **readOnly（家族自造）**：单件与组级同词——`handleChange` 先判（`!checked` 回滚、不发 onChange/组载荷）、`aria-readonly`、根类 `colox-radio--readonly` + `cursor: default`、不灰化；组级经 context 下发（`readOnly || group.readOnly`），组读只读时当前选择冻结。
 - `RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`，新增：`value?: string`、`defaultValue?: string`、`onChange?: (payload: RadioGroupChangePayload) => void`（payload 带触发成员原生事件 + 下一选中值）、`invalid?: boolean`（组级非法：未自设者一律转红 + `aria-invalid`，组根不加——Form 前补强轮新增）；叶子 `onChange?: (payload: RadioChangePayload) => void`（`RadioProps` 因此 `Omit<'size'|'type'|'value'|'onChange'>`）、`size?: RadioSize`（成员继承、本人优先、缺省 md）、`disabled?`、`name?`。Group 根 div `role="radiogroup"` + `colox-radio-group`（纵向布局，gap spacing-2）。
 - 未建（按需追加纪律）：`options` 数组便捷形态；Radio.Button 形态（antd 风格按钮单选——需形态轴，遇到真实需求再挣）。

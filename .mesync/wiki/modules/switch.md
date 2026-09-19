@@ -25,6 +25,7 @@ switch/
 
 ## 词形与语义（六问对齐）
 
+- **readOnly（家族自造，Form 前补强轮）**：原生 `readonly` 对 checkbox 无意义，故自造——`handleChange` 先判 readOnly（`event.target.checked = !event.target.checked` 回滚、不发 onChange）、`aria-readonly`、根类 `colox-switch--readonly` + `cursor: default`，**不灰化**（仍可聚焦/可读/可提交）。
 - `checked` / `defaultChecked`（受控/非受控，Checkbox 同词形）；`onChange` 发布全家族载荷 `SwitchChangePayload = { event, value }`（value = 下一开态 boolean；`SwitchProps` 因此 `Omit<'onChange'>` 后自持 onChange，旧「原生透传、新值在 `event.target.checked`」表述已废）——用户对 defaultChecked 曾有保留（「没有必要吧」），讲清道理后**正式拍板保留**：原生属性透传零成本 + 非受控初始开唯一通道（服务端预填设置页）+ Checkbox/Radio 同构 + Form 集成地基。
 - **真 input + role="switch"**（否决 antd button 路）：表单值零成本进 formdata，键盘/焦点/点击全原生。
 - `children` = 标签文案（Checkbox 同构），无 children 不渲染 label span。

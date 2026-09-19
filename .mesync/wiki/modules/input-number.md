@@ -53,6 +53,7 @@ input-number/
 ## 对外接口
 
 - 导出 `InputNumber`、`InputNumberSize`、`InputNumberRef`、`InputNumberProps`、`InputNumberChangePayload`、`inputNumberVariants`、`InputNumberVariants`。
+- readOnly 走**原生** `readOnly`（只读时步进条不渲染）；家族自造面见 `.mesync/tastes/api-design.md`「readOnly 家族面」。
 - `InputNumberProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'value' | 'defaultValue' | 'onChange'>`，新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`value?: number | null`、`defaultValue?: number | null`（默认 null）、`min?`、`max?`、`step?`（默认 1）、`onChange?: (payload: InputNumberChangePayload) => void`。
 - 保留扩展点（未建）：formatter/parser/千分位/precision prop/wheel（显示美化层按需再挣）；长按连发；`min > max` 不校验（消费方责任）。
 

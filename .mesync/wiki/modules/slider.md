@@ -63,6 +63,7 @@ src/slider/
 ## 已知边界与扩展点（v1 留白）
 
 - **marks 是显示层**：不提供 antd 式隐式吸附（step=null 反按 marks 走位）；将来若用户裁决再加。
+- **readOnly（家族自造，Form 前补强轮）**：range 无原生只读——`handleChange` 先判 readOnly（回写 `event.currentTarget.value = String(current)`、不发 onChange）、`aria-readonly`、根类 `colox-slider--readonly` + `cursor: default`、不灰化（disabled 仍压倒）。
 - **双键 Range、垂直 slider、拖尾 onCommit** 不在 v1。**invalid 已于 Form 前补强轮兑现**（原定 v1 不带、extension point = aria-invalid + 家族红通道）：`invalid?: boolean` → `aria-invalid` + 根修饰类 `colox-slider--invalid`；涂装走私有变量 `--colox-slider-fabric`（未走段面料）——invalid 置为 `red-muted`、thumb 环 `red-solid`、焦点环 `red-muted`，**已走条纹与 thumb 的 palette 不变**（填充态自持涂装，同 Switch checked 优先级）；disabled 声明在 invalid 之后（终态压倒 invalid）。
 - **RTL 方向梯度**：WebKit 梯度画线未做方向感知（离轴平移需反算做镜像；v1 不特殊处理）。
 - **Firefox 分支未机器验证**：本机 playwright 只装 Chromium（无 Firefox），`::-moz-range-*` 分支留用户目视（FF 天然有 progress 伪元素 + thumb 自居中，风险低）。

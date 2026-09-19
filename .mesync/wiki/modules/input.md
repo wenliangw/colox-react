@@ -74,6 +74,7 @@ input/
 
 ## 对外接口
 
+- readOnly 走**原生** `readOnly`（文本控件有原生只读语义，自带播报）：只读时清除钮隐去；家族自造面见 `.mesync/tastes/api-design.md`「readOnly 家族面」。
 - 导出 `Input`、`InputSize`、`InputRef`、`InputProps`、`InputChangePayload`、`inputVariants`、`InputVariants`。
 - `InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'>`，新增：`size?`（'xs'|'sm'|'md'|'lg'，默认 'md'）、`invalid?`、`leading?`、`trailing?`、`clearable?`、`allowTogglePassword?`、`clearIcon?`、`eyeIcon?`、`eyeOffIcon?`、`filterPattern?`、`onChange?: (payload: InputChangePayload) => void`（事件块排在属性块之后）。
 - 保留扩展点（未建）：插槽渲染函数形态 `ReactNode | (state) => ReactNode`——主流库皆不做，遇到真实需求再挣（按需追加纪律）。

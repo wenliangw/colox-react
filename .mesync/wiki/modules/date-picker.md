@@ -72,6 +72,7 @@ date-picker/
 ## 对外接口
 
 - 导出 `DatePicker`、`DatePickerProps`、`DatePickerRef`、`DatePickerSize`、`DatePickerPalette`、`DatePickerPicker`、`DatePickerLocale`、`ResolvedDatePickerLocale`、`DatePickerChangePayload`、`datePickerVariants`、`DatePickerVariants`。
+- readOnly 走**原生** `readOnly`（只读时面板不可开 `openable = !disabled && !readOnly`）；家族自造面见 `.mesync/tastes/api-design.md`「readOnly 家族面」。
 - `DatePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'|'type'|'value'|'defaultValue'|'onChange'|'min'|'max'>`，新增：`picker?`（'date'|'month'|'year' 默认 'date'，决定值形与面板视图）、`size?`、`invalid?`、`palette?`（六族默认 'primary'）、`value?: string|null`、`defaultValue?: string|null`、`min?`/`max?`（ISO 日期界，粒度前缀对界）、`valueFormat?`（默认随 picker）、`locale?`（`{ months?, weekdays?, yearMonthFormat?, yearFormat?, decadeFormat? }` 逐字段回退中文默认）、`clearable?`（默认 false）、`open?`/`defaultOpen?`、`onChange?: (payload: DatePickerChangePayload) => void`、`onOpenChange?: (open: boolean) => void`。
 
 ## 状态与测试

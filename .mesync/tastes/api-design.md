@@ -8,6 +8,14 @@
 - 事件块内部顺序：onChange → onSelect → onOpenChange（组件层事件按主次排）。
 - 来源：AutoComplete 设计对齐用户裁定「后面所有的 event 都走我们自造的 payload 格式」；本轮用户追加「表单组件的事件产出的 Payload 要统一 … 有 Form 组件统一行为」把豁免一并废除。
 
+## readOnly 家族面：原生可表达走原生，其余自造且不灰化
+
+- **分工**：Input/Textarea/InputNumber/DatePicker 用**原生 `readOnly`**（浏览器自带只读语义与播报，InputNumber 顺带藏步进、DatePicker 顺带关面板）；Checkbox/Radio/Switch/Slider/Select 与两 Group 的原生元素**没有只读语义**（`readonly` 对 checkbox/radio/range/button 无定义），走**家族自造 readOnly**。
+- **自造三件**：① 拦截用户跃迁——change 事件意味着浏览器已经改了，就把 DOM 回滚（checkbox/radio/switch 用 `!checked` 翻转回来、indeterminate 一并复位；slider 回写已渲染值）并**不发 onChange**；② `aria-readonly="true"`（组场景根不加，成员各自播报）；③ 根修饰类 `<block>--readonly` + `cursor: default`——指针读作「改不了」。
+- **不灰化**：readOnly 是「值不可改」，disabled 是「控件不可用」——前者保留正常面料、仍可聚焦、可读、**照常进表单提交**；灰化与 `not-allowed` 是 disabled 的语言，两者同时声明时 disabled 压倒（源码序在 readonly 之后）。
+- **组继承**：`readOnly` 与 `disabled` 同类（能力限制）→ **sticky（`||`）**，组声明即禁令、成员不可退出；`size`/`invalid` 是状态类才「本人优先」。
+- 来源：Phase 2 审计后用户拍板「家族补齐 readOnly 面（阻止交互 + aria-readonly）」。
+
 ## size prop 一律表示视觉尺寸
 
 组件库中 `size` prop 的语义固定为「视觉尺寸」，取值 `'xs' | 'sm' | 'md' | 'lg'`（Button 四档，Input 对齐后同序）：
