@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent } from 'react';
-import { filterComboboxOptions } from '@colox/cdk/combobox';
-import { useComboboxKeyboard, useDismissible } from '@colox/cdk/floating';
+import { filterComboboxOptions, useComboboxKeyboard } from '@colox/cdk/combobox';
+import { useDismissible } from '@colox/cdk/floating';
 import type {
   AutoCompleteChangeEvent,
   AutoCompleteOptionRecord,

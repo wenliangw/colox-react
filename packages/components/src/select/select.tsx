@@ -2,7 +2,8 @@ import { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef } fr
 import type { KeyboardEvent, MouseEvent } from 'react';
 import clsx from 'clsx';
 import { IconChevronDown } from '@colox/icons';
-import { useComboboxKeyboard, useDismissible } from '@colox/cdk/floating';
+import { useDismissible } from '@colox/cdk/floating';
+import { filterComboboxOptions, useComboboxKeyboard } from '@colox/cdk/combobox';
 import { SelectClearButton } from './children/clear-button';
 import { SelectControl } from './children/control';
 import { FormSelectValues } from './children/form-values';
@@ -19,8 +20,8 @@ import type {
   SelectRef,
 } from './types';
 import {
+  adaptComboboxFilter,
   compileSelectOptions,
-  filterSelectOptions,
   findSelectOption,
   findSelectTemplate,
 } from './utils/select-options';
@@ -102,7 +103,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   const options = useMemo(() => compileSelectOptions(children, size), [children, size]);
   const tagTemplate = useMemo(() => findSelectTemplate(children), [children]);
   const visibleOptions = useMemo(
-    () => (showSearch ? filterSelectOptions(options, state.query, filterOption) : options),
+    () =>
+      showSearch
+        ? filterComboboxOptions(options, state.query, adaptComboboxFilter(filterOption))
+        : options,
     [options, state.query, filterOption, showSearch],
   );
 

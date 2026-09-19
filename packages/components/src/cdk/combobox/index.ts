@@ -1,3 +1,9 @@
 export { defaultComboboxFilter, filterComboboxOptions } from './filter';
-export type { ComboboxFilterFn } from './filter';
-export type { ComboboxOption } from './types';
+export { useComboboxKeyboard } from './hooks/use-combobox-keyboard';
+export { walkComboboxLeaves } from './walk';
+export type {
+  ComboboxFilterFn,
+  ComboboxOption,
+  UseComboboxKeyboardOptions,
+  UseComboboxKeyboardResult,
+} from './types';

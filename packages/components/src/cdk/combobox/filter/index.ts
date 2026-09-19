@@ -1,9 +1,4 @@
-import type { ComboboxOption } from './types';
-
-/**
- * The family filter contract: a query decides whether an option stays visible.
- */
-export type ComboboxFilterFn = (query: string, option: ComboboxOption) => boolean;
+import type { ComboboxFilterFn, ComboboxOption } from '../types';
 
 /**
  * The default matcher: case-insensitive substring over the text and

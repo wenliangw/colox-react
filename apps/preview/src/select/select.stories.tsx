@@ -73,15 +73,17 @@ const MultipleDemo = () => {
     <Stack direction="column" gap="2">
       <Select
         mode="multiple"
-        placeholder="Pick several fruits"
+        placeholder="Type to filter fruit"
+        showSearch
         value={value}
         onChange={({ value: next }) => setValue(next as string[])}
       >
         {FruitOptions}
       </Select>
       <Hint>
-        Multiple keeps the panel open after each pick; Backspace on an empty query removes the last
-        chip, each chip has its own remove button.
+        Multiple keeps the panel open after each pick; typing filters the members (the searchable
+        input doubles as the chip row), Backspace on an empty query removes the last chip, each chip
+        has its own remove button.
       </Hint>
     </Stack>
   );
