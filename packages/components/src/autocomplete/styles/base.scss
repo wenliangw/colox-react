@@ -1,0 +1,56 @@
+// The AutoComplete shell: a chrome-less anchor that owns the popup
+// geometry. Its child (the injected host) is the visual identity —
+// no paint lives on the root itself.
+.colox-autocomplete {
+  position: relative;
+}
+
+// The suggestion listbox: the same overlay surface language as the
+// Select panel (existing tokens only — bg-overlay, border-muted,
+// shadow-md), rows fixed at the md tier.
+.colox-autocomplete__listbox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-0-5);
+  padding: var(--colox-spacing-1);
+  max-height: 256px;
+  overflow-y: auto;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-overlay);
+  box-shadow: var(--colox-shadow-md);
+  color: var(--colox-color-text-default);
+}
+
+.colox-autocomplete__option {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-1) var(--colox-spacing-1-5);
+  border-radius: var(--colox-radius-sm);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+  cursor: pointer;
+
+  &:hover,
+  &--active {
+    background-color: var(--colox-color-gray-wash-hover);
+  }
+
+  &--disabled {
+    color: var(--colox-color-text-disabled);
+    cursor: not-allowed;
+    background-color: transparent;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+.colox-autocomplete__empty {
+  padding: var(--colox-spacing-1) var(--colox-spacing-1-5);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-muted);
+}

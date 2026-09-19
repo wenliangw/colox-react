@@ -65,6 +65,11 @@
       "import": "./dist/es/date-picker.js",
       "require": "./dist/cjs/date-picker.cjs"
     },
+    "./autocomplete": {
+      "types": "./dist/types/autocomplete/index.d.ts",
+      "import": "./dist/es/autocomplete.js",
+      "require": "./dist/cjs/autocomplete.cjs"
+    },
     "./radio": {
       "types": "./dist/types/radio/index.d.ts",
       "import": "./dist/es/radio.js",

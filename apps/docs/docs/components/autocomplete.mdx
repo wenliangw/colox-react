@@ -1,0 +1,150 @@
+---
+sidebar_position: 11
+---
+
+import { AutoComplete, Input } from '@colox/react';
+import '@colox/react/style.css';
+
+# AutoComplete
+
+The free-text combobox: a structural shell that wraps a single host
+element (the Input family, by default) and injects the combobox
+contract into it — the host keeps every static prop (`size`, `invalid`,
+`placeholder`, `clearable`, …), AutoComplete owns the value and the
+suggestion mechanism. Suggesting is a convenience, never a
+constraint: the value is plain text and every edit is a legal commit.
+
+```tsx
+import { AutoComplete, Input } from '@colox/react';
+```
+
+## When to use
+
+- City, tag or recipient fields where suggestions help but a value
+  outside the list is legal.
+- ID completion: the list holds `value`s whose human-readable `text`
+  matters more — the filter matches both.
+- When the option collection arrives from a remote source: the host
+  stays uncontrolled, the consumer fetches on each change and the
+  members re-render — the panel simply shows them.
+
+## Examples
+
+### Basic
+
+Focus or click opens the full list; typing filters
+case-insensitively over the `text` and the `value` (zero matches
+close the panel; Escape and blur close it too).
+
+<AutoComplete aria-label="Friend" defaultValue="">
+  <AutoComplete.Target>
+    <Input placeholder="Type a name" />
+  </AutoComplete.Target>
+  <AutoComplete.Suggestions>
+    <AutoComplete.Option value="ada" text="Ada" />
+    <AutoComplete.Option value="bob" text="Bob" />
+    <AutoComplete.Option value="cleo" text="Cleo" />
+    <AutoComplete.Option value="dora" text="Dora" />
+  </AutoComplete.Suggestions>
+</AutoComplete>
+
+## Keyboard
+
+The ARIA 1.2 editable-combobox model: focus stays in the host, the
+active row rides `aria-activedescendant`.
+
+| Key        | Behavior                                                |
+| ---------- | ------------------------------------------------------- |
+| ArrowDown  | Open (when closed) and highlight the next eligible row. |
+| ArrowUp    | Move up; wraps from the last to the first eligible row. |
+| Home / End | Jump to the first / last eligible row (while open).     |
+| Enter      | Open when closed; pick the active row when open.        |
+| Space      | Types through an input host (never toggles the panel).  |
+| Escape     | Close the panel; focus stays in the host.               |
+
+Rows skip disabled members in both directions; typing resets the
+cursor to the first match.
+
+## Members
+
+The three structural members render nothing themselves — the root
+compiles them:
+
+- `<AutoComplete.Target>` — required, exactly one: the host slot. The
+  single component-typed child receives the injected `value` /
+  `onChange` / `aria-*` contract; everything else stays the author's.
+- `<AutoComplete.Suggestions>` — at most one: the member region.
+  May stand empty (a degenerate free-text field).
+- `<AutoComplete.Option>` — the family option leaf (`value` + `text`,
+  optional `disabled` and rich `children`; the row falls back to
+  `text`).
+
+<AutoComplete aria-label="Rich rows">
+  <AutoComplete.Target>
+    <Input placeholder="Rich members" />
+  </AutoComplete.Target>
+  <AutoComplete.Suggestions>
+    <AutoComplete.Option value="ada" text="Ada">
+      <strong>Ada</strong> · pioneer
+    </AutoComplete.Option>
+    <AutoComplete.Option value="grace" text="Grace">
+      <strong>Grace</strong> · compiler
+    </AutoComplete.Option>
+  </AutoComplete.Suggestions>
+</AutoComplete>
+
+## Filtering
+
+The default matcher is a case-insensitive substring over the `text`
+and the `value` (the query is trimmed, an empty query shows
+everything). `filterOption` replaces it entirely:
+
+```tsx
+<AutoComplete
+  filterOption={(query, option) => option.value.startsWith(query)}
+  aria-label="Prefix matcher"
+>
+  <AutoComplete.Target>
+    <Input placeholder="Prefix match" />
+  </AutoComplete.Target>
+  <AutoComplete.Suggestions>
+    <AutoComplete.Option value="aa-01" text="Alpha project" />
+    <AutoComplete.Option value="bb-02" text="Beta lab" />
+  </AutoComplete.Suggestions>
+</AutoComplete>
+```
+
+## API
+
+### AutoComplete props
+
+| Prop                              | Type                                               | Default | Notes                                                    |
+| --------------------------------- | -------------------------------------------------- | ------- | -------------------------------------------------------- |
+| `value`                           | `string`                                           | —       | Controlled text; `''` is the empty state.                |
+| `defaultValue`                    | `string`                                           | `''`    | Uncontrolled starting text.                              |
+| `open`                            | `boolean`                                          | —       | Forces panel visibility.                                 |
+| `defaultOpen`                     | `boolean`                                          | `false` | Initial panel visibility for the uncontrolled slot.      |
+| `filterOption`                    | `(query, option) => boolean`                       | matcher | Replaces the default substring matcher.                  |
+| `onChange`                        | `(payload: { event, value }) => void`              | —       | Fires on every committed text change (typing and picks). |
+| `onSelect`                        | `(payload: { event, value, option }) => void`      | —       | Fires when a suggestion row is picked.                   |
+| `onOpenChange`                    | `(open: boolean) => void`                          | —       | Fires whenever the panel visibility changes.             |
+| `className` / `style` / DOM props | —                                                  | —       | Land on the anchor shell.                                |
+| `children`                        | `AutoComplete.Target` + `AutoComplete.Suggestions` | —       | The structural members.                                  |
+| `ref`                             | `HTMLDivElement`                                   | —       | The anchor shell the popup positions against.            |
+
+### AutoComplete.Option props
+
+| Prop       | Type        | Default | Notes                                        |
+| ---------- | ----------- | ------- | -------------------------------------------- |
+| `value`    | `string`    | —       | The committed text written into the host.    |
+| `text`     | `string`    | —       | The plain-text surface filtering reads.      |
+| `disabled` | `boolean`   | `false` | Visible but excluded from roaming and picks. |
+| `children` | `ReactNode` | `text`  | The rich row render.                         |
+
+## Panel geometry
+
+The popup matches the host width (`matchWidth` — a suggestion list is
+a tool panel of the field, not an intrinsic-geometry surface like the
+calendar). Rows stay at the fixed `md` tier: they never inherit a
+host size, and they carry no persistent selection state — the fill is
+the selection.

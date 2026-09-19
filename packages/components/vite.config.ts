@@ -8,6 +8,7 @@ import dts from 'vite-plugin-dts';
 // keeps the one-line `@colox/react` import path intact.
 const entries = {
   index: resolve(import.meta.dirname, 'src/index.ts'),
+  autocomplete: resolve(import.meta.dirname, 'src/autocomplete/index.ts'),
   button: resolve(import.meta.dirname, 'src/button/index.ts'),
   checkbox: resolve(import.meta.dirname, 'src/checkbox/index.ts'),
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
