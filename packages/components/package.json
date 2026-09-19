@@ -70,6 +70,11 @@
       "import": "./dist/es/select.js",
       "require": "./dist/cjs/select.cjs"
     },
+    "./slider": {
+      "types": "./dist/types/slider/index.d.ts",
+      "import": "./dist/es/slider.js",
+      "require": "./dist/cjs/slider.cjs"
+    },
     "./textarea": {
       "types": "./dist/types/textarea/index.d.ts",
       "import": "./dist/es/textarea.js",

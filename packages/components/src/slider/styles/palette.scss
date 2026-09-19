@@ -1,0 +1,37 @@
+// Palette color families — the six Button families mapped onto the
+// private slider palette variables (same wiring as the switch
+// palette: the class declares the vars, the drawing rules read them).
+// The traveled stripe fills the family solid, the thumb ring rides
+// the same solid and the focus ring rides its muted pair. The
+// untraveled stripe, the marks and the disabled paint stay neutral.
+// Base.scss holds the brand fallbacks so the paint survives even
+// without a palette class.
+.colox-slider--primary {
+  --colox-slider-palette-solid: var(--colox-color-brand-solid);
+  --colox-slider-palette-muted: var(--colox-color-brand-muted);
+}
+
+.colox-slider--gray {
+  --colox-slider-palette-solid: var(--colox-color-gray-solid);
+  --colox-slider-palette-muted: var(--colox-color-gray-muted);
+}
+
+.colox-slider--info {
+  --colox-slider-palette-solid: var(--colox-color-blue-solid);
+  --colox-slider-palette-muted: var(--colox-color-blue-muted);
+}
+
+.colox-slider--error {
+  --colox-slider-palette-solid: var(--colox-color-red-solid);
+  --colox-slider-palette-muted: var(--colox-color-red-muted);
+}
+
+.colox-slider--warning {
+  --colox-slider-palette-solid: var(--colox-color-orange-solid);
+  --colox-slider-palette-muted: var(--colox-color-orange-muted);
+}
+
+.colox-slider--success {
+  --colox-slider-palette-solid: var(--colox-color-green-solid);
+  --colox-slider-palette-muted: var(--colox-color-green-muted);
+}

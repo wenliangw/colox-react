@@ -1,0 +1,188 @@
+// The slider row matches the family row contract: a shell that
+// carries the font tiers and paints the native range control as a
+// palette stripe with a traveled portion. The control IS the native
+// input; the marks row is a display layer below the strip.
+.colox-slider {
+  --colox-slider-palette-solid: var(--colox-color-brand-solid);
+  --colox-slider-palette-muted: var(--colox-color-brand-muted);
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-default);
+}
+
+// The control: the native range input. It carries no paint of its own
+// — its padding creates the full-row hit area (size.scss) and its
+// content box anchors the engine track pseudo that draws the stripe.
+// Painting the stripe on the track pseudo (instead of the input
+// background) keeps the pill caps: the pseudo box is the per-tier
+// stripe height (--colox-slider-track) with a full radius, while a
+// content-box-clipped input background would render square ends (the
+// radius only rounds the border edge). The focus indicator lives on
+// the thumb (palette ring below), so the engine's default outline is
+// removed here.
+.colox-slider__control {
+  appearance: none;
+  margin: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+// The engine track box: WebKit anchors the thumb to this pseudo, and
+// it is the stripe itself — a two-stop gradient cut at the progress
+// variable (traveled = palette solid, untraveled = the muted fabric)
+// wrapped in full pill caps.
+.colox-slider__control::-webkit-slider-runnable-track {
+  height: var(--colox-slider-track);
+  border-radius: var(--colox-radius-full);
+  background: linear-gradient(
+    to right,
+    var(--colox-slider-palette-solid) 0 var(--colox-slider-progress),
+    var(--colox-color-bg-muted) var(--colox-slider-progress) 100%
+  );
+}
+
+// The thumb: the family white knob with the palette ring riding the
+// stripe edge. The per-tier size and the negative margin centering it
+// over the tier anchor line land in size.scss.
+.colox-slider__control::-webkit-slider-thumb {
+  appearance: none;
+  border: 2px solid var(--colox-slider-palette-solid);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-default);
+  box-shadow: var(--colox-shadow-sm);
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      var(--colox-shadow-sm),
+      0 0 0 2px var(--colox-slider-palette-muted);
+  }
+}
+
+// Disabled flattens the stripe and swaps the thumb ring for the
+// family gray — the value position stays readable through the thumb.
+.colox-slider--disabled {
+  cursor: not-allowed;
+
+  .colox-slider__control {
+    cursor: not-allowed;
+  }
+}
+
+.colox-slider--disabled .colox-slider__control::-webkit-slider-runnable-track {
+  background: var(--colox-color-bg-disabled);
+}
+
+.colox-slider--disabled .colox-slider__control::-webkit-slider-thumb {
+  border-color: var(--colox-color-border-disabled);
+}
+
+// Marks: a positioned row of ticks under the strip. Ticks live at
+// their value's left offset (computed inline), the label centers
+// under the tick — the edge ticks snap inward so their labels stay
+// inside the strip ends. Labels do not auto-avoid each other: the
+// spacing between labeled ticks is the consumer's call (dense labels
+// collide — see the docs example for the bare-tick pattern).
+.colox-slider__marks {
+  position: relative;
+  width: 100%;
+  margin-top: var(--colox-spacing-0-5);
+}
+
+.colox-slider__mark {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--colox-spacing-0-5);
+  transform: translateX(-50%);
+
+  &--first {
+    transform: none;
+    align-items: flex-start;
+  }
+
+  &--last {
+    transform: translateX(-100%);
+    align-items: flex-end;
+  }
+}
+
+.colox-slider__mark-dot {
+  width: var(--colox-spacing-0-5);
+  height: var(--colox-spacing-0-5);
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+}
+
+.colox-slider__mark-label {
+  white-space: nowrap;
+}
+
+.colox-slider--disabled .colox-slider__mark-dot {
+  background-color: var(--colox-color-border-disabled);
+}
+
+.colox-slider--disabled .colox-slider__mark-label {
+  color: var(--colox-color-text-disabled);
+}
+
+// Firefox paints the two stripe halves on its own pseudo-elements:
+// the track carries the untraveled fabric, the progress pseudo the
+// palette fill — both with the same full pill caps. The thumb mirrors
+// the WebKit recipe.
+@supports (-moz-appearance: none) {
+  .colox-slider__control::-moz-range-track {
+    height: var(--colox-slider-track);
+    border-radius: var(--colox-radius-full);
+    background: var(--colox-color-bg-muted);
+  }
+
+  .colox-slider__control::-moz-range-progress {
+    height: var(--colox-slider-track);
+    border-radius: var(--colox-radius-full);
+    background: var(--colox-slider-palette-solid);
+  }
+
+  .colox-slider__control::-moz-range-thumb {
+    border: 2px solid var(--colox-slider-palette-solid);
+    border-radius: var(--colox-radius-full);
+    background-color: var(--colox-color-bg-default);
+    box-shadow: var(--colox-shadow-sm);
+    transition:
+      border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+      box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        var(--colox-shadow-sm),
+        0 0 0 2px var(--colox-slider-palette-muted);
+    }
+  }
+
+  .colox-slider--disabled .colox-slider__control::-moz-range-track {
+    background: var(--colox-color-bg-disabled);
+  }
+
+  .colox-slider--disabled .colox-slider__control::-moz-range-progress {
+    background: transparent;
+  }
+
+  .colox-slider--disabled .colox-slider__control::-moz-range-thumb {
+    border-color: var(--colox-color-border-disabled);
+  }
+}

@@ -1,0 +1,117 @@
+// The four tiers share the Button/Input/Checkbox/Switch design
+// language: fixed row heights (--colox-size-6/8/10/12) and the
+// matching font ladder. The stripe height rides the spacing ladder
+// per tier (4/6/8/10 via --colox-slider-track, declared on the tier
+// class) and the padding inset carves it out of the row; the thumb
+// rides two steps below the box scale (12/16/20/24) with the negative
+// margin centering it over the tier track line. The marks layer
+// reserves its own row height (tick + gap + label line box) — its
+// contents are absolutely positioned, so the reserved height must be
+// explicit: absolute children never push their container open.
+.colox-slider--xs {
+  --colox-slider-track: var(--colox-spacing-1);
+
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-slider--xs .colox-slider__control {
+  height: var(--colox-size-6);
+  padding-block: calc((var(--colox-size-6) - var(--colox-slider-track)) / 2);
+}
+
+.colox-slider--xs .colox-slider__control::-webkit-slider-thumb {
+  width: var(--colox-size-3);
+  height: var(--colox-size-3);
+  margin-top: calc((var(--colox-slider-track) - var(--colox-size-3)) / 2);
+}
+
+.colox-slider--xs .colox-slider__control::-moz-range-thumb {
+  width: var(--colox-size-3);
+  height: var(--colox-size-3);
+}
+
+.colox-slider--xs .colox-slider__marks {
+  height: calc(var(--colox-spacing-0-5) * 2 + var(--colox-line-height-xs));
+}
+
+.colox-slider--sm {
+  --colox-slider-track: var(--colox-spacing-1-5);
+
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-slider--sm .colox-slider__control {
+  height: var(--colox-size-8);
+  padding-block: calc((var(--colox-size-8) - var(--colox-slider-track)) / 2);
+}
+
+.colox-slider--sm .colox-slider__control::-webkit-slider-thumb {
+  width: var(--colox-size-4);
+  height: var(--colox-size-4);
+  margin-top: calc((var(--colox-slider-track) - var(--colox-size-4)) / 2);
+}
+
+.colox-slider--sm .colox-slider__control::-moz-range-thumb {
+  width: var(--colox-size-4);
+  height: var(--colox-size-4);
+}
+
+.colox-slider--sm .colox-slider__marks {
+  height: calc(var(--colox-spacing-0-5) * 2 + var(--colox-line-height-sm));
+}
+
+.colox-slider--md {
+  --colox-slider-track: var(--colox-spacing-2);
+
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}
+
+.colox-slider--md .colox-slider__control {
+  height: var(--colox-size-10);
+  padding-block: calc((var(--colox-size-10) - var(--colox-slider-track)) / 2);
+}
+
+.colox-slider--md .colox-slider__control::-webkit-slider-thumb {
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
+  margin-top: calc((var(--colox-slider-track) - var(--colox-size-5)) / 2);
+}
+
+.colox-slider--md .colox-slider__control::-moz-range-thumb {
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
+}
+
+.colox-slider--md .colox-slider__marks {
+  height: calc(var(--colox-spacing-0-5) * 2 + var(--colox-line-height-md));
+}
+
+.colox-slider--lg {
+  --colox-slider-track: var(--colox-spacing-2-5);
+
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+}
+
+.colox-slider--lg .colox-slider__control {
+  height: var(--colox-size-12);
+  padding-block: calc((var(--colox-size-12) - var(--colox-slider-track)) / 2);
+}
+
+.colox-slider--lg .colox-slider__control::-webkit-slider-thumb {
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+  margin-top: calc((var(--colox-slider-track) - var(--colox-size-6)) / 2);
+}
+
+.colox-slider--lg .colox-slider__control::-moz-range-thumb {
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+}
+
+.colox-slider--lg .colox-slider__marks {
+  height: calc(var(--colox-spacing-0-5) * 2 + var(--colox-line-height-lg));
+}

@@ -8,6 +8,7 @@ export * from './icon-button';
 export * from './input';
 export * from './radio';
 export * from './select';
+export * from './slider';
 export * from './stack';
 export * from './switch';
 export * from './textarea';

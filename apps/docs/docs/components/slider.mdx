@@ -1,0 +1,75 @@
+---
+sidebar_position: 9
+---
+
+import { Slider } from '@colox/react';
+import '@colox/react/style.css';
+
+# Slider
+
+Sliders pick a number inside a span. The control is a native
+`<input type="range">` — keyboard, focus and the form value stay native —
+dressed as a palette stripe: the traveled portion fills the family solid,
+the untraveled portion keeps the neutral fabric, and a white-ring thumb
+rides the edge. Tick marks with labels sit below the strip.
+
+## Sizes
+
+<Slider size="xs" defaultValue={40} aria-label="Extra small" />
+
+<Slider size="sm" defaultValue={40} aria-label="Small" />
+
+<Slider size="md" defaultValue={40} aria-label="Medium" />
+
+<Slider size="lg" defaultValue={40} aria-label="Large" />
+
+The four tiers share the family row heights (24/32/40/48), and the
+stripe climbs the spacing ladder with them (4/6/8/10) so the
+thumb-to-track ratio stays even across tiers.
+
+## Palette
+
+`palette` colors the traveled stripe from the six Button families —
+primary (brand), gray, info (blue), error (red), warning (orange),
+success (green). The marks and the untraveled fabric stay neutral.
+
+<Slider defaultValue={40} aria-label="Primary palette" />
+
+<Slider palette="gray" defaultValue={40} aria-label="Gray palette" />
+
+<Slider palette="error" defaultValue={40} aria-label="Error palette" />
+
+<Slider palette="success" defaultValue={40} aria-label="Success palette" />
+
+## Marks
+
+`marks` maps values to labels — the label renders under a tick, and a
+`null` entry leaves a bare tick. Marks are a display layer: `step`
+stays native and untouched. Labels do not auto-avoid each other, so
+leave room between labeled ticks — the bare-tick pattern below keeps
+the labels on the ends with dots in between.
+
+<Slider
+  min={16}
+  max={30}
+  defaultValue={26}
+  aria-label="Thermostat"
+  marks={{ 16: '16°C', 21: null, 23: null, 26: null, 28: null, 30: '30°C' }}
+/>
+
+## Controlled and uncontrolled
+
+`value` makes the slider controlled; `defaultValue` seeds an
+uncontrolled one. The change payload carries both the native event and
+the committed number — the native range value is a string, so the
+number is parsed for the consumer.
+
+<Slider defaultValue={35} aria-label="Starts at thirty-five" />
+
+<Slider min={0} max={10} step={2} defaultValue={4} aria-label="Step of two" />
+
+## States
+
+<Slider disabled defaultValue={60} aria-label="Disabled" />
+
+Every other native range prop lands on the input untouched.

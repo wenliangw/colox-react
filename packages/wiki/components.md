@@ -11,6 +11,7 @@ topic bundle's `references/component.md`.
 | Textarea   | multi-line text entry: shell contract, content-driven height (autosize + drag handle), footer bar (count / clear), themed scrollbar | shipped | pending      |
 | Checkbox   | single boolean choice (label-wrapped, invalid/disabled states)                                                                      | shipped | pending      |
 | Switch     | single boolean toggle (role="switch" input + palette track), invalid/disabled states                                                | shipped | pending      |
+| Slider     | single-thumb numeric range (native range input, palette stripe, tick marks)                                                         | shipped | pending      |
 | Radio      | single selection among named options via Radio.Group                                                                                | shipped | pending      |
 | Select     | single/multi selection: popup panel, filtering, fold chips, tags                                                                    | shipped | pending      |
 | IconButton | square icon-only button primitive (shared reset + token-pinned size)                                                                | shipped | pending      |
