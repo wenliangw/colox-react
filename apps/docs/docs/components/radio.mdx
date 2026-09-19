@@ -64,4 +64,8 @@ Members inherit `size`, `name` and `disabled` from the group; a member's own pro
 | onChange     | `({ event, value: string }) => void` | —       |
 | size         | `'xs' \| 'sm' \| 'md' \| 'lg'`       | `'md'`  |
 | disabled     | `boolean`                            | `false` |
+| invalid      | `boolean`                            | `false` |
 | name         | `string`                             | —       |
+
+A group-level `invalid` turns every member red and announces `aria-invalid` on the
+members (own `invalid` on a member wins, so opting one out works).

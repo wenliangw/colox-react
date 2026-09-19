@@ -72,7 +72,12 @@ compiles them:
 
 - `<AutoComplete.Target>` — required, exactly one: the host slot. The
   single component-typed child receives the injected `value` /
-  `onChange` / `aria-*` contract; everything else stays the author's.
+  `onChange` / `aria-*` contract **plus the control words the root
+  forwards** (`id`, `name`, `invalid`, `disabled`, `readOnly`,
+  `aria-describedby` / `aria-labelledby` / `aria-required`) — label
+  association and form wiring must reach the focusable input, not the
+  anchor `div`. Static words (`size`, `placeholder`, `clearable`, …)
+  stay the author's and sit on the host element directly.
 - `<AutoComplete.Suggestions>` — at most one: the member region.
   May stand empty (a degenerate free-text field).
 - `<AutoComplete.Option>` — the family option leaf (`value` + `text`,
@@ -118,19 +123,23 @@ everything). `filterOption` replaces it entirely:
 
 ### AutoComplete props
 
-| Prop                              | Type                                               | Default | Notes                                                    |
-| --------------------------------- | -------------------------------------------------- | ------- | -------------------------------------------------------- |
-| `value`                           | `string`                                           | —       | Controlled text; `''` is the empty state.                |
-| `defaultValue`                    | `string`                                           | `''`    | Uncontrolled starting text.                              |
-| `open`                            | `boolean`                                          | —       | Forces panel visibility.                                 |
-| `defaultOpen`                     | `boolean`                                          | `false` | Initial panel visibility for the uncontrolled slot.      |
-| `filterOption`                    | `(query, option) => boolean`                       | matcher | Replaces the default substring matcher.                  |
-| `onChange`                        | `(payload: { event, value }) => void`              | —       | Fires on every committed text change (typing and picks). |
-| `onSelect`                        | `(payload: { event, value, option }) => void`      | —       | Fires when a suggestion row is picked.                   |
-| `onOpenChange`                    | `(open: boolean) => void`                          | —       | Fires whenever the panel visibility changes.             |
-| `className` / `style` / DOM props | —                                                  | —       | Land on the anchor shell.                                |
-| `children`                        | `AutoComplete.Target` + `AutoComplete.Suggestions` | —       | The structural members.                                  |
-| `ref`                             | `HTMLDivElement`                                   | —       | The anchor shell the popup positions against.            |
+| Prop                                                     | Type                                               | Default | Notes                                                    |
+| -------------------------------------------------------- | -------------------------------------------------- | ------- | -------------------------------------------------------- |
+| `value`                                                  | `string`                                           | —       | Controlled text; `''` is the empty state.                |
+| `defaultValue`                                           | `string`                                           | `''`    | Uncontrolled starting text.                              |
+| `open`                                                   | `boolean`                                          | —       | Forces panel visibility.                                 |
+| `defaultOpen`                                            | `boolean`                                          | `false` | Initial panel visibility for the uncontrolled slot.      |
+| `filterOption`                                           | `(query, option) => boolean`                       | matcher | Replaces the default substring matcher.                  |
+| `id` / `name`                                            | `string`                                           | —       | Forwarded to the host input (label + form wiring).       |
+| `invalid`                                                | `boolean`                                          | `false` | Forwarded: the host paints the red channel.              |
+| `disabled` / `readOnly`                                  | `boolean`                                          | —       | Forwarded (root wins over the host's own flag).          |
+| `aria-describedby` / `aria-labelledby` / `aria-required` | `string \| boolean`                                | —       | Forwarded to the host input.                             |
+| `onChange`                                               | `(payload: { event, value }) => void`              | —       | Fires on every committed text change (typing and picks). |
+| `onSelect`                                               | `(payload: { event, value, option }) => void`      | —       | Fires when a suggestion row is picked.                   |
+| `onOpenChange`                                           | `(open: boolean) => void`                          | —       | Fires whenever the panel visibility changes.             |
+| `className` / `style` / DOM props                        | —                                                  | —       | Land on the anchor shell.                                |
+| `children`                                               | `AutoComplete.Target` + `AutoComplete.Suggestions` | —       | The structural members.                                  |
+| `ref`                                                    | `HTMLDivElement`                                   | —       | The anchor shell the popup positions against.            |
 
 ### AutoComplete.Option props
 

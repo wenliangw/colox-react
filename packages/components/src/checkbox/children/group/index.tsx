@@ -8,7 +8,7 @@ import type { CheckboxGroupContextValue, CheckboxGroupProps, CheckboxGroupRef } 
  * The multi-select container: owns the selection array (symmetric
  * control — `value` / `defaultValue` + `onChange`), lays members out
  * in a column and hands each member its checked state, shared `size`,
- * `name` and disabled inheritance through context. A checkbox
+ * `name`, `disabled` and `invalid` inheritance through context. A checkbox
  * participates by declaring a `value` without its own checked control
  * (see `resolveCheckboxState`); explicit checked members stay
  * independent.
@@ -19,6 +19,7 @@ export const CheckboxGroup = forwardRef<CheckboxGroupRef, CheckboxGroupProps>((p
     defaultValue,
     size = 'md',
     disabled = false,
+    invalid = false,
     name = '',
     className,
     style,
@@ -35,8 +36,9 @@ export const CheckboxGroup = forwardRef<CheckboxGroupRef, CheckboxGroupProps>((p
       name,
       size,
       disabled,
+      invalid,
     }),
-    [group.value, group.toggleValue, name, size, disabled],
+    [group.value, group.toggleValue, name, size, disabled, invalid],
   );
 
   return (

@@ -108,6 +108,12 @@ export const Overview: Story = {
             <Checkbox value="pear">Disabled group · size sm inherited</Checkbox>
             <Checkbox value="plum">No member is interactive</Checkbox>
           </Checkbox.Group>
+          <Checkbox.Group invalid>
+            <Checkbox value="apple">Invalid group → every member turns red</Checkbox>
+            <Checkbox value="banana" invalid={false}>
+              …a member can opt out with invalid={'{false}'}
+            </Checkbox>
+          </Checkbox.Group>
         </Section>
       </Stack>
     </Container>

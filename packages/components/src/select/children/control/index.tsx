@@ -21,6 +21,9 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     invalid,
     id,
     ariaLabel,
+    ariaDescribedBy,
+    ariaLabelledBy,
+    ariaRequired,
     controlLabel,
     listboxId,
     activeDescendantId,
@@ -55,6 +58,9 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     'aria-activedescendant':
       open && activeDescendantId !== undefined ? activeDescendantId : undefined,
     'aria-invalid': invalid || undefined,
+    'aria-describedby': ariaDescribedBy,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-required': ariaRequired || undefined,
     disabled,
   };
 

@@ -23,6 +23,7 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
   const {
     size,
     palette,
+    invalid = false,
     value,
     defaultValue,
     min = 0,
@@ -58,7 +59,7 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
     <div
       className={clsx(
         sliderVariants({ size, palette }),
-        { 'colox-slider--disabled': disabled },
+        { 'colox-slider--invalid': invalid, 'colox-slider--disabled': disabled },
         className,
       )}
       style={style}
@@ -73,6 +74,7 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
         value={value}
         defaultValue={value === undefined ? defaultValue : undefined}
         disabled={disabled}
+        aria-invalid={invalid || undefined}
         onChange={handleChange}
         style={{ '--colox-slider-progress': `${progress}%` } as CSSProperties}
         {...rest}

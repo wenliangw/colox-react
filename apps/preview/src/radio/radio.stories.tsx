@@ -71,6 +71,12 @@ export const Overview: Story = {
             <Radio value="pear">Disabled group · size lg inherited</Radio>
             <Radio value="plum">No member is interactive</Radio>
           </Radio.Group>
+          <Radio.Group invalid>
+            <Radio value="pear">Invalid group → every member turns red</Radio>
+            <Radio value="plum" invalid={false}>
+              …a member can opt out with invalid={'{false}'}
+            </Radio>
+          </Radio.Group>
         </Section>
       </Stack>
     </Container>

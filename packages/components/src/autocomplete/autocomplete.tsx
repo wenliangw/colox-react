@@ -14,8 +14,9 @@ import './styles/index.scss';
 
 /**
  * The free-text combobox with suggestions: a structural shell around
- * an injected host control (the Input family owns size/invalid/…,
- * AutoComplete owns the value and the mechanism). The members are
+ * an injected host control (the Input family owns the static words,
+ * AutoComplete owns the value, the mechanism and the control words a
+ * form layer injects). The members are
  * compiled from AutoComplete.Target (+ host), AutoComplete.Suggestions
  * and AutoComplete.Option leaves; the popup is a portal listbox
  * modeled as an ARIA 1.2 editable combobox — focus stays in the host
@@ -30,6 +31,14 @@ const AutoCompleteRoot = forwardRef<AutoCompleteRef, AutoCompleteProps>((props, 
     open: openProp,
     defaultOpen,
     filterOption,
+    id,
+    name,
+    invalid = false,
+    disabled,
+    readOnly,
+    'aria-describedby': ariaDescribedBy,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-required': ariaRequired,
     onChange,
     onSelect,
     onOpenChange,
@@ -58,6 +67,8 @@ const AutoCompleteRoot = forwardRef<AutoCompleteRef, AutoCompleteProps>((props, 
     target: composed.target,
     value: valueProp,
     defaultValue,
+    disabled,
+    readOnly,
     open: openProp,
     defaultOpen,
     filterOption,
@@ -89,12 +100,20 @@ const AutoCompleteRoot = forwardRef<AutoCompleteRef, AutoCompleteProps>((props, 
         onFocus: onTargetFocus,
         onBlur: onTargetBlur,
         onKeyDown: onControlKeyDown,
+        id,
+        name,
+        invalid,
+        disabled,
+        readOnly,
         role: 'combobox',
         'aria-expanded': open,
         'aria-controls': listboxId,
         'aria-autocomplete': 'list',
         'aria-haspopup': 'listbox',
         'aria-activedescendant': activeDescendantId,
+        'aria-describedby': ariaDescribedBy,
+        'aria-labelledby': ariaLabelledBy,
+        'aria-required': ariaRequired,
       })}
       <AutoCompletePanel
         ref={panelRef}

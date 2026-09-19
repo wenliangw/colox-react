@@ -543,6 +543,21 @@ describe('Select states', () => {
     );
   });
 
+  it('forwards the field aria channel to the control, not the shell', () => {
+    renderFruits({
+      'aria-describedby': 'fruit-hint fruit-error',
+      'aria-labelledby': 'fruit-label',
+      'aria-required': true,
+    });
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveAttribute('aria-describedby', 'fruit-hint fruit-error');
+    expect(combobox).toHaveAttribute('aria-labelledby', 'fruit-label');
+    expect(combobox).toHaveAttribute('aria-required', 'true');
+    const shell = combobox.closest('.colox-select') as HTMLElement;
+    expect(shell).not.toHaveAttribute('aria-describedby');
+    expect(shell).not.toHaveAttribute('aria-labelledby');
+  });
+
   it('disables the control and keeps the panel shut', () => {
     renderFruits({ disabled: true });
     const combobox = screen.getByRole('combobox');

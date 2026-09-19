@@ -20,6 +20,15 @@ export interface AutoCompleteTargetRequiredProps {
   value: string;
   /** The family change payload the host control reports (see Input). */
   onChange: (payload: InputChangePayload) => void;
+  /** Control words forwarded from the root (label/description/form wiring). */
+  id?: string;
+  name?: string;
+  invalid?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  'aria-describedby'?: string;
+  'aria-labelledby'?: string;
+  'aria-required'?: boolean;
   onFocus: (event: FocusEvent<HTMLElement>) => void;
   onBlur: (event: FocusEvent<HTMLElement>) => void;
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;

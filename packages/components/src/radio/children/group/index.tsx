@@ -19,6 +19,7 @@ export const RadioGroup = forwardRef<RadioGroupRef, RadioGroupProps>((props, ref
     defaultValue,
     size = 'md',
     disabled = false,
+    invalid = false,
     name = '',
     className,
     style,
@@ -35,8 +36,9 @@ export const RadioGroup = forwardRef<RadioGroupRef, RadioGroupProps>((props, ref
       name,
       size,
       disabled,
+      invalid,
     }),
-    [group.value, group.selectValue, name, size, disabled],
+    [group.value, group.selectValue, name, size, disabled, invalid],
   );
 
   return (

@@ -178,6 +178,16 @@ export interface SelectProps extends Omit<
   /** Disables the select: the shell goes terminal and the panel cannot open. */
   disabled?: boolean;
   /**
+   * The field's description/error wiring, forwarded to the combobox
+   * control itself (the focusable element) rather than the shell: a
+   * description on the shell would be invisible to the focus owner.
+   */
+  'aria-describedby'?: string;
+  /** The field's label wiring, forwarded to the combobox control. */
+  'aria-labelledby'?: string;
+  /** The announced requirement state, forwarded to the combobox control. */
+  'aria-required'?: boolean;
+  /**
    * Replaces the default filter (case-insensitive substring over text
    * and value). Applies only while `showSearch` is on.
    */

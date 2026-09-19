@@ -24,7 +24,7 @@ import './styles/index.scss';
 const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
   const {
     size,
-    invalid = false,
+    invalid,
     value: memberValue,
     checked,
     defaultChecked,
@@ -46,6 +46,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     checked,
     defaultChecked,
     disabled,
+    invalid,
     name,
     size,
     group,
@@ -62,7 +63,10 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     <label
       className={clsx(
         radioVariants({ size: state.size }),
-        { 'colox-radio--invalid': invalid, 'colox-radio--disabled': state.disabled },
+        {
+          'colox-radio--invalid': state.invalid,
+          'colox-radio--disabled': state.disabled,
+        },
         className,
       )}
       style={style}
@@ -72,7 +76,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
           ref={inputRef}
           className="colox-radio__control"
           type="radio"
-          aria-invalid={invalid || undefined}
+          aria-invalid={state.invalid || undefined}
           value={memberValue}
           name={state.name}
           checked={state.checked}

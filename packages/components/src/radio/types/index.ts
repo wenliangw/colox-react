@@ -31,7 +31,9 @@ export interface RadioProps extends Omit<
    * Marks the radio as invalid: sets `aria-invalid` and swaps the
    * circle border/ring to the red tokens (same channel as `Input`).
    * It paints the unfilled state only — a selected radio keeps its
-   * brand ring (same visual priority as Checkbox).
+   * brand ring (same visual priority as Checkbox). Inside a
+   * `<Radio.Group>` an unset value inherits the group's flag; own prop
+   * wins when set.
    * @default false
    */
   invalid?: boolean;
@@ -78,6 +80,13 @@ export interface RadioGroupProps extends Omit<
   /** Disables every member radio the group renders. */
   disabled?: boolean;
   /**
+   * Marks the whole group as invalid: every member that does not set
+   * its own `invalid` turns red and announces `aria-invalid` (own prop
+   * wins).
+   * @default false
+   */
+  invalid?: boolean;
+  /**
    * Native form name inherited by members that don't set their own —
    * the form collects the checked member under it.
    */
@@ -120,4 +129,6 @@ export interface RadioGroupContextValue {
   size: RadioSize;
   /** The group `disabled` flag members inherit. */
   disabled: boolean;
+  /** The group `invalid` flag members inherit (own prop wins). */
+  invalid: boolean;
 }

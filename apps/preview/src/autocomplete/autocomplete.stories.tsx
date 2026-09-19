@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { AutoComplete, Container, Input, Stack } from '@colox/react';
-import { Section } from '../showcase/section';
+import { Section, Hint } from '../showcase/section';
 
 const demoWidth = { maxWidth: 360 } as const;
 
@@ -112,6 +112,28 @@ export const Overview: Story = {
               </AutoComplete.Target>
               {Fraternities}
             </AutoComplete>
+          </Stack>
+        </Section>
+
+        <Section title="Field wiring — the root forwards the control words">
+          <Stack direction="column" gap="4" style={demoWidth}>
+            <AutoComplete
+              id="root-wired"
+              name="fraternity"
+              invalid
+              aria-describedby="root-wired-hint"
+              aria-label="Root-wired host"
+              defaultValue="ada"
+            >
+              <AutoComplete.Target>
+                <Input placeholder="Static words stay on the host" />
+              </AutoComplete.Target>
+              {Fraternities}
+            </AutoComplete>
+            <Hint>
+              id / name / invalid / disabled / readOnly and the aria channel land on the host input;
+              size, placeholder and clearable stay here.
+            </Hint>
           </Stack>
         </Section>
 

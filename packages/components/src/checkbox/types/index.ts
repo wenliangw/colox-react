@@ -29,6 +29,8 @@ export interface CheckboxProps extends Omit<
   /**
    * Marks the checkbox as invalid: sets `aria-invalid` and swaps the
    * box border/ring to the red tokens (same channel as `Input`).
+   * Inside a `<Checkbox.Group>` an unset value inherits the group's
+   * flag; own prop wins when set.
    * @default false
    */
   invalid?: boolean;
@@ -84,6 +86,14 @@ export interface CheckboxGroupProps extends Omit<
   /** Disables every member checkbox the group renders. */
   disabled?: boolean;
   /**
+   * Marks the whole group as invalid: every member that does not set
+   * its own `invalid` turns red and announces `aria-invalid` (own prop
+   * wins). The group root itself carries no `aria-invalid` — the ARIA
+   * `group` role does not support it, and members are the real controls.
+   * @default false
+   */
+  invalid?: boolean;
+  /**
    * Native form name inherited by members that don't set their own —
    * the form collects every member under it.
    */
@@ -127,4 +137,6 @@ export interface CheckboxGroupContextValue {
   size: CheckboxSize;
   /** The group `disabled` flag members inherit. */
   disabled: boolean;
+  /** The group `invalid` flag members inherit (own prop wins). */
+  invalid: boolean;
 }

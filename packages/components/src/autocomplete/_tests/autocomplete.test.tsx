@@ -95,6 +95,52 @@ describe('autocomplete contract', () => {
     expect(rows[2]).toHaveClass('colox-autocomplete__option--disabled');
     expect(rows[2]).toHaveAttribute('aria-disabled', 'true');
   });
+
+  it('forwards the control words to the host input', () => {
+    renderFriends({
+      id: 'friend',
+      name: 'friend',
+      invalid: true,
+      'aria-describedby': 'friend-hint',
+      'aria-required': true,
+    });
+    expect(control()).toHaveAttribute('id', 'friend');
+    expect(control()).toHaveAttribute('name', 'friend');
+    expect(control()).toHaveAttribute('aria-invalid', 'true');
+    expect(control()).toHaveAttribute('aria-describedby', 'friend-hint');
+    expect(control()).toHaveAttribute('aria-required', 'true');
+    // The root anchor only carries the shell: label wiring belongs to
+    // the focusable control, not to the positioning div.
+    expect(shell()).not.toHaveAttribute('id');
+    expect(shell()).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('lets the root id override the host id', () => {
+    render(
+      <AutoComplete id="root-id">
+        <AutoComplete.Target>
+          <Input id="host-id" />
+        </AutoComplete.Target>
+        {Friends}
+      </AutoComplete>,
+    );
+    expect(control()).toHaveAttribute('id', 'root-id');
+  });
+
+  it('resolves disabled at the root and keeps the panel shut', () => {
+    renderFriends({ disabled: true });
+    expect(control()).toBeDisabled();
+    fireEvent.focus(control());
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  });
+
+  it('resolves read-only at the root without disabling the control', () => {
+    renderFriends({ readOnly: true });
+    expect(control()).toHaveAttribute('readonly');
+    expect(control()).not.toBeDisabled();
+    fireEvent.focus(control());
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  });
 });
 
 describe('autocomplete tree validation', () => {

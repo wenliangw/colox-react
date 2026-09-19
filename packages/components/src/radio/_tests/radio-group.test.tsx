@@ -112,6 +112,34 @@ describe('Radio.Group', () => {
     expect(screen.getByRole('radio', { name: 'Banana' })).toBeDisabled();
   });
 
+  it('inherits invalid from the group and paints every member', () => {
+    render(
+      <Radio.Group invalid>
+        <Radio value="apple">Apple</Radio>
+        <Radio value="banana">Banana</Radio>
+      </Radio.Group>,
+    );
+    const apple = screen.getByRole('radio', { name: 'Apple' });
+    const banana = screen.getByRole('radio', { name: 'Banana' });
+    expect(apple).toHaveAttribute('aria-invalid', 'true');
+    expect(banana).toHaveAttribute('aria-invalid', 'true');
+    expect(apple.closest('.colox-radio')).toHaveClass('colox-radio--invalid');
+    expect(banana.closest('.colox-radio')).toHaveClass('colox-radio--invalid');
+  });
+
+  it('lets a member opt out of the group invalid flag', () => {
+    render(
+      <Radio.Group invalid>
+        <Radio value="apple" invalid={false}>
+          Apple
+        </Radio>
+        <Radio value="banana">Banana</Radio>
+      </Radio.Group>,
+    );
+    expect(screen.getByRole('radio', { name: 'Apple' })).not.toHaveAttribute('aria-invalid');
+    expect(screen.getByRole('radio', { name: 'Banana' })).toHaveAttribute('aria-invalid', 'true');
+  });
+
   it('lets members inherit the group size with own-size precedence', () => {
     render(
       <Radio.Group size="sm">

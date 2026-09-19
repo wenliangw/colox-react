@@ -25,7 +25,7 @@ import './styles/index.scss';
 const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
   const {
     size,
-    invalid = false,
+    invalid,
     indeterminate = false,
     value: memberValue,
     checked,
@@ -49,6 +49,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     checked,
     defaultChecked,
     disabled,
+    invalid,
     name,
     size,
     group,
@@ -65,7 +66,10 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     <label
       className={clsx(
         checkboxVariants({ size: state.size }),
-        { 'colox-checkbox--invalid': invalid, 'colox-checkbox--disabled': state.disabled },
+        {
+          'colox-checkbox--invalid': state.invalid,
+          'colox-checkbox--disabled': state.disabled,
+        },
         className,
       )}
       style={style}
@@ -75,7 +79,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
           ref={inputRef}
           className="colox-checkbox__control"
           type="checkbox"
-          aria-invalid={invalid || undefined}
+          aria-invalid={state.invalid || undefined}
           value={memberValue}
           name={state.name}
           checked={state.checked}

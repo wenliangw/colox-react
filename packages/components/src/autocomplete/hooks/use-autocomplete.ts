@@ -35,6 +35,8 @@ export function useAutoComplete(params: UseAutoCompleteParams): UseAutoCompleteR
     target,
     value: valueProp,
     defaultValue,
+    disabled,
+    readOnly,
     open: openProp,
     defaultOpen,
     filterOption,
@@ -50,7 +52,7 @@ export function useAutoComplete(params: UseAutoCompleteParams): UseAutoCompleteR
   const open = openProp === undefined ? openState : openProp;
 
   const host = target.props as Partial<TargetHandlers>;
-  const isInteractable = !host.disabled && !host.readOnly;
+  const isInteractable = !(disabled ?? host.disabled) && !(readOnly ?? host.readOnly);
 
   const anchorRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);

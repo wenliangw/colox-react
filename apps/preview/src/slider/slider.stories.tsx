@@ -97,6 +97,7 @@ export const Overview: Story = {
         <Section title="States">
           <Stack direction="column" gap="4" style={demoWidth}>
             <Slider aria-label="Custom span" min={0} max={10} step={2} defaultValue={4} />
+            <Slider aria-label="Invalid" invalid defaultValue={65} />
             <Slider aria-label="Disabled" disabled defaultValue={60} />
           </Stack>
         </Section>

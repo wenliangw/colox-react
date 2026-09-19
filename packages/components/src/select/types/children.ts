@@ -12,6 +12,10 @@ export interface SelectControlProps {
   id?: string;
   /** Explicit name override; wins over the fallback `controlLabel`. */
   ariaLabel?: string;
+  /** Field wiring forwarded from the root (the focus owner carries it). */
+  ariaDescribedBy?: string;
+  ariaLabelledBy?: string;
+  ariaRequired?: boolean;
   /** The resolved combobox reachable name (selected text / raw value / placeholder). */
   controlLabel?: string;
   listboxId: string;

@@ -26,6 +26,16 @@ export interface SliderProps extends Omit<
    */
   palette?: SliderPalette;
   /**
+   * Marks the slider as invalid: sets `aria-invalid`, paints the
+   * untraveled fabric and the thumb ring with the red tokens and
+   * swaps the focus ring to the red pair (the same channel as
+   * Input/Checkbox/Switch). The traveled stripe keeps its palette —
+   * a filled state owns its paint, the way a checked switch keeps
+   * its track.
+   * @default false
+   */
+  invalid?: boolean;
+  /**
    * Controlled slider value. Without it the slider is uncontrolled:
    * `defaultValue` seeds it and the native input owns the position.
    */

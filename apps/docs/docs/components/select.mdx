@@ -201,24 +201,26 @@ multiple mode — so native `FormData` collects the selection:
 
 ## Props
 
-| Prop         | Type                                                     | Default    |
-| ------------ | -------------------------------------------------------- | ---------- |
-| mode         | `'single' \| 'multiple'`                                 | `'single'` |
-| showSearch   | `boolean`                                                | `false`    |
-| value        | `string \| string[]`                                     | —          |
-| defaultValue | `string \| string[]`                                     | —          |
-| placeholder  | `ReactNode`                                              | —          |
-| clearable    | `boolean`                                                | `false`    |
-| open         | `boolean`                                                | —          |
-| defaultOpen  | `boolean`                                                | `false`    |
-| name         | `string`                                                 | —          |
-| size         | `'xs' \| 'sm' \| 'md' \| 'lg'`                           | `'md'`     |
-| invalid      | `boolean`                                                | `false`    |
-| disabled     | `boolean`                                                | `false`    |
-| filterOption | `(query: string, option: SelectOptionRecord) => boolean` | —          |
-| onChange     | `(payload: SelectChangePayload) => void`                 | —          |
-| onSearch     | `(query: string) => void`                                | —          |
-| onOpenChange | `(open: boolean) => void`                                | —          |
+| Prop                               | Type                                                     | Default    |
+| ---------------------------------- | -------------------------------------------------------- | ---------- |
+| mode                               | `'single' \| 'multiple'`                                 | `'single'` |
+| showSearch                         | `boolean`                                                | `false`    |
+| value                              | `string \| string[]`                                     | —          |
+| defaultValue                       | `string \| string[]`                                     | —          |
+| placeholder                        | `ReactNode`                                              | —          |
+| clearable                          | `boolean`                                                | `false`    |
+| open                               | `boolean`                                                | —          |
+| defaultOpen                        | `boolean`                                                | `false`    |
+| name                               | `string`                                                 | —          |
+| size                               | `'xs' \| 'sm' \| 'md' \| 'lg'`                           | `'md'`     |
+| invalid                            | `boolean`                                                | `false`    |
+| disabled                           | `boolean`                                                | `false`    |
+| filterOption                       | `(query: string, option: SelectOptionRecord) => boolean` | —          |
+| aria-describedby / aria-labelledby | `string`                                                 | —          |
+| aria-required                      | `boolean`                                                | —          |
+| onChange                           | `(payload: SelectChangePayload) => void`                 | —          |
+| onSearch                           | `(query: string) => void`                                | —          |
+| onOpenChange                       | `(open: boolean) => void`                                | —          |
 
 ### Select.Option
 
@@ -270,6 +272,9 @@ non-searchable multiple modes, the embedded input in searchable modes — typed
 The shell also accepts all native `div` attributes; `id` lands on the focusable
 control so `<label for>` targets the real control, and `aria-label` overrides the
 control's default reachable name (selected text, raw value or placeholder text).
+`aria-describedby`, `aria-labelledby` and `aria-required` follow the same rule —
+they land on the **control**, not the shell: a description or label id on the shell
+is invisible to the element that actually owns focus.
 
 V1 intentionally excludes tags-in-placeholder, optgroups, virtual scrolling,
 typeahead selection and remote debounce — requests welcome.

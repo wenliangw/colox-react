@@ -5,6 +5,10 @@
 .colox-slider {
   --colox-slider-palette-solid: var(--colox-color-brand-solid);
   --colox-slider-palette-muted: var(--colox-color-brand-muted);
+  // The untraveled fabric: the field's empty area. It takes the red
+  // wash when invalid and the gray fabric when disabled (both stated
+  // below, disabled last so it stays terminal).
+  --colox-slider-fabric: var(--colox-color-bg-muted);
 
   display: flex;
   flex-direction: column;
@@ -46,7 +50,7 @@
   background: linear-gradient(
     to right,
     var(--colox-slider-palette-solid) 0 var(--colox-slider-progress),
-    var(--colox-color-bg-muted) var(--colox-slider-progress) 100%
+    var(--colox-slider-fabric) var(--colox-slider-progress) 100%
   );
 }
 
@@ -71,18 +75,38 @@
   }
 }
 
+// The invalid signal paints the fabric and the thumb ring with the red
+// family channel — the field's empty area reads red the way a shell
+// border does on Input/Checkbox — while the traveled stripe and the
+// thumb keep their palette: a filled state owns its paint (the same
+// priority as a checked Switch). The red focus ring marks the
+// transient keyboard focus either way.
+.colox-slider--invalid {
+  --colox-slider-fabric: var(--colox-color-red-muted);
+
+  .colox-slider__control::-webkit-slider-thumb {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-visible {
+      box-shadow:
+        var(--colox-shadow-sm),
+        0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+}
+
 // Disabled flattens the stripe and swaps the thumb ring for the
 // family gray — the value position stays readable through the thumb.
+// It is declared after invalid on purpose: a disabled slider never
+// wears the invalid channel.
 .colox-slider--disabled {
+  --colox-slider-fabric: var(--colox-color-bg-disabled);
+
   cursor: not-allowed;
 
   .colox-slider__control {
     cursor: not-allowed;
   }
-}
-
-.colox-slider--disabled .colox-slider__control::-webkit-slider-runnable-track {
-  background: var(--colox-color-bg-disabled);
 }
 
 .colox-slider--disabled .colox-slider__control::-webkit-slider-thumb {
@@ -148,7 +172,7 @@
   .colox-slider__control::-moz-range-track {
     height: var(--colox-slider-track);
     border-radius: var(--colox-radius-full);
-    background: var(--colox-color-bg-muted);
+    background: var(--colox-slider-fabric);
   }
 
   .colox-slider__control::-moz-range-progress {
@@ -174,8 +198,14 @@
     }
   }
 
-  .colox-slider--disabled .colox-slider__control::-moz-range-track {
-    background: var(--colox-color-bg-disabled);
+  .colox-slider--invalid .colox-slider__control::-moz-range-thumb {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-visible {
+      box-shadow:
+        var(--colox-shadow-sm),
+        0 0 0 2px var(--colox-color-red-muted);
+    }
   }
 
   .colox-slider--disabled .colox-slider__control::-moz-range-progress {

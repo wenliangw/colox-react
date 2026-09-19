@@ -115,6 +115,49 @@ describe('Checkbox.Group', () => {
     expect(screen.getByRole('checkbox', { name: 'Banana' })).toBeDisabled();
   });
 
+  it('inherits invalid from the group and paints every member', () => {
+    render(
+      <Checkbox.Group invalid>
+        <Checkbox value="apple">Apple</Checkbox>
+        <Checkbox value="banana">Banana</Checkbox>
+      </Checkbox.Group>,
+    );
+    const apple = screen.getByRole('checkbox', { name: 'Apple' });
+    const banana = screen.getByRole('checkbox', { name: 'Banana' });
+    expect(apple).toHaveAttribute('aria-invalid', 'true');
+    expect(banana).toHaveAttribute('aria-invalid', 'true');
+    expect(apple.closest('.colox-checkbox')).toHaveClass('colox-checkbox--invalid');
+    expect(banana.closest('.colox-checkbox')).toHaveClass('colox-checkbox--invalid');
+  });
+
+  it('lets a member opt out of the group invalid flag', () => {
+    render(
+      <Checkbox.Group invalid>
+        <Checkbox value="apple" invalid={false}>
+          Apple
+        </Checkbox>
+        <Checkbox value="banana">Banana</Checkbox>
+      </Checkbox.Group>,
+    );
+    expect(screen.getByRole('checkbox', { name: 'Apple' })).not.toHaveAttribute('aria-invalid');
+    expect(
+      screen.getByRole('checkbox', { name: 'Apple' }).closest('.colox-checkbox'),
+    ).not.toHaveClass('colox-checkbox--invalid');
+    expect(screen.getByRole('checkbox', { name: 'Banana' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+  });
+
+  it('leaves members clean without the group flag', () => {
+    render(
+      <Checkbox.Group>
+        <Checkbox value="apple">Apple</Checkbox>
+      </Checkbox.Group>,
+    );
+    expect(screen.getByRole('checkbox', { name: 'Apple' })).not.toHaveAttribute('aria-invalid');
+  });
+
   it('lets members inherit the group size with own-size precedence', () => {
     render(
       <Checkbox.Group size="sm">

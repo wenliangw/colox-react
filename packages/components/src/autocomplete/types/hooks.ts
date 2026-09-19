@@ -31,6 +31,10 @@ export interface UseAutoCompleteParams {
   target: ReactElement;
   value?: string;
   defaultValue?: string;
+  /** The resolved disabled flag (root prop, else the host's own). */
+  disabled?: boolean;
+  /** The resolved read-only flag (root prop, else the host's own). */
+  readOnly?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
   filterOption?: AutoCompleteFilterFn;

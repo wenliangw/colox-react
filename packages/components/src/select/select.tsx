@@ -67,6 +67,9 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     // display-text fallback name, id lands on the control so <label for>
     // targets the real control rather than the shell.
     'aria-label': ariaLabel,
+    'aria-describedby': ariaDescribedBy,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-required': ariaRequired,
     id,
     filterOption,
     onChange,
@@ -317,6 +320,9 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
           invalid={invalid}
           id={id}
           ariaLabel={ariaLabel}
+          ariaDescribedBy={ariaDescribedBy}
+          ariaLabelledBy={ariaLabelledBy}
+          ariaRequired={ariaRequired}
           controlLabel={controlLabel}
           listboxId={listboxId}
           activeDescendantId={activeDescendantId}

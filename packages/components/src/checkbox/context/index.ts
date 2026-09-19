@@ -12,6 +12,7 @@ export const defaultCheckboxGroupContextValue: CheckboxGroupContextValue = {
   // on: members resolve size against this when neither sets their own.
   size: 'md',
   disabled: false,
+  invalid: false,
 };
 
 /**

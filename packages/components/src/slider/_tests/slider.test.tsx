@@ -82,6 +82,18 @@ describe('Slider native contract', () => {
     expect(input).toBeDisabled();
     expect(input.closest('.colox-slider')).toHaveClass('colox-slider--disabled');
   });
+
+  it('marks invalid via aria-invalid and the root modifier', () => {
+    render(<Slider invalid />);
+    const input = screen.getByRole('slider');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input.closest('.colox-slider')).toHaveClass('colox-slider--invalid');
+  });
+
+  it('leaves aria-invalid off by default', () => {
+    render(<Slider />);
+    expect(screen.getByRole('slider')).not.toHaveAttribute('aria-invalid');
+  });
 });
 
 describe('Slider value wiring', () => {
