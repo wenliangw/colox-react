@@ -18,6 +18,8 @@
 10. **props 顺序三处同序**（接口 / 组件解构 / 调用点 `useXxx({...})`）：**属性块在前、事件回调最后**，事件块内部保持接口声明相对序（tastes/code-style.md）。Switch 交付时 onChange 夹在 checked/defaultChecked 与 disabled 之间被用户指正「onChange 事件应该写在属性之后，不要混着写」——Checkbox/Radio/Textarea/Input/两 Group 存量同病 + CheckboxGroupProps/RadioGroupProps 接口层一并归一；**新组件首版即三处同序，不得以「现有组件也这么写」为由照抄反例**。
 11. **绝对定位子元素不撑容器高度**：定位层容器（刻度行、悬浮行这类「流内占位 + 子项绝对定位」的结构）必须显式给高度，否则容器零高、子项悬出布局流压盖后续内容——Slider marks 首版零高（刻度点/标签全绝对定位）被浏览器像素探针抓出标签盖住下一节；修复 = 按档显式高度（点 + 间距 + 标签行高）。自查：给「position: absolute 子项」当爹的容器，看它有没有非 auto 高度。
 12. **radius 只裁 border 边，裁不到 content-box**：`background-clip: content-box` 的渐变永远方角——想画圆头条纹（滑杆轨道、进度条）就把渐变换到自己的伪元素/盒子上（4px 高 + radius-full = 胶囊头），不要指望 input 背景 + clip 组合出圆角（Slider 首版两端尖被用户指正）。disabled 等状态复写用 `background: <color>` 简写时，clip 会被重置为 border-box，会把整个盒涂成大胶囊——状态复写要么不用简写、要么紧接着再声明 clip。
+13. **null 是数字控件的真实值——判定受控禁用 `??`**：`value: number | null` 词形下 `current = value ?? inner` 会把受控 null 当「未受控」吞掉（?? 对 null 穿透），空态显示残留旧值；判定与解析必须 `value !== undefined ? value : inner`（InputNumber 首版被测试抓出）。自查：数字/可空词形组件里所有 `??` 出现在 value 上的位置——受控空值是否被误吞。
+14. **动手前通读 tastes/code-style.md 的控制流条目**：`if` 必带 `{}`（绝不 `if (x) return;`）+ 同类分支用单 if 折叠（if/else if 复制公共逻辑一律单 if + ||/方向三元消解）是**已记录品味**，InputNumber 首版仍写了 13 处单行 if + handleKeyDown if/else 重复（preventDefault + stepBy 双写），被用户指正「不认真」。自查：新组件写完 grep 一遍 `^if.*[^;{]$` 单行 if、若 if/else if 两个分支共享公共语句就折叠。
 
 ## 为什么
 
