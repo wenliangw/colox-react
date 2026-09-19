@@ -6,7 +6,7 @@
 
 - **rule of two 满员触发**：仓库里手写图标按钮曾有四站（Input 清除/可见性、Select 清除/chip 移除）+ docs/preview 演示手写 ×——复位块（inline-flex 居中/padding 0/border none/background transparent/cursor/disabled）拷了 5 份，聚焦态与可达名契约每站自己重复实现。
 - **与 Button 语义分层**：Button 管内容（palette/variant/shadow/字重），IconButton 管图标（方形、plain 基底、图标尺寸）——混成 shape 变体只会污染两个 API（MUI/Base UI 同款拆分）。
-- **通用契约收进基座**：纯图标按钮的 aria-label 可达名契约（组件文档声明，消费方必传）、`focus-visible` outline 2px palette-solid + offset 2（沿用表单惯例，焦点环随 palette 换色）、disabled 态、token 钉住的方形足迹。hover/active 反馈也在基座——**最初「有意不进基座」是过度保守**：用户指摘「IconButton 好像没有 hover 效果」后反转——座位式反馈（wash + 按压）是基座默认契约，站点有理由再用类覆盖（决策 05b83bed）。
+- **通用契约收进基座**：纯图标按钮的 aria-label 可达名契约（组件文档声明，消费方必传）、`focus-visible` outline 2px + offset 2（**环色 = `palette-solid` 本身**：控件的什么音色就什么环——中性钮中性环、语义档自身色；「中性档改 brand 环」试过并被用户否决，见变更）、disabled 态、token 钉住的方形足迹。hover/active 反馈也在基座——**最初「有意不进基座」是过度保守**：用户指摘「IconButton 好像没有 hover 效果」后反转——座位式反馈（wash + 按压）是基座默认契约，站点有理由再用类覆盖（决策 05b83bed）。
 
 ## 尺寸双通道
 
@@ -23,14 +23,14 @@
 
 - **变体决定图标色**（用户定调「设置 variant 后，图标的颜色也应该跟着变」）：
   - **plain**（默认）：纯图标、**零盒子**——宽高 auto、盒子拥抱图标，`size` 通道经 font-size 直驱图标尺寸（md=40px 图标，裸键=图标像素）；**着色图标语义（决策 666d8aa8 定稿）**：静止即涂 palette-solid（默认 gray 灰），hover/active = 同族 palette-solid-hover/active 加深，背景恒透明（用户否决链：无反馈 → wash → 继承+palette hover → 静止 palette + 同族加深）。
-  - **muted**（决策 49d74585）：plain 同构零盒铬（盒子拥抱图标、size 直驱图标尺寸）；音色 = context 档——静止 text-muted（#9E9E9E light / #A3A3A3 dark，与 placeholder/chevron 同语境）、hover/active 提音量到 text-default（#191919 / #E8E8E8，大偏移可见）；**palette 不参与着色**（唯一非 palette 成员，具名例外）；disabled 走基座、焦点环仍随 palette。
+  - **muted**（决策 49d74585）：plain 同构零盒铬（盒子拥抱图标、size 直驱图标尺寸）；音色 = context 档——静止 text-muted（#9E9E9E light / #A3A3A3 dark，与 placeholder/chevron 同语境）、hover/active 提音量到 text-default（#191919 / #E8E8E8，大偏移可见）；**palette 不参与着色**（唯一非 palette 成员，具名例外）；disabled 走基座、焦点环仍取 palette-solid（默认 gray = 中性灰环）。
   - **ghost**：图标色 = palette solid（照 Button ghost 语义）；hover/active = palette wash 方形浅底。**plain/ghost 的界线 = 静止色与反馈通道俱异**：plain = palette 色静止→同族加深无底；ghost = palette 色静止→wash。
   - **solid**：palette 实底三态（solid → solid-hover/active）+ palette-inverse 图标；disabled = bg-disabled。
   - **outline**：1px palette border + palette 图标 + 透明底，hover/active = wash，disabled = border-disabled。
   - **surface**：= subtle + 一圈 1px muted 描边（边界感）；hover/active 同换档 muted。
   - **subtle**：palette-subtle 浅底 + palette 图标（tonal 浅底钮，决策 61867822 预埋兑现）；hover/active 换档 muted（反馈总则「有底换档、无底 wash」，决策 c066fcc2）。
 - **方形圆角**：默认 `radius-lg`(8px)——用户反馈 radius-xs(2px) 视觉上等于没有，且 Button/Input 家族基准就是 radius-lg，同源对齐；**圆形不做默认**，`rounded` prop 才切 `radius-full`(9999px)。wash/fill 跟随足迹。
-- **实现形状同 Button**：palette.scss 注解私有变量族 `--colox-icon-button-palette-*`（base 落 brand fallback 保焦点环存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。
+- **实现形状同 Button**：palette.scss 注解私有变量族 `--colox-icon-button-palette-*`（base 落 brand fallback 保涂装存活），variant.scss 只画涂装——将来站点扩展配色只需重挂变量、不碰涂装规则。焦点环**直接读 `palette-solid`**（不另设环变量：环与涂装同源就是契约，试过解耦又回退）。
 - **动效与 Button 同步**：base 双段 transition（normal 全轴 + active 快速段）、`scale(0.97)` 按压。
 - **内部四站换装 muted（决策 49d74585）**：默认即 plain+gray、size="4" 不变（plain 的 size 通道兑现 16px 设计意图——此前是上下文字号 1em：原版 slots 只标了盒、没标字号）；四站（Input clear/toggle、Select clear/tag-remove）显式 `variant="muted"`，Select 侧两条站点色规则（tag-remove 静止 muted/hover solid、clear hover text-solid→default）删除——站点层回归纯结构（定位/reveal），色档职责收进 IconButton 音色轴，一致性由 variant 字面量保证（DatePicker/TimePicker 将来同一句）。
 
@@ -50,3 +50,7 @@
 - **不搬进基座的**：mousedown 防失焦（上下文行为——工具栏钮要正常获焦），理由见上；hover 底色已反转进基座（05b83bed），站点有理由仍可覆盖。
 - **不带 icon prop**：图标走 `children`（ReactNode 插槽，与 icons 包「插槽收 ReactNode」同构）。
 - 尺寸键全刻度开放（含页面宽档 80–1440 键）——类型不设上限，观感责任归消费方；预设档覆盖常规区间。
+
+## 变更
+
+- 2026-10 焦点环配色定案（用户指正后两轮收敛）：环色**保持跟随控件自身 palette**（gray 钮 = gray-700 中性灰环 `#707070`，语义档 = 自身 solid）。中途试过「中性档改 brand 环」被用户否决（「gray 的 outline 用 brand 有点怪」——灰钮配饱和品牌环读作外来涂装）。**候选空间受非文本对比 3:1 约束**：gray-700 4.95:1 ✓ / brand-500 6.29:1 ✓ / brand-muted 1.99:1 ✗ / gray-600 ~2.8:1 ✗——合规的中性档实际只有 gray-700 一档。同轮真正的黑边修复在 Select（触发钮漏抑制 UA 默认环，见 select 模块）。

@@ -12,6 +12,15 @@ Select clearable × 的「点不到」排查实录沉淀。将来任何组件做
   - [ ] **@colox/icons 的图标不用再处理**：IconBase 已默认 `pointer-events="none"` 表现属性（spec §9），消费方经 className CSS / style / pointerEvents prop 三通道显式恢复。组件里若用非 icons 包的自备 svg/字符做渐隐装饰件，仍照本条目显式处理。
 - **为什么**：Select 光滑进 chevron、× 渐显后，chevron 的命中面仍盖在 × 上——真实点击永远落在 chevron 的 SVG 上（无 handler），× 看起来可点但「点不到」；面板开着时 mousedown 落在 SVG 上把焦点从 control 拽走。jsdom/vitest 测不出（fireEvent 直接调处理器、不做命中测试）——最终靠 Playwright + `elementFromPoint` 实弹钉死。首版修复在组件 scss 里给 chevron 显式加规则，后按「契约收进基座」缩编：IconBase 默认承载（决策 d9d62f07），组件侧规则撤回。
 
+## 空内容的可交互件必须有确定盒，否则塌成 0 尺寸
+
+- **改这里**：让 flex/grid 行里的可交互元素（按钮、触发器）按状态决定有无内容——内容为空时不渲染任何子节点。
+- **必须检查：**
+  - [ ] 无内容 + `padding: 0` + 行内 `align-items: center`（不 stretch）的可交互件高度塌成 **0**：不可见、不可点、Playwright 判 hidden（前科：Select 二轮把 multiple 无 showSearch 的控件从 input 换成 button 后，有 chip 时按钮无内容 → 76×0）。
+  - [ ] jsdom/vitest **测不出**（无布局、fireEvent 直接调处理器）——这类「形态/内容决定盒子」的改动必须过真实浏览器探针量 `getBoundingClientRect()`；本轮 12 项探针中正是「focus 打开」一项因控件 0 高被判 hidden 才暴露。
+  - [ ] 修法优先级：给控件确定盒（`align-self: stretch`，由行高撑起）> 塞不可见占位内容（脏补丁）。
+- **为什么**：Select 真实浏览器探针抓出（jsdom 100 例全绿仍放行），修 `align-self: stretch`。
+
 ## 排查「点不到」类问题 → 先做命中点对拍
 
 - **改这里**：用户报「按钮/图标点了没反应、像没点中」，而单测（jsdom fireEvent）全绿。
