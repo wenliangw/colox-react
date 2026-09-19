@@ -26,7 +26,7 @@ autocomplete/
 └── variants/index.ts        # 空轴 cva 底座（家族惯例：轴可生长；视觉身份属宿主 Input）
 ```
 
-cdk 新面：`src/cdk/combobox/`——`types.ts`（`ComboboxOption` {value,text,disabled}）+ `filter.ts`（`filterComboboxOptions` 纯函数 + `defaultComboboxFilter`，泛型保记录宽型）+ `index.ts`。
+cdk 新面：`src/cdk/combobox/` ——建议行为完整内核，能力一律文件夹化（根只留入口）：`types/`（`option.ts` 词形 `ComboboxOption` + `filter.ts` 筛选契约 `ComboboxFilterFn` + `hooks.ts` 键盘契约，`index.ts` 内部 barrel）+ `filter/index.ts`（`filterComboboxOptions` 纯函数 + `defaultComboboxFilter`，泛型保记录宽型）+ `walk/index.ts`（`walkComboboxLeaves` 通用子树走查，Select 编译共享）+ `hooks/use-combobox-keyboard.ts`（键盘巡行状态机，零内联类型）+ `index.ts`。
 
 ## 功能逻辑
 
@@ -55,7 +55,7 @@ cloneElement 注入**覆盖同名**（值词归 AutoComplete——作者在宿�
 
 ### 键盘与 ARIA
 
-`useComboboxKeyboard`（cdk floating 既有）：↑↓ 巡行绕环跳 disabled、Home/End、Enter（闭合先开、开着且 active≥0 才选中）、Space 输入宿主穿过（`instanceof HTMLInputElement` 判断——注入落到 Input 内层原生 input，判断成立）；行 id `${listboxId}-item-${index}` 挂 `aria-activedescendant`。`useDismissible` 双通道（外点/Escape）护隐。
+`useComboboxKeyboard`（cdk combobox 内核，契约在 `types/hooks.ts`）：↑↓ 巡行绕环跳 disabled、Home/End、Enter（闭合先开、开着且 active≥0 才选中）、Space 输入宿主穿过（`instanceof HTMLInputElement` 判断——注入落到 Input 内层原生 input，判断成立）；行 id `${listboxId}-item-${index}` 挂 `aria-activedescendant`。`useDismissible`（cdk floating 弹层件）双通道（外点/Escape）护隐。
 
 ## 测试图谱（43）
 

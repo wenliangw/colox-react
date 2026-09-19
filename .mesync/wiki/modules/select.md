@@ -26,7 +26,7 @@ packages/components/src/select/
 ├── types/              # 类型契约集中（按能力层分文件）：component.ts（根契约 7 件）/ hooks.ts / children.ts / utils.ts + index.ts 内部全量 barrel
 ├── hooks/use-select.ts # 状态对称（value/defaultValue、open/defaultOpen、query 流、publish；契约在 types/hooks.ts）
 ├── hooks/use-tag-fold.ts # 多选折叠测量 hook：inner 参考预算 + ResizeObserver + 计数（契约 UseTagFoldArgs/Result 在 types/hooks.ts）
-├── utils/select-options.ts       # compileSelectOptions（子树遍历编译）+ 默认过滤 + find/filter（SelectFilterFn 契约在 types/utils.ts）
+├── utils/select-options.ts       # compileSelectOptions/findSelectTemplate（cdk walkComboboxLeaves 谓词走查编译）+ adaptComboboxFilter 桥 + find（SelectFilterFn 契约在 types/utils.ts）
 ├── utils/resolve-select-surface.tsx  # 派生值 resolver：inputValue/controlLabel/buttonDisplay 逐级回退链（if + return；ResolveXxxParams 契约在 types/utils.ts）
 ├── utils/tag-fitting.ts   # countFittingTags：chip 行折叠计数的纯函数（对行宽+badge 宽求可见前缀，单测覆盖）
 ├── children/           # 按功能拆分的渲染单元（渲染体只编排的用户指正产物；各 XxxProps/Ref 契约在 types/children.ts，私有行组件 SelectOptionRowProps 留 panel 原地）
@@ -47,7 +47,7 @@ packages/components/src/select/
 - `src/cdk/floating/popup/`：portal 到 document.body 的无头承载；**首帧守卫用 `opacity + pointer-events` 而非 `visibility`**——避免面板从 a11y 可达树里消失（也是测试库 `getByRole('listbox')` 的隐含依赖）；SSR mounted 守卫（无 hydrate 失配）。
 - `src/cdk/floating/hooks/use-floating-position.ts`：包 `@floating-ui/dom`（computePosition + autoUpdate，flip/shift/size，fixed 策略，`positioned` 状态守首帧）。
 - `src/cdk/floating/hooks/use-dismissible.ts`：外部 pointerdown capture + Escape 关闭。
-- `src/cdk/floating/hooks/use-combobox-keyboard.ts`：activeIndex 状态机（循环、跳 disabled、Home/End、Enter 激活带事件），暴露 `onControlKeyDown`。
+- `src/cdk/combobox/`：建议行为完整内核（能力文件夹化：`types/` 按层归位 / `filter/index.ts` / `walk/index.ts` / `hooks/use-combobox-keyboard.ts`）——`filterComboboxOptions` 过滤纯函数 + `defaultComboboxFilter` 默认匹配器（Select 经 `adaptComboboxFilter` 桥接记录型 `SelectFilterFn`）、`walkComboboxLeaves` 通用子树走查（`isLeaf` 谓词 + `onLeaf` 回调，rc-select 边界）、键盘状态机（activeIndex 循环、跳 disabled、Home/End、Enter 激活带事件，暴露 `onControlKeyDown`）。Select 回溯清偿后与 AutoComplete 共享此机。
 
 ### 跨组件复用
 
