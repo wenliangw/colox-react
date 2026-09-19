@@ -17,12 +17,14 @@ discipline and non-goals — lives in the repository:
 - **Actions** — `Button`, `IconButton`.
 - **Form controls** — `Input`, `InputNumber`, `Textarea`, `Checkbox`, `Radio`,
   `Switch`, `Slider`, `DatePicker`, `Select`, `AutoComplete`.
+- **Form layer** — `Form` with `Form.Field` / `Form.Label` / `Form.Hint` /
+  `Form.Validate` and `useForm`.
 
 ## Next
 
 | Milestone                     | Contents                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------ |
-| M3 Form layer                 | `Form`, `Field`, `FieldArray`, `useForm`, `InputGroup`, `TimePicker`     |
+| M3 Form layer (in progress)   | remaining: `FieldArray`, `InputGroup`, `TimePicker`                      |
 | M4 Overlay                    | `Tooltip`, `Popover`, `Modal`, `Drawer`, `Toast`                         |
 | M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`       |
 | M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps` |
