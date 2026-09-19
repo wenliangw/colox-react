@@ -95,10 +95,20 @@
   }
 }
 
+// Read-only pins the value: the pointer reads "not movable" without
+// the disabled gray, and the control stays focusable.
+.colox-slider--readonly {
+  cursor: default;
+
+  .colox-slider__control {
+    cursor: default;
+  }
+}
+
 // Disabled flattens the stripe and swaps the thumb ring for the
 // family gray — the value position stays readable through the thumb.
-// It is declared after invalid on purpose: a disabled slider never
-// wears the invalid channel.
+// It is declared after invalid and read-only on purpose: a disabled
+// slider never wears the invalid channel nor the read-only pointer.
 .colox-slider--disabled {
   --colox-slider-fabric: var(--colox-color-bg-disabled);
 

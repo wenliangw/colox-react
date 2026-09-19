@@ -83,6 +83,27 @@ describe('Switch states', () => {
     expect(input).toBeDisabled();
     expect(input.closest('.colox-switch')).toHaveClass('colox-switch--disabled');
   });
+
+  it('pins the value when read-only: no change published, DOM reverted', () => {
+    const onChange = vi.fn();
+    render(<Switch readOnly onChange={onChange} />);
+    const input = screen.getByRole('switch');
+    expect(input).toHaveAttribute('aria-readonly', 'true');
+    expect(input).not.toBeDisabled();
+    fireEvent.click(input);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input).not.toBeChecked();
+    expect(input.closest('.colox-switch')).toHaveClass('colox-switch--readonly');
+  });
+
+  it('keeps a checked read-only switch on', () => {
+    const onChange = vi.fn();
+    render(<Switch readOnly defaultChecked onChange={onChange} />);
+    const input = screen.getByRole('switch');
+    fireEvent.click(input);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input).toBeChecked();
+  });
 });
 
 describe('Switch native contract', () => {

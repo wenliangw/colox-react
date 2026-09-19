@@ -13,6 +13,17 @@ Radios capture single selections; `Radio.Group` owns the picked value.
 
 <Radio>Unchecked</Radio> <Radio defaultChecked>Checked</Radio> <Radio invalid>Invalid</Radio>
 <Radio disabled>Disabled</Radio>
+<Radio readOnly defaultChecked>
+  Read-only
+</Radio>
+
+`readOnly` pins the value: the control stays focusable, readable and submitted, but a
+click or key press reverts and publishes nothing. It is the family's own behaviour
+(native `readonly` means nothing to a radio), announced through `aria-readonly`, and it
+does **not** dim the control — dimming is the disabled language.
+
+A group-level `readOnly` freezes the current pick: members stay focusable and
+announce `aria-readonly`, and no selection change is published.
 
 `invalid` paints the unfilled state only — a selected radio keeps its brand ring
 (same visual priority as [Checkbox](./checkbox)).
@@ -55,7 +66,9 @@ library's own).
 
 ### Radio.Group props
 
-Members inherit `size`, `name` and `disabled` from the group; a member's own prop wins. `onChange` fires with `{ event, value }` — `event` is the triggering member's native change event, `value` the next selection.
+Members inherit `size`, `name`, `disabled`, `invalid` and `readOnly` from the group; a
+member's own prop wins for `size`/`name`/`invalid`, while `disabled`/`readOnly` are
+sticky (a restricted group cannot be opted out of). `onChange` fires with `{ event, value }` — `event` is the triggering member's native change event, `value` the next selection.
 
 | Prop         | Type                                 | Default |
 | ------------ | ------------------------------------ | ------- |
@@ -64,6 +77,7 @@ Members inherit `size`, `name` and `disabled` from the group; a member's own pro
 | onChange     | `({ event, value: string }) => void` | —       |
 | size         | `'xs' \| 'sm' \| 'md' \| 'lg'`       | `'md'`  |
 | disabled     | `boolean`                            | `false` |
+| readOnly     | `boolean`                            | `false` |
 | invalid      | `boolean`                            | `false` |
 | name         | `string`                             | —       |
 

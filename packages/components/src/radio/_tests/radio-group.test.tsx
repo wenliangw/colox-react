@@ -140,6 +140,20 @@ describe('Radio.Group', () => {
     expect(screen.getByRole('radio', { name: 'Banana' })).toHaveAttribute('aria-invalid', 'true');
   });
 
+  it('inherits read-only from the group: members pin their selection', () => {
+    const groupOnChange = vi.fn();
+    render(
+      <Radio.Group readOnly value="" onChange={groupOnChange}>
+        <Radio value="apple">Apple</Radio>
+      </Radio.Group>,
+    );
+    const apple = screen.getByRole('radio', { name: 'Apple' });
+    expect(apple).toHaveAttribute('aria-readonly', 'true');
+    fireEvent.click(apple);
+    expect(apple).not.toBeChecked();
+    expect(groupOnChange).not.toHaveBeenCalled();
+  });
+
   it('lets members inherit the group size with own-size precedence', () => {
     render(
       <Radio.Group size="sm">

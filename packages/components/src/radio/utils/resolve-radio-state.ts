@@ -10,6 +10,8 @@ export interface ResolveRadioStateParams {
   disabled: boolean | undefined;
   /** Own invalid flag; unset members inherit the group's. */
   invalid: boolean | undefined;
+  /** Own read-only flag; the group's is sticky when set. */
+  readOnly: boolean | undefined;
   name: string | undefined;
   size: RadioSize | undefined;
   /** The mounted group snapshot (static defaults outside a group). */
@@ -24,6 +26,8 @@ export interface ResolveRadioStateResult {
   disabled: boolean;
   /** Resolved invalid flag: own prop wins, the group speaks otherwise. */
   invalid: boolean;
+  /** Resolved read-only flag: sticky, like disabled. */
+  readOnly: boolean;
   name: string | undefined;
   /** Resolved tier: own prop wins, the group carries the axis otherwise. */
   size: RadioSize;
@@ -34,8 +38,8 @@ export interface ResolveRadioStateResult {
  * group: a `value` without explicit checked control is a group member
  * (its check derives from the single selection), everything else stays
  * own-controlled. `size`, `invalid` and `name` inherit from the group
- * with own prop precedence; `disabled` is sticky instead (a disabled
- * group cannot be opted out of).
+ * with own prop precedence; `disabled` and `readOnly` are sticky
+ * instead (a disabled or read-only group cannot be opted out of).
  */
 export function resolveRadioState({
   memberValue,
@@ -43,6 +47,7 @@ export function resolveRadioState({
   defaultChecked,
   disabled,
   invalid,
+  readOnly,
   name,
   size,
   group,
@@ -55,6 +60,7 @@ export function resolveRadioState({
     checked: groupMember ? group.value === memberValue : checked,
     disabled: disabled || group.disabled,
     invalid: invalid ?? group.invalid,
+    readOnly: readOnly || group.readOnly,
     name: name ?? (group.name === '' ? undefined : group.name),
     size: size ?? group.size,
   };

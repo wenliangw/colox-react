@@ -270,6 +270,9 @@ export const Overview: Story = {
             <Select value="banana" disabled>
               {FruitOptions}
             </Select>
+            <Select value="banana" readOnly>
+              {FruitOptions}
+            </Select>
           </Stack>
         </Section>
 

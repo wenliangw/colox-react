@@ -26,6 +26,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
   const {
     size,
     invalid,
+    readOnly,
     indeterminate = false,
     value: memberValue,
     checked,
@@ -50,12 +51,23 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     defaultChecked,
     disabled,
     invalid,
+    readOnly,
     name,
     size,
     group,
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (state.readOnly) {
+      // Read-only pins the value: a change event means the browser has
+      // already toggled, so revert it (the third state included) and
+      // publish nothing.
+      event.target.checked = !event.target.checked;
+      if (indeterminate) {
+        event.target.indeterminate = true;
+      }
+      return;
+    }
     if (state.groupMember && memberValue !== undefined) {
       group.onChange(memberValue, event);
     }
@@ -68,6 +80,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
         checkboxVariants({ size: state.size }),
         {
           'colox-checkbox--invalid': state.invalid,
+          'colox-checkbox--readonly': state.readOnly,
           'colox-checkbox--disabled': state.disabled,
         },
         className,
@@ -80,6 +93,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
           className="colox-checkbox__control"
           type="checkbox"
           aria-invalid={state.invalid || undefined}
+          aria-readonly={state.readOnly || undefined}
           value={memberValue}
           name={state.name}
           checked={state.checked}

@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
 import type { SwitchProps, SwitchRef } from './types';
 import { switchVariants } from './variants';
@@ -13,7 +14,9 @@ import './styles/index.scss';
  * semantics, the native form keeps its zero-cost path. `children`
  * render as the label. States: checked (palette solid track — brand
  * by default), `invalid` (red border/ring on the off state, same
- * channel as Checkbox) and disabled. Size tiers share the
+ * channel as Checkbox), read-only (the value is pinned while the
+ * control stays focusable and readable) and disabled. Size tiers share
+ * the
  * Button/Input/Checkbox design language (xs/sm/md/lg).
  */
 const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
@@ -21,6 +24,7 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
     size,
     palette,
     invalid = false,
+    readOnly = false,
     checked,
     defaultChecked,
     disabled,
@@ -34,11 +38,26 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
   const inputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
+  // Read-only keeps the switch focusable and readable while the value
+  // stays put: a change event means the browser has already toggled,
+  // so revert it and publish nothing.
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) {
+      event.target.checked = !event.target.checked;
+      return;
+    }
+    onChange?.({ event, value: event.target.checked });
+  };
+
   return (
     <label
       className={clsx(
         switchVariants({ size, palette }),
-        { 'colox-switch--invalid': invalid, 'colox-switch--disabled': disabled },
+        {
+          'colox-switch--invalid': invalid,
+          'colox-switch--readonly': readOnly,
+          'colox-switch--disabled': disabled,
+        },
         className,
       )}
       style={style}
@@ -50,10 +69,11 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
           type="checkbox"
           role="switch"
           aria-invalid={invalid || undefined}
+          aria-readonly={readOnly || undefined}
           checked={checked}
           defaultChecked={defaultChecked}
           disabled={disabled}
-          onChange={(event) => onChange?.({ event, value: event.target.checked })}
+          onChange={handleChange}
           {...rest}
         />
         <span className="colox-switch__thumb" aria-hidden="true" />

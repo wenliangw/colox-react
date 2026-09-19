@@ -8,6 +8,7 @@ export interface SelectControlProps {
   showSearch: boolean;
   open: boolean;
   disabled: boolean;
+  readOnly: boolean;
   invalid: boolean;
   id?: string;
   /** Explicit name override; wins over the fallback `controlLabel`. */

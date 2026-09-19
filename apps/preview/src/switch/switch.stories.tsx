@@ -55,6 +55,9 @@ export const Overview: Story = {
             <Switch defaultChecked invalid>
               Invalid but on
             </Switch>
+            <Switch readOnly defaultChecked>
+              read-only — value pinned, still focusable
+            </Switch>
             <Switch disabled>Disabled off</Switch>
             <Switch defaultChecked disabled>
               Disabled on

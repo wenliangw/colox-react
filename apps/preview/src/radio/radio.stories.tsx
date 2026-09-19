@@ -50,6 +50,9 @@ export const Overview: Story = {
               Invalid · checked
             </Radio>
             <Radio disabled>Disabled</Radio>
+            <Radio readOnly defaultChecked>
+              read-only — value pinned, still focusable
+            </Radio>
             <Radio disabled defaultChecked>
               Disabled · checked
             </Radio>

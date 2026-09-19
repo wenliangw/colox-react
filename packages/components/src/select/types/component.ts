@@ -178,6 +178,15 @@ export interface SelectProps extends Omit<
   /** Disables the select: the shell goes terminal and the panel cannot open. */
   disabled?: boolean;
   /**
+   * Read-only select: the panel cannot open (the trigger, the shell and
+   * the keyboard all stay shut), picks and clears are off and a
+   * searchable control stops accepting text — while the control stays
+   * focusable, readable and submitted. Native `readonly` means nothing
+   * to a button/div, so the select carries `aria-readonly` itself.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * The field's description/error wiring, forwarded to the combobox
    * control itself (the focusable element) rather than the shell: a
    * description on the shell would be invisible to the focus owner.

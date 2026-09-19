@@ -87,6 +87,26 @@ describe('Checkbox native contract', () => {
     expect(payload?.event.target.checked).toBe(true);
   });
 
+  it('pins the value when read-only: no change published, DOM reverted', () => {
+    const onChange = vi.fn();
+    render(<Checkbox readOnly onChange={onChange} />);
+    const input = screen.getByRole('checkbox');
+    expect(input).toHaveAttribute('aria-readonly', 'true');
+    expect(input).not.toBeDisabled();
+    fireEvent.click(input);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input).not.toBeChecked();
+    expect(input.closest('.colox-checkbox')).toHaveClass('colox-checkbox--readonly');
+  });
+
+  it('keeps a checked read-only checkbox on and restores indeterminate', () => {
+    render(<Checkbox readOnly indeterminate defaultChecked />);
+    const input = screen.getByRole('checkbox') as HTMLInputElement;
+    fireEvent.click(input);
+    expect(input).toBeChecked();
+    expect(input.indeterminate).toBe(true);
+  });
+
   it('merges the consumer className and style on the root label', () => {
     const { container } = render(<Checkbox className="custom-class" style={{ marginTop: 8 }} />);
     const root = container.querySelector('.colox-checkbox');

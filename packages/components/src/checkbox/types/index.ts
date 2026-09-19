@@ -27,6 +27,16 @@ export interface CheckboxProps extends Omit<
    */
   size?: CheckboxSize;
   /**
+   * Read-only checkbox: the value cannot be changed (the native control is
+   * reverted and no change is published, a group's own flag included)
+   * while the control stays focusable and readable. Native
+   * `readonly` means nothing on a checkbox, so this is the family's own
+   * behaviour — announced through `aria-readonly`, never dimmed
+   * (dimming is the disabled language).
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the checkbox as invalid: sets `aria-invalid` and swaps the
    * box border/ring to the red tokens (same channel as `Input`).
    * Inside a `<Checkbox.Group>` an unset value inherits the group's
@@ -86,6 +96,14 @@ export interface CheckboxGroupProps extends Omit<
   /** Disables every member checkbox the group renders. */
   disabled?: boolean;
   /**
+   * Read-only group: every member that does not set its own
+   * `readOnly` pins its value (a group's restriction is sticky — a
+   * disabled/read-only group cannot be opted out of), while the
+   * controls stay focusable and readable.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the whole group as invalid: every member that does not set
    * its own `invalid` turns red and announces `aria-invalid` (own prop
    * wins). The group root itself carries no `aria-invalid` — the ARIA
@@ -139,4 +157,6 @@ export interface CheckboxGroupContextValue {
   disabled: boolean;
   /** The group `invalid` flag members inherit (own prop wins). */
   invalid: boolean;
+  /** The group read-only flag (sticky: the group cannot be opted out of). */
+  readOnly: boolean;
 }

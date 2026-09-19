@@ -24,6 +24,7 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
     size,
     palette,
     invalid = false,
+    readOnly = false,
     value,
     defaultValue,
     min = 0,
@@ -44,6 +45,12 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
   const current = value ?? innerValue;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) {
+      // Read-only pins the value: the native range has already moved,
+      // so put it back where the rendered value sits and stay silent.
+      event.currentTarget.value = String(current);
+      return;
+    }
     const nextValue = Number(event.currentTarget.value);
     if (value === undefined) {
       setInnerValue(nextValue);
@@ -59,7 +66,11 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
     <div
       className={clsx(
         sliderVariants({ size, palette }),
-        { 'colox-slider--invalid': invalid, 'colox-slider--disabled': disabled },
+        {
+          'colox-slider--invalid': invalid,
+          'colox-slider--readonly': readOnly,
+          'colox-slider--disabled': disabled,
+        },
         className,
       )}
       style={style}
@@ -75,6 +86,7 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
         defaultValue={value === undefined ? defaultValue : undefined}
         disabled={disabled}
         aria-invalid={invalid || undefined}
+        aria-readonly={readOnly || undefined}
         onChange={handleChange}
         style={{ '--colox-slider-progress': `${progress}%` } as CSSProperties}
         {...rest}

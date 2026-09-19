@@ -77,5 +77,14 @@ family payload — `event` plus the next boolean value.
   Disabled on
 </Switch>
 
+<Switch readOnly defaultChecked>
+  Read-only on
+</Switch>
+
+`readOnly` pins the value: the control stays focusable, readable and submitted, but a
+click or key press reverts and publishes nothing. It is the family's own behaviour
+(native `readonly` means nothing to a checkbox), announced through `aria-readonly`, and it
+does **not** dim the control — dimming is the disabled language.
+
 Every prop on a native checkbox lands on the input (`onChange` is the library's own)
 — `name` and `value` feed the browser's form data untouched.

@@ -13,6 +13,7 @@ export const defaultCheckboxGroupContextValue: CheckboxGroupContextValue = {
   size: 'md',
   disabled: false,
   invalid: false,
+  readOnly: false,
 };
 
 /**

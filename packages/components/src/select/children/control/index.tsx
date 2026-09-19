@@ -18,6 +18,7 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     showSearch,
     open,
     disabled,
+    readOnly,
     invalid,
     id,
     ariaLabel,
@@ -58,6 +59,7 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     'aria-activedescendant':
       open && activeDescendantId !== undefined ? activeDescendantId : undefined,
     'aria-invalid': invalid || undefined,
+    'aria-readonly': readOnly || undefined,
     'aria-describedby': ariaDescribedBy,
     'aria-labelledby': ariaLabelledBy,
     'aria-required': ariaRequired || undefined,
@@ -72,6 +74,7 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
         {...comboboxAria}
         className="colox-select__control"
         autoComplete="off"
+        readOnly={readOnly}
         value={inputValue}
         placeholder={typeof placeholder === 'string' ? placeholder : undefined}
         onChange={(event: ChangeEvent<HTMLInputElement>) => onInputChange(event.target.value)}

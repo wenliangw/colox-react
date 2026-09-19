@@ -32,6 +32,22 @@
     }
   }
 
+  // Read-only keeps the shell's normal fabric (no disabled gray): the
+  // panel cannot open and picks are off, but the field is still read
+  // and submitted — the control stays focusable, so the focus ring
+  // still marks it.
+  &--readonly {
+    cursor: default;
+
+    .colox-select__control {
+      cursor: default;
+    }
+
+    .colox-select__chevron {
+      cursor: default;
+    }
+  }
+
   &--disabled {
     cursor: not-allowed;
     color: var(--colox-color-text-disabled);

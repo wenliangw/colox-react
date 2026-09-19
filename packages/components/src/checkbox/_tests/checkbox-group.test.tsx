@@ -158,6 +158,24 @@ describe('Checkbox.Group', () => {
     expect(screen.getByRole('checkbox', { name: 'Apple' })).not.toHaveAttribute('aria-invalid');
   });
 
+  it('inherits read-only from the group: members pin their value', () => {
+    const groupOnChange = vi.fn();
+    const memberOnChange = vi.fn();
+    render(
+      <Checkbox.Group readOnly onChange={groupOnChange}>
+        <Checkbox value="apple" onChange={memberOnChange}>
+          Apple
+        </Checkbox>
+      </Checkbox.Group>,
+    );
+    const apple = screen.getByRole('checkbox', { name: 'Apple' });
+    expect(apple).toHaveAttribute('aria-readonly', 'true');
+    fireEvent.click(apple);
+    expect(apple).not.toBeChecked();
+    expect(memberOnChange).not.toHaveBeenCalled();
+    expect(groupOnChange).not.toHaveBeenCalled();
+  });
+
   it('lets members inherit the group size with own-size precedence', () => {
     render(
       <Checkbox.Group size="sm">

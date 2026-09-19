@@ -12,6 +12,12 @@
   color: var(--colox-color-text-default);
   cursor: pointer;
 
+  // Read-only pins the value: the pointer reads "not editable"
+  // without the disabled gray, and the control stays focusable.
+  &--readonly {
+    cursor: default;
+  }
+
   &--disabled {
     cursor: not-allowed;
     color: var(--colox-color-text-disabled);
@@ -63,6 +69,10 @@
     outline: none;
     border-color: var(--colox-switch-palette-solid);
     box-shadow: 0 0 0 2px var(--colox-switch-palette-muted);
+  }
+
+  .colox-switch--readonly & {
+    cursor: default;
   }
 
   // Filled states paint the track border + background in the palette

@@ -311,6 +311,16 @@ describe('Select multiple states', () => {
     expect(screen.queryByRole('listbox')).toBeNull();
   });
 
+  it('read-only keeps the chips, disables their remove controls and stays focusable', () => {
+    renderFruits({ readOnly: true, defaultValue: ['apple', 'banana'] });
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveAttribute('aria-readonly', 'true');
+    expect(combobox).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Remove Apple' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Apple' }));
+    expect(screen.getByRole('button', { name: 'Remove Apple' })).toBeInTheDocument();
+  });
+
   it('inherits the shell size tier', () => {
     renderFruits({ size: 'sm' });
     expect(screen.getByRole('combobox').closest('.colox-select')).toHaveClass('colox-select--sm');

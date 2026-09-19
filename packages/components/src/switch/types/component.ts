@@ -26,6 +26,16 @@ export interface SwitchProps extends Omit<
    */
   palette?: SwitchPalette;
   /**
+   * Read-only switch: the value cannot be toggled (the native control
+   * is reverted and no change is published) while the control stays
+   * focusable and readable. The native `readonly` attribute means
+   * nothing on a checkbox, so this is the family's own behaviour —
+   * announced through `aria-readonly`, never dimmed (dimming is the
+   * disabled language).
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the switch as invalid (e.g. a required consent step): sets
    * `aria-invalid` and swaps the track border/ring to the red tokens,
    * the same channel as Input/Checkbox. A checked switch keeps its

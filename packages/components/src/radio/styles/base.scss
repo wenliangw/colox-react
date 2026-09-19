@@ -6,6 +6,12 @@
   color: var(--colox-color-text-default);
   cursor: pointer;
 
+  // Read-only pins the value: the pointer reads "not editable"
+  // without the disabled gray, and the control stays focusable.
+  &--readonly {
+    cursor: default;
+  }
+
   &--disabled {
     cursor: not-allowed;
     color: var(--colox-color-text-disabled);
@@ -42,6 +48,10 @@
   border-radius: var(--colox-radius-full);
   background-color: var(--colox-color-bg-default);
   cursor: pointer;
+
+  .colox-radio--readonly & {
+    cursor: default;
+  }
   transition:
     border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
     box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);

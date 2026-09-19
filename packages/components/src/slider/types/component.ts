@@ -26,6 +26,16 @@ export interface SliderProps extends Omit<
    */
   palette?: SliderPalette;
   /**
+   * Read-only slider: the value cannot be moved (pointer and keyboard
+   * input are reverted and no change is published) while the control
+   * stays focusable and readable. Native `readonly` means nothing on a
+   * range input, so this is the family's own behaviour — announced
+   * through `aria-readonly`, never dimmed (dimming is the disabled
+   * language).
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the slider as invalid: sets `aria-invalid`, paints the
    * untraveled fabric and the thumb ring with the red tokens and
    * swaps the focus ring to the red pair (the same channel as

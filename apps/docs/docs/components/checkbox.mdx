@@ -14,6 +14,16 @@ Checkboxes capture boolean states and, through `Checkbox.Group`, multi-select se
 <Checkbox>Unchecked</Checkbox> <Checkbox defaultChecked>Checked</Checkbox>
 <Checkbox indeterminate>Indeterminate</Checkbox> <Checkbox invalid>Invalid</Checkbox>
 <Checkbox disabled>Disabled</Checkbox>
+<Checkbox readOnly defaultChecked>
+  Read-only
+</Checkbox>
+
+`readOnly` pins the value: the control stays focusable, readable and submitted, but a
+click or key press reverts and publishes nothing. It is the family's own behaviour
+(native `readonly` means nothing to a checkbox), announced through `aria-readonly`, and it
+does **not** dim the control — dimming is the disabled language.
+
+A group-level `readOnly` pins every member (sticky, like `disabled`).
 
 `indeterminate` marks the partially-selected state visually (a bar); `checked` stays the
 single source of truth for events and form values, and the bar clears on the next click.
@@ -40,6 +50,7 @@ Members declare a `value` to join the group's selection array:
 | size          | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
 | invalid       | `boolean`                      | `false` |
 | indeterminate | `boolean`                      | `false` |
+| readOnly      | `boolean`                      | `false` |
 | value         | `string`                       | —       |
 | onChange      | `({ event, value }) => void`   | —       |
 
@@ -58,7 +69,9 @@ library's own).
 
 ### Checkbox.Group props
 
-Members inherit `size`, `name` and `disabled` from the group; a member's own prop wins. `onChange` fires with `{ event, value }` — `event` is the triggering member's native change event, `value` the next selection array.
+Members inherit `size`, `name`, `disabled` and `readOnly` from the group; a member's
+own prop wins for `size`/`name`, while `disabled`/`readOnly` are sticky (a restricted
+group cannot be opted out of). `onChange` fires with `{ event, value }` — `event` is the triggering member's native change event, `value` the next selection array.
 
 | Prop         | Type                                   | Default |
 | ------------ | -------------------------------------- | ------- |
@@ -67,6 +80,7 @@ Members inherit `size`, `name` and `disabled` from the group; a member's own pro
 | onChange     | `({ event, value: string[] }) => void` | —       |
 | size         | `'xs' \| 'sm' \| 'md' \| 'lg'`         | `'md'`  |
 | disabled     | `boolean`                              | `false` |
+| readOnly     | `boolean`                              | `false` |
 | invalid      | `boolean`                              | `false` |
 | name         | `string`                               | —       |
 

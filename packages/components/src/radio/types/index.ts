@@ -28,6 +28,16 @@ export interface RadioProps extends Omit<
    */
   size?: RadioSize;
   /**
+   * Read-only radio: the value cannot be changed (the native control is
+   * reverted and no change is published, a group's own flag included)
+   * while the control stays focusable and readable. Native
+   * `readonly` means nothing on a radio, so this is the family's own
+   * behaviour — announced through `aria-readonly`, never dimmed
+   * (dimming is the disabled language).
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the radio as invalid: sets `aria-invalid` and swaps the
    * circle border/ring to the red tokens (same channel as `Input`).
    * It paints the unfilled state only — a selected radio keeps its
@@ -80,6 +90,15 @@ export interface RadioGroupProps extends Omit<
   /** Disables every member radio the group renders. */
   disabled?: boolean;
   /**
+   * Read-only group: every member pins its selection state (a group's
+   * restriction is sticky — a disabled/read-only group cannot be opted
+   * out of, since radio has no removal gesture a read-only group is
+   * frozen on its current pick) while the controls stay focusable and
+   * readable.
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
    * Marks the whole group as invalid: every member that does not set
    * its own `invalid` turns red and announces `aria-invalid` (own prop
    * wins).
@@ -131,4 +150,6 @@ export interface RadioGroupContextValue {
   disabled: boolean;
   /** The group `invalid` flag members inherit (own prop wins). */
   invalid: boolean;
+  /** The group read-only flag (sticky: the group cannot be opted out of). */
+  readOnly: boolean;
 }

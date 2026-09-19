@@ -558,6 +558,43 @@ describe('Select states', () => {
     expect(shell).not.toHaveAttribute('aria-labelledby');
   });
 
+  it('read-only keeps the panel shut, the field focusable and the value submitted', () => {
+    const onChange = vi.fn();
+    const { container } = renderFruits({
+      readOnly: true,
+      value: 'banana',
+      name: 'fruit',
+      onChange,
+    });
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveAttribute('aria-readonly', 'true');
+    expect(combobox).not.toBeDisabled();
+    expect(combobox.closest('.colox-select')).toHaveClass('colox-select--readonly');
+    fireEvent.click(combobox);
+    fireEvent.focus(combobox);
+    fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(onChange).not.toHaveBeenCalled();
+    // Read-only does not touch form submission: the hidden value stays.
+    expect(container.querySelector<HTMLInputElement>('input[type="hidden"]')?.value).toBe('banana');
+  });
+
+  it('hides the clear control while read-only', () => {
+    renderFruits({
+      readOnly: true,
+      clearable: true,
+      value: 'banana',
+      'aria-label': 'Read-only fruit',
+    });
+    expect(screen.queryByRole('button', { name: 'Clear selection' })).toBeNull();
+  });
+
+  it('blocks typing in a read-only searchable select', () => {
+    renderFruits({ readOnly: true, showSearch: true, value: 'banana' });
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveAttribute('readonly');
+  });
+
   it('disables the control and keeps the panel shut', () => {
     renderFruits({ disabled: true });
     const combobox = screen.getByRole('combobox');

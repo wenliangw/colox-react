@@ -78,6 +78,18 @@ describe('Radio native contract', () => {
     expect(payload?.event.target.checked).toBe(true);
   });
 
+  it('pins the selection when read-only: no change published, DOM reverted', () => {
+    const onChange = vi.fn();
+    render(<Radio readOnly onChange={onChange} />);
+    const input = screen.getByRole('radio');
+    expect(input).toHaveAttribute('aria-readonly', 'true');
+    expect(input).not.toBeDisabled();
+    fireEvent.click(input);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input).not.toBeChecked();
+    expect(input.closest('.colox-radio')).toHaveClass('colox-radio--readonly');
+  });
+
   it('merges the consumer className and style on the root label', () => {
     const { container } = render(<Radio className="custom-class" style={{ marginTop: 8 }} />);
     const root = container.querySelector('.colox-radio');

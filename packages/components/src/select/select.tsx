@@ -60,6 +60,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     size = 'md',
     invalid = false,
     disabled = false,
+    readOnly = false,
     className,
     style,
     children,
@@ -126,7 +127,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   }, [isMultiple, visibleOptions, currentSingle]);
 
   const activateOption = (option: SelectOptionRecord | undefined, event: SelectChangeEvent) => {
-    if (option === undefined || option.disabled) {
+    if (readOnly || option === undefined || option.disabled) {
       return;
     }
     if (isMultiple) {
@@ -143,6 +144,9 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     itemCount: visibleOptions.length,
     isItemDisabled: (index) => visibleOptions[index]?.disabled ?? false,
     onRequestOpen: () => {
+      if (readOnly) {
+        return;
+      }
       keyboard.setActiveIndex(initialActiveIndex);
       state.setOpen(true);
       controlRef.current?.focus();
@@ -159,7 +163,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   const pointerInteractionRef = useRef(false);
 
   const requestOpen = () => {
-    if (state.isOpen) {
+    if (readOnly || state.isOpen) {
       return;
     }
     keyboard.setActiveIndex(initialActiveIndex);
@@ -253,6 +257,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   const handleControlKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     keyboard.onControlKeyDown(event);
     if (
+      !readOnly &&
       !event.defaultPrevented &&
       event.key === 'Backspace' &&
       state.query === '' &&
@@ -277,7 +282,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   };
 
   const showClear =
-    !disabled && clearable && (isMultiple ? currentMultiple.length > 0 : currentSingle !== '');
+    !disabled &&
+    !readOnly &&
+    clearable &&
+    (isMultiple ? currentMultiple.length > 0 : currentSingle !== '');
 
   const isSelected = (candidate: string) =>
     isMultiple ? currentMultiple.includes(candidate) : candidate === currentSingle;
@@ -291,6 +299,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
           'colox-select--open': state.isOpen,
           'colox-select--clearable': showClear,
           'colox-select--invalid': invalid,
+          'colox-select--readonly': readOnly,
           'colox-select--disabled': disabled,
         },
         className,
@@ -304,7 +313,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
           <SelectTags
             values={currentMultiple}
             options={options}
-            disabled={disabled}
+            disabled={disabled || readOnly}
             tagTemplate={tagTemplate}
             fallbackSize={size}
             onRemove={(tagValue, event) =>
@@ -317,6 +326,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
           showSearch={showSearch}
           open={state.isOpen}
           disabled={disabled}
+          readOnly={readOnly}
           invalid={invalid}
           id={id}
           ariaLabel={ariaLabel}

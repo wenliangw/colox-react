@@ -25,6 +25,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
   const {
     size,
     invalid,
+    readOnly,
     value: memberValue,
     checked,
     defaultChecked,
@@ -47,12 +48,19 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     defaultChecked,
     disabled,
     invalid,
+    readOnly,
     name,
     size,
     group,
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (state.readOnly) {
+      // Read-only pins the selection: the browser has already picked
+      // this radio, so revert it and publish nothing.
+      event.target.checked = !event.target.checked;
+      return;
+    }
     if (state.groupMember && memberValue !== undefined) {
       group.onChange(memberValue, event);
     }
@@ -65,6 +73,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
         radioVariants({ size: state.size }),
         {
           'colox-radio--invalid': state.invalid,
+          'colox-radio--readonly': state.readOnly,
           'colox-radio--disabled': state.disabled,
         },
         className,
@@ -77,6 +86,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
           className="colox-radio__control"
           type="radio"
           aria-invalid={state.invalid || undefined}
+          aria-readonly={state.readOnly || undefined}
           value={memberValue}
           name={state.name}
           checked={state.checked}

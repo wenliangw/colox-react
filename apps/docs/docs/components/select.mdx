@@ -85,6 +85,14 @@ required; `disabled` members are skipped by the keyboard walk and mouse clicks.
 <Select value="banana" disabled>
   {FruitOptions}
 </Select>
+<Select value="banana" readOnly>
+  {FruitOptions}
+</Select>
+
+`readOnly` keeps the field focusable, readable and submitted while the panel cannot
+open — picks, clears, chip removals and (in searchable mode) typing are all off. The
+control carries `aria-readonly`; the shell keeps its normal fabric, because dimming is
+the disabled language.
 
 ## Sizes
 
@@ -215,6 +223,7 @@ multiple mode — so native `FormData` collects the selection:
 | size                               | `'xs' \| 'sm' \| 'md' \| 'lg'`                           | `'md'`     |
 | invalid                            | `boolean`                                                | `false`    |
 | disabled                           | `boolean`                                                | `false`    |
+| readOnly                           | `boolean`                                                | `false`    |
 | filterOption                       | `(query: string, option: SelectOptionRecord) => boolean` | —          |
 | aria-describedby / aria-labelledby | `string`                                                 | —          |
 | aria-required                      | `boolean`                                                | —          |

@@ -83,6 +83,18 @@ describe('Slider native contract', () => {
     expect(input.closest('.colox-slider')).toHaveClass('colox-slider--disabled');
   });
 
+  it('pins the value when read-only: no change published, DOM reverted', () => {
+    const onChange = vi.fn();
+    render(<Slider defaultValue={30} readOnly onChange={onChange} />);
+    const input = screen.getByRole('slider') as HTMLInputElement;
+    expect(input).toHaveAttribute('aria-readonly', 'true');
+    expect(input).not.toBeDisabled();
+    fireEvent.change(input, { target: { value: '80' } });
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input.value).toBe('30');
+    expect(input.closest('.colox-slider')).toHaveClass('colox-slider--readonly');
+  });
+
   it('marks invalid via aria-invalid and the root modifier', () => {
     render(<Slider invalid />);
     const input = screen.getByRole('slider');

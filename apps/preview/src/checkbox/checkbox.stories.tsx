@@ -83,6 +83,9 @@ export const Overview: Story = {
             <Checkbox defaultChecked>Checked</Checkbox>
             <Checkbox invalid>Invalid</Checkbox>
             <Checkbox disabled>Disabled</Checkbox>
+            <Checkbox readOnly defaultChecked>
+              read-only — value pinned, still focusable
+            </Checkbox>
             <Checkbox disabled defaultChecked>
               Disabled · checked
             </Checkbox>

@@ -13,6 +13,7 @@ export const defaultRadioGroupContextValue: RadioGroupContextValue = {
   size: 'md',
   disabled: false,
   invalid: false,
+  readOnly: false,
 };
 
 /**
