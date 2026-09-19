@@ -39,7 +39,9 @@ describe('generateBrandRamp', () => {
     const b = generateBrandRamp('#FF6B35', STEP_LISTS.brand);
     expect(a).toEqual(b);
     expect(Object.keys(a).map(Number)).toEqual(STEP_LISTS.brand.map(Number));
-    for (const v of Object.values(a)) expect(v).toMatch(/^#[0-9A-F]{6}$/);
+    for (const v of Object.values(a)) {
+      expect(v).toMatch(/^#[0-9A-F]{6}$/);
+    }
   });
 
   it('keeps the seed hue across the ladder', () => {

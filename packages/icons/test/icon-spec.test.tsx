@@ -135,7 +135,9 @@ const pathEndpoints = (d: string): [number, number][] => {
   for (const segment of d.matchAll(/([MLHVA])(-?[\d.\s]+)(?=[MLHVA]|$)/g)) {
     const command = segment[1];
     const tokens = segment[2].trim().split(/\s+/).map(Number);
-    if (command === 'Z') continue;
+    if (command === 'Z') {
+      continue;
+    }
     if (command === 'M' || command === 'L') {
       last = [tokens[tokens.length - 2], tokens[tokens.length - 1]];
       points.push(last);

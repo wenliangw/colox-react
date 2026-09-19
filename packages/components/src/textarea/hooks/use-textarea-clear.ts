@@ -14,7 +14,9 @@ import type { UseTextareaClearParams } from '../types';
 export const useTextareaClear = ({ textareaRef, onChange, onCleared }: UseTextareaClearParams) => {
   const handleClear = () => {
     const textarea = textareaRef.current;
-    if (textarea === null) return;
+    if (textarea === null) {
+      return;
+    }
     textarea.value = '';
     onChange?.({
       target: textarea,

@@ -56,7 +56,9 @@ function usage() {
 
 function argValue(args, name) {
   const i = args.indexOf(name);
-  if (i === -1 || i === args.length - 1) return null;
+  if (i === -1 || i === args.length - 1) {
+    return null;
+  }
   return args[i + 1];
 }
 
@@ -67,12 +69,16 @@ async function findBuildConfig(from) {
     const candidate = path.join(dir, BUILD_CONFIG_NAME);
     try {
       const info = await stat(candidate);
-      if (info.isFile()) return candidate;
+      if (info.isFile()) {
+        return candidate;
+      }
     } catch {
       /* not here */
     }
     const parent = path.dirname(dir);
-    if (parent === dir) return null;
+    if (parent === dir) {
+      return null;
+    }
     dir = parent;
   }
 }
@@ -107,7 +113,9 @@ async function compileThemeConfig(configPath, outDir) {
   const errors = validateConfig(config, stepLists);
   if (errors.length > 0) {
     console.error(`colox: ${errors.length} config error(s):`);
-    for (const e of errors) console.error(`  - ${e}`);
+    for (const e of errors) {
+      console.error(`  - ${e}`);
+    }
     process.exit(1);
   }
 
@@ -146,7 +154,9 @@ async function compileThemeConfig(configPath, outDir) {
 }
 
 const args = process.argv.slice(2);
-if (args[0] !== 'theme' || args[1] !== 'build') usage();
+if (args[0] !== 'theme' || args[1] !== 'build') {
+  usage();
+}
 const configFlag = argValue(args, '-c') ?? argValue(args, '--config');
 
 const buildConfigPath = await findBuildConfig(process.cwd());

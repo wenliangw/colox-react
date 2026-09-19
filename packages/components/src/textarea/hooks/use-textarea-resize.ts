@@ -15,9 +15,13 @@ import type { UseTextareaResizeParams } from '../types';
 export const useTextareaResize = ({ textareaRef, enabled }: UseTextareaResizeParams) => {
   const onPointerDown = useCallback<PointerEventHandler<HTMLButtonElement>>(
     (event) => {
-      if (!enabled) return;
+      if (!enabled) {
+        return;
+      }
       const el = textareaRef.current;
-      if (el === null) return;
+      if (el === null) {
+        return;
+      }
       event.preventDefault();
 
       const startY = event.clientY;
@@ -43,15 +47,23 @@ export const useTextareaResize = ({ textareaRef, enabled }: UseTextareaResizePar
 
   const onKeyDown = useCallback<KeyboardEventHandler<HTMLButtonElement>>(
     (event) => {
-      if (!enabled) return;
-      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+      if (!enabled) {
+        return;
+      }
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+        return;
+      }
       const el = textareaRef.current;
-      if (el === null) return;
+      if (el === null) {
+        return;
+      }
       event.preventDefault();
 
       const metrics = readTextareaMetrics(el);
       const row = metrics.lineHeight;
-      if (row === undefined) return;
+      if (row === undefined) {
+        return;
+      }
       const startHeight = el.getBoundingClientRect().height;
       const floor = measureTextareaContent(el, metrics, el.style.height);
       const step = event.key === 'ArrowUp' ? -row : row;

@@ -36,9 +36,13 @@ export const useTextareaAutosize = ({ textareaRef, config, value }: UseTextareaA
   const manualMin = useRef<number | null>(null);
 
   const adjust = useCallback(() => {
-    if (!active) return;
+    if (!active) {
+      return;
+    }
     const el = textareaRef.current;
-    if (el === null) return;
+    if (el === null) {
+      return;
+    }
 
     const metrics = readTextareaMetrics(el);
     // A different inline height is someone else's write — the drag
@@ -46,7 +50,9 @@ export const useTextareaAutosize = ({ textareaRef, config, value }: UseTextareaA
     const current = el.style.height;
     if (current !== '' && current !== lastWritten.current) {
       const manual = Number.parseFloat(current);
-      if (!Number.isNaN(manual)) manualMin.current = manual;
+      if (!Number.isNaN(manual)) {
+        manualMin.current = manual;
+      }
     }
 
     const content = measureTextareaContent(el, metrics, '');
@@ -76,7 +82,9 @@ export const useTextareaAutosize = ({ textareaRef, config, value }: UseTextareaA
       }
       return;
     }
-    if (el === null) return;
+    if (el === null) {
+      return;
+    }
 
     adjust();
     el.addEventListener('input', adjust);
@@ -84,7 +92,9 @@ export const useTextareaAutosize = ({ textareaRef, config, value }: UseTextareaA
     const onResize = (entries: ResizeObserverEntry[]) => {
       const entry = entries[entries.length - 1];
       const { width } = entry?.contentRect ?? {};
-      if (width === undefined || width === lastWidth) return;
+      if (width === undefined || width === lastWidth) {
+        return;
+      }
       lastWidth = width;
       adjust();
     };

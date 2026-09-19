@@ -66,9 +66,13 @@ export function useThemeSensors(state: ThemeState, dispatch: Dispatch) {
     };
     dispatch({ type: 'set-breakpoint', breakpoint: compute() });
     const onChange = () => dispatch({ type: 'set-breakpoint', breakpoint: compute() });
-    for (const query of queries) query.addEventListener('change', onChange);
+    for (const query of queries) {
+      query.addEventListener('change', onChange);
+    }
     return () => {
-      for (const query of queries) query.removeEventListener('change', onChange);
+      for (const query of queries) {
+        query.removeEventListener('change', onChange);
+      }
     };
   }, [breakpointValues, dispatch]);
 }

@@ -131,7 +131,9 @@ function convert(figmaJson, spec) {
       continue;
     }
     let cursor = out.colox;
-    for (const part of namespace) cursor = cursor[part] ??= {};
+    for (const part of namespace) {
+      cursor = cursor[part] ??= {};
+    }
     for (const [leafName, token] of Object.entries(group)) {
       if (token.$extensions?.['com.figma.hiddenFromPublishing']) {
         console.warn(`[skip] ${groupName}/${leafName}: hiddenFromPublishing`);

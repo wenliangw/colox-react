@@ -73,7 +73,9 @@ export const useInputFilter = ({
    */
   const handleClear = () => {
     const input = inputRef.current;
-    if (input === null) return;
+    if (input === null) {
+      return;
+    }
     // Write the DOM regardless of mode: uncontrolled inputs have no render
     // owner, and controlled inputs need the value in place so the event
     // object reports ''. A consumer that re-renders with `''` consolidates;

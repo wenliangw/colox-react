@@ -71,7 +71,9 @@ function reconcile() {
         continue;
       }
       mql.matches = matches;
-      for (const handler of listeners) handler({ matches, media });
+      for (const handler of listeners) {
+        handler({ matches, media });
+      }
     }
   }
 }

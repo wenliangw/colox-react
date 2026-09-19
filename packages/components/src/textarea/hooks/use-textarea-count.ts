@@ -2,9 +2,15 @@ import { useCallback, useLayoutEffect, useState } from 'react';
 import type { TextareaValue, UseTextareaCountParams } from '../types';
 
 const normalize = (value: TextareaValue): string => {
-  if (typeof value === 'string') return value;
-  if (Array.isArray(value)) return value.join('\n');
-  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.join('\n');
+  }
+  if (value === null || value === undefined) {
+    return '';
+  }
   return String(value);
 };
 
@@ -25,15 +31,21 @@ export const useTextareaCount = ({
   const [innerLength, setInnerLength] = useState(0);
 
   const refresh = useCallback(() => {
-    if (!active || controlled) return;
+    if (!active || controlled) {
+      return;
+    }
     const el = textareaRef.current;
     setInnerLength(el === null ? 0 : normalize(el.value).length);
   }, [active, controlled, textareaRef]);
 
   useLayoutEffect(() => {
-    if (!active || controlled) return;
+    if (!active || controlled) {
+      return;
+    }
     const el = textareaRef.current;
-    if (el === null) return;
+    if (el === null) {
+      return;
+    }
     refresh();
     el.addEventListener('input', refresh);
     return () => {
