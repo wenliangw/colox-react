@@ -46,6 +46,14 @@ dot-part 只在两种情形成立（ColoxTheme 演进给出的判据，Input 消
 
 其余一律收进根 props——**插槽/内置控件属于「属性少、形态简单」类**：Input 的 leading/trailing/clearable/allowTogglePassword 若做成 `<Input.Slot side="leading">` / `<Input.Clear>` 属于把简单属性人肉拆成树，违背「属性少收根 props」判据（用户对 ColoxTheme 的原话：「属性比较多时非常影响开发时的代码体验以及 props 无法合理的进行分类」——反向即：属性少时 dot 形式是过度设计）。生态对照：antd/MUI/Mantine 走 props 营；Radix/Ark 走 dot 营；Colox 是 styled lib，走 props 营。
 
+## dot-part 语义化表达（AutoComplete 定稿确立）
+
+- **槽命名对区域语义负责**：组合式组件的非叶子 slot 用区域语义词命名——宿主锚定槽 = `Target`（与 cdk floating 的 target/reference 词一致）、集合声明区域 = `Suggestions`（复数=区域容器）、叶子 = 家族同名同义词（`Option`：value+text+disabled+children 契约直用 Select 词，不造新词）。
+- **两层点号上限**：dot-part 全部两层（`AutoComplete.Option`）；「区域容器 → 单一种类叶子」中间不夹命名层（`Suggestion.Option` 的三层 = 名字税，被用户采纳二层方案）。
+- **声明叶渲染 null 不进 DOM**：结构件（Target/Suggestions）与声明叶（Option）本体全部渲染 null，真实 DOM 由根渲染（锚点 div 包注入后宿主）+ portal 面板组成——DOM 无声明碎片，遍历判形靠显式类型不靠消去法。
+- **宿主注入契约**（Select.Template 路线第二消费者）：宿主槽的子元素 = 恰好一个组件型元素，cloneElement 注入值词（value/onChange/aria-*）覆盖同名、静态词（size/placeholder/disabled/…）自持；DOM 宿主元素 = 编译期硬错误。
+- **欠账**：既有 dot-part（Select.Template/Option、ColoxTheme._、Stack._、Radio/Checkbox.Group）在 AutoComplete 交付后按此审视回顾（见 tastes/delivery.md 欠账条目）。
+
 ## 演进史
 
 - ColoxTheme 初版四轴全 dot-part → 用户收口：props 主轴承重、可选能力留 dot-part（挂载即启用）。

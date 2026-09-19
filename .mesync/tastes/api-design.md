@@ -1,5 +1,12 @@
 # API 设计品味
 
+## 组件层事件面统一自造 { event, value } payload（AutoComplete 定稿总则）
+
+- **组件层 `onChange` 一律自造 `{ event, value }` payload**（事件对象 + 组件真值），不再按「值是不是文本」特判——文本值控件的 onChange 同样 `{ event, value: string }`。这是 InputNumber → Slider → DatePicker → AutoComplete 四代演进的终点：从「数字/日期控件专用」升格为「组件层事件面统一词形」。
+- **唯一豁免 = 叶子组件直对原生控件的透传槽**：Input/Checkbox/Radio/Switch 这类叶子透传原生 onChange（值由原生事件自带）不变。边界判据 = 「是不是叶子直对原生控件」，不是「值是什么类型」。
+- 事件块内部顺序：onChange → onSelect → onOpenChange（组件层事件按主次排）。
+- 来源：AutoComplete 设计对齐用户裁定「后面所有的 event 都走我们自造的 payload 格式」。
+
 ## size prop 一律表示视觉尺寸
 
 组件库中 `size` prop 的语义固定为「视觉尺寸」，取值 `'xs' | 'sm' | 'md' | 'lg'`（Button 四档，Input 对齐后同序）：
