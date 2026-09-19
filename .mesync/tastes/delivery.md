@@ -1,6 +1,7 @@
 # 交付节奏
 
 - **一个组件一个组件交付**：多组件需求（如 Layout 三件）不要一批并行实现/汇报，按单个组件（族）小步交付，每步可独立评审与感受（2025 实现 Layout 组件时的明确指示）。
+- **路线图是交付的治理来源**：组件计划与顺序以根目录 `ROADMAP.md` 为**唯一来源**（里程碑 M0–M9 + 每组件 Definition of Done + 发版纪律 + non-goals）；`packages/wiki/components.md` 是它的机读状态表（`planned` 行带里程碑、`shipped` 行有 doctrine）；docs 站 `roadmap.md` 是面向消费方的摘要。**每交付一个组件就更新地图状态**（planned → shipped + 拿走里程碑标记），路线图变更时三处同改，不等下一轮回忆。
 - **组件示例一组件一 Overview**：storybook 每个组件只保留一个 Overview story，按状态轴用共享 `Section` 分区（形→交互→态），以自家布局组件（Container/Stack/Grid）作陈列骨架、fullscreen + Container 定宽——不为单个状态单开 story，散拆形态是反例（2025 整理预览时用户定调「有一个 overview 就可以了，用布局的形式展示，有条理、简洁」）。
 - **组件与 docs 同步更新**：新增/变更组件时 docs 的 `sidebars.ts`、wiki/components.md 组件地图、`.mesync/wiki/modules/<name>.md` 与 overview 模块索引一并落盘，缺一视为未完成。
 - **Dot 组件语义化回顾欠账**：既有 dot-part 组件（Select.Template/Select.Option、ColoxTheme.Storage/Breakpoints、Stack.Item/Stack.Responsive、Radio.Group/Checkbox.Group）命名与结构在 AutoComplete 交付后**专项回顾**——本轮确立的语义化审视（区域容器命名对区域语义负责、叶子词同名同义、两层点号上限）将至下应用。
