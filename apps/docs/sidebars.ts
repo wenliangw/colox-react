@@ -9,6 +9,7 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   docs: [
     'intro',
+    { type: 'doc', id: 'roadmap', label: 'Roadmap' },
     {
       type: 'category',
       label: 'General',
