@@ -38,9 +38,7 @@ export interface InputNumberProps extends Omit<
    * steppers stop at it. Bounds are editor mechanics, not validation.
    */
   min?: number;
-  /**
-   * The upper bound of the value span (same mechanics as `min`).
-   */
+  /** The upper bound of the value span (same mechanics as `min`). */
   max?: number;
   /**
    * The stepping increment for the built-in steppers and the Arrow

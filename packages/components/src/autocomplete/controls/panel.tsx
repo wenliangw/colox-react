@@ -4,9 +4,7 @@ import clsx from 'clsx';
 import { Popup } from '@colox/cdk/floating';
 import type { AutoCompleteOptionRecord, AutoCompletePanelProps } from '../types';
 
-/**
- * The private row unit: its props stay with the row, not in types/.
- */
+/** The private row unit: its props stay with the row, not in types/. */
 interface AutoCompleteOptionRowProps {
   option: AutoCompleteOptionRecord;
   id: string;

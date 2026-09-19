@@ -12,14 +12,10 @@ const COMPLETE_DECIMAL = /^-?(?:\d+\.?\d*|\.\d+)$/;
 // rejected at the gate and never lands in the draft.
 const DRAFT_DECIMAL = /^-?(?:\d+)?\.?\d*$/;
 
-/**
- * Whether the text is an acceptable mid-edit draft (the gate).
- */
+/** Whether the text is an acceptable mid-edit draft (the gate). */
 export const isDecimalDraft = (text: string): boolean => DRAFT_DECIMAL.test(text);
 
-/**
- * Whether the text is a complete decimal ready to commit.
- */
+/** Whether the text is a complete decimal ready to commit. */
 export const isCompleteDecimal = (text: string): boolean => COMPLETE_DECIMAL.test(text);
 
 /**
@@ -49,18 +45,13 @@ export const derivePrecision = (step: number): number => {
   return dot === -1 ? 0 : text.length - dot - 1;
 };
 
-/**
- * Rounds at the given decimal places (kills float dust on stepper
- * arithmetic).
- */
+/** Rounds at the given decimal places (kills float dust on stepper arithmetic). */
 export const roundToPrecision = (value: number, precision: number): number => {
   const factor = 10 ** precision;
   return Math.round(value * factor) / factor;
 };
 
-/**
- * Clamps into the span bounds. `undefined` bounds are open.
- */
+/** Clamps into the span bounds. `undefined` bounds are open. */
 export const clampNumber = (value: number, min?: number, max?: number): number => {
   let next = value;
   if (min !== undefined && Number.isFinite(min)) {

@@ -3,10 +3,7 @@ import clsx from 'clsx';
 import type { StackItemProps } from '../../types';
 import { stackItemVariants } from '../../variants';
 
-/**
- * A child of `Stack`. `grow` absorbs the free space along the main axis
- * (the Spacer semantics).
- */
+/** A child of `Stack`. `grow` absorbs the free space along the main axis (the Spacer semantics). */
 export const StackItem = forwardRef<HTMLDivElement, StackItemProps>((props, ref) => {
   const { grow, className, ...rest } = props;
 

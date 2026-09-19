@@ -16,13 +16,11 @@ export interface DatePickerLocale {
   months?: string[];
   /** 7 weekday header labels, Monday first. */
   weekdays?: string[];
-  /** Day-view title pattern — `{year}` and `{month}` mount the year
-   * and the month label. */
+  /** Day-view title pattern — `{year}` and `{month}` mount the year and the month label. */
   yearMonthFormat?: string;
   /** Month-view title pattern — `{year}` mounts the displayed year. */
   yearFormat?: string;
-  /** Year-view title pattern — `{start}` and `{end}` mount the decade
-   * window edges. */
+  /** Year-view title pattern — `{start}` and `{end}` mount the decade window edges. */
   decadeFormat?: string;
 }
 
@@ -88,9 +86,7 @@ export interface DatePickerProps extends Omit<
    * compare their granularity prefix against the bound.
    */
   min?: string;
-  /**
-   * Upper bound (canonical ISO date, same mechanics as `min`).
-   */
+  /** Upper bound (canonical ISO date, same mechanics as `min`). */
   max?: string;
   /**
    * The display format: standard date-pattern tokens — `yyyy`/`yy`,
@@ -131,9 +127,7 @@ export interface DatePickerProps extends Omit<
    * out-of-bounds drafts back to the committed value.
    */
   onChange?: (payload: DatePickerChangePayload) => void;
-  /**
-   * Fires when the calendar panel opens or closes.
-   */
+  /** Fires when the calendar panel opens or closes. */
   onOpenChange?: (open: boolean) => void;
 }
 

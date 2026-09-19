@@ -5,9 +5,11 @@ interface UseInputFilterParams {
   inputRef: RefObject<HTMLInputElement | null>;
   /** The restriction pattern; `undefined` disables filtering. */
   filterPattern: RegExp | undefined;
-  /** The value to restore after a rejected transition — the current
-   *  controlled value when controlled, the initial (defaultValue) DOM
-   *  value when uncontrolled. */
+  /**
+   * The value to restore after a rejected transition — the current
+   * controlled value when controlled, the initial (defaultValue) DOM
+   * value when uncontrolled.
+   */
   restoreValue: string;
   isControlled: boolean;
   /** The consumer's onChange — the only event notification path. */

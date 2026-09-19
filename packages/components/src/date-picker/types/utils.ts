@@ -1,6 +1,4 @@
-/**
- * The granularity the field edits: a single day, a month, or a year.
- */
+/** The granularity the field edits: a single day, a month, or a year. */
 export type DatePickerPicker = 'date' | 'month' | 'year';
 
 /**

@@ -33,16 +33,12 @@ export interface ResolvedTextareaAutosize {
 
 export interface ResolveTextareaSlotsParams {
   clearable: boolean;
-  /**
-   * Native flags arrive optional — falsy means "not set".
-   */
+  /** Native flags arrive optional — falsy means "not set". */
   disabled?: boolean;
   readOnly?: boolean;
 }
 
 export interface ResolvedTextareaSlots {
-  /**
-   * The clear button hides with disabled/readOnly (nothing to clear).
-   */
+  /** The clear button hides with disabled/readOnly (nothing to clear). */
   showClear: boolean;
 }

@@ -26,13 +26,9 @@ import type { UseTextareaAutosizeParams } from '../types';
  */
 export const useTextareaAutosize = ({ textareaRef, config, value }: UseTextareaAutosizeParams) => {
   const { active, minRows, maxRows } = config;
-  /**
-   * The last height this hook wrote — distinguishes its own writes.
-   */
+  /** The last height this hook wrote — distinguishes its own writes. */
   const lastWritten = useRef('');
-  /**
-   * Committed manual height (the footer drag handle's sizing).
-   */
+  /** Committed manual height (the footer drag handle's sizing). */
   const manualMin = useRef<number | null>(null);
 
   const adjust = useCallback(() => {

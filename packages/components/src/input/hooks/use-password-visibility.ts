@@ -13,8 +13,10 @@ export interface PasswordVisibilityState {
   active: boolean;
   /** The type the inner control actually renders. */
   resolvedType: InputHTMLAttributes<HTMLInputElement>['type'];
-  /** Whether the password is currently revealed as plain text. Pure visual
-   *  state — the value itself never changes. */
+  /**
+   * Whether the password is currently revealed as plain text. Pure
+   * visual state — the value itself never changes.
+   */
   revealed: boolean;
   toggle: () => void;
 }

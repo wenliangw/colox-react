@@ -10,9 +10,7 @@ import type {
   UseAutoCompleteResult,
 } from '../types';
 
-/**
- * The first roaming-eligible row: -1 when the list has none.
- */
+/** The first roaming-eligible row: -1 when the list has none. */
 function firstEnabledIndex(options: readonly AutoCompleteOptionRecord[]): number {
   for (let index = 0; index < options.length; index += 1) {
     if (!options[index].disabled) {

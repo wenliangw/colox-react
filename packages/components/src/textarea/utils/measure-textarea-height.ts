@@ -5,9 +5,7 @@ const toPx = (value: string | undefined) => {
   return Number.isNaN(parsed) ? undefined : parsed;
 };
 
-/**
- * Reads the live computed metrics both height behaviors measure against.
- */
+/** Reads the live computed metrics both height behaviors measure against. */
 export const readTextareaMetrics = (el: HTMLTextAreaElement): TextareaMetrics => {
   const computed = window.getComputedStyle(el);
   const paddingTop = toPx(computed.paddingTop) ?? 0;

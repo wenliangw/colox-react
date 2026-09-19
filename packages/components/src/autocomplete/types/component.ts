@@ -14,21 +14,13 @@ import type { AutoCompleteOptionRecord } from './utils';
  * AutoComplete design round).
  */
 export interface AutoCompleteChangePayload {
-  /**
-   * The originating interaction: a typed edit or a keyboard/mouse
-   * pick.
-   */
+  /** The originating interaction: a typed edit or a keyboard/mouse pick. */
   event: ChangeEvent<HTMLInputElement> | KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>;
-  /**
-   * The committed free text.
-   */
+  /** The committed free text. */
   value: string;
 }
 
-/**
- * The pick notification: which suggestion row was chosen, alongside
- * the committed value.
- */
+/** The pick notification: which suggestion row was chosen, alongside the committed value. */
 export interface AutoCompleteSelectPayload {
   event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>;
   value: string;
@@ -47,10 +39,7 @@ export interface AutoCompleteFilterOption {
   disabled: boolean;
 }
 
-/**
- * Decides whether an option stays visible for a query; the default
- * is the contains matcher.
- */
+/** Decides whether an option stays visible for a query; the default is the contains matcher. */
 export type AutoCompleteFilterFn = (query: string, option: AutoCompleteFilterOption) => boolean;
 
 /**
@@ -58,21 +47,13 @@ export type AutoCompleteFilterFn = (query: string, option: AutoCompleteFilterOpt
  * `value` is the free text written on pick.
  */
 export interface AutoCompleteOptionProps {
-  /**
-   * The committed value written into the host on pick.
-   */
+  /** The committed value written into the host on pick. */
   value: string;
-  /**
-   * The plain-text surface the matcher reads and the row falls back to.
-   */
+  /** The plain-text surface the matcher reads and the row falls back to. */
   text: string;
-  /**
-   * Excluded from roaming and picking, still visible.
-   */
+  /** Excluded from roaming and picking, still visible. */
   disabled?: boolean;
-  /**
-   * Optional rich row render; falls back to `text`.
-   */
+  /** Optional rich row render; falls back to `text`. */
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
@@ -87,46 +68,25 @@ export interface AutoCompleteProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'onChange' | 'onSelect'
 > {
-  /**
-   * Controlled text; the empty string renders an empty control.
-   */
+  /** Controlled text; the empty string renders an empty control. */
   value?: string;
-  /**
-   * Uncontrolled starting text; the empty string renders an empty control.
-   */
+  /** Uncontrolled starting text; the empty string renders an empty control. */
   defaultValue?: string;
-  /**
-   * Forced panel visibility; the internal focus/filter policy runs otherwise.
-   */
+  /** Forced panel visibility; the internal focus/filter policy runs otherwise. */
   open?: boolean;
-  /**
-   * Initial panel visibility for the uncontrolled open state.
-   */
+  /** Initial panel visibility for the uncontrolled open state. */
   defaultOpen?: boolean;
-  /**
-   * Overrides the default substring matcher (text or value,
-   * case-insensitive).
-   */
+  /** Overrides the default substring matcher (text or value, case-insensitive). */
   filterOption?: AutoCompleteFilterFn;
-  /**
-   * Fires on every committed text change (typing and picks).
-   */
+  /** Fires on every committed text change (typing and picks). */
   onChange?: (payload: AutoCompleteChangePayload) => void;
-  /**
-   * Fires when a suggestion row is picked (keyboard or mouse).
-   */
+  /** Fires when a suggestion row is picked (keyboard or mouse). */
   onSelect?: (payload: AutoCompleteSelectPayload) => void;
-  /**
-   * Fires whenever the panel visibility changes (auto policy or forced).
-   */
+  /** Fires whenever the panel visibility changes (auto policy or forced). */
   onOpenChange?: (open: boolean) => void;
-  /**
-   * AutoComplete.Target, AutoComplete.Suggestions and AutoComplete.Option members.
-   */
+  /** AutoComplete.Target, AutoComplete.Suggestions and AutoComplete.Option members. */
   children: ReactNode;
 }
 
-/**
- * The anchor element the popup positions against.
- */
+/** The anchor element the popup positions against. */
 export type AutoCompleteRef = HTMLDivElement;

@@ -5,16 +5,10 @@
  * AutoComplete.Option) and shares filter semantics verbatim.
  */
 export interface ComboboxOption {
-  /**
-   * The committed value written back on pick.
-   */
+  /** The committed value written back on pick. */
   value: string;
-  /**
-   * The plain-text surface the matcher and rows read.
-   */
+  /** The plain-text surface the matcher and rows read. */
   text: string;
-  /**
-   * Excluded from keyboard roaming and picking, still visible.
-   */
+  /** Excluded from keyboard roaming and picking, still visible. */
   disabled: boolean;
 }

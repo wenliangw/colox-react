@@ -57,13 +57,9 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 export interface TextareaAutosize {
-  /**
-   * Minimum height in rows; defaults to the `rows` baseline.
-   */
+  /** Minimum height in rows; defaults to the `rows` baseline. */
   minRows?: number;
-  /**
-   * Maximum height in rows; beyond it the textarea scrolls inside.
-   */
+  /** Maximum height in rows; beyond it the textarea scrolls inside. */
   maxRows?: number;
 }
 

@@ -9,7 +9,10 @@ export type StackGap = NonNullable<StackVariants['gap']>;
 export type StackAlign = NonNullable<StackVariants['align']>;
 export type StackJustify = NonNullable<StackVariants['justify']>;
 
-/** Per-breakpoint gap overrides for `Stack.Responsive` (keys are the fixed sm/md/lg/xl contract, activation-point semantics). */
+/**
+ * Per-breakpoint gap overrides for `Stack.Responsive` (keys are the
+ * fixed sm/md/lg/xl contract, activation-point semantics).
+ */
 export type StackResponsiveGap = ResponsiveValue<StackGap>;
 
 /**
@@ -27,9 +30,7 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
    * @default 'row'
    */
   direction?: StackDirection;
-  /**
-   * Spacing between children (spacing token key). No gap unless set.
-   */
+  /** Spacing between children (spacing token key). No gap unless set. */
   gap?: StackGap;
   /**
    * Cross-axis alignment (align-items).

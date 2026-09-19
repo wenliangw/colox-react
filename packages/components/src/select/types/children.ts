@@ -4,9 +4,7 @@ import type { SelectOptionRecord, SelectSize } from './component';
 export type SelectControlRef = HTMLInputElement | HTMLButtonElement;
 
 export interface SelectControlProps {
-  /**
-   * The search capability: the embedded input renders only while on.
-   */
+  /** The search capability: the embedded input renders only while on. */
   showSearch: boolean;
   open: boolean;
   disabled: boolean;
@@ -38,13 +36,9 @@ export interface SelectControlProps {
    * the searchable input, whose click places the caret instead).
    */
   onControlClick: () => void;
-  /**
-   * Keyboard focus opens the panel; pointer focus defers to the click.
-   */
+  /** Keyboard focus opens the panel; pointer focus defers to the click. */
   onControlFocus: () => void;
-  /**
-   * Blur closes it — including when the pointer leaves the page control.
-   */
+  /** Blur closes it — including when the pointer leaves the page control. */
   onControlBlur: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 }
