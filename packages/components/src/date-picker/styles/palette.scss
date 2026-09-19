@@ -1,0 +1,49 @@
+// Palette color families — the six Button families mapped onto the
+// private date-picker palette variables (the class declares the
+// vars, the paint rules read them). The selected day fills the
+// family solid, the empty-field today wears the surface recipe
+// (subtle wash + muted border + family text) and the today/focus
+// rings ride the muted pair; the field shell and the off-state panel
+// fabric stay neutral on purpose. Base.scss holds the brand
+// fallbacks so the paint survives even without a palette class.
+.colox-date-picker--primary {
+  --colox-date-picker-palette-solid: var(--colox-color-brand-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-brand-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+.colox-date-picker--gray {
+  --colox-date-picker-palette-solid: var(--colox-color-gray-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-gray-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-gray-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-gray-inverse);
+}
+
+.colox-date-picker--info {
+  --colox-date-picker-palette-solid: var(--colox-color-blue-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-blue-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-blue-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-blue-inverse);
+}
+
+.colox-date-picker--error {
+  --colox-date-picker-palette-solid: var(--colox-color-red-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-red-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-red-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-red-inverse);
+}
+
+.colox-date-picker--warning {
+  --colox-date-picker-palette-solid: var(--colox-color-orange-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-orange-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-orange-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-orange-inverse);
+}
+
+.colox-date-picker--success {
+  --colox-date-picker-palette-solid: var(--colox-color-green-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-green-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-green-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-green-inverse);
+}

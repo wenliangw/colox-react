@@ -1,3 +1,4 @@
+export { IconCalendar } from './calendar';
 export { IconCheck } from './check';
 export { IconChevronDown } from './chevron-down';
 export { IconChevronLeft } from './chevron-left';

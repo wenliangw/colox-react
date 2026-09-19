@@ -25,6 +25,7 @@ const sidebars: SidebarsConfig = {
       items: [
         { type: 'doc', id: 'components/input', label: 'Input' },
         { type: 'doc', id: 'components/input-number', label: 'InputNumber' },
+        { type: 'doc', id: 'components/date-picker', label: 'DatePicker' },
         { type: 'doc', id: 'components/textarea', label: 'Textarea' },
         { type: 'doc', id: 'components/select', label: 'Select' },
         { type: 'doc', id: 'components/checkbox', label: 'Checkbox' },

@@ -1,0 +1,228 @@
+---
+sidebar_position: 9
+---
+
+import { DatePicker } from '@colox/react';
+import '@colox/react/style.css';
+
+# DatePicker
+
+A single-line date editor: a bare text input in the Input family shell
+plus a self-drawn panel riding the cdk popup. The `picker` chooses the
+granularity — a Monday-first day grid, a 12-month grid or a 12-year
+decade window — and the canonical value shape follows it
+(`YYYY-MM-DD` / `YYYY-MM` / `YYYY`); `null` is the empty state. The
+display follows the `valueFormat` pattern (standard tokens incl.
+weekday names, default per picker).
+
+```tsx
+import { DatePicker } from '@colox/react';
+```
+
+## When to use
+
+- Any field that collects one day-in-time — deadlines, birthdays,
+  schedules.
+- When typed entry and picking should both work: the panel selects,
+  keystrokes parse and normalize.
+- When a date bound (`min`/`max`) must disable out-of-range days
+  instead of leaving invalid picks to a form layer.
+
+## Examples
+
+### Basic
+
+Dates commit as they resolve; typing takes the canonical grammar
+(`YYYY-MM-DD` and `YYYY/M/D`). Open the panel with a click, ArrowDown
+or Enter.
+
+<DatePicker aria-label="Basic date" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Empty date" />
+
+## Sizes
+
+<DatePicker size="xs" aria-label="Extra small" defaultValue="2026-03-02" />
+
+<DatePicker size="sm" aria-label="Small" defaultValue="2026-03-02" />
+
+<DatePicker size="md" aria-label="Medium" defaultValue="2026-03-02" />
+
+<DatePicker size="lg" aria-label="Large" defaultValue="2026-03-02" />
+
+The four tiers share the family row heights (24/32/40/48) and the
+leading padding ladder; the panel geometry stays constant.
+
+## Picker granularity
+
+`picker` chooses what one commit means: a day, a month or a year. The
+canonical value shape follows it — `YYYY-MM-DD`, `YYYY-MM` or `YYYY` —
+and typed text must reach the picker's precision to commit (a finer
+string truncates: `2026-03-02` commits `2026-03` under the month
+picker; a coarser one rolls back). Month and year cells compare their
+granularity prefix against `min`/`max`.
+
+<DatePicker aria-label="Day picker" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Month picker" picker="month" defaultValue="2026-03" />
+
+<DatePicker aria-label="Year picker" picker="year" defaultValue="2026" />
+
+## Level drilling
+
+The panel header title is a drill path, so far dates skip the chevron
+stepping entirely. On the day grid the title is split into its two
+segments and each drills on its own: click the month segment to climb
+to the month grid, click the year segment to jump straight to the
+decade grid. Picking a year or month drops one level back down.
+Picks above the picker's granularity only descend (they never
+commit); a pick at the base level commits and closes. The decade
+title is terminal. The same header works on the month picker (year →
+decade → year pick); the year picker already shows the terminal grid.
+
+<DatePicker aria-label="Day drilling" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Month drilling" picker="month" defaultValue="2026-03" />
+
+## Value formats
+
+`valueFormat` renders the field text with the standard date-pattern
+tokens: `yyyy`/`yy`, `M`/`MM`, `d`/`dd`, and the weekday
+`EEE`/`EEEE`. Token letters are case-insensitive; every other
+character is a literal separator. The internal value and the change
+payload stay canonical at the picker granularity regardless of the
+format.
+
+<DatePicker aria-label="ISO format" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Slash format" valueFormat="yyyy/M/d" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Dotted format" valueFormat="dd.MM.yyyy" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Weekday short" valueFormat="yyyy-MM-dd EEE" defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Weekday full" valueFormat="EEEE d/M/yyyy" defaultValue="2026-03-02" />
+
+Weekdays are display-only: parsing ignores them by design — a weekday
+is a derivative of the date, never input.
+
+## Bounds
+
+`min`/`max` are editor mechanics, not a validation layer: panel days
+outside the span render disabled, and a typed out-of-range value holds
+silently until blur rolls it back. Dates have no honest "nearest
+legal value", so rollback — not clamping — is the mechanism.
+
+<DatePicker aria-label="Bounded span" min="2026-03-01" max="2026-03-20" defaultValue="2026-03-10" />
+
+## Palette
+
+The palette family colors the selection semantics only: the selected
+cell fills the family solid, and the current cell (today, the current
+month, the current year) wears the family subtle wash — the field's
+living "now" anchor — with hover deepening to the muted pair, for as
+long as it is not the selection. When the current cell is selected
+it drops subtle entirely and keeps only the solid fill. The field
+shell and the off-state panel fabric stay neutral.
+
+<DatePicker aria-label="Primary palette" defaultValue="2026-03-02" palette="primary" />
+
+<DatePicker aria-label="Info palette" defaultValue="2026-03-02" palette="info" />
+
+## Locale
+
+The panel chrome ships in Chinese by default: the day title composes
+as `2026年3月`, the month view reads `2026年`, the year view
+`2020–2031年`, and the weekday row reads `一…日`. The `locale` prop
+is data-only — swap the labels and title patterns without callbacks.
+
+<DatePicker aria-label="Chinese panel (default)" defaultValue="2026-03-02" />
+
+<DatePicker
+  aria-label="English panel"
+  defaultValue="2026-03-02"
+  locale={{
+    months: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+    weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+    yearMonthFormat: '{month} {year}',
+  }}
+/>
+
+Note: `valueFormat` weekday tokens (`EEE`/`EEEE`) keep the canonical
+English date-pattern vocabulary — `locale` only localizes the chrome,
+the two layers are unrelated.
+
+## Clearable
+
+`clearable` follows the Select interaction: with a committed value,
+hovering or focusing the field swaps the trailing calendar glyph for
+the ✕ clear control — clicking it commits `null` through the change
+payload and returns focus to the field.
+
+<DatePicker aria-label="Clearable" clearable defaultValue="2026-03-02" />
+
+## States
+
+<DatePicker aria-label="Invalid" invalid defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Disabled" disabled defaultValue="2026-03-02" />
+
+<DatePicker aria-label="Read only" readOnly defaultValue="2026-03-02" />
+
+## Keyboard
+
+- **Field**: ArrowDown / Enter opens the panel; Escape closes it.
+- **Day grid**: Arrows rotate by day/week, Home/End jump to the week
+  edges, PageUp/PageDown flip the month, Enter/Space select the
+  focused day.
+- **Month grid**: Arrows rotate by month (vertical by quarters),
+  Home/End jump the year edges, PageUp/PageDown flip the year.
+- **Year grid**: Arrows rotate by year (vertical by triples),
+  Home/End jump the decade window edges, PageUp/PageDown flip the
+  decade.
+- **Header chevrons**: the single arrow steps the current grid's own
+  granularity (month / year) and the double arrow jumps by the parent
+  granularity (year / decade) — the year panel shows the double
+  arrows only.
+- **Drilling**: Enter/Space on a drilled level descend one level
+  instead of committing — the focus re-anchors to the new grid's
+  selection/current/home cell.
+
+## Panel width
+
+The panel width is intrinsic, not the shell's: it sits at the day
+grid's natural footprint (272px across all three grids) whatever the
+host width is. A wide host leaves the panel at its own width on the
+left; a narrow host lets it overflow right and the floating layer
+shifts it back into the viewport.
+
+## API
+
+| Prop           | Type                                                                   | Default        | Notes                                                                          |
+| -------------- | ---------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------ |
+| `picker`       | `'date' \| 'month' \| 'year'`                                          | `'date'`       | Selection granularity; the value shape follows it.                             |
+| `value`        | `string \| null`                                                       | —              | Canonical at the picker granularity; controlled when set.                      |
+| `defaultValue` | `string \| null`                                                       | `null`         | Uncontrolled seed.                                                             |
+| `valueFormat`  | `string`                                                               | per picker     | `'yyyy-MM-dd'` / `'yyyy-MM'` / `'yyyy'`; also the placeholder.                 |
+| `locale`       | `{ months?, weekdays?, yearMonthFormat?, yearFormat?, decadeFormat? }` | Chinese chrome | Panel chrome labels and title patterns, data-only.                             |
+| `min` / `max`  | `string`                                                               | —              | ISO date bounds: cells and typed values out of range are disabled/rolled back. |
+| `palette`      | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'`   | `'primary'`    | Colors the selection/current semantics only.                                   |
+| `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'`                                         | `'md'`         | Family row heights (24/32/40/48).                                              |
+| `clearable`    | `boolean`                                                              | `false`        | Select-style trailing ✕ control.                                               |
+| `invalid`      | `boolean`                                                              | `false`        | Red border/ring + `aria-invalid`.                                              |
+| `open`         | `boolean`                                                              | —              | Controlled panel visibility; `defaultOpen` seeds it.                           |
+| `onChange`     | `(payload: { event; value }) => void`                                  | —              | `value` is the canonical granularity string or `null`.                         |
+| `onOpenChange` | `(open: boolean) => void`                                              | —              | Fires when the panel opens/closes.                                             |

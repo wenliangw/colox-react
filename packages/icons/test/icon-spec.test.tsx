@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
+  IconCalendar,
   IconCheck,
   IconChevronDown,
   IconChevronLeft,
@@ -14,6 +15,7 @@ import {
   IconSearch,
   IconX,
 } from '../src';
+import { calendarPath } from '../src/icons/geometry/calendar';
 import { chevronPath } from '../src/icons/geometry/chevron';
 import { eyeOutlinePath, eyeSlashPath } from '../src/icons/geometry/eye';
 
@@ -48,6 +50,7 @@ const CONTRACT = [
  * Changing a drawing that breaks them is a spec violation by design.
  */
 const BOUNDS: Record<string, [number, number, number, number]> = {
+  calendar: [3.25, 20.75, 2.25, 20.75],
   'chevron-right': [8.25, 15.75, 5.25, 18.75],
   'chevron-down': [5.25, 18.75, 8.25, 15.75],
   'chevron-left': [8.25, 15.75, 5.25, 18.75],
@@ -73,6 +76,7 @@ interface IconSpec {
 }
 
 const ICONS: IconSpec[] = [
+  { name: 'calendar', component: IconCalendar, paths: [calendarPath] },
   { name: 'chevron-right', component: IconChevronRight, paths: [chevronPath] },
   {
     name: 'chevron-down',

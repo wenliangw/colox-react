@@ -9,6 +9,7 @@ topic bundle's `references/component.md`.
 | Button      | actions (variants + interactive states)                                                                                             | shipped | pending      |
 | Input       | single-line text entry with focus ring and field states                                                                             | shipped | pending      |
 | InputNumber | single-line number editor (decimal text input, chevron stepper, step precision, span clamp)                                         | shipped | pending      |
+| DatePicker  | single-line date editor (canonical ISO value, valueFormat tokens, Monday-first month panel, min/max bounds)                         | shipped | pending      |
 | Textarea    | multi-line text entry: shell contract, content-driven height (autosize + drag handle), footer bar (count / clear), themed scrollbar | shipped | pending      |
 | Checkbox    | single boolean choice (label-wrapped, invalid/disabled states)                                                                      | shipped | pending      |
 | Switch      | single boolean toggle (role="switch" input + palette track), invalid/disabled states                                                | shipped | pending      |

@@ -60,6 +60,11 @@
       "import": "./dist/es/input-number.js",
       "require": "./dist/cjs/input-number.cjs"
     },
+    "./date-picker": {
+      "types": "./dist/types/date-picker/index.d.ts",
+      "import": "./dist/es/date-picker.js",
+      "require": "./dist/cjs/date-picker.cjs"
+    },
     "./radio": {
       "types": "./dist/types/radio/index.d.ts",
       "import": "./dist/es/radio.js",

@@ -1,0 +1,318 @@
+// The field shell inherits the Input contract and the panel paints
+// with the existing fabric tokens (bg-overlay, border-muted,
+// radius-md, shadow-md) — the selection semantics ride the private
+// palette vars (brand fallbacks keep the paint alive without a
+// palette class; the family mappings live in palette.scss).
+
+.colox-date-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  width: 100%;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-default);
+  background-color: var(--colox-color-bg-default);
+  cursor: text;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  // The shell owns the appearance contract: the ring stays lit while
+  // focus sits anywhere inside.
+  &:focus-within {
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-within {
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-date-picker__control {
+  box-sizing: border-box;
+}
+
+.colox-date-picker__trailing {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+// The decorative calendar glyph — the IconBase pointer-inert stance
+// keeps the whole shell clickable through it.
+.colox-date-picker__icon {
+  color: var(--colox-color-text-muted);
+}
+
+// Private palette variables: the panel's selection semantics read
+// these — the selected day fills the family solid, the today ring
+// rides the muted pair (Switch/Slider discipline: only the active
+// state paints). The popup root is a PORTAL — it escapes the shell's
+// DOM tree, so the variables must live on the popup itself (the
+// shell is not an ancestor of the panel). The palette family classes
+// are likewise re-applied on the popup root (see date-picker.tsx),
+// so the palette.scss mappings hit both.
+.colox-date-picker__popup {
+  min-width: 248px;
+
+  --colox-date-picker-palette-solid: var(--colox-color-brand-solid);
+  --colox-date-picker-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-date-picker-palette-muted: var(--colox-color-brand-muted);
+  --colox-date-picker-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+// Clearable swap-reveal (Select interaction): the ✕ control sits in
+// the calendar-glyph slot, hidden until the shell is hovered or
+// focused. Reset, hit shape, focus ring and the muted variant ride
+// the shared IconButton base; this file only places and reveals.
+.colox-date-picker--clearable {
+  .colox-date-picker__clear {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-within {
+    .colox-date-picker__clear {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .colox-date-picker__icon {
+      opacity: 0;
+    }
+  }
+}
+
+.colox-date-picker__clear {
+  // The transition COMPOSES the IconButton base hook (color feedback
+  // keeps its animated ride) and appends the fast opacity leg for the
+  // swap reveal — overriding the shorthand would kill the base's
+  // members (Select's clear rides the same composition).
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    var(--colox-icon-button-transition),
+    opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+.colox-date-picker__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-1);
+  // The panel width is intrinsic, not the shell's: this floor equals
+  // the day grid's natural footprint (7 × 32px cells + 6 × 4px gaps
+  // + 2 × 12px padding), so the three grids share one width and a
+  // wide host no longer stretches the panel into a right-side void.
+  min-width: 272px;
+  padding: var(--colox-spacing-1-5);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-overlay);
+  box-shadow: var(--colox-shadow-md);
+  color: var(--colox-color-text-default);
+}
+
+.colox-date-picker__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--colox-spacing-0-5);
+}
+
+// The title slot shares one box across all its forms — the drillable
+// buttons and the terminal decade span both carry the same padding
+// and line-height, so the three header heights (day's two segments,
+// month's one, the year's span) stay identical and the three panels
+// only differ by their grid body.
+.colox-date-picker__panel-title {
+  font-weight: var(--colox-font-weight-semibold);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+  padding: var(--colox-spacing-1);
+}
+
+// The drillable header segments: a muted-button treatment on the
+// title slot — default family text, and the hover rides the palette
+// solid (the family semantic for "this leads somewhere"), while the
+// terminal (decade) title stays a plain span.
+.colox-date-picker__panel-title-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-0-5);
+}
+
+.colox-date-picker__title-button {
+  border: none;
+  padding: var(--colox-spacing-1);
+  border-radius: var(--colox-radius-sm);
+  background-color: transparent;
+  color: var(--colox-color-text-default);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--colox-date-picker-palette-solid);
+  }
+}
+
+.colox-date-picker__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: var(--colox-spacing-1);
+  border-radius: var(--colox-radius-sm);
+}
+
+// The double-chevron control draws two chevrons overlapped into one
+// glyph (preference: no new icon asset for a layout detail).
+.colox-date-picker__nav--double {
+  svg + svg {
+    margin-inline-start: -0.55em;
+  }
+}
+
+.colox-date-picker__nav-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Family muted-button idiom: color-only feedback, no background wash.
+.colox-date-picker__nav {
+  background-color: transparent;
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--colox-color-text-default);
+  }
+}
+
+.colox-date-picker__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--colox-spacing-0-5);
+}
+
+.colox-date-picker__weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  font-size: var(--colox-font-size-xs);
+  color: var(--colox-color-text-muted);
+}
+
+.colox-date-picker__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-0-5);
+}
+
+.colox-date-picker__row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--colox-spacing-0-5);
+}
+
+// The month/year grids share the cell fabric on a 3-column stage:
+// cells stretch to the intrinsic panel width (day-grid footprint)
+// and grow to 56px tall — 4 rows + 3 gaps land within a whisker of
+// the day grid's body (weekday row + 6 × 32px rows), keeping the
+// three views on a comparable panel height.
+.colox-date-picker__grid--compact .colox-date-picker__row {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.colox-date-picker__grid--compact .colox-date-picker__day {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--colox-radius-sm);
+}
+
+.colox-date-picker__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--colox-radius-full);
+  background-color: transparent;
+  font-size: var(--colox-font-size-sm);
+  color: var(--colox-color-text-default);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-color-gray-wash-hover);
+  }
+
+  &--muted {
+    color: var(--colox-color-text-disabled);
+  }
+
+  &--today:not(&--selected):not(&--disabled) {
+    // The current cell (today, the current month/year) wears the
+    // Button subtle recipe — a family wash + family text — for as
+    // long as it is NOT the selection: it reads as the field's
+    // living "now" anchor whether or not a value exists. The moment
+    // the current cell is selected, subtle yields entirely — the
+    // `:not(&--selected)` exclusion is what makes the solid fill
+    // win (the :not() pseudo bumps the rule's specificity above a
+    // single class, so source order alone could never beat it).
+    background-color: var(--colox-date-picker-palette-subtle);
+    color: var(--colox-date-picker-palette-solid);
+  }
+
+  // Button subtle carries the same hover: the wash deepens one step
+  // to the muted pair (the plain gray wash stays for ordinary days).
+  &--today:not(&--selected):hover:not(:disabled) {
+    background-color: var(--colox-date-picker-palette-muted);
+  }
+
+  &--selected {
+    background-color: var(--colox-date-picker-palette-solid);
+    color: var(--colox-date-picker-palette-inverse);
+
+    &:hover:not(:disabled) {
+      background-color: var(--colox-date-picker-palette-solid);
+    }
+  }
+
+  &--disabled {
+    color: var(--colox-color-text-disabled);
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 1.5px var(--colox-date-picker-palette-solid),
+      0 0 0 2px var(--colox-date-picker-palette-muted);
+  }
+}
