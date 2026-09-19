@@ -63,6 +63,10 @@
       transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
   }
 
+  // The ring follows the button's own palette: a neutral control gets a
+  // neutral ring, a semantic one keeps its tone. (A brand ring for the
+  // neutral palettes was tried and rejected — a saturated ring around a
+  // gray icon reads as foreign paint; see the module doc.)
   &:focus-visible {
     outline: 2px solid var(--colox-icon-button-palette-solid);
     outline-offset: 2px;

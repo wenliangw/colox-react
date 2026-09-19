@@ -4,6 +4,11 @@
  * the wash keys (hover/active feedback), solid/outline take the full
  * set, text paints the solid level. Base.scss holds the brand fallback
  * so the paint survives even without a palette class.
+ *
+ * The focus ring reads `palette-solid` directly: the ring speaks the
+ * button's own tone (neutral control → neutral ring, semantic family →
+ * its own color). Kept as one shared key on purpose — a separate ring
+ * channel was tried for a brand-ring policy and reverted.
  */
 .colox-icon-button--primary {
   --colox-icon-button-palette-solid: var(--colox-color-brand-solid);
