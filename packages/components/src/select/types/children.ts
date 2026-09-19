@@ -4,8 +4,9 @@ import type { SelectOptionRecord, SelectSize } from './component';
 export type SelectControlRef = HTMLInputElement | HTMLButtonElement;
 
 export interface SelectControlProps {
-  /** Shape selector: every multiple select embeds the input control. */
-  isMultiple: boolean;
+  /**
+   * The search capability: the embedded input renders only while on.
+   */
   showSearch: boolean;
   open: boolean;
   disabled: boolean;
@@ -20,11 +21,31 @@ export interface SelectControlProps {
   activeDescendantId?: string;
   /** The input control's value: query stream while open, selected text while closed single. */
   inputValue: string;
-  /** The closed single button's display content (text / raw value / placeholder). */
+  /**
+   * The trigger button's display content — placeholder while empty in
+   * multiple mode, `null` once chips carry the selection.
+   */
   buttonDisplay: ReactNode;
   placeholder?: ReactNode;
   onInputChange: (value: string) => void;
-  onButtonClick: () => void;
+  /**
+   * Marks a pointer-driven interaction before focus lands: the focus
+   * handler then defers to the click, which owns the toggle.
+   */
+  onControlMouseDown: () => void;
+  /**
+   * Click toggles the panel on the trigger button (and opens it on
+   * the searchable input, whose click places the caret instead).
+   */
+  onControlClick: () => void;
+  /**
+   * Keyboard focus opens the panel; pointer focus defers to the click.
+   */
+  onControlFocus: () => void;
+  /**
+   * Blur closes it — including when the pointer leaves the page control.
+   */
+  onControlBlur: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 }
 

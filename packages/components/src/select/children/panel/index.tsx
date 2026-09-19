@@ -66,6 +66,7 @@ export const SelectPanel = forwardRef<HTMLDivElement, SelectPanelProps>((props, 
         referenceRef={referenceRef}
         open={open}
         className="colox-select__listbox"
+        onMouseDown={(event) => event.preventDefault()}
       >
         <span className="colox-select__empty">No options</span>
       </Popup>
@@ -80,6 +81,7 @@ export const SelectPanel = forwardRef<HTMLDivElement, SelectPanelProps>((props, 
       referenceRef={referenceRef}
       open={open}
       className="colox-select__listbox"
+      onMouseDown={(event) => event.preventDefault()}
     >
       {options.map((option, index) => (
         <SelectOptionRow

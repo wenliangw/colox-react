@@ -4,15 +4,17 @@ import { InputControl } from '@colox/cdk/input-control';
 import type { SelectControlProps, SelectControlRef } from '../../types';
 
 /**
- * The combobox control in both shapes: the embedded InputControl for
- * searchable single and every multiple select, a native button for the
- * plain single trigger. Both carry the ARIA 1.2 editable-combobox
- * surface (role, expansion state, activedescendant) — focus never
- * leaves this element while the panel is open.
+ * The combobox control in both shapes: the embedded InputControl in
+ * searchable mode (single and multiple), a native button otherwise —
+ * a non-searchable multiple select is select-only, so it shares the
+ * plain trigger with single mode. Both carry the ARIA 1.2
+ * editable-combobox surface (role, expansion state,
+ * activedescendant) — focus never leaves this element while the
+ * panel is open, and the focus/blur model drives the panel alongside
+ * the pointer-driven click toggle.
  */
 export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((props, ref) => {
   const {
-    isMultiple,
     showSearch,
     open,
     disabled,
@@ -26,16 +28,18 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     buttonDisplay,
     placeholder,
     onInputChange,
-    onButtonClick,
+    onControlMouseDown,
+    onControlClick,
+    onControlFocus,
+    onControlBlur,
     onKeyDown,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const usesInput = isMultiple || showSearch;
   useImperativeHandle(
     ref,
-    () => (usesInput ? inputRef.current : buttonRef.current) as SelectControlRef,
+    () => (showSearch ? inputRef.current : buttonRef.current) as SelectControlRef,
   );
 
   // A combobox takes its reachable name from the author (ARIA
@@ -54,7 +58,7 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
     disabled,
   };
 
-  if (usesInput) {
+  if (showSearch) {
     return (
       <InputControl
         ref={inputRef}
@@ -65,6 +69,10 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
         value={inputValue}
         placeholder={typeof placeholder === 'string' ? placeholder : undefined}
         onChange={(event: ChangeEvent<HTMLInputElement>) => onInputChange(event.target.value)}
+        onMouseDown={onControlMouseDown}
+        onClick={onControlClick}
+        onFocus={onControlFocus}
+        onBlur={onControlBlur}
         onKeyDown={onKeyDown}
       />
     );
@@ -77,7 +85,10 @@ export const SelectControl = forwardRef<SelectControlRef, SelectControlProps>((p
       id={id}
       {...comboboxAria}
       className="colox-select__control"
-      onClick={onButtonClick}
+      onMouseDown={onControlMouseDown}
+      onClick={onControlClick}
+      onFocus={onControlFocus}
+      onBlur={onControlBlur}
       onKeyDown={onKeyDown}
     >
       {buttonDisplay}

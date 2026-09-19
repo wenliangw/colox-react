@@ -109,12 +109,14 @@ describe('Select multiple choosing', () => {
     expect(screen.queryByRole('button', { name: 'Remove Apple' })).toBeNull();
   });
 
-  it('shows the placeholder through the control while empty', () => {
-    renderFruits();
+  it('renders a select-only button with the placeholder in non-searchable multiple mode', () => {
+    const { container } = renderFruits();
     const combobox = screen.getByRole('combobox');
-    expect(combobox.tagName).toBe('INPUT');
-    expect(combobox).toHaveValue('');
-    expect(combobox).toHaveAttribute('placeholder', 'Pick fruits');
+    // Without showSearch a multiple select is select-only: the control
+    // is the plain trigger button, never an editable field.
+    expect(combobox.tagName).toBe('BUTTON');
+    expect(screen.getByText('Pick fruits')).toBeInTheDocument();
+    expect(container.querySelector('input:not([type="hidden"])')).toBeNull();
   });
 
   it('filters the members while typing in multiple mode', () => {
@@ -178,7 +180,7 @@ describe('Select multiple keyboard', () => {
 
   it('does not remove chips on Backspace while a query is typed', () => {
     const onChange = vi.fn();
-    renderFruits({ defaultValue: ['apple'], onChange });
+    renderFruits({ defaultValue: ['apple'], onChange, showSearch: true });
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'ap' } });
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Backspace' });
     expect(onChange).not.toHaveBeenCalled();
@@ -186,7 +188,7 @@ describe('Select multiple keyboard', () => {
 
   it('clears the query on Escape without losing the selection', () => {
     const onChange = vi.fn();
-    renderFruits({ defaultValue: ['apple'], onChange });
+    renderFruits({ defaultValue: ['apple'], onChange, showSearch: true });
     const combobox = screen.getByRole('combobox');
     fireEvent.click(combobox);
     fireEvent.change(combobox, { target: { value: 'ap' } });
@@ -194,11 +196,12 @@ describe('Select multiple keyboard', () => {
 
     fireEvent.keyDown(combobox, { key: 'Escape' });
     expect(combobox).toHaveAttribute('aria-expanded', 'false');
+    expect(combobox).toHaveValue('');
     expect(onChange).not.toHaveBeenCalled();
   });
 
   it('stands on the field after walks and picks', () => {
-    renderFruits();
+    renderFruits({ showSearch: true });
     const combobox = screen.getByRole('combobox');
     fireEvent.keyDown(combobox, { key: 'ArrowDown' });
     fireEvent.keyDown(combobox, { key: 'ArrowDown' });
@@ -242,6 +245,48 @@ describe('Select multiple open/close', () => {
     fireEvent.pointerDown(document.body);
     expect(screen.queryByRole('listbox')).toBeNull();
   });
+
+  it('opens on focus and closes on blur in the non-searchable form', () => {
+    renderFruits();
+    const combobox = screen.getByRole('combobox');
+    fireEvent.focus(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(combobox).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.blur(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('opens on focus and closes on blur in the searchable form', () => {
+    renderFruits({ showSearch: true });
+    const combobox = screen.getByRole('combobox');
+    fireEvent.focus(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.blur(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  it('toggles the panel closed on a second click in the non-searchable form', () => {
+    renderFruits();
+    const combobox = screen.getByRole('combobox');
+    fireEvent.click(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.click(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('closes when the window loses focus', () => {
+    renderFruits({ showSearch: true });
+    fireEvent.focus(screen.getByRole('combobox'));
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent(window, new Event('blur'));
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
 });
 
 describe('Select multiple form collection', () => {
@@ -273,10 +318,16 @@ describe('Select multiple states', () => {
 });
 
 describe('Select multiple refs', () => {
-  it('exposes the search control', () => {
+  it('exposes the search input in the searchable form', () => {
+    const ref = createRef<HTMLInputElement | HTMLButtonElement>();
+    renderFruits({ ref, showSearch: true });
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+  });
+
+  it('exposes the trigger button in the non-searchable form', () => {
     const ref = createRef<HTMLInputElement | HTMLButtonElement>();
     renderFruits({ ref });
-    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
 });
 

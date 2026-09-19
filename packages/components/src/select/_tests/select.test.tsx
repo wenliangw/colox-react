@@ -149,6 +149,80 @@ describe('Select open/close', () => {
     expect(screen.queryByRole('listbox')).toBeNull();
   });
 
+  it('opens on focus and closes on blur', () => {
+    renderFruits();
+    const combobox = screen.getByRole('combobox');
+    fireEvent.focus(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(combobox).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.blur(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('opens on focus and closes on blur while searchable', () => {
+    renderFruits({ showSearch: true });
+    const control = screen.getByRole('combobox');
+    fireEvent.focus(control);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.blur(control);
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  it('fires onOpenChange from the focus/blur model', () => {
+    const onOpenChange = vi.fn();
+    renderFruits({ onOpenChange });
+    const combobox = screen.getByRole('combobox');
+    fireEvent.focus(combobox);
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    fireEvent.blur(combobox);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('toggles the panel closed on a second trigger click', () => {
+    renderFruits();
+    const combobox = screen.getByRole('combobox');
+    fireEvent.click(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.click(combobox);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(combobox).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('lets the click own the toggle when the pointer focuses first', () => {
+    renderFruits();
+    const combobox = screen.getByRole('combobox');
+    fireEvent.mouseDown(combobox);
+    fireEvent.focus(combobox);
+    // Pointer focus defers — the panel waits for the click.
+    expect(screen.queryByRole('listbox')).toBeNull();
+
+    fireEvent.click(combobox);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+  });
+
+  it('keeps the panel open when the searchable input is clicked again', () => {
+    renderFruits({ showSearch: true });
+    const control = screen.getByRole('combobox');
+    fireEvent.click(control);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.click(control);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+  });
+
+  it('closes when the window loses focus', () => {
+    renderFruits();
+    fireEvent.focus(screen.getByRole('combobox'));
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent(window, new Event('blur'));
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
   it('stays closed while open is controlled to false', () => {
     const onOpenChange = vi.fn();
     renderFruits({ open: false, onOpenChange });

@@ -194,5 +194,8 @@ export interface SelectProps extends Omit<
   onOpenChange?: (open: boolean) => void;
 }
 
-/** The combobox control: the embedded input when searchable/multiple, the trigger button otherwise. */
+/**
+ * The combobox control: the embedded input in searchable mode, the
+ * trigger button otherwise (plain single and non-searchable multiple).
+ */
 export type SelectRef = HTMLInputElement | HTMLButtonElement;

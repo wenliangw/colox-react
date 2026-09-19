@@ -39,7 +39,12 @@ export const SearchOptions = (
 A searchable single/multiple select built on the shared form-family shell: the
 trigger rows sit flush with same-tier `Input`/`Checkbox`/`Radio` controls, and
 the popup is a portal listbox modeled as an ARIA 1.2 editable combobox — focus
-stays in the trigger control, arrows walk options, Enter picks.
+stays in the trigger control, arrows walk options, Enter picks. The panel
+follows the interaction: focusing the control (Tab) opens it, clicking the
+trigger toggles it (the searchable input keeps it open, so the click can place
+the caret), and blurring closes it — clicking elsewhere on the page, or the
+page/window losing focus, as inside an iframe preview. Escape also closes, as
+does picking in single mode.
 
 Selection is declared with `Select.Option` leaves inside the select — every
 member carries a required `value` (the selection truth) and `text` (the
@@ -118,7 +123,9 @@ multiple mode), `option` the chosen/toggled member's compiled record —
 
 `showSearch` embeds the search control — the cdk `InputControl` the `Input`
 shell shares. Single mode flips the control between the selected text (closed)
-and the query stream (open):
+and the query stream (open); multiple mode types into the same input the chip
+row uses. Without `showSearch` the control is a select-only trigger button: it
+focuses, opens and picks, but never accepts typing.
 
 <Select showSearch placeholder="Type to search fruit">
   {SearchOptions}
@@ -133,7 +140,8 @@ change for server-side delegation. The rich panel render you give a member via
 
 `mode="multiple"` renders one removable chip per value (labeled by `text`); the
 panel stays open after each pick, Backspace on an empty query removes the last
-chip.
+chip. Add `showSearch` to make the row searchable — the typed filter narrows the
+panel while the chips stay put:
 
 <Select mode="multiple" defaultValue={['apple', 'date']}>
   {FruitOptions}
@@ -255,8 +263,8 @@ injects all three at render time.
 
 ### Ref
 
-`ref` exposes the focus control: the trigger button in plain single mode, the
-embedded input in searchable/multiple modes — typed
+`ref` exposes the focus control: the trigger button in plain single and
+non-searchable multiple modes, the embedded input in searchable modes — typed
 `SelectRef = HTMLInputElement | HTMLButtonElement`.
 
 The shell also accepts all native `div` attributes; `id` lands on the focusable

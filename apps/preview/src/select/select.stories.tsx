@@ -60,8 +60,10 @@ const SingleSearchDemo = () => {
         {FruitOptions}
       </Select>
       <Hint>
-        Searchable single: the control shows the selected text while closed and flips to the query
-        stream while open. Arrows walk, Enter picks — focus never leaves the control.
+        Searchable single: focusing the control opens the panel and the click keeps it open so the
+        caret lands where you point; blurring — clicking away, or the window losing focus — closes
+        it. The control shows the selected text while closed and flips to the query stream while
+        open. Arrows walk, Enter picks — focus never leaves the control.
       </Hint>
     </Stack>
   );
@@ -81,9 +83,10 @@ const MultipleDemo = () => {
         {FruitOptions}
       </Select>
       <Hint>
-        Multiple keeps the panel open after each pick; typing filters the members (the searchable
-        input doubles as the chip row), Backspace on an empty query removes the last chip, each chip
-        has its own remove button.
+        Searchable multiple: focusing opens the panel and blurring (clicking anywhere else, or the
+        window losing focus) closes it. Typing filters the members — the searchable input doubles as
+        the chip row. Backspace on an empty query removes the last chip, each chip has its own
+        remove button.
       </Hint>
     </Stack>
   );
@@ -91,7 +94,9 @@ const MultipleDemo = () => {
 
 // The chip row stays single-line: in a narrow shell the clipped tail
 // folds into a +M badge (click it — or anywhere in the shell — to
-// open the panel and manage the selection).
+// open the panel and manage the selection). This one is not
+// searchable: the control is a select-only trigger button (no typing)
+// where the click toggles, focus opens and blur closes.
 const MultipleFoldDemo = () => (
   <Select
     mode="multiple"
@@ -237,7 +242,7 @@ const meta: Meta<typeof Select> = {
     docs: {
       description: {
         component:
-          'Leaf-declared single/multiple select on the shared form-family shell: Select.Option members carry their value + text, the panel is a portal listbox modeled as an ARIA 1.2 editable combobox, the search control is the cdk InputControl, and FormData flows through hidden native inputs. Option rows inherit the parent size tier per member.',
+          'Leaf-declared single/multiple select on the shared form-family shell: Select.Option members carry their value + text, the panel is a portal listbox modeled as an ARIA 1.2 editable combobox (the trigger click toggles it, focus opens it, blur or the window losing focus closes it), the search control (showSearch) is the cdk InputControl while the non-searchable control is a select-only trigger button, and FormData flows through hidden native inputs. Option rows inherit the parent size tier per member.',
       },
     },
   },

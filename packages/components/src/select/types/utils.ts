@@ -21,6 +21,9 @@ export interface ResolveControlLabelParams {
 export interface ResolveButtonDisplayParams {
   selectedRecord: SelectOptionRecord | undefined;
   currentSingle: string;
+  isMultiple: boolean;
+  /** Whether chips carry a multiple selection (then the button stays empty). */
+  hasMultipleValues: boolean;
   placeholder: ReactNode;
 }
 

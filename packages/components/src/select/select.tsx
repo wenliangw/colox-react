@@ -149,6 +149,55 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     },
   });
 
+  // The pointer/keyboard split: a pointer interaction marks itself
+  // before focus lands, so the focus handler defers to the click (the
+  // click owns the toggle) while a keyboard focus (Tab) opens
+  // straight away. Blur closes and resets the walk.
+  const pointerInteractionRef = useRef(false);
+
+  const requestOpen = () => {
+    if (state.isOpen) {
+      return;
+    }
+    keyboard.setActiveIndex(initialActiveIndex);
+    state.setOpen(true);
+  };
+
+  const handleControlClose = () => {
+    state.close();
+    keyboard.setActiveIndex(-1);
+  };
+
+  const handleControlMouseDown = () => {
+    pointerInteractionRef.current = true;
+  };
+
+  const handleControlFocus = () => {
+    if (pointerInteractionRef.current) {
+      return;
+    }
+    requestOpen();
+  };
+
+  const handleControlClick = () => {
+    pointerInteractionRef.current = false;
+    if (!state.isOpen) {
+      requestOpen();
+      return;
+    }
+    // The searchable input's click places the caret, so it keeps the
+    // panel open; the trigger button toggles it shut.
+    if (showSearch) {
+      return;
+    }
+    handleControlClose();
+  };
+
+  const handleControlBlur = () => {
+    pointerInteractionRef.current = false;
+    handleControlClose();
+  };
+
   // Keep the keyboard highlight inside the scrollport.
   useEffect(() => {
     if (!state.isOpen || keyboard.activeIndex < 0) {
@@ -164,10 +213,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     open: state.isOpen,
     triggerRef: rootRef,
     panelRef,
-    onDismiss: () => {
-      state.close();
-      keyboard.setActiveIndex(-1);
-    },
+    onDismiss: handleControlClose,
   });
 
   const selectedRecord = findSelectOption(options, currentSingle);
@@ -196,18 +242,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   const buttonDisplay = resolveButtonDisplay({
     selectedRecord,
     currentSingle,
+    isMultiple,
+    hasMultipleValues: currentMultiple.length > 0,
     placeholder,
   });
-
-  const handleButtonClick = () => {
-    if (state.isOpen) {
-      state.close();
-      keyboard.setActiveIndex(-1);
-      return;
-    }
-    keyboard.setActiveIndex(initialActiveIndex);
-    state.setOpen(true);
-  };
 
   const handleControlKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     keyboard.onControlKeyDown(event);
@@ -231,8 +269,8 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     if (!(target instanceof HTMLElement) || target.closest('button') !== null) {
       return;
     }
-    keyboard.setActiveIndex(initialActiveIndex);
-    state.setOpen(true);
+    // Focus the control — the focus handler owns the open.
+    controlRef.current?.focus();
   };
 
   const showClear =
@@ -273,7 +311,6 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
         )}
         <SelectControl
           ref={controlRef}
-          isMultiple={isMultiple}
           showSearch={showSearch}
           open={state.isOpen}
           disabled={disabled}
@@ -287,7 +324,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
           buttonDisplay={buttonDisplay}
           placeholder={placeholder}
           onInputChange={state.setQuery}
-          onButtonClick={handleButtonClick}
+          onControlMouseDown={handleControlMouseDown}
+          onControlClick={handleControlClick}
+          onControlFocus={handleControlFocus}
+          onControlBlur={handleControlBlur}
           onKeyDown={handleControlKeyDown}
         />
       </div>

@@ -92,6 +92,7 @@ export const SelectTags = ({
                 className="colox-select__tag-remove"
                 aria-label={`Remove ${option.text}`}
                 disabled={disabled}
+                onMouseDown={(event) => event.preventDefault()}
                 onClick={(event) => {
                   event.stopPropagation();
                   onRemove(tagValue, event);

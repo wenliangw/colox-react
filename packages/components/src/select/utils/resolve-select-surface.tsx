@@ -72,15 +72,29 @@ export function resolveActiveDescendantId({
 }
 
 /**
- * The closed single trigger content: the selected text, then the raw
- * value (a controlled value outside the members still reads
- * honestly), then the placeholder.
+ * The trigger button's display content: the selected text, then the
+ * raw value (a controlled value outside the members still reads
+ * honestly), then the placeholder — for single mode. A multiple
+ * select's button shows the placeholder while empty and stays empty
+ * once the chips carry the selection.
  */
 export function resolveButtonDisplay({
   selectedRecord,
   currentSingle,
+  isMultiple,
+  hasMultipleValues,
   placeholder,
 }: ResolveButtonDisplayParams): ReactNode {
+  if (isMultiple) {
+    if (hasMultipleValues) {
+      return null;
+    }
+    return (
+      <span className="colox-select__placeholder">
+        {placeholder !== undefined ? placeholder : '\u00a0'}
+      </span>
+    );
+  }
   if (selectedRecord !== undefined) {
     return selectedRecord.text;
   }
