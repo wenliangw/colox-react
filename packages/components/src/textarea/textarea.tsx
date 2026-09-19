@@ -87,7 +87,7 @@ export const Textarea = forwardRef<TextareaRef, TextareaProps>((props, ref) => {
         aria-invalid={invalid || undefined}
         value={value}
         defaultValue={defaultValue}
-        onChange={onChange}
+        onChange={(event) => onChange?.({ event, value: event.target.value })}
         disabled={disabled}
         readOnly={readOnly}
         maxLength={maxLength}

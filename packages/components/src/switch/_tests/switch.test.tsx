@@ -2,6 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Switch } from '../switch';
+import type { SwitchChangePayload } from '../types';
 
 describe('Switch size', () => {
   it.each([
@@ -99,12 +100,14 @@ describe('Switch native contract', () => {
     expect(ref.current).toBe(container.querySelector('input'));
   });
 
-  it('passes the native change event through unchanged', () => {
-    const onChange = vi.fn();
+  it('hands the change over as the family payload', () => {
+    const onChange = vi.fn<(switchchangepayload: SwitchChangePayload) => void>();
     render(<Switch onChange={onChange} />);
     fireEvent.click(screen.getByRole('switch'));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange.mock.calls[0]?.[0].target.checked).toBe(true);
+    const [payload] = onChange.mock.calls[0] ?? [];
+    expect(payload?.value).toBe(true);
+    expect(payload?.event.target.checked).toBe(true);
   });
 
   it('forwards name and value so native forms collect the switch', () => {

@@ -5,7 +5,7 @@ export type RadioSize = NonNullable<RadioVariants['size']>;
 
 export interface RadioProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'size' | 'type' | 'value'
+  'size' | 'type' | 'value' | 'onChange'
 > {
   /**
    * The member value: the form value of this radio and — when used
@@ -14,11 +14,9 @@ export interface RadioProps extends Omit<
    * an explicit `checked`/`defaultChecked` stays independent and
    * `value` only feeds the native form.
    *
-   * The native `onChange` event passes through untouched: uncontrolled
-   * radios carry the toggled state on `event.target.checked`; group
-   * members are controlled by the group, so the next selection arrives
-   * through `Radio.Group`'s `onChange` (the member event is the
-   * standard React controlled-input flow).
+   * Group members are controlled by the group: the next single
+   * selection arrives through `Radio.Group`'s `onChange`, while the
+   * member still fires its own payload with its next checked state.
    */
   value?: string;
   /**
@@ -37,6 +35,23 @@ export interface RadioProps extends Omit<
    * @default false
    */
   invalid?: boolean;
+  /**
+   * Fires when this radio's own checked state changes — the payload
+   * carries the native change event plus the next value (boolean: this
+   * radio's selected state). Inside a group the member still fires it,
+   * while the group aggregates the next selection on its own channel.
+   */
+  onChange?: (payload: RadioChangePayload) => void;
+}
+
+/**
+ * The radio's change payload: `event` stays the native change event
+ * (propagation control), `value` is this radio's next checked state — a
+ * boolean, because the `value` prop is taken by the member key.
+ */
+export interface RadioChangePayload {
+  event: ChangeEvent<HTMLInputElement>;
+  value: boolean;
 }
 
 export type RadioRef = HTMLInputElement;

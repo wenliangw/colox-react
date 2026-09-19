@@ -1,9 +1,12 @@
-import type { InputHTMLAttributes, ReactNode } from 'react';
+import type { ChangeEvent, InputHTMLAttributes, ReactNode } from 'react';
 import type { InputVariants } from '../variants';
 
 export type InputSize = NonNullable<InputVariants['size']>;
 
-export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'size' | 'onChange'
+> {
   /**
    * Visual size of the input.
    * @default 'md'
@@ -63,6 +66,22 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
    * the pattern are never rewritten.
    */
   filterPattern?: RegExp;
+  /**
+   * The value-change channel, in the family payload word shape: fires
+   * with the native event and the accepted next value. A transition the
+   * `filterPattern` rejects does not fire — the previous value stays.
+   */
+  onChange?: (payload: InputChangePayload) => void;
+}
+
+/**
+ * The input's change payload: `event` stays the native change event
+ * (propagation control, the real DOM read), `value` is the next text —
+ * the family word shape every form leaf reports.
+ */
+export interface InputChangePayload {
+  event: ChangeEvent<HTMLInputElement>;
+  value: string;
 }
 
 export type InputRef = HTMLInputElement;

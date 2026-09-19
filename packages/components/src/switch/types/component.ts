@@ -1,10 +1,13 @@
-import type { InputHTMLAttributes } from 'react';
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 import type { SwitchVariants } from '../variants';
 
 export type SwitchSize = NonNullable<SwitchVariants['size']>;
 export type SwitchPalette = NonNullable<SwitchVariants['palette']>;
 
-export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+export interface SwitchProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'size' | 'type' | 'onChange'
+> {
   /**
    * Visual size of the switch row: same-name tiers share the Button/
    * Input/Checkbox design language (row heights 24/32/40/48 and the
@@ -30,6 +33,20 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
    * @default false
    */
   invalid?: boolean;
+  /**
+   * Fires when the on state toggles — the payload carries the native
+   * change event plus the next value (boolean: the switch's on state).
+   */
+  onChange?: (payload: SwitchChangePayload) => void;
+}
+
+/**
+ * The switch's change payload: `event` stays the native change event
+ * (propagation control), `value` is the next on state (boolean).
+ */
+export interface SwitchChangePayload {
+  event: ChangeEvent<HTMLInputElement>;
+  value: boolean;
 }
 
 export type SwitchRef = HTMLInputElement;

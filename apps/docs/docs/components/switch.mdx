@@ -56,8 +56,14 @@ state keeps the neutral fabric and `invalid` keeps the red channel.
 ## Controlled and uncontrolled
 
 Like Checkbox, the switch reads `checked` for controlled use and
-`defaultChecked` for the initial state of an uncontrolled one — the change
-event stays the native one, the new value on `event.target.checked`.
+`defaultChecked` for the initial state of an uncontrolled one. `onChange` fires the
+family payload — `event` plus the next boolean value.
+
+```tsx
+<Switch checked={dark} onChange={({ value }) => setDark(value)}>
+  Dark mode
+</Switch>
+```
 
 <Switch defaultChecked>Starts on (uncontrolled)</Switch>
 
@@ -71,5 +77,5 @@ event stays the native one, the new value on `event.target.checked`.
   Disabled on
 </Switch>
 
-Every prop on a native checkbox lands on the input — `name` and `value` feed
-the browser's form data untouched.
+Every prop on a native checkbox lands on the input (`onChange` is the library's own)
+— `name` and `value` feed the browser's form data untouched.

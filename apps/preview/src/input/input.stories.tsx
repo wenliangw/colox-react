@@ -15,7 +15,7 @@ const SearchClearable = () => {
       type="search"
       clearable
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="search — automatic icon + clear button"
     />
   );
@@ -27,7 +27,7 @@ const DigitsOnly = () => {
     <Input
       aria-label="Digits"
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       filterPattern={/^\d*$/}
       placeholder="only digits accepted — letters are rejected"
     />
@@ -40,7 +40,7 @@ const UpperAlpha = () => {
     <Input
       aria-label="Uppercase"
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       filterPattern={/^[A-Z]*$/}
       placeholder="uppercase letters only"
     />
@@ -53,7 +53,7 @@ const DigitsPlusClear = () => {
     <Input
       aria-label="Code"
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       filterPattern={/^\d+$/}
       clearable
       placeholder="digits; the explicit clear bypasses the filter"

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent } from 'react';
+import type { FocusEvent, KeyboardEvent, MouseEvent } from 'react';
 import { filterComboboxOptions, useComboboxKeyboard } from '@colox/cdk/combobox';
 import { useDismissible } from '@colox/cdk/floating';
+import type { InputChangePayload } from '../../input';
 import type {
   AutoCompleteChangeEvent,
   AutoCompleteOptionRecord,
@@ -119,15 +120,15 @@ export function useAutoComplete(params: UseAutoCompleteParams): UseAutoCompleteR
   // The committed value doubles as the query: typing applies the local
   // filter, and the auto-open policy keys off the match count.
   const onTargetChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const next = event.target.value;
+    (payload: InputChangePayload) => {
+      const { event, value: next } = payload;
       notifyChange(next, event);
       if (isInteractable && next.trim().length > 0) {
         setOpen(filterComboboxOptions(options, next, filterOption).length > 0);
       }
-      (target.props as Partial<TargetHandlers>).onChange?.(event);
+      host.onChange?.(payload);
     },
-    [notifyChange, isInteractable, options, filterOption, setOpen, target],
+    [notifyChange, isInteractable, options, filterOption, setOpen, host],
   );
 
   const onTargetFocus = useCallback(

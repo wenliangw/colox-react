@@ -5,7 +5,7 @@ export type CheckboxSize = NonNullable<CheckboxVariants['size']>;
 
 export interface CheckboxProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'size' | 'type' | 'value'
+  'size' | 'type' | 'value' | 'onChange'
 > {
   /**
    * The member value: the form value of this checkbox and — when used
@@ -14,11 +14,9 @@ export interface CheckboxProps extends Omit<
    * explicit `checked`/`defaultChecked` stays independent and `value`
    * only feeds the native form.
    *
-   * The native `onChange` event passes through untouched: uncontrolled
-   * boxes carry the toggled state on `event.target.checked`; group
-   * members are controlled by the group, so the next selection array
-   * arrives through `Checkbox.Group`'s `onChange` (the member event is
-   * the standard React controlled-input flow).
+   * Group members are controlled by the group: the next selection
+   * array arrives through `Checkbox.Group`'s `onChange`, while the
+   * member still fires its own payload with its next checked state.
    */
   value?: string;
   /**
@@ -44,6 +42,23 @@ export interface CheckboxProps extends Omit<
    * @default false
    */
   indeterminate?: boolean;
+  /**
+   * Fires when this checkbox's own checked state changes — the payload
+   * carries the native change event plus the next value (boolean: this
+   * box's toggled state). Inside a group the member still fires it,
+   * while the group aggregates the next selection on its own channel.
+   */
+  onChange?: (payload: CheckboxChangePayload) => void;
+}
+
+/**
+ * The checkbox's change payload: `event` stays the native change event
+ * (propagation control), `value` is the next checked state — a boolean,
+ * because the `value` prop is taken by the string form token.
+ */
+export interface CheckboxChangePayload {
+  event: ChangeEvent<HTMLInputElement>;
+  value: boolean;
 }
 
 export type CheckboxRef = HTMLInputElement;

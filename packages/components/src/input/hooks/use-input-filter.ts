@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import type { ChangeEvent, ChangeEventHandler, RefObject } from 'react';
+import type { InputChangePayload } from '../types';
 
 interface UseInputFilterParams {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -13,7 +14,7 @@ interface UseInputFilterParams {
   restoreValue: string;
   isControlled: boolean;
   /** The consumer's onChange — the only event notification path. */
-  onChange: ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange: ((payload: InputChangePayload) => void) | undefined;
 }
 
 /**
@@ -52,7 +53,7 @@ export const useInputFilter = ({
       composingRef.current || (event.nativeEvent as InputEvent | undefined)?.isComposing === true;
 
     if (composing) {
-      onChange?.(event);
+      onChange?.({ event, value: next });
       return;
     }
     if (filterPattern !== undefined && !filterPattern.test(next)) {
@@ -60,7 +61,7 @@ export const useInputFilter = ({
       return;
     }
     lastAcceptedRef.current = next;
-    onChange?.(event);
+    onChange?.({ event, value: next });
   };
 
   /**
@@ -85,10 +86,13 @@ export const useInputFilter = ({
     input.value = '';
     lastAcceptedRef.current = '';
     onChange?.({
-      target: input,
-      currentTarget: input,
-      type: 'change',
-    } as ChangeEvent<HTMLInputElement>);
+      event: {
+        target: input,
+        currentTarget: input,
+        type: 'change',
+      } as ChangeEvent<HTMLInputElement>,
+      value: '',
+    });
   };
 
   return { handleChange, handleClear, handleCompositionStart, handleCompositionEnd };

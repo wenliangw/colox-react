@@ -41,8 +41,20 @@ Members declare a `value` to join the group's selection array:
 | invalid       | `boolean`                      | `false` |
 | indeterminate | `boolean`                      | `false` |
 | value         | `string`                       | —       |
+| onChange      | `({ event, value }) => void`   | —       |
 
-It also accepts all native `<input>` attributes (`size` and `type` excluded).
+`value` is the string form token here, so a box's own `onChange` reports its state
+under the payload's `value` as a boolean (`value` prop → form data, payload `value` →
+the next checked state).
+
+```tsx
+<Checkbox checked={agreed} onChange={({ value }) => setAgreed(value)}>
+  I agree
+</Checkbox>
+```
+
+It also accepts all native `<input>` attributes (`size`, `type` and `onChange` are the
+library's own).
 
 ### Checkbox.Group props
 

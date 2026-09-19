@@ -2,6 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Checkbox } from '../checkbox';
+import type { CheckboxChangePayload } from '../types';
 
 describe('Checkbox size', () => {
   it.each([
@@ -76,12 +77,14 @@ describe('Checkbox native contract', () => {
     expect(ref.current).toBe(container.querySelector('input'));
   });
 
-  it('passes the native change event through unchanged', () => {
-    const onChange = vi.fn();
+  it('hands the change over as the family payload', () => {
+    const onChange = vi.fn<(checkboxchangepayload: CheckboxChangePayload) => void>();
     render(<Checkbox onChange={onChange} />);
     fireEvent.click(screen.getByRole('checkbox'));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange.mock.calls[0]?.[0].target.checked).toBe(true);
+    const [payload] = onChange.mock.calls[0] ?? [];
+    expect(payload?.value).toBe(true);
+    expect(payload?.event.target.checked).toBe(true);
   });
 
   it('merges the consumer className and style on the root label', () => {

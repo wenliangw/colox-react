@@ -1,4 +1,5 @@
-import type { ChangeEventHandler, RefObject } from 'react';
+import type { RefObject } from 'react';
+import type { TextareaChangePayload } from './component';
 import type { ResolvedTextareaAutosize } from './utils';
 
 /** The value union the native textarea accepts (UTF-16 semantics). */
@@ -18,7 +19,7 @@ export interface UseTextareaAutosizeParams {
 export interface UseTextareaClearParams {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   /** The consumer's onChange — the only event notification path. */
-  onChange: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+  onChange: ((payload: TextareaChangePayload) => void) | undefined;
   /**
    * Runs after the clear commit so behaviors observing the DOM value
    * (autosize measurement, count display) can re-sync — the DOM is already

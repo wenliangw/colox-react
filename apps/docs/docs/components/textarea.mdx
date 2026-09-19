@@ -82,8 +82,16 @@ handle sits at the trailing end in the growth worlds.
 | clearable | `boolean`                           | `false` |
 | showCount | `boolean`                           | `false` |
 | autoSize  | `boolean \| { minRows?, maxRows? }` | `true`  |
+| onChange  | `({ event, value }) => void`        | —       |
 
-It also accepts all native `<textarea>` attributes.
+`onChange` speaks the library's family payload: `event` is the native change event
+(propagation control) and `value` the next text — the same word shape as Input.
+
+```tsx
+<Textarea value={notes} onChange={({ value }) => setNotes(value)} />
+```
+
+It also accepts all native `<textarea>` attributes (`onChange` is the library's own).
 
 The drag handle appears in the unbounded growth worlds only (default / `true` /
 `{ minRows }`) — once growth is capped or switched off, the scrollbar is the overflow

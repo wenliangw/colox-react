@@ -34,13 +34,24 @@ Members declare a `value` to join the group's single selection:
 
 ## Props
 
-| Prop    | Type                           | Default |
-| ------- | ------------------------------ | ------- |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
-| invalid | `boolean`                      | `false` |
-| value   | `string`                       | —       |
+| Prop     | Type                           | Default |
+| -------- | ------------------------------ | ------- |
+| size     | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
+| invalid  | `boolean`                      | `false` |
+| value    | `string`                       | —       |
+| onChange | `({ event, value }) => void`   | —       |
 
-It also accepts all native `<input>` attributes (`size` and `type` excluded).
+A member's `onChange` reports its own state through the family payload — `value` is a
+boolean here (the next checked state), while the `value` prop stays the group key.
+
+```tsx
+<Radio checked={picked} onChange={({ value }) => setPicked(value)}>
+  Solo pick
+</Radio>
+```
+
+It also accepts all native `<input>` attributes (`size`, `type` and `onChange` are the
+library's own).
 
 ### Radio.Group props
 

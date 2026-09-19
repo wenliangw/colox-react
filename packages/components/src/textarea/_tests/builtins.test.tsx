@@ -34,9 +34,9 @@ describe('Textarea clearable', () => {
         <Textarea
           aria-label="Notes"
           value={value}
-          onChange={(event) => {
-            onChange(event.target.value);
-            setValue(event.target.value);
+          onChange={({ value: next }) => {
+            onChange(next);
+            setValue(next);
           }}
           clearable
         />

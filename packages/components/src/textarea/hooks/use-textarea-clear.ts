@@ -19,10 +19,13 @@ export const useTextareaClear = ({ textareaRef, onChange, onCleared }: UseTextar
     }
     textarea.value = '';
     onChange?.({
-      target: textarea,
-      currentTarget: textarea,
-      type: 'change',
-    } as ChangeEvent<HTMLTextAreaElement>);
+      event: {
+        target: textarea,
+        currentTarget: textarea,
+        type: 'change',
+      } as ChangeEvent<HTMLTextAreaElement>,
+      value: '',
+    });
     onCleared?.();
   };
 

@@ -27,9 +27,9 @@ describe('Input clearable', () => {
         <Input
           aria-label="Name"
           value={value}
-          onChange={(event) => {
-            onChange(event.target.value);
-            setValue(event.target.value);
+          onChange={({ value: next }) => {
+            onChange(next);
+            setValue(next);
           }}
           clearable
         />

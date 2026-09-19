@@ -21,9 +21,9 @@ describe('Input filterPattern', () => {
         <Input
           aria-label="Code"
           value={value}
-          onChange={(event) => {
-            onChange(event.target.value);
-            setValue(event.target.value);
+          onChange={({ value: next }) => {
+            onChange(next);
+            setValue(next);
           }}
           filterPattern={digits}
         />

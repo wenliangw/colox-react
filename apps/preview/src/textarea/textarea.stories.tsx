@@ -15,7 +15,7 @@ const Clearable = () => {
       rows={3}
       clearable
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="type something — the footer clear resets it"
     />
   );
@@ -28,7 +28,7 @@ const AutoGrow = () => {
       aria-label="Auto-growing"
       rows={2}
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="the default world — grows with the content, drag the handle for more room"
     />
   );
@@ -42,7 +42,7 @@ const MinRows = () => {
       rows={2}
       autoSize={{ minRows: 4 }}
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="starts at four rows, grows from there"
     />
   );
@@ -56,7 +56,7 @@ const ClampedGrow = () => {
       rows={2}
       autoSize={{ maxRows: 5 }}
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="grows up to five rows, then scrolls inside — no drag handle here"
     />
   );
@@ -70,7 +70,7 @@ const FixedRows = () => {
       rows={3}
       autoSize={false}
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="fixed rows with native scrolling — no autosize, no drag handle"
     />
   );
@@ -86,7 +86,7 @@ const CountAndClear = () => {
       maxLength={80}
       clearable
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onChange={({ value: next }) => setValue(next)}
       placeholder="footer pill: count | 清除 on the left, drag handle at the end"
     />
   );

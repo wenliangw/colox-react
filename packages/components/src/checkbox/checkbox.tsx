@@ -58,7 +58,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     if (state.groupMember && memberValue !== undefined) {
       group.onChange(memberValue, event);
     }
-    onChange?.(event);
+    onChange?.({ event, value: event.target.checked });
   };
 
   return (

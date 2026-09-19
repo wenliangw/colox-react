@@ -10,7 +10,7 @@ const demoWidth = { maxWidth: 360 } as const;
 const Controlled = () => {
   const [checked, setChecked] = useState(true);
   return (
-    <Switch checked={checked} onChange={(event) => setChecked(event.target.checked)}>
+    <Switch checked={checked} onChange={({ value: next }) => setChecked(next)}>
       Enable notifications
     </Switch>
   );

@@ -1,9 +1,12 @@
-import type { TextareaHTMLAttributes } from 'react';
+import type { ChangeEvent, TextareaHTMLAttributes } from 'react';
 import type { TextareaVariants } from '../variants';
 
 export type TextareaSize = NonNullable<TextareaVariants['size']>;
 
-export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextareaProps extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  'onChange'
+> {
   /**
    * Visual size — the same font/padding tiers as Input (xs/sm/md/lg).
    * There is no tier height: the height is content-driven, so `size`
@@ -54,6 +57,11 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
    * grip is a consumer CSS escape hatch on `.colox-textarea-control`).
    */
   autoSize?: boolean | TextareaAutosize;
+  /**
+   * The value-change channel, in the family payload word shape: fires
+   * with the native event and the next value.
+   */
+  onChange?: (payload: TextareaChangePayload) => void;
 }
 
 export interface TextareaAutosize {
@@ -61,6 +69,15 @@ export interface TextareaAutosize {
   minRows?: number;
   /** Maximum height in rows; beyond it the textarea scrolls inside. */
   maxRows?: number;
+}
+
+/**
+ * The textarea's change payload: `event` stays the native change event
+ * (propagation control), `value` is the next text.
+ */
+export interface TextareaChangePayload {
+  event: ChangeEvent<HTMLTextAreaElement>;
+  value: string;
 }
 
 export type TextareaRef = HTMLTextAreaElement;

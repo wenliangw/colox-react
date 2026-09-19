@@ -1,16 +1,10 @@
-import type {
-  ChangeEvent,
-  FocusEvent,
-  KeyboardEvent,
-  MouseEvent,
-  ReactElement,
-  RefObject,
-} from 'react';
+import type { FocusEvent, KeyboardEvent, MouseEvent, ReactElement, RefObject } from 'react';
 import type {
   AutoCompleteChangePayload,
   AutoCompleteFilterFn,
   AutoCompleteSelectPayload,
 } from './component';
+import type { InputChangePayload } from '../../input';
 import type { AutoCompleteOptionRecord } from './utils';
 
 /** The change payload's event union, read off the component contract. */
@@ -20,7 +14,8 @@ export type AutoCompleteChangeEvent = Parameters<
 
 /** The slice of the host element's props the injection chains into. */
 export interface TargetHandlers {
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  /** The family change payload the host control reports (see Input). */
+  onChange?: (payload: InputChangePayload) => void;
   onFocus?: (event: FocusEvent<HTMLElement>) => void;
   onBlur?: (event: FocusEvent<HTMLElement>) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
@@ -56,7 +51,7 @@ export interface UseAutoCompleteResult {
   open: boolean;
   filtered: readonly AutoCompleteOptionRecord[];
   activeIndex: number;
-  onTargetChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onTargetChange: (payload: InputChangePayload) => void;
   onTargetFocus: (event: FocusEvent<HTMLElement>) => void;
   onTargetBlur: (event: FocusEvent<HTMLElement>) => void;
   onControlKeyDown: (event: KeyboardEvent<HTMLElement>) => void;

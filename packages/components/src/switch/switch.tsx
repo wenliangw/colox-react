@@ -53,7 +53,7 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
           checked={checked}
           defaultChecked={defaultChecked}
           disabled={disabled}
-          onChange={onChange}
+          onChange={(event) => onChange?.({ event, value: event.target.checked })}
           {...rest}
         />
         <span className="colox-switch__thumb" aria-hidden="true" />

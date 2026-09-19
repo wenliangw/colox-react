@@ -24,9 +24,18 @@ Inputs capture single-line text from users.
 
 ## Props
 
-| Prop    | Type                           | Default |
-| ------- | ------------------------------ | ------- |
-| size    | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
-| invalid | `boolean`                      | `false` |
+| Prop     | Type                           | Default |
+| -------- | ------------------------------ | ------- |
+| size     | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'`  |
+| invalid  | `boolean`                      | `false` |
+| onChange | `({ event, value }) => void`   | —       |
 
-It also accepts all native `<input>` attributes.
+`onChange` speaks the library's family payload: `event` is the native change event
+(propagation control) and `value` the next text.
+
+```tsx
+<Input value={name} onChange={({ value }) => setName(value)} />
+```
+
+It also accepts all native `<input>` attributes (`size` and `onChange` are the
+library's own).

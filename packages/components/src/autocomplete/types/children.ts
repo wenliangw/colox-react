@@ -1,4 +1,5 @@
-import type { ChangeEvent, FocusEvent, KeyboardEvent, ReactNode } from 'react';
+import type { FocusEvent, KeyboardEvent, ReactNode } from 'react';
+import type { InputChangePayload } from '../../input';
 
 /**
  * The structural host slot: exactly one component-typed child receives
@@ -17,7 +18,8 @@ export interface AutoCompleteTargetProps {
  */
 export interface AutoCompleteTargetRequiredProps {
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  /** The family change payload the host control reports (see Input). */
+  onChange: (payload: InputChangePayload) => void;
   onFocus: (event: FocusEvent<HTMLElement>) => void;
   onBlur: (event: FocusEvent<HTMLElement>) => void;
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void;

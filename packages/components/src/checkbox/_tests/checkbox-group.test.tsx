@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Checkbox } from '../checkbox';
-import type { CheckboxGroupChangePayload } from '../types';
+import type { CheckboxChangePayload, CheckboxGroupChangePayload } from '../types';
 
 describe('Checkbox.Group', () => {
   it('derives member checked state from the group value', () => {
@@ -72,8 +72,8 @@ describe('Checkbox.Group', () => {
     expect(groupOnChange).not.toHaveBeenCalled();
   });
 
-  it('still passes the native change event through on group members', () => {
-    const memberOnChange = vi.fn();
+  it('still fires the member payload inside a group', () => {
+    const memberOnChange = vi.fn<(payload: CheckboxChangePayload) => void>();
     render(
       <Checkbox.Group value={[]}>
         <Checkbox value="apple" onChange={memberOnChange}>
@@ -82,13 +82,13 @@ describe('Checkbox.Group', () => {
       </Checkbox.Group>,
     );
     fireEvent.click(screen.getByRole('checkbox', { name: 'Apple' }));
-    // The member is controlled by the group, so this is the standard
-    // React controlled flow: the handler receives the native event, and
-    // consumers read the next selection from Checkbox.Group onChange.
+    // The member is controlled by the group, so the group decides the
+    // next selection (read it from Checkbox.Group onChange); the member
+    // still reports its own change through the family payload.
     expect(memberOnChange).toHaveBeenCalledOnce();
-    expect(memberOnChange.mock.calls[0]?.[0].target).toBe(
-      screen.getByRole('checkbox', { name: 'Apple' }),
-    );
+    const [payload] = memberOnChange.mock.calls[0] ?? [];
+    expect(payload?.value).toBe(true);
+    expect(payload?.event.target).toBe(screen.getByRole('checkbox', { name: 'Apple' }));
   });
 
   it('inherits the group name for native form collection with own-name precedence', () => {

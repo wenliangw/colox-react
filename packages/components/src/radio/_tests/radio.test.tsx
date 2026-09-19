@@ -2,6 +2,7 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Radio } from '../radio';
+import type { RadioChangePayload } from '../types';
 
 describe('Radio size', () => {
   it.each([
@@ -67,12 +68,14 @@ describe('Radio native contract', () => {
     expect(ref.current).toBe(container.querySelector('input'));
   });
 
-  it('passes the native change event through unchanged', () => {
-    const onChange = vi.fn();
+  it('hands the change over as the family payload', () => {
+    const onChange = vi.fn<(radiochangepayload: RadioChangePayload) => void>();
     render(<Radio onChange={onChange} />);
     fireEvent.click(screen.getByRole('radio'));
     expect(onChange).toHaveBeenCalledOnce();
-    expect(onChange.mock.calls[0]?.[0].target.checked).toBe(true);
+    const [payload] = onChange.mock.calls[0] ?? [];
+    expect(payload?.value).toBe(true);
+    expect(payload?.event.target.checked).toBe(true);
   });
 
   it('merges the consumer className and style on the root label', () => {
