@@ -63,7 +63,7 @@ src/slider/
 ## 已知边界与扩展点（v1 留白）
 
 - **marks 是显示层**：不提供 antd 式隐式吸附（step=null 反按 marks 走位）；将来若用户裁决再加。
-- **双键 Range、垂直 slider、拖尾 onCommit、invalid** 均不在 v1；invalid 由用户拍板不带——将来若支持，extension point 为 aria-invalid + 家族红通道，走 Switch 级补齐。
+- **双键 Range、垂直 slider、拖尾 onCommit** 不在 v1。**invalid 已于 Form 前补强轮兑现**（原定 v1 不带、extension point = aria-invalid + 家族红通道）：`invalid?: boolean` → `aria-invalid` + 根修饰类 `colox-slider--invalid`；涂装走私有变量 `--colox-slider-fabric`（未走段面料）——invalid 置为 `red-muted`、thumb 环 `red-solid`、焦点环 `red-muted`，**已走条纹与 thumb 的 palette 不变**（填充态自持涂装，同 Switch checked 优先级）；disabled 声明在 invalid 之后（终态压倒 invalid）。
 - **RTL 方向梯度**：WebKit 梯度画线未做方向感知（离轴平移需反算做镜像；v1 不特殊处理）。
 - **Firefox 分支未机器验证**：本机 playwright 只装 Chromium（无 Firefox），`::-moz-range-*` 分支留用户目视（FF 天然有 progress 伪元素 + thumb 自居中，风险低）。
 
@@ -78,7 +78,7 @@ src/slider/
 
 ## 所属决策链
 
-- Slider 六问对齐（词形 value/defaultValue + min/max/step 原生 / onChange {event, value} / v1 marks / invalid 不带 / palette 六族 / 几何草案）→ `Slider API 定案` 决策节点。
+- Slider 六问对齐（词形 value/defaultValue + min/max/step 原生 / onChange {event, value} / v1 marks / palette 六族 / 几何草案）→ `Slider API 定案` 决策节点；invalid 的「v1 不带」于 Form 前补强轮推翻（Form 要能标记任意字段非法）。
 - track 高度 4px 恒定 → **随档 4/6/8/10**（用户目视否定后三候选选 A）→ `track 高度随档阶梯` 决策节点（supersedes 上一节点）。
 - 事件面边界变化：**叶子组件首次出现非透传自造事件面**（此前规则 「叶子 onChange = 原生透传槽」对数字值控件失效，用户拍板「自造 { event, value }」）。Checkbox.Group 的组级先例在「自造面」侧；现在数字值叶子也有了这个面。InputNumber 预期同构。**（后续收敛：该例外已作废——Input/Textarea/Checkbox/Radio/Switch 单件也统一为 `{ event, value }`，全家族无透传槽，见 api-design 总则）**
 

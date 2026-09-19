@@ -37,13 +37,13 @@ cdk 新面：`src/cdk/combobox/` ——建议行为完整内核，能力一律�
 ### 注入契约（TargetRequiredProps）
 
 ```ts
-{ value, onChange, onFocus, onBlur, onKeyDown,
+{ value, onChange, id, name, invalid, disabled, readOnly, aria-*, onFocus, onBlur, onKeyDown,
   role: 'combobox', 'aria-expanded', 'aria-controls',
   'aria-autocomplete': 'list', 'aria-haspopup': 'listbox',
   'aria-activedescendant'?: string }
 ```
 
-cloneElement 注入**覆盖同名**（值词归 AutoComplete——作者在宿主上写 value/onChange/aria 会被覆盖，文档写明），**静态词自持**；宿主自己的 onFocus/onBlur/onKeyDown/onChange 被**链式调用**（库先做、作者回调随后；宿主是 Input 家族，其 `onChange` 即家族载荷 `{ event, value }`，链式调用原样转发同一载荷）。`disabled/readOnly` 由 AutoComplete **读宿主 props 观测**（面板不弹、选择物禁）。锚点与 ref = 根自渲染的 div（`colox-autocomplete`），popup anchor 它而非宿主 ref——不依赖被包组件的 ref 语义。
+cloneElement 注入**覆盖同名**（值词归 AutoComplete——作者在宿主上写 value/onChange/aria 会被覆盖，文档写明），**静态词自持**；**控件词根转发**（Form 前补强轮新增：`id`/`name`/`invalid`/`disabled`/`readOnly` + `aria-describedby`/`aria-labelledby`/`aria-required` 由根收下再注入宿主——label 关联与表单接线必须到可聚焦 input，此前全落锚点 div；disabled/readOnly 的解析为「根声明者优先、否则读宿主自己的」，`isInteractable` 用解析后的值，其余仍落锚点 div）；宿主自己的 onFocus/onBlur/onKeyDown/onChange 被**链式调用**（库先做、作者回调随后；宿主是 Input 家族，其 `onChange` 即家族载荷 `{ event, value }`，链式调用原样转发同一载荷）。`disabled/readOnly` 由 AutoComplete **读宿主 props 观测**（面板不弹、选择物禁）。锚点与 ref = 根自渲染的 div（`colox-autocomplete`），popup anchor 它而非宿主 ref——不依赖被包组件的 ref 语义。
 
 ### 状态机（use-autocomplete）
 
