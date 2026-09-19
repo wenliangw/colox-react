@@ -36,17 +36,21 @@ flexbox / grid / absolute trio. `Select` retro-fitted onto the shared
 
 ## What comes next
 
-### M3 — Form layer (next)
+### M3 — Form layer (in progress)
 
 The validation and field layer the form controls deliberately left out:
 
-- `Form`, `Field`, `FieldArray`, `useForm` — declarative rules, async
-  validation, error messages, field linkage. A subsystem of its own, not a prop
-  on `Input`.
+- **`Form` + `Form.Field` / `Form.Label` / `Form.Hint` / `Form.Validate` +
+  `useForm` — shipped.** Declarative rules (required / pattern / bounds /
+  lengths / custom, sync or async), error messages, `deps` field linkage,
+  `validateOn` policy, submit lifecycle. A subsystem of its own, not a prop on
+  `Input`; every field injects the family `{ event, value }` payload, so all
+  twelve leaves read the same way.
+- `FieldArray` — repeating field groups (remaining).
 - `InputGroup` — the sibling component whose class namespace `colox-input-group*`
-  is already reserved.
+  is already reserved (remaining).
 - `TimePicker` — the time sibling of `DatePicker` (same shell, panel and
-  IconButton recipe).
+  IconButton recipe) (remaining).
 
 ### M4 — Overlay family (planned)
 

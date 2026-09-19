@@ -77,6 +77,34 @@ exactly, apply the reason, not the letter.
 - `[featured cell]` → `<Grid.Item span={n}>`. Why: span is the item-axis
   vocabulary; it rides a custom property so arbitrary counts stay class-free.
 
+## Form — quick rules
+
+- `[a validated form]` → `<Form>` owns values, rules and the submit lifecycle;
+  a field is `<Form.Field name>` holding a `<Form.Label>`, **exactly one
+  control**, and any `Form.Hint` / `Form.Validate` leaves. Zero or several
+  controls, several labels, host elements and fragments are hard errors.
+  Why: the field must know which control it injects into and label.
+- `[layout]` → fields stack through `Stack` with the form's token-keyed `gap`;
+  sections and side-by-side rows compose with `Container`/`Grid`/`Stack` around
+  the fields. Why: no second layout system — one spacing vocabulary.
+- `[label placement]` → `labelPlacement="top"` (default) or `"start"` with a
+  size-token `labelWidth` (`"24"` = 96px); both overridable per field. Groups are
+  labelled through `aria-labelledby` automatically (a group div is not
+  labelable). Why: the field wires whatever it actually controls.
+- `[read a control]` → every form leaf publishes `{ event, value }`, so the field
+  reads them all with one rule. It injects `checked` for the boolean leaves
+  (`Checkbox`/`Switch`/standalone `Radio` — their `value` is a string form token)
+  and `value` for everything else. Why: one payload word shape is what makes the
+  layer uniform; the token/state split is why the domain switch cannot be guessed.
+- `[a rule]` → one `Form.Validate` leaf per rule; leaves run in declaration order
+  and only the first failure shows, on the leaf that owns it. `required` treats
+  `''`/`null`/`[]`/`false` as empty — the domain's own empty word.
+- `[when rules run]` → `validateOn` is form-wide (default `['submit','blur']`);
+  `deps` re-runs a field whenever a named field changes, whatever the policy.
+- `[store outside the tree]` → `useForm()` + `<Form form={store}>`, or
+  `useFormContext()` inside. `validate`/`reset`/`setError`/`subscribe` are the
+  control surface.
+
 ## Anchor — quick rules
 
 - `[positioning context]` → `<Anchor>`: a layout-neutral relative box; whatever is

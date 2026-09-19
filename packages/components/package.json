@@ -65,6 +65,11 @@
       "import": "./dist/es/date-picker.js",
       "require": "./dist/cjs/date-picker.cjs"
     },
+    "./form": {
+      "types": "./dist/types/form/index.d.ts",
+      "import": "./dist/es/form.js",
+      "require": "./dist/cjs/form.cjs"
+    },
     "./anchor": {
       "types": "./dist/types/anchor/index.d.ts",
       "import": "./dist/es/anchor.js",

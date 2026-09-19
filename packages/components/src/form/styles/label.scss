@@ -1,0 +1,9 @@
+// The label: the family's small tier, medium weight — it names the
+// field without competing with the control's own text.
+.colox-form-label {
+  display: block;
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+  font-weight: var(--colox-font-weight-medium);
+  color: var(--colox-color-text-default);
+}

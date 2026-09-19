@@ -25,8 +25,7 @@ until a component ships and gets its bundle.
 | Anchor       | reference frame: relative positioning context (+ hug), the reference for absolute children                                          | shipped | pending      |
 | Positioner   | positioning mechanism: Anchor reference frame + Positioner pinned box (placement + token offset), nestable                          | shipped | pending      |
 | Container    | semantic width shell (design-token widths, centered)                                                                                | shipped | pending      |
-| Form         | form provider: field state, rules, submit lifecycle                                                                                 | planned | M3           |
-| Field        | single field binding: label, validation message, wiring                                                                             | planned | M3           |
+| Form         | form provider: field state, rules, submit lifecycle (+ Field / Label / Hint / Validate, useForm)                                    | shipped | pending      |
 | FieldArray   | repeating field groups                                                                                                              | planned | M3           |
 | InputGroup   | grouped input with addons and segments (namespace reserved)                                                                         | planned | M3           |
 | TimePicker   | single-line time editor (DatePicker sibling)                                                                                        | planned | M3           |

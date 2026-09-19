@@ -1,0 +1,249 @@
+---
+sidebar_position: 19
+---
+
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Select,
+  Slider,
+  Stack,
+  Switch,
+  Textarea,
+} from '@colox/react';
+import '@colox/react/style.css';
+
+# Form
+
+The form layer: a native `<form>` owns the values, the validation policy and the
+submit lifecycle, and every field speaks the same family language the controls
+already do. Layout is not a second system — fields stack through `Stack` with a
+token-keyed `gap`, and anything fancier composes with `Container`/`Grid`/`Stack`
+around them.
+
+## Anatomy
+
+A field declares its name, its label, exactly one control and its rules:
+
+<Form
+  onSubmit={({ values }) => console.log(values)}
+  onInvalid={({ errors }) => console.log(errors)}
+>
+  <Form.Field name="name">
+    <Form.Label>Name</Form.Label>
+    <Input placeholder="Ada Lovelace" />
+    <Form.Hint>As it should appear on the invoice.</Form.Hint>
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="email">
+    <Form.Label>Email</Form.Label>
+    <Input placeholder="ada@colox.dev" />
+    <Form.Validate required />
+    <Form.Validate pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} message="Enter a valid address" />
+  </Form.Field>
+  <Button type="submit" variant="solid">
+    Submit
+  </Button>
+</Form>
+
+`Form.Field` renders the field container (its `className`, `style` and native
+attributes land there), wires `<Form.Label>` to the control, injects the
+controlled value and the change channel into its single control child, and
+registers the rules its `Form.Validate` leaves declare. Zero or several controls,
+several labels, host elements and fragments are hard errors — a field must know
+exactly which control it speaks through.
+
+## One payload for every control
+
+Every form leaf publishes the family payload `{ event, value }`, so the field
+reads them all with one rule. The controlled word switches by domain: the
+boolean leaves (`Checkbox`, `Switch`, a standalone `Radio`) take `checked` —
+their `value` prop is a string form token — and every other control takes
+`value`.
+
+<Form onInvalid={({ errors }) => console.log(errors)}>
+  <Form.Field name="seats">
+    <Form.Label>Seats</Form.Label>
+    <InputNumber min={1} max={12} defaultValue={2} />
+  </Form.Field>
+  <Form.Field name="budget">
+    <Form.Label>Budget</Form.Label>
+    <Slider min={0} max={100} step={10} defaultValue={40} />
+  </Form.Field>
+  <Form.Field name="fruit">
+    <Form.Label>Fruit</Form.Label>
+    <Select placeholder="Pick one">
+      <Select.Option value="apple" text="Apple" />
+      <Select.Option value="banana" text="Banana" />
+    </Select>
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="size">
+    <Form.Label>Size</Form.Label>
+    <Radio.Group>
+      <Radio value="sm">Small</Radio>
+      <Radio value="lg">Large</Radio>
+    </Radio.Group>
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="extras">
+    <Form.Label>Extras</Form.Label>
+    <Checkbox.Group>
+      <Checkbox value="insurance">Insurance</Checkbox>
+      <Checkbox value="gift">Gift wrap</Checkbox>
+    </Checkbox.Group>
+  </Form.Field>
+  <Form.Field name="agree">
+    <Form.Label>Terms</Form.Label>
+    <Switch>I accept the terms</Switch>
+    <Form.Validate required />
+  </Form.Field>
+</Form>
+
+A group control is a `role="group"` / `role="radiogroup"` container rather than a
+labelable element, so the field wires it through `aria-labelledby` instead of
+`htmlFor` — the label lands on whatever the field actually controls.
+
+## Rules
+
+Each `Form.Validate` leaf declares one rule (or a small ordered set) and owns the
+error line it renders. Rules run in declaration order across the field's leaves
+and only the first failure shows; the failing leaf renders the message, so the
+error can sit wherever the author put the leaf.
+
+<Form>
+  <Form.Field name="handle">
+    <Form.Label>Handle</Form.Label>
+    <Input placeholder="at least 4 characters" />
+    <Form.Validate required />
+    <Form.Validate minLength={4} />
+  </Form.Field>
+  <Form.Field name="zip">
+    <Form.Label>ZIP</Form.Label>
+    <Input placeholder="five digits" />
+    <Form.Validate pattern={/^\d{5}$/} message="Enter five digits" />
+  </Form.Field>
+  <Form.Field name="age">
+    <Form.Label>Age</Form.Label>
+    <InputNumber />
+    <Form.Validate min={18} max={120} />
+  </Form.Field>
+  <Form.Field name="code">
+    <Form.Label>Invite code</Form.Label>
+    <Input placeholder="try taken" />
+    <Form.Validate
+      validate={async (value) => (value === 'taken' ? 'Already taken' : undefined)}
+      deps={['handle']}
+    />
+  </Form.Field>
+</Form>
+
+| Rule                    | Type                                                              | Fails when                                                             |
+| ----------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `required`              | `boolean`                                                         | the value is empty — `''`, `null`, `[]` or `false`                     |
+| `pattern`               | `RegExp`                                                          | the text does not match                                                |
+| `min`/`max`             | `number`                                                          | a number falls outside the bounds                                      |
+| `minLength`/`maxLength` | `number`                                                          | text or a selection is shorter/longer                                  |
+| `validate`              | `(value, values) => string \| false \| undefined \| Promise<...>` | your rule says so (return the message, or `false` for the generic one) |
+| `message`               | `string`                                                          | — (overrides the rule's default message)                               |
+| `deps`                  | `string[]`                                                        | — (re-runs this field when a named field changes)                      |
+
+`validate` may be async; v1 shows no pending state while a promise settles, the
+error simply appears when it resolves.
+
+## When rules run
+
+`validateOn` is form-wide (`'submit'`, `'blur'`, `'change'` or a mix; default
+`['submit', 'blur']`). Submitting always validates everything, and a `deps`
+change always re-runs its dependent field regardless of the policy.
+
+## Label placement
+
+`labelPlacement` is `'top'` (default) or `'start'`; the start column's width is a
+size token key (`labelWidth`, never a px value). Both are overridable per field.
+
+<Form labelPlacement="start" labelWidth="20" gap="4">
+  <Form.Field name="first">
+    <Form.Label>First name</Form.Label>
+    <Input placeholder="Ada" />
+  </Form.Field>
+  <Form.Field name="last" labelWidth="28">
+    <Form.Label>Last name</Form.Label>
+    <Input placeholder="Lovelace" />
+  </Form.Field>
+  <Form.Field name="note" labelPlacement="top">
+    <Form.Label>Back to the top</Form.Label>
+    <Input placeholder="Overridden per field" />
+  </Form.Field>
+</Form>
+
+## The store
+
+`useForm()` creates the store and hands it to `<Form form={store}>` when the
+consumer needs it outside the tree; omit it and the form owns one, reachable
+inside through `useFormContext()`.
+
+```tsx
+const form = useForm({ city: 'Lisbon' });
+
+<Form form={form}>
+  <Form.Field name="city">
+    <Form.Label>City</Form.Label>
+    <Input />
+    <Form.Validate required />
+  </Form.Field>
+</Form>
+
+<Button onClick={() => void form.validate()}>Validate</Button>
+<Button onClick={() => form.reset({ city: 'Porto' })}>Reset</Button>
+```
+
+## API
+
+### Form props
+
+| Prop             | Type                                      | Default             |
+| ---------------- | ----------------------------------------- | ------------------- |
+| `form`           | `FormStore`                               | the form's own      |
+| `validateOn`     | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']` |
+| `labelPlacement` | `'top' \| 'start'`                        | `'top'`             |
+| `labelWidth`     | size token key                            | `'24'`              |
+| `gap`            | spacing token key                         | `'4'`               |
+| `onSubmit`       | `({ event, values }) => void`             | —                   |
+| `onInvalid`      | `({ event, errors }) => void`             | —                   |
+
+Native `<form>` attributes pass through (`onSubmit`/`onInvalid` are the form
+layer's own, and native validation stays off).
+
+### Form.Field / Form.Label / Form.Hint / Form.Validate
+
+| Member          | Props                                                              |
+| --------------- | ------------------------------------------------------------------ |
+| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?` + native `div` attributes |
+| `Form.Label`    | native `label` attributes minus `htmlFor` (the field wires it)     |
+| `Form.Hint`     | native `div` attributes (yields while the field is invalid)        |
+| `Form.Validate` | the rule props above                                               |
+
+### FormStore
+
+| Method                               | Notes                                                        |
+| ------------------------------------ | ------------------------------------------------------------ |
+| `getValues()` / `getValue(name)`     | the current values                                           |
+| `getErrors()` / `getError(name)`     | the current errors                                           |
+| `isValid()`                          | whether no field carries an error                            |
+| `setValue(name, value)`              | writes a value (no validation runs)                          |
+| `setError(name, message)`            | a server-side verdict; shows on the field's first error line |
+| `validate()` / `validateField(name)` | runs the rules and returns the outcome                       |
+| `reset(values?)`                     | restores the initial values and clears the errors            |
+| `subscribe(listener)`                | re-renders your own readouts                                 |
+
+## Notes and non-goals
+
+- `Form.FieldArray`, an `InputGroup` and a time picker are not shipped; the
+  milestone list in the [roadmap](../roadmap) tracks them.
+- Native form attributes still work: `<form>` submission is intercepted only to
+  run the rules first, and controls keep their `name` for native `FormData`.

@@ -1,0 +1,14 @@
+@use '@colox/theme/variables' as tokens;
+
+// The label column width, straight from the size token grid: every size
+// key is addressable as `labelWidth="<key>"` (`labelWidth="24"` renders
+// a 96px column). The width sits on the label slot, never on the label
+// itself, so a long label wraps inside its column instead of pushing
+// the control.
+@each $key in tokens.$colox-size-keys {
+  .colox-form-field--label-w-#{$key} {
+    .colox-form__label-slot {
+      width: var(--colox-size-#{$key});
+    }
+  }
+}

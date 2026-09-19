@@ -1,0 +1,25 @@
+// The form root is the native element; the vertical rhythm between
+// fields comes from the Stack the root renders (token-keyed gap, the
+// family's spacing vocabulary). A field owns the arrangement of its own
+// label, control and message lines.
+.colox-form {
+  display: block;
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-default);
+}
+
+.colox-form-field {
+  min-width: 0;
+}
+
+.colox-form__control-slot {
+  min-width: 0;
+}
+
+// The start-placement label column: the width lands here (size token
+// keys in label-width.scss) and the block-start padding lines the label
+// up with the control's first text line at the family tier.
+.colox-form__label-slot {
+  flex: none;
+  padding-block-start: var(--colox-spacing-2);
+}

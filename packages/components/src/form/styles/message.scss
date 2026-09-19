@@ -1,0 +1,14 @@
+// The hint and the error share one slot under the control (the hint
+// yields while the field is invalid), so they share the type recipe and
+// differ only in colour.
+.colox-form-hint {
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-muted);
+}
+
+.colox-form-error {
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-error);
+}

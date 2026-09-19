@@ -6,6 +6,7 @@ export * from './button';
 export * from './checkbox';
 export * from './container';
 export * from './date-picker';
+export * from './form';
 export * from './grid';
 export * from './icon-button';
 export * from './input';
