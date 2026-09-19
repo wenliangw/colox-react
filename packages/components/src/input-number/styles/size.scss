@@ -1,0 +1,44 @@
+// The four tiers follow the Input family shell contract exactly:
+// row heights (--colox-size-6/8/10/12), the tier font ladder and the
+// leading padding ladder (spacing-2/3/4/6) — same-tier controls sit
+// flush. The stepper strip stays fixed-width; its halves and the
+// chevron glyphs scale with the tier height and font.
+.colox-input-number--xs {
+  height: var(--colox-size-6);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+
+  .colox-input-number__control {
+    padding-inline-start: var(--colox-spacing-2);
+  }
+}
+
+.colox-input-number--sm {
+  height: var(--colox-size-8);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+
+  .colox-input-number__control {
+    padding-inline-start: var(--colox-spacing-3);
+  }
+}
+
+.colox-input-number--md {
+  height: var(--colox-size-10);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+
+  .colox-input-number__control {
+    padding-inline-start: var(--colox-spacing-4);
+  }
+}
+
+.colox-input-number--lg {
+  height: var(--colox-size-12);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+
+  .colox-input-number__control {
+    padding-inline-start: var(--colox-spacing-6);
+  }
+}

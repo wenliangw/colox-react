@@ -55,6 +55,11 @@
       "import": "./dist/es/input.js",
       "require": "./dist/cjs/input.cjs"
     },
+    "./input-number": {
+      "types": "./dist/types/input-number/index.d.ts",
+      "import": "./dist/es/input-number.js",
+      "require": "./dist/cjs/input-number.cjs"
+    },
     "./radio": {
       "types": "./dist/types/radio/index.d.ts",
       "import": "./dist/es/radio.js",

@@ -1,0 +1,98 @@
+// The number editor rides the Input family shell contract: the shell
+// owns the whole visual identity (border, focus-within ring, size
+// tiers, invalid/disabled modifiers); the inner control is the bare
+// native text input (cdk input-control reset) carrying the
+// `inputmode=decimal` keyboard request, and the stepper strip sits at
+// the trailing edge — two half-height chevron buttons divided from
+// the control by a hairline.
+.colox-input-number {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-default);
+  background-color: var(--colox-color-bg-default);
+  cursor: text;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  // The shell owns the appearance contract: the ring stays lit while
+  // focus sits anywhere inside (control or stepper buttons).
+  &:focus-within {
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-within {
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-input-number__control {
+  box-sizing: border-box;
+}
+
+// The stepper strip: a hairline-divided trailing column split into
+// two equal halves. The chevrons inherit the tier font size; hover
+// lifts the glyph color (the muted-button idiom — no background
+// wash).
+.colox-input-number__steppers {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: var(--colox-spacing-5);
+  border-inline-start: 1px solid var(--colox-color-border-muted);
+}
+
+.colox-input-number__stepper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+  transition: color var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+
+  &:hover:not(:disabled) {
+    color: var(--colox-color-text-default);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.colox-input-number--disabled {
+  .colox-input-number__steppers {
+    border-inline-start-color: var(--colox-color-border-disabled);
+  }
+
+  .colox-input-number__stepper {
+    color: var(--colox-color-text-disabled);
+  }
+}

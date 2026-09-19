@@ -1,0 +1,97 @@
+---
+sidebar_position: 8
+---
+
+import { InputNumber } from '@colox/react';
+import '@colox/react/style.css';
+
+# InputNumber
+
+A single-line number editor on a text input: `inputmode="decimal"`
+summons the numeric keyboard on mobile, the inner control carries
+`spinbutton` semantics, and the built-in chevron stepper plus the
+Arrow keys step through the span.
+
+```tsx
+import { InputNumber } from '@colox/react';
+```
+
+## When to use
+
+- Fields whose value is a number — quantities, prices, temperatures,
+  percentages.
+- Anywhere you want typed values verified against `[min, max]` on
+  commit without bringing in a validation engine.
+- When the Input is not enough: `step` precision and stepper
+  affordances come with the editor.
+
+## Examples
+
+### Basic
+
+Numbers commit as they resolve; the empty state is `null`.
+
+<InputNumber aria-label="Basic number" defaultValue={42} />
+
+## Sizes
+
+<InputNumber size="xs" aria-label="Extra small" defaultValue={42} />
+
+<InputNumber size="sm" aria-label="Small" defaultValue={42} />
+
+<InputNumber size="md" aria-label="Medium" defaultValue={42} />
+
+<InputNumber size="lg" aria-label="Large" defaultValue={42} />
+
+The four tiers share the family row heights (24/32/40/48) and the
+leading padding ladder — same-tier controls sit flush.
+
+## Step and span
+
+`step` sets the increment for the chevron steppers and the Arrow
+Up/Down keys; the commit results carry the step's decimal precision.
+`min`/`max` bound the span: stepping stops at the bounds and blur
+clamps out-of-range typed values back into them (bounds are editor
+mechanics, not a validation layer).
+
+<InputNumber aria-label="Integer steps" defaultValue={0} />
+
+<InputNumber aria-label="Half steps" step={0.5} defaultValue={0} />
+
+<InputNumber aria-label="Hundredth steps" step={0.01} min={0} max={1} defaultValue={0} />
+
+## Controlled
+
+`value` drives the field; `defaultValue` seeds an uncontrolled one.
+The change payload carries the native event and the committed number —
+`null` when the field empties. Partial drafts never notify: typing
+`-`, `0.` or `.5` holds, and blur rolls the draft back to the last
+committed value.
+
+<InputNumber defaultValue={35} aria-label="Starts at thirty-five" />
+
+Read-only hides the steppers:
+
+<InputNumber readOnly defaultValue={12} aria-label="Read only" />
+
+## States
+
+<InputNumber invalid defaultValue={-3} aria-label="Invalid" />
+
+<InputNumber disabled defaultValue={60} aria-label="Disabled" />
+
+## Core props
+
+| Prop           | Type                                  | Default | Notes                                                              |
+| -------------- | ------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `value`        | `number \| null`                      | —       | Controlled; `null` = empty.                                        |
+| `defaultValue` | `number \| null`                      | `null`  | Uncontrolled seed.                                                 |
+| `min` / `max`  | `number`                              | —       | Span bounds: stepper stops at them, blur clamps into them.         |
+| `step`         | `number`                              | `1`     | Stepper/keyboard increment; its decimals set the commit precision. |
+| `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'`        | `'md'`  | Family row heights (24/32/40/48).                                  |
+| `invalid`      | `boolean`                             | `false` | Red border/ring + `aria-invalid`.                                  |
+| `onChange`     | `(payload: { event; value }) => void` | —       | `value` is `number \| null` — parsed for the consumer.             |
+
+Every other native input attribute (`placeholder`, `name`, `id`,
+`aria-*`, `disabled`, `readOnly`, ...) lands on the inner input
+untouched.

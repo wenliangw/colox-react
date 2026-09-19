@@ -6,6 +6,7 @@ export * from './container';
 export * from './grid';
 export * from './icon-button';
 export * from './input';
+export * from './input-number';
 export * from './radio';
 export * from './select';
 export * from './slider';
