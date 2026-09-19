@@ -168,3 +168,20 @@
 - 几何同源家族不变式：条纹随档走 spacing 阶梯（4/6/8/10 与 thumb 12/16/20/24 同倍率，比例稳定 2.4-3:1——4px 恒定被用户目视否定后改档）、行高 24/32/40/48 四档、focus-visible = palette muted 环、motion 走 token。
 
 来源：Slider 六问对齐定案（决策「Slider API 定案」）；用户对「原生 range 是否能更好自定义视觉」发问后的确认（原生基座 + 伪元素绘制可行性，含 WebKit 进度渐变技巧）。
+
+## 日期值控件：显示走标准 token 格式化，真值恒 canonical 不被 format 污染
+
+- DatePicker 兑现（2026）：**显示格式化走标准 token 写法**（valueFormat prop——用户原词，不改成 `format`）：`yyyy`/`yy`、`M`/`MM`、`d`/`dd`、`EEE`/`EEEE` 星期几；token 大小写不敏感、非字母即字面分隔符、默认随 picker 粒度、placeholder = format 串。**内部值与 onChange 载荷恒 canonical（随 picker 粒度）**——format 只碰显示层，绝不反向污染真值（antd format 双通路教训：显示与真值脱钩是「显示面」职责的诚实边界）。
+- **星期几 display-only**：星期几是日期的派生物，反解无意义——parse 位匹配并丢弃，文档明示「weekday 不参与解析」。
+- **日期域越界回滚不 clamp**：min/max 语义 = 面板禁格 + 手输越界静默持有、blur 回滚。日期域无「最近合法值」的自然序（数字域 clamp 是机制、日期域回滚才是诚实表达）。
+- **值词形与粒度显式一致（picker 维度）**：选月值就是 `'YYYY-MM'`、选年值就是 `'YYYY'`，绝不把粒度藏进内部归一（不伪装成每月 1 号的完整日期）——canonical 恒真相的另一面是粒度显式存在词形里；默认 valueFormat 随 picker（yyyy-MM-dd / yyyy-MM / yyyy），显式传入仍覆盖。
+- **手输解析 = 数学化精度规则，非 per-case 语法**：文本解析出精度（年 < 月 < 日），精度 ≥ picker 粒度才提交——更细截断归一（month picker 收 '2026-03-02' 提交 '2026-03'）、更粗回滚（'2026' 不成立）。一套阶梯规则管三个 picker，不写三份特判。
+- **面板 chrome 本地化 = 数据型 locale 对象**：内置面板文案（年月标题/周头）默认跟产品语言（中文），定制走 `{ months?, weekdays?, yearMonthFormat?, yearFormat?, decadeFormat? }` 标签数组 + 占位格式串直给——不用语言简码地图（猜不全的封闭集合）、不用渲染回调（字符串格式化不需要 React 节点，回调隔一层）。chrome（locale）与字段显示（valueFormat）与内部值（canonical）三层各管各、互不渗透。
+- **浮层面板宽度 = 内容固有，不是宿主派生**：日历面板 272px（日格足迹 7×32 + 6×4 间隙 + 2×12 内边距），宿主宽时不拉伸面板（只占左段）、宿主管窄时不压缩内容（向右溢出交 floating shift 兜底）；同一 popover 内多形态内容（日/月/年格）共享一个固有宽——用最宽栏内容定 min-width、窄形态摊满（`width: 100%`）不缩水，level 切换面板宽度不跳变。
+- **日历面板层级钻取 = 广域心智（antd 同构）**：header 标题是钻取路径（日 → 月 → 年），选中上级格逐级回落、落在 picker 粒度之上只下钻不提交——用既有格子词汇换面板层级，不为跳大跨度日期发明新控件；标题**分节可点**（日格年/月各成钮——点月落月格、点年直落年格，不强制逐级爬）；pick 语义由「level 与 picker 的关系」统一裁决（高于粒度下钻、等于粒度提交），交互词汇随语境切换不发明第三动词；**双档 chevron**：单=本格步长、双=父粒度（年格只剩双）——步长档位是 antd 式日历心智的一部分。
+- **引导性标题钮的语义色：默认 text-default、hover 走 palette solid**（「这里通向某处」）；导航 chevron 保持 muted 惯用法（color-only 反馈、无底 wash）——引导与导航穿各自的皮肤，控件组内可点/不可点、引导/导航区分靠语义而不是同款样式。终级标题（十年格）纯 span 无 hover。
+- **clearable 家族词：交互形态也是共享契约**——不只共享 prop 名。行内 X 钮 + 值存在时与尾部图标（Select 的 chevron / DatePicker 的日历图标）hover/焦点交换露出、mousedown 防失焦、shell 点击对 button 早退；谁在家族里用 clearable 就穿同一套交互形态，不发明第二种清除入口（DatePicker 首版 panel footer 文字钮被用户否掉：「应该和 Select 组件的 clearable 交互行为保持一致」）。
+- **「现在」锚点与选中态正交**：今天/当月/当年**未选中时永远**穿 subtle（family 浅底 + 家族字色、hover 复用 Button subtle 的 muted wash），不随有没有选中其他日期消失——暗示层与状态层各管各；**选中 = 当前格时 subtle 显式让位**（subtle 规则带 `:not(--selected)`），selected 独占背景/文字。注意：`:not()` 伪类会把规则特异度抬一个类级——「靠源码序让 selected 赢」是不可靠的（(0,2,0) 的 today 压过 (0,1,0) 的 selected，顺序救不了），排除必须写在选择器里。surface（浅底+描边）先试后被用户目视否定：「调整为 subtle 吧」。
+- 将来做时间类/区间类控件的显示格式化沿用：标准 token 词形 + 真值 canonical 与显示彻底分离；token 表对齐成熟的广域标准（Java/antd），自定义 token 语言不发明。
+
+来源：DatePicker 六问对齐定案 + 用户两条补充（补日历图标；valueFormat 标准 token 写法并支持星期几）+ 用户目视评审修正（「年月默认使用中文描述，允许用户自定义」→ locale 数据型定制定案）+ 用户三轮评审（surface 改 subtle；「需要支持月视图和年视图，我认为是必要的」→ picker 维度定案）。
