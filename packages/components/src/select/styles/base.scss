@@ -69,8 +69,17 @@
 // button and the search input in one shared class. The button shape is
 // visually transparent inside the shell; the input shape carries the
 // cdk InputControl reset (borderless, font/color inheritance) on top.
+// Neither paints its own focus ring: the shell's `:focus-within` ring
+// is the single indicator, so the engine's default outline (a black
+// edge duplicating the ring) is suppressed — the same delegation
+// `input-control` performs for the other shells.
 .colox-select__control {
   flex: 1;
+  // The trigger button carries no content when the chips hold the
+  // selection, so the row must give it a definite box — an empty
+  // button would otherwise collapse to zero height (invisible and
+  // untargetable).
+  align-self: stretch;
   min-width: 2ch; // the input floor: chips fold before the typing point dies
   padding: 0;
   border: none;
@@ -82,6 +91,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  outline: none;
   cursor: pointer;
 
   &:disabled {
