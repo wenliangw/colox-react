@@ -6,6 +6,7 @@ import type {
   FormStore,
   FormValues,
 } from '../types';
+import { buildErrorsTree, buildValuesTree, normalizeValues } from '../utils/nested-values';
 
 const PASSED: FormFieldVerdict = { message: undefined, leaf: -1 };
 
@@ -16,12 +17,21 @@ const PASSED: FormFieldVerdict = { message: undefined, leaf: -1 };
  * re-render. The store is deliberately small: values, errors (plus the
  * leaf each error came from), rule registration and the validation
  * runners.
+ *
+ * Names are dotted paths (`'user.name'`) stored flat inside — every
+ * mechanism (epochs, deps, registration) works on flat names — while
+ * the read facade (`getValues` / `getErrors`) rebuilds the nested tree
+ * the consumer authored. The tree is cached and only rebuilt after a
+ * write, so `useSyncExternalStore` snapshots stay stable between
+ * writes.
  */
 function createFormStore(initialValues: FormValues): FormStore {
-  const initial: FormValues = { ...initialValues };
-  let values: FormValues = { ...initialValues };
+  const initial: FormValues = normalizeValues(initialValues);
+  let values: FormValues = { ...initial };
   let errors: FormErrors = {};
   let errorLeaves: Record<string, number> = {};
+  let valuesTree: FormValues | undefined;
+  let errorsTree: FormErrors | undefined;
   const fields = new Map<string, FormFieldRegistration>();
   const listeners = new Set<() => void>();
   // The per-field run counters behind the async guard: each run takes
@@ -30,6 +40,11 @@ function createFormStore(initialValues: FormValues): FormStore {
   // reset mid-flight) is discarded instead of overriding a fresher
   // verdict with stale truth.
   const versions = new Map<string, number>();
+
+  const invalidateTrees = () => {
+    valuesTree = undefined;
+    errorsTree = undefined;
+  };
 
   const emit = () => {
     for (const listener of listeners) {
@@ -44,6 +59,7 @@ function createFormStore(initialValues: FormValues): FormStore {
     }
     errors = { ...errors, [name]: verdict.message };
     errorLeaves = { ...errorLeaves, [name]: leaf };
+    invalidateTrees();
     emit();
   };
 
@@ -54,7 +70,7 @@ function createFormStore(initialValues: FormValues): FormStore {
     }
     const version = (versions.get(name) ?? 0) + 1;
     versions.set(name, version);
-    const verdict = await field.runRules(values[name], values);
+    const verdict = await field.runRules(values[name], getValues());
     if (versions.get(name) !== version) {
       // A newer run (or a reset clearing errors) superseded this one —
       // report the live truth, publish nothing.
@@ -74,10 +90,16 @@ function createFormStore(initialValues: FormValues): FormStore {
     }
   };
 
+  // The read facade: nested trees rebuilt from the flat names and cached
+  // until the next write (stable snapshots for useSyncExternalStore).
+  // Mutating the returned tree never touches the store.
+  const getValues = (): FormValues => (valuesTree ??= buildValuesTree(values));
+  const getErrors = (): FormErrors => (errorsTree ??= buildErrorsTree(errors));
+
   return {
-    getValues: () => values,
+    getValues,
     getValue: (name) => values[name],
-    getErrors: () => errors,
+    getErrors,
     getError: (name) => errors[name],
     getErrorLeaf: (name) => errorLeaves[name] ?? -1,
     isValid: () => Object.values(errors).every((message) => message === undefined),
@@ -86,14 +108,17 @@ function createFormStore(initialValues: FormValues): FormStore {
         return;
       }
       values = { ...values, [name]: value };
+      invalidateTrees();
       emit();
       runDependents(name);
     },
     setValues: (nextValues) => {
-      // The edit-form backfill: only the given keys are written, no
-      // validation runs (deps included) and nothing reports to
-      // onValuesChange — a load is not a user edit.
-      values = { ...values, ...nextValues };
+      // The edit-form backfill: only the given keys are written (merged
+      // over the current values), no validation runs (deps included)
+      // and nothing reports to onValuesChange — a load is not a user
+      // edit. Nested spellings flatten into dotted names on the way in.
+      values = { ...values, ...normalizeValues(nextValues) };
+      invalidateTrees();
       emit();
     },
     setError: (name, message) => {
@@ -106,7 +131,7 @@ function createFormStore(initialValues: FormValues): FormStore {
       for (const name of [...fields.keys()]) {
         await validateField(name);
       }
-      return errors;
+      return getErrors();
     },
     validateField,
     focusFirstInvalid: () => {
@@ -118,18 +143,21 @@ function createFormStore(initialValues: FormValues): FormStore {
       }
     },
     reset: (nextValues) => {
-      values = { ...(nextValues ?? initial) };
       // Fields the restored map does not cover return to their first
       // value — the control's declared seed — so the store reads the
       // same thing the controls show again. Initial values (and the
       // explicit argument) win over control seeds.
+      const restored = normalizeValues(nextValues ?? initial);
+      const seeds: FormValues = {};
       for (const [name, registration] of fields) {
-        if (values[name] === undefined && registration.seed !== undefined) {
-          values[name] = registration.seed;
+        if (restored[name] === undefined && registration.seed !== undefined) {
+          seeds[name] = registration.seed;
         }
       }
+      values = { ...restored, ...seeds };
       errors = {};
       errorLeaves = {};
+      invalidateTrees();
       // Discard in-flight rule runs: whatever settles now is validating
       // a state that no longer exists and must not publish after the
       // cleared map it would contradict.
@@ -137,6 +165,31 @@ function createFormStore(initialValues: FormValues): FormStore {
         versions.set(name, (versions.get(name) ?? 0) + 1);
       }
       emit();
+    },
+    unregister: (name) => {
+      fields.delete(name);
+      // Unmounting keeps the values (the preserve habit); unregistering
+      // is the explicit drop — rules, value and error all gone.
+      if (
+        values[name] !== undefined ||
+        errors[name] !== undefined ||
+        errorLeaves[name] !== undefined
+      ) {
+        const nextValues = { ...values };
+        delete nextValues[name];
+        values = nextValues;
+        const nextErrors = { ...errors };
+        delete nextErrors[name];
+        errors = nextErrors;
+        const nextLeaves = { ...errorLeaves };
+        delete nextLeaves[name];
+        errorLeaves = nextLeaves;
+        invalidateTrees();
+        // An in-flight rule run on this field must not publish after the
+        // drop either.
+        versions.set(name, (versions.get(name) ?? 0) + 1);
+        emit();
+      }
     },
     subscribe: (listener) => {
       listeners.add(listener);

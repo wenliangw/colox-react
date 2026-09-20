@@ -351,6 +351,21 @@ const city = useFormWatch(form, 'city'); // one field
 const all = useFormWatch(form); // the whole map, auto-save style
 ```
 
+## Nested names and unregister
+
+A field name is a dotted path: `name="user.name"` reads and writes the
+`user.name` leaf, and every shape the store hands back rebuilds the nested
+tree — `getValues()`, `getErrors()`, the rule inputs and the submitted
+payload all carry `{ user: { name } }`. The entry points
+(`initialValues`, `setValues`, `reset`) accept both spellings — an object
+literal or the dotted key (`{ user: { name } }` or `{ 'user.name': name }`).
+Object literals are the only shape that expands; arrays and other values are
+field values, and never fan out into names.
+
+A field removed from the tree keeps its value like any unmounted field; call
+`store.unregister(name)` when it should stop contributing — the registration,
+value and error all drop, so a dynamic section can clean up after itself.
+
 ## API
 
 ### Form props
@@ -407,6 +422,7 @@ layer's own, and native validation stays off).
 | `validate()` / `validateField(name)` | runs the rules and returns the outcome                                            |
 | `focusFirstInvalid()`                | the failed-submit landing: moves the viewport to the first invalid field          |
 | `reset(values?)`                     | restores the first frame (uncontrolled seeds or initial values) and clears errors |
+| `unregister(name)`                   | drops a field: stops validating it, removes its value and error                   |
 | `subscribe(listener)`                | re-renders your own readouts                                                      |
 
 ## Notes and non-goals

@@ -50,8 +50,9 @@ The validation and field layer the form controls deliberately left out:
   store from outside the tree; the edit-form loop is closed with
   `initialValues`, the silent `setValues` backfill and the user-edit-only
   `onValuesChange` report; a form-wide `size` cascades and a `colon`
-  finishes the labels Chinese-admin style. A subsystem of its own, not a
-  prop on
+  finishes the labels Chinese-admin style; dotted names travel nested and
+  dynamic sections drop cleanly through `unregister`. A subsystem of its
+  own, not a prop on
   `Input`; every field injects the family `{ event, value }` payload, so all
   twelve leaves read the same way.
 - `FieldArray` — repeating field groups (remaining).

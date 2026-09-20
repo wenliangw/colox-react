@@ -488,3 +488,119 @@ describe('Edit form data', () => {
     });
   });
 });
+
+describe('Nested names and unregister', () => {
+  it('reads dotted names as the nested tree', async () => {
+    const onSubmit = vi.fn();
+    render(
+      <Form initialValues={{ user: { name: 'Ada' } }} onSubmit={onSubmit}>
+        <Form.Field name="user.name">
+          <Form.Label>User name</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="user.mail">
+          <Form.Label>Mail</Form.Label>
+          <Input />
+        </Form.Field>
+        <Form.Field name="plain">
+          <Form.Label>Plain</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByLabelText('User name')).toHaveValue('Ada');
+    fireEvent.change(screen.getByLabelText('Mail'), { target: { value: 'ada@colox.dev' } });
+    fireEvent.submit(formOf('User name'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledOnce());
+    const [payload] = onSubmit.mock.calls[0] as [{ values: FormValues }];
+    expect(payload.values).toEqual({ user: { name: 'Ada', mail: 'ada@colox.dev' }, plain: '' });
+  });
+
+  it('merges a nested setValues spelling into the dotted store', () => {
+    let store!: FormStore;
+    const Harness = () => {
+      store = useForm({ user: { name: 'Ada' } });
+      return (
+        <Form form={store}>
+          <Form.Field name="user.name">
+            <Form.Label>User name</Form.Label>
+            <Input />
+          </Form.Field>
+          <Form.Field name="user.mail">
+            <Form.Label>Mail</Form.Label>
+            <Input />
+          </Form.Field>
+        </Form>
+      );
+    };
+    render(<Harness />);
+    act(() => store.setValues({ user: { mail: 'ada@colox.dev' } }));
+    expect(screen.getByLabelText('Mail')).toHaveValue('ada@colox.dev');
+    expect(store.getValues()).toEqual({ user: { name: 'Ada', mail: 'ada@colox.dev' } });
+  });
+
+  it('hands the rules the nested tree', async () => {
+    const probe = vi.fn(() => undefined);
+    render(
+      <Form initialValues={{ user: { name: 'Ada' } }}>
+        <Form.Field name="user.name">
+          <Form.Label>User name</Form.Label>
+          <Input />
+          <Form.Validate validate={probe} />
+        </Form.Field>
+      </Form>,
+    );
+    fireEvent.blur(screen.getByLabelText('User name'));
+    await waitFor(() => expect(probe).toHaveBeenCalledOnce());
+    expect(probe).toHaveBeenCalledWith('Ada', { user: { name: 'Ada' } });
+  });
+
+  it('rebuilds the error tree per dotted name', async () => {
+    let store!: FormStore;
+    const Harness = () => {
+      store = useForm();
+      return (
+        <Form form={store}>
+          <Form.Field name="user.name">
+            <Form.Label>User name</Form.Label>
+            <Input />
+            <Form.Validate validate={() => 'busted'} />
+          </Form.Field>
+        </Form>
+      );
+    };
+    render(<Harness />);
+    await act(async () => {
+      await store.validate();
+    });
+    expect(store.getError('user.name')).toBe('busted');
+    expect(store.getErrors()).toEqual({ user: { name: 'busted' } });
+  });
+
+  it('unregisters a field and drops its value and error', async () => {
+    let store!: FormStore;
+    const Harness = () => {
+      store = useForm();
+      return (
+        <Form form={store}>
+          <Form.Field name="gone">
+            <Form.Label>Gone</Form.Label>
+            <Input />
+            <Form.Validate required />
+          </Form.Field>
+        </Form>
+      );
+    };
+    render(<Harness />);
+    act(() => store.setValue('gone', 'x'));
+    act(() => store.setError('gone', 'bad'));
+    act(() => store.unregister('gone'));
+    expect(store.getValue('gone')).toBeUndefined();
+    expect(store.getError('gone')).toBeUndefined();
+    expect(store.getValues()).toEqual({});
+    await act(async () => {
+      expect(await store.validate()).toEqual({});
+    });
+  });
+});

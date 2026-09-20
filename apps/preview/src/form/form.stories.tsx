@@ -329,6 +329,36 @@ const SizeAndColonDemo = () => (
   </Form>
 );
 
+// Dotted names: the value travels flat inside, the store hands back
+// the nested tree — the shape the backend record had in the first
+// place.
+const NestedNamesDemo = () => {
+  const [submitted, setSubmitted] = useState<unknown>(null);
+  return (
+    <Stack direction="column" gap="3" style={demoWidth}>
+      <Form
+        initialValues={{ user: { name: 'Ada', mail: 'ada@colox.dev' } }}
+        onSubmit={({ values }) => setSubmitted(values)}
+      >
+        <Form.Field name="user.name">
+          <Form.Label>Name</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="user.mail">
+          <Form.Label>Email</Form.Label>
+          <Input />
+          <Form.Validate pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} />
+        </Form.Field>
+        <Button type="submit" variant="solid">
+          Submit
+        </Button>
+      </Form>
+      <Receipt label="onSubmit" payload={submitted} />
+    </Stack>
+  );
+};
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -418,6 +448,9 @@ export const Overview: Story = {
         </Section>
         <Section title="Form-wide size and the label colon">
           <SizeAndColonDemo />
+        </Section>
+        <Section title="Nested names — user.name travels as { user: { name } }">
+          <NestedNamesDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

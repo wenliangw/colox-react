@@ -64,11 +64,18 @@ export interface FormFieldRegistration {
  * external consumers can subscribe for re-renders.
  */
 export interface FormStore {
-  /** The current values, as an object keyed by field name. */
+  /**
+   * The current values, rebuilt as the nested tree the dotted names
+   * imply (`{ 'user.name': name }` → `{ user: { name } }`); fresh after
+   * every write, the same reference between writes.
+   */
   getValues(): FormValues;
-  /** One field's current value. */
+  /** One field's current value, read flat through its dotted name. */
   getValue(name: string): unknown;
-  /** The current errors, as an object keyed by field name. */
+  /**
+   * The current errors, rebuilt as the same nested tree:
+   * `getErrors()['user.name']` travels through `error['user']['name']`.
+   */
   getErrors(): FormErrors;
   /** One field's current error message (undefined while valid). */
   getError(name: string): string | undefined;
@@ -86,7 +93,9 @@ export interface FormStore {
    * Batch-loads values — the edit-form backfill behind fetching a record
    * into the form. Only the given keys are written (merged over the
    * current values); no validation runs and nothing is reported to
-   * `onValuesChange` — a load is not a user edit.
+   * `onValuesChange` — a load is not a user edit. Entries may spell
+   * nested fields as object literals (`{ user: { name } }`) or dotted
+   * names (`{ 'user.name': name }`).
    */
   setValues(values: FormValues): void;
   /**
@@ -112,13 +121,21 @@ export interface FormStore {
    */
   validateField(name: string): Promise<string | undefined>;
   /**
-   * Restores the initial values (or the given ones) and clears the
-   * errors. Fields neither the initial values nor the argument cover
-   * return to their registered first value (the control's
-   * `defaultValue` / `defaultChecked` seed or the domain's empty word),
-   * so the store and the controls show the same thing again.
+   * Restores the initial values (or the given ones, nested or dotted)
+   * and clears the errors. Fields neither the initial values nor the
+   * argument cover return to their registered first value (the
+   * control's `defaultValue` / `defaultChecked` seed or the domain's
+   * empty word), so the store and the controls show the same thing
+   * again.
    */
   reset(nextValues?: FormValues): void;
+  /**
+   * Drops a field entirely: its registration (it stops validating), its
+   * value and its error. The explicit drop for dynamic forms —
+   * unmounting alone keeps the values (the preserve habit), so call
+   * this when a removed section should stop contributing.
+   */
+  unregister(name: string): void;
   /** Subscribes to value/error changes; returns the unsubscribe function. */
   subscribe(listener: () => void): () => void;
   /**

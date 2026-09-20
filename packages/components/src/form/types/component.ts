@@ -63,7 +63,8 @@ export interface FormProps extends Omit<
    * The form's initial values while it owns its store — the way a form
    * with no external store declares them (with an external store, pass
    * them to `useForm(initialValues)` instead; this prop is ignored).
-   * `reset()` restores back to these.
+   * Nested object spellings are fine (`{ user: { name } }` ≡ the dotted
+   * `'user.name'`). `reset()` restores back to these.
    */
   initialValues?: FormValues;
   /**
