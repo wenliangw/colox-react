@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker } from '../date-picker';
-import { todayIso } from '../utils/date-core';
+import { todayIso } from '../../cdk/date/civil';
 
 const input = () => screen.getByRole('combobox') as HTMLInputElement;
 const shell = () => input().closest('.colox-date-picker') as HTMLElement;

@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import type { DatePanelLevel, DatePickerGridCell, DatePickerGridProps } from '../types';
-import { granularIsoOf } from '../utils/date-core';
+import { granularIsoOf } from '@colox/cdk/date/civil';
 import { gridCellsOf } from '../utils/view';
 
 interface DatePickerGridCellProps {

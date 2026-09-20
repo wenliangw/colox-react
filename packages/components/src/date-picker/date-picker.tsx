@@ -8,9 +8,9 @@ import { DatePickerClearButton } from './controls/clear-button';
 import { DatePickerPanel } from './controls/panel';
 import { useDatePicker } from './hooks/use-date-picker';
 import type { DatePickerProps, DatePickerRef } from './types';
-import { todayIso } from './utils/date-core';
+import { todayIso } from '@colox/cdk/date/civil';
 import { resolveDateLocale } from './utils/locale';
-import { PICKER_DEFAULT_FORMAT } from './utils/format-date';
+import { PICKER_DEFAULT_FORMAT } from '@colox/cdk/date/format';
 import { datePickerPaletteStyles } from './variants/palette';
 import { datePickerVariants } from './variants';
 

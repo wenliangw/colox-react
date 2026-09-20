@@ -7,7 +7,7 @@ import {
   isDraftAllowed,
   parseDateText,
   patternToParseSource,
-} from '../utils/format-date';
+} from '../format';
 
 describe('pattern compilation', () => {
   it('splits tokens from literal separators', () => {

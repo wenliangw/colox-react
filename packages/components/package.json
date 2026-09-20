@@ -115,6 +115,11 @@
       "import": "./dist/es/switch.js",
       "require": "./dist/cjs/switch.cjs"
     },
+    "./cdk/date": {
+      "types": "./dist/types/cdk/date/index.d.ts",
+      "import": "./dist/es/cdk/date.js",
+      "require": "./dist/cjs/cdk/date.cjs"
+    },
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },

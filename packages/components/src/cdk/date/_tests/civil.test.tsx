@@ -16,7 +16,7 @@ import {
   partsToGranularIso,
   partsToIso,
   weekdayOfParts,
-} from '../utils/date-core';
+} from '../civil';
 
 describe('date-core calendar math', () => {
   it('knows leap years and month lengths', () => {

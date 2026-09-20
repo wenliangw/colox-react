@@ -1,11 +1,11 @@
 import type {
   DateFormatPart,
   DateFormatToken,
+  DateGranularity,
   DateParts,
-  DatePickerPicker,
   IsoPrecision,
-} from '../types';
-import { isValidDate, parseGranularIso, partsToGranularIso, weekdayOfParts } from './date-core';
+} from './types';
+import { isValidDate, parseGranularIso, partsToGranularIso, weekdayOfParts } from './civil';
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAY_FULL = [
@@ -19,11 +19,11 @@ export const WEEKDAY_FULL = [
 ];
 
 /**
- * The default display pattern per picker: the pattern mirrors the
+ * The default display pattern per granularity: the pattern mirrors the
  * value shape (`date` shows the full date, `year` the bare year) —
  * always overridable through `valueFormat`.
  */
-export const PICKER_DEFAULT_FORMAT: Record<DatePickerPicker, string> = {
+export const PICKER_DEFAULT_FORMAT: Record<DateGranularity, string> = {
   date: 'yyyy-MM-dd',
   month: 'yyyy-MM',
   year: 'yyyy',
@@ -174,7 +174,7 @@ const parseByPattern = (text: string, pattern: string): ParsedMatch | null => {
 
 const ISO_STRICT = /^(\d{4})-(\d{2})-(\d{2})$/;
 const ISO_LENIENT = /^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/;
-// Coarser grammars for the coarser pickers: month and bare year.
+// Coarser grammars for the coarser granularities: month and bare year.
 const ISO_MONTH = /^(\d{4})[/-](\d{1,2})$/;
 const ISO_YEAR = /^(\d{4})$/;
 
@@ -198,35 +198,35 @@ const parseByGrammar = (text: string): ParsedMatch | null => {
   return null;
 };
 
-const PICKER_PRECISION: Record<DatePickerPicker, IsoPrecision> = {
+const GRANULARITY_PRECISION: Record<DateGranularity, IsoPrecision> = {
   year: 0,
   month: 1,
   date: 2,
 };
 
 /**
- * Parses typed text to a canonical value at the picker granularity
+ * Parses typed text to a canonical value at the field granularity
  * (or null): the configured `valueFormat` pattern first, then the
  * canonical ISO grammars (`YYYY-MM-DD`, `YYYY/M/D`, `YYYY-M[M]` and
  * bare `YYYY`). A draft commits only when its precision reaches the
- * picker's granularity — typing more precision is truncated to the
- * picker, typing less does not commit. Invalid calendar dates return
- * null and the editor rolls the draft back.
+ * granularity — typing more precision is truncated to the granularity,
+ * typing less does not commit. Invalid calendar dates return null and
+ * the editor rolls the draft back.
  */
 export const parseDateText = (
   text: string,
   pattern: string,
-  picker: DatePickerPicker,
+  granularity: DateGranularity = 'date',
 ): string | null => {
   const trimmed = text.trim();
-  const required = PICKER_PRECISION[picker];
+  const required = GRANULARITY_PRECISION[granularity];
   const fromPattern = parseByPattern(trimmed, pattern);
   if (fromPattern !== null && fromPattern.precision >= required) {
-    return partsToGranularIso(fromPattern.parts, picker);
+    return partsToGranularIso(fromPattern.parts, granularity);
   }
   const fromGrammar = parseByGrammar(trimmed);
   if (fromGrammar !== null && fromGrammar.precision >= required) {
-    return partsToGranularIso(fromGrammar.parts, picker);
+    return partsToGranularIso(fromGrammar.parts, granularity);
   }
   return null;
 };

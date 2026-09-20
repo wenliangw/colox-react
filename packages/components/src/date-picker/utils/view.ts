@@ -7,7 +7,7 @@ import {
   parseGranularIso,
   partsToIso,
   todayIso,
-} from './date-core';
+} from '@colox/cdk/date/civil';
 
 /** A padded canonical prefix — shared by the view helpers below. */
 const pad = (value: number, width: number): string => String(value).padStart(width, '0');

@@ -1,10 +1,10 @@
 import type {
+  DateGranularity,
   DateParts,
-  DatePickerPicker,
   MonthGridCell,
   MonthViewCell,
   YearViewCell,
-} from '../types';
+} from './types';
 
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -98,12 +98,47 @@ export const buildMonthGrid = (year: number, month: number): MonthGridCell[] => 
   });
 };
 
+/** Shifts day-accurate parts by whole days. */
+export const addDays = (parts: DateParts, delta: number): DateParts =>
+  civilFromDays(daysFromCivil(parts) + delta);
+
 /** Shifts a date by whole months, clamping the day into the target month. */
 export const addMonths = (parts: DateParts, delta: number): DateParts => {
   const index = parts.year * 12 + (parts.month - 1) + delta;
   const year = Math.floor(index / 12);
   const month = index - year * 12 + 1;
   return { year, month, day: Math.min(parts.day, daysInMonth(year, month)) };
+};
+
+/**
+ * Whole-day shift on a canonical granularity ISO value: `'2026-03'`
+ * and bare `'2026'` count their implicit day 1. Returns null for
+ * calendar-invalid input.
+ */
+export const addDaysIso = (iso: string, delta: number): string | null => {
+  const parts = parseGranularIso(iso);
+  return parts === null ? null : partsToIso(addDays(parts, delta));
+};
+
+/**
+ * Whole-month shift on a canonical granularity ISO value, keeping the
+ * input's granularity: `'2026-03'` + 1 → `'2026-04'` (the implicit
+ * day 1 is not fabricated into the output). Returns null for
+ * calendar-invalid input.
+ */
+export const addMonthsIso = (iso: string, delta: number): string | null => {
+  const parts = parseGranularIso(iso);
+  if (parts === null) {
+    return null;
+  }
+  const shifted = addMonths(parts, delta);
+  if (iso.length <= 4) {
+    return String(shifted.year).padStart(4, '0');
+  }
+  if (iso.length <= 7) {
+    return `${String(shifted.year).padStart(4, '0')}-${String(shifted.month).padStart(2, '0')}`;
+  }
+  return partsToIso(shifted);
 };
 
 /** Lexicographic ISO comparison: canonical strings sort chronologically. */
@@ -128,13 +163,13 @@ export const parseGranularIso = (iso: string): DateParts | null => {
   return isValidDate(parts) ? parts : null;
 };
 
-/** Renders day-accurate parts down to the picker's canonical granularity. */
-export const partsToGranularIso = (parts: DateParts, picker: DatePickerPicker): string => {
-  if (picker === 'year') {
+/** Renders day-accurate parts down to the field's canonical granularity. */
+export const partsToGranularIso = (parts: DateParts, granularity: DateGranularity): string => {
+  if (granularity === 'year') {
     return String(parts.year).padStart(4, '0');
   }
   const year = String(parts.year).padStart(4, '0');
-  if (picker === 'month') {
+  if (granularity === 'month') {
     return `${year}-${String(parts.month).padStart(2, '0')}`;
   }
   return partsToIso(parts);
@@ -144,9 +179,9 @@ export const partsToGranularIso = (parts: DateParts, picker: DatePickerPicker): 
 export const decadeOf = (year: number): number => Math.floor(year / 10) * 10;
 
 /** The current cell's granularity iso, e.g. today for a year picker is `YYYY`. */
-export const granularIsoOf = (iso: string, picker: DatePickerPicker): string => {
+export const granularIsoOf = (iso: string, granularity: DateGranularity): string => {
   const parts = parseGranularIso(iso);
-  return parts === null ? iso : partsToGranularIso(parts, picker);
+  return parts === null ? iso : partsToGranularIso(parts, granularity);
 };
 
 /** The 12 month cells of a year (month view), canonical `YYYY-MM`. */
