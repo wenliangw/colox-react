@@ -21,6 +21,9 @@ The tooling and the vocabulary the rest of the library stands on:
 - Actions: `Button`, `IconButton`; first-party `@colox/icons` (stroke family).
 - Internal cdk layers: `floating` (popup/position/dismiss), `combobox`
   (option word + filter + keyboard + walk), `input-control`.
+- Per-component entry points (`@colox/react/<component>`) plus the
+  public utility toolbelts: `@colox/react/cdk/date` (canonical-string
+  date/time helpers — shipped).
 - `@colox/wiki` doctrine data pack and `@colox/mcp` server.
 
 ### M1 — Form controls (shipped)
@@ -71,7 +74,9 @@ The validation and field layer the form controls deliberately left out:
 - `InputGroup` — the sibling component whose class namespace `colox-input-group*`
   is already reserved (remaining).
 - `TimePicker` — the time sibling of `DatePicker` (same shell, panel and
-  IconButton recipe) (remaining).
+  IconButton recipe); the cdk `date` core (canonical-string clock math,
+  curated `@colox/react/cdk/date` toolbelt) is shipped, the component
+  itself is next (remaining).
 
 ### M4 — Overlay family (planned)
 
