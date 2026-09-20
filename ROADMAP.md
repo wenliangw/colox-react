@@ -54,8 +54,20 @@ The validation and field layer the form controls deliberately left out:
   dynamic sections drop cleanly through `unregister`. A subsystem of its
   own, not a prop on
   `Input`; every field injects the family `{ event, value }` payload, so all
-  twelve leaves read the same way.
-- `FieldArray` — repeating field groups (remaining).
+  twelve leaves read the same way. **The form base closes here** — the
+  list-shaped dynamic form below was deliberately parked as its own slot,
+  not forgotten.
+- 动态表单 — the list-shaped form with add/remove rows. The block-level
+  pattern already works: conditional fields round-trip their values (unmount
+  keeps them, remount restores them — the controls are controlled), and
+  `unregister(name)` drops a section for good. What is not first-class yet:
+  row numbering is author-side, the export stays object-shaped
+  (`rows.0.title` rebuilds to `{ rows: { 0: { title } } }` — no array
+  synthesis so far), and unmounting an invalid field leaves an orphan error
+  in the map that blocks submit until `unregister`. The alignment round
+  settles the three candidates: numeric-segment array synthesis, a
+  `Form.Array` / `FieldArray` primitive, and the unmount-clears-error fix
+  (remaining).
 - `InputGroup` — the sibling component whose class namespace `colox-input-group*`
   is already reserved (remaining).
 - `TimePicker` — the time sibling of `DatePicker` (same shell, panel and
