@@ -13,29 +13,34 @@ date-picker/
 ├── hooks/
 │   └── use-date-picker.ts    # 状态机单源：draft 门禁/提交/blur 回滚/open/view/网格键盘
 ├── utils/
-│   ├── date-core.ts          # 零时区日历数学：Hinnant 算法、月网格、addMonths、粒度工具（parseGranularIso/buildMonthViewCells/buildYearViewCells/decadeOf）
-│   ├── format-date.ts        # 纯函数：pattern 编译、formatIso、精度化 parseDateText、草稿门禁、PICKER_DEFAULT_FORMAT
+│   ├── view.ts               # 视口纯函数（viewOfValue/gridCellsOf/层级跃迁），吃 cdk/date 的构造器
 │   └── locale.ts             # 面板 chrome 本地化：中文默认（月标/周头/日·月·十年三标题格式串）+ resolve/compose
 ├── controls/
 │   ├── panel.tsx            # 面板（header 导航 + 日格/月格/年格三视图；--empty 空态作用域）
 │   └── clear-button.tsx     # clearable 尾部 X 钮（IconButton base + 站点定位类，Select 同款）
 ├── _tests/
 │   ├── date-picker.test.tsx  # 55 个：契约/编辑状态机/面板/键盘/月·年 picker 组
-│   ├── date-core.test.tsx    # 15 个：日历数学 + 粒度值与视图
-│   ├── format-date.test.tsx  # 17 个：编译/格式化/解析/精度/门禁
 │   └── locale.test.tsx       # 7 个：中文默认/逐字段回退/不突变/compose 定制/占位透传
 ├── types/{component,utils,hooks,controls,index}.ts
 ├── styles/{base,palette,size,index}.scss  # 外壳 = Input 契约 + 面板 overlay 织物 + compact 网格 + palette 私有变量
 └── variants/{size,palette,index}.ts       # size 四档 + palette 六族双轴
 ```
 
+日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`）：
+`civil.ts`（原 date-core）/`format.ts`（原 format-date）+ 新增 `time.ts`（HH:mm）/`local.ts`
+（本地壁钟桥）+ `types.ts`（共享型单一出处，组件 types/utils.ts 再导出）。公开面
+`@colox/react/cdk/date`（exports 子路径 + 独立构建入口）curated 十函数：`formatDate`/
+`parseDateText`/`compare`/`addDays`/`addMonths`/`todayIso`/`toLocalDate`/`fromLocalDate`/
+`parseTimeText`/`formatTime`——网格 builder 不在公开面。原 date-core.test（15）/format-date.test（17）
+随文件搬入 `cdk/date/_tests/` 改名 civil/format，另加 time 13 + local 5。
+
 ## 功能逻辑
 
-### 日期数学零时区（date-core）
+### 日期数学零时区（cdk/date/civil，原 date-core）
 
 不碰 `Date.parse`/`new Date(iso)`——`YYYY-MM-DD` 被 Date 按 UTC 午夜解析，跨时区 weekday 会漂移。日历数学走 **Howard Hinnant 纯算法**：`daysFromCivil`/`civilFromDays` 以 1970-01-01 为锚互转天数与公历坐标；weekday = `(days + 3) % 7` 周一开头（1970-01-01 是周四=3 校验过）。衍生物全部同源：`buildMonthGrid`（首周一对齐的 6×7 固定 42 格，前后邻月填充保面板形状）、`addMonths`（日 clamp 进目标月长）、`compareIso`（canonical 串字典序即时间序）、`todayIso`（系统本地日历，只做高亮与视图播种）；粒度工具：`parseGranularIso`（`YYYY`→`YYYY-MM`→`YYYY-MM-DD` 阶梯、缺位日/月补 1）、`partsToGranularIso`（按 picker 截断规范化）、`granularIsoOf`、`decadeOf`、`buildMonthViewCells`（12 月格）、`buildYearViewCells`（12 年十年窗）。
 
-### 格式化/解析（format-date）
+### 格式化/解析（cdk/date/format，原 format-date）
 
 - **pattern 编译**：`y/m/d/e`（大小写不敏感）为 token，同字母连续段记一条长度；其余字符为 literal。`yyyy`=4 位、`yy`=2 位（parse 映射 2000-2099）、`M/d`=不补零、`MM/dd`=补零、`EEE`=短星期名、`EEEE`=全名（英文规范词，Java/antd 标准表）。weekday parse 位匹配 `[A-Za-z]+` 并丢弃（display-only）。
 - **formatIso**：canonical ISO → pattern 渲染；ISO 不可解析（null/畸形）返回空串。
@@ -77,12 +82,13 @@ date-picker/
 
 ## 状态与测试
 
-101 个测试：date-core 15（闰年/天数往返/周一索引/网格起点与 inMonth 旗标/邻月不泄漏/月位移 clamp/年界穿越/非法日期/ISO 补零 + 粒度解析/截断/月·年格构建/decadeOf）、format-date 17（编译/大小写与字面混合/parseSource/format 各 token 与星期名/粒度格式化/解析双语法与精度阶梯/非法拒绝/部分草稿/星期丢弃/门禁）、locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。
+组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 50（civil 15 + format 17 + time 13 + local 5）——日历数学/格式化解析/时间 60 进制/本地壁钟桥。
 
 ## 构建·门禁
 
 - 组件多入口 `@colox/react/date-picker` → `dist/es/date-picker.js` + `dist/cjs/date-picker.cjs` + `dist/types/date-picker/index.d.ts`；package.json `./date-picker` 子路径。
-- 组件级 gate：datepicker 101/101、全组件测试、`pnpm typecheck`、eslint、`pnpm build` 全绿。
+- 公开工具面 `@colox/react/cdk/date` 独立入口 → `dist/{es/cjs}/[cdk/date].js` + `dist/types/cdk/date/index.d.ts`。
+- 组件级 gate：全组件测试、`pnpm typecheck`、eslint、`pnpm build` 全绿。
 
 ## 已知边界与扩展点（v1 留白）
 
@@ -106,3 +112,4 @@ date-picker/
 - 补交互（标题点击层级钻取 日 → 月 → 年、选中上级格逐级回落、跳大跨度日期）：见 resonance 决策「DatePicker 面板层级钻取」。
 - 七轮评审修正（antd 三刀：标题分节可点（年直钻年格）+ 双档 chevron（日格 ±月/±年、月格 ±年/±十年、年格仅双 ±十年）+ 标题语义色 hover）：见 resonance 决策「DatePicker 面板 chrome 对齐 antd 三刀」。
 - 关联 icon 交付：`@colox/icons` 批次一扩为十一枚（IconCalendar：边框 + 顶栏规则线 + 绑定桩，join-round 成角、整数网格、[2,22] 光学内容框——spec lint 门禁照常过）。
+- TimePicker + DateTime 集成定案（十二轴全拍板：自绘列滚选 / HH:mm / showTime 右侧并排扩宽 / footer 确定提交 / canonical 串 / min·max 双收 / 零依赖 / cdk 整体抬 + 公开面）：见 resonance 决策「TimePicker + DateTime 集成设计定案」（1f182d75，supersedes b858b053）。批 1 落地 = cdk/date 抬升 + `@colox/react/cdk/date` 公开面（本页目录结构/门禁已随改）；批 2 = IconClock + TimePicker 组件；批 3 = DatePicker showTime。

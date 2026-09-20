@@ -220,3 +220,13 @@
 - 将来做时间类/区间类控件的显示格式化沿用：标准 token 词形 + 真值 canonical 与显示彻底分离；token 表对齐成熟的广域标准（Java/antd），自定义 token 语言不发明。
 
 来源：DatePicker 六问对齐定案 + 用户两条补充（补日历图标；valueFormat 标准 token 写法并支持星期几）+ 用户目视评审修正（「年月默认使用中文描述，允许用户自定义」→ locale 数据型定制定案）+ 用户三轮评审（surface 改 subtle；「需要支持月视图和年视图，我认为是必要的」→ picker 维度定案）。
+
+## 日期/时间值契约：出口恒 canonical 串，消费便利走公开 cdk 工具面（DateTime 定案）
+
+- **值契约恒串一个词，绝不因「消费方便」放 Date 对象进出**（TimePicker + DatePicker showTime 定案，用户问过 Date 出口后被摊牌劝回）：`datetime = 'YYYY-MM-DDTHH:mm'` T 形固定宽，字典序即时间序（min/max 时间界免费）；入口宽容归一（T/空格双收、date-only 缺时补 00:00），出口恒单一词形。Date 对象进不了值契约四条硬伤：粒度纯度（月/年/时间无诚实 Date，伪造日参差）、Form JSON 序列化下 Date 变线串、原生 Date 可突变 + 时区坑复活（零时区正是为躲它）、对已交付词形全线翻工。
+- **消费体验用公开工具面补，不进值契约**：`toLocalDate(iso)` 一行转 Date，`fromLocalDate` 反向——需要 Date 的消费方（画图、原生 API）由纯函数桥接；「内部表示与出口形态分离」的时间版（内部 canonical 串、消费形态自取）。
+- **min/max 双收 string | Date**：`Date` 按**本地日历壁钟**读（getFullYear 族），归一到 ISO 串参与比较——入口宽容只宽容在「作者给的词形」，比较世界永远一根串轴。
+- **零依赖纪律**：需求面已被自家零时区纯算法覆盖（+ 时间只是 60 进制与串比较）时不引入 dayjs/date-fns——库真正强项（时区/相对/duration）没有消费者就不引入；真实缺口出现再评估。
+- **cdk 只收纯函数、两消费者成核、公开面 curated**：date 数学整体抬入 cdk（DatePicker 改吃它）因为两个消费者（TimePicker + showTime）成立；日期/时间方法同居 cdk/date 一个入口；公开面只放 `@colox/react/cdk/date` curated 十函数，网格 builder 这类内部构造器不发——公开路径随将来 cdk 独立包迁移。
+
+来源：TimePicker + DateTime 集成设计定案四轮对齐（用户拍板值契约串出口 + 公开工具面、min/max 双收、不引日期库；用户指令「cdk 保持 @colox/react/cdk/date 公开路径，因为 cdk 后面会独立一个 package」）。
