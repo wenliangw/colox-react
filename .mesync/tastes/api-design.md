@@ -76,6 +76,8 @@
 - **注入只在生效时发生**：form 级 disabled 只在锁定时给控件注入 `disabled: true`——undefined 键会杀掉作者自设的 disabled（aria-required 同款教训，「注入键只在生效时出现」的延续）。
 - **订阅原语一行收库**：联动/自动保存/实时预览这类「订阅字段变化」样板由公开 hook 收敛成一行（`useFormWatch(store, name?)` / `useFormWatchError(store, name)`）；命名与函数族同词族（useForm/useFormContext/useFormWatch），不满世界造新词。
 - **a11y 落点默认开 + form 级逃生舱**：失败提交聚焦/滚动首个错误控件默认开启（`focusOnInvalid` 默认 true），form 级关闭做逃生舱——错误可及性优先于「库默认无惊喜」，逃生舱留在最小面。
+- **装载与通知分离（编辑表单回填三件，批 C 定案）**：`setValues`/`reset`/种子是「装载」——静默 merge、不校验、**不报告**；`onValuesChange` 是「编辑的回声」——只由用户编辑通道发出，载荷 `{ name, value, values }`。自动保存盯通知通道，就永远不会把刚回填的记录再存一遍。校验、装载、通知三条通道各管各的，不混流。
+- **Form 级 initialValues 只喂自持 store**：外部 store 时该 prop 忽略，装载归主人（useForm(initialValues)/setValues）——每个值的入口单一，Form 不隐写外部状态面。
 
 ## Checkbox 组语义与三态（Group 值数组 / indeterminate 纯视觉）
 
