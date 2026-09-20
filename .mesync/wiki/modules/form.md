@@ -33,13 +33,13 @@ form/
 
 ### 字段解剖与注入
 
-`Form.Field` 的子件按**组件身份**走查（家族 walker 惯例）：`Form.Label`（至多一）、`Form.Hint`（可多）、`Form.Validate`（可多、声明序即错误行序），余下的**唯一组件型元素**是控件。零控件/多控件/多 Label/裸宿主元素/Fragment/字符串都是**硬错误**（消息见 walker）。
+`Form.Field` 的子件按**组件身份**走查（家族 walker 惯例）：`Form.Label`（至多一）、`Form.Hint`（可多）、`Form.Validate`（可多、声明序即错误行序），余下的**唯一组件型元素**是控件。零控件/多控件/多 Label/裸宿主元素/字符串都是**硬错误**（消息见 walker）。Fragment 不算错误：`Children.forEach` 会把 Fragment 展开后按上面的规则走查——单控件 Fragment 合法（含条件渲染 `{cond && <Input/>}` 的场景），多控件/零控件的 Fragment 仍被唯一控件规则拦下。
 
 注入面（cloneElement，覆盖同名）：
 
 - `id`（控件自带则沿用，否则 `useId` 生成）→ `Form.Label` 的 `htmlFor` 目标；**组控件（两 Group）不走 `htmlFor`**（div 不可被 label 关联），改为 label 自带 id + 组根 `aria-labelledby`。
 - `name`（= 字段名）→ 原生表单收集/自动填充仍可用（Form 的值走 store）。
-- `invalid` + `aria-describedby`：invalid 时指向错误行 id，否则指 hint id（hint 在无效时让位、错误行独占该槽）。
+- `invalid` + `aria-describedby`：invalid 时指向错误行 id，否则指 hint id；多个 hint 各持唯一 id（首个裸 id、后继 `-<index>` 后缀，字段按声明序克隆注入 `hintIndex`），`aria-describedby` 聚合全部 hint id（辅助技术读到每一行；hint 在无效时让位、错误行独占该槽）。
 - `onChange`：收家族载荷 `{ event, value }` → `readPayloadValue` 写 store → `validateOn` 含 `change` 则校验 → **链式调用作者自己的 onChange**。
 - `onBlur`：`validateOn` 含 `blur` 则校验 → 链式调用作者的 onBlur。
 - 受控词：`checked`（布尔叶子）或 `value`（其余域）。
@@ -56,7 +56,7 @@ form/
 - **store 只认消息**（`FormErrors` = 名字→消息），叶子下标走旁路（`getErrorLeaf`），公开面保持纯净。
 - `setError` 程序化写入（服务端裁决）：字段有规则时落在**第一条叶子**上，无规则则无错误行（也没有 `aria-describedby` 指向不存在的节点）。
 - **策略**：`validateOn` 恒表单级（默认 `['submit','blur']`）；提交恒全量校验。**`deps` 是独立信号**：任何值变化后，声明该字段为依赖的字段重跑其规则（不受策略约束）。
-- 异步规则：`await` 后按结果落错，**v1 无 pending 态**（明说）。
+- 异步规则：`await` 后按结果落错，**v1 无 pending 态**（明说）。同字段的 run 带 per-field 序号（epoch）——只有最新一次 run 可以落盘，旧 promise 后到会被丢弃（竞态防护：快速输入 + change 策略、deps 重叠、「reset 时在途校验」三类交错都不会让过期裁决覆盖新裁决）。`reset()` 清错的同时使在途 run 失效。
 
 ### 布局（走现有骨架）
 
@@ -75,8 +75,8 @@ form/
 
 - 导出 `Form`（dot：`Field`/`Label`/`Hint`/`Validate`）、`useForm`、`useFormContext`、`formFieldVariants` + 类型（`FormProps`/`FormRef`/`FormLabelPlacement`/`FormLabelAlign`/`FormRequiredMarkPosition`/`FormStore`/`FormValues`/`FormErrors`/`FormValidateOn`/`FormSubmitPayload`/`FormInvalidPayload`/`FormFieldProps`/`FormLabelProps`/`FormHintProps`/`FormValidateProps`/`FormFieldValidator`/`FormFieldContextValue`）。
 - `FormProps`：`form?`（外持 store）、`validateOn?`（默认 `['submit','blur']`）、`labelPlacement?`（`'top'` 默认 / `'start'`）、`labelWidth?`（size 键，默认 `'24'`）、`labelAlign?`（`'start'` 默认 / `'end'` / `'justify'`，仅 start 形态生效）、`requiredMarkPosition?`（`'start'` 默认 / `'end'`）、`gap?`（spacing 键，默认 `'4'`）、`onSubmit?`（仅全绿时发 `{ event, values }`）、`onInvalid?`（`{ event, errors }`）。`noValidate` 恒开、`onSubmit`/`onInvalid` 原生同名已 Omit。
-- `FormStore`：`getValues/getValue/getErrors/getError/getErrorLeaf/isValid/setValue/setError/validate/validateField/reset/subscribe/registerField`（`registerField` 归 `Form.Field` 用，文档标注）。
-- 验收：36 例 form 单测（含 labelAlign 轴 2 例、required mark 3 例：派生+aria-required、位置与字段级覆盖、per-label 隐藏）；全仓 620 测试绿；真实浏览器 8 项探针（required mark 组合版：end/justify × 星号前后位的贴字几何、整体贴列、文字铺满、隐藏、字形与色通道）。
+- `FormStore`：`getValues/getValue/getErrors/getError/getErrorLeaf/isValid/setValue/setError/validate/validateField/reset/subscribe/registerField`（`registerField` 归 `Form.Field` 用，文档标注）。`reset()` 语义（批 A 定案）：恢复「首帧」——`useForm` initialValues 与显式 `reset(values)` 覆盖到的字段保持给定值，未覆盖字段回落到注册时携带的 seed（控件 `defaultValue`/`defaultChecked`/域空值词），清空错误并使在途校验失效——store 与控件所见再度一致。注册清理已接通（effect 隐式返回 unsubscribe），卸载字段不再参与校验。
+- 验收：42 例 form 单测（labelAlign 轴 2 例 + required mark 3 例 + 批 A 正确性 6 例：异步竞态、reset 种子一致性 ×3、多 Hint 唯一 id、卸载后不再校验）；全仓 626 测试绿；真实浏览器 8 项探针（required mark 组合版）。
 
 ## 决策与来源
 
