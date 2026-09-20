@@ -353,4 +353,73 @@ describe('Form.Field validation tree', () => {
     ).toThrow('Form members must be rendered inside a <Form>.');
     spy.mockRestore();
   });
+
+  it('cascades the form size only into controls that declared none', () => {
+    render(
+      <Form size="sm">
+        <Form.Field name="org">
+          <Form.Label>Org</Form.Label>
+          <Input />
+        </Form.Field>
+        <Form.Field name="mail">
+          <Form.Label>Mail</Form.Label>
+          <Input size="lg" />
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByLabelText('Org').closest('.colox-input')).toHaveClass('colox-input--sm');
+    // A state class: the control's own word wins over the form's.
+    expect(screen.getByLabelText('Mail').closest('.colox-input')).toHaveClass('colox-input--lg');
+  });
+
+  it('leaves the controls on their family default without a form size', () => {
+    render(
+      <Form>
+        <Form.Field name="org">
+          <Form.Label>Org</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByLabelText('Org').closest('.colox-input')).toHaveClass('colox-input--md');
+  });
+
+  it('appends the colon piece while keeping the label text clean', () => {
+    render(
+      <Form colon>
+        <Form.Field name="name">
+          <Form.Label>Name</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>,
+    );
+    const label = screen.getByText('Name').closest('label') as HTMLLabelElement;
+    // CSS-painted, never a text node: the queryable name stays clean.
+    expect(label.textContent).toBe('Name');
+    const colon = label.querySelector('.colox-form-label__colon');
+    expect(colon).not.toBeNull();
+    expect(colon).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('turns the colon off per field', () => {
+    render(
+      <Form colon>
+        <Form.Field name="plain">
+          <Form.Label>Plain</Form.Label>
+          <Input />
+        </Form.Field>
+        <Form.Field name="overridden" colon={false}>
+          <Form.Label>Overridden</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    expect(
+      screen.getByText('Plain').closest('label')?.querySelector('.colox-form-label__colon'),
+    ).not.toBeNull();
+    expect(
+      screen.getByText('Overridden').closest('label')?.querySelector('.colox-form-label__colon'),
+    ).toBeNull();
+  });
 });

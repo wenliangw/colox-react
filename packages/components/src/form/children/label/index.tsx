@@ -33,6 +33,13 @@ export const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>((props, re
       <span className="colox-form-label__required" aria-hidden="true" />
     ) : null;
 
+  const colon = field.colon ? (
+    // Same machinery as the mark: CSS-painted, outside the text slot,
+    // never a text node. The colon always terminates the label — after
+    // the end-position star, whatever the mark placement.
+    <span className="colox-form-label__colon" aria-hidden="true" />
+  ) : null;
+
   return (
     <label
       ref={ref}
@@ -44,6 +51,7 @@ export const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>((props, re
       {field.requiredMarkPosition === 'start' ? mark : null}
       <span className="colox-form-label__text">{children}</span>
       {field.requiredMarkPosition === 'end' ? mark : null}
+      {colon}
     </label>
   );
 });

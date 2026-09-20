@@ -10,6 +10,14 @@ import type {
 } from './store';
 
 /**
+ * The form-wide control size axis: the same word list every leaf's
+ * `size` prop speaks (`xs | sm | md | lg`). Injected only while a
+ * control did not declare its own size — a state class, the control's
+ * own word wins (unlike `disabled`, which is sticky).
+ */
+export type FormSize = 'xs' | 'sm' | 'md' | 'lg';
+
+/**
  * Where a field's label sits: `'top'` stacks it above the control,
  * `'start'` puts it in a fixed-width column at the inline start. Both
  * words are logical-axis words (start mirrors under RTL, top does not).
@@ -84,6 +92,21 @@ export interface FormProps extends Omit<
    * @default 'start'
    */
   labelAlign?: FormLabelAlign;
+  /**
+   * The form-wide control size — injected into every field's control
+   * unless the control declared its own `size` (a state class: its own
+   * word wins). Omitted, nothing is injected and each control keeps its
+   * family default.
+   */
+  size?: FormSize;
+  /**
+   * Appends the `:` to every label text — the Chinese admin-form
+   * 「姓名：」 habit. Rendered as a decoupled piece (the label's own
+   * text and queryable name stay the author's words); a field may
+   * override it per field.
+   * @default false
+   */
+  colon?: boolean;
   /**
    * Where the required mark (the red `*`) sits relative to the label
    * text — `'start'` leads, `'end'` trails; a field may override it per

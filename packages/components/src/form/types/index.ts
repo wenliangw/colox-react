@@ -15,6 +15,7 @@ export type {
   FormProps,
   FormRef,
   FormRequiredMarkPosition,
+  FormSize,
 } from './component';
 export type { FormContextValue } from './context';
 export type {

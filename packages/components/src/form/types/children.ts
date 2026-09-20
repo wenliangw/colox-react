@@ -1,6 +1,11 @@
 import type { HTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react';
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
+import type {
+  FormLabelAlign,
+  FormLabelPlacement,
+  FormRequiredMarkPosition,
+  FormSize,
+} from './component';
 import type { FormValidateOn, FormValues } from './store';
 
 /**
@@ -29,6 +34,12 @@ export interface FormFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
    * @default the form's validateOn
    */
   validateOn?: FormValidateOn | readonly FormValidateOn[];
+  /**
+   * Overrides the form's `colon` for this field — whether the label
+   * text carries the trailing `:`.
+   * @default the form's colon
+   */
+  colon?: boolean;
   /** A `Form.Label`, one control, and any `Form.Hint` / `Form.Validate` leaves. */
   children: ReactNode;
 }
@@ -127,6 +138,8 @@ export interface FormControlProps {
   value?: unknown;
   checked?: unknown;
   invalid?: boolean;
+  /** The form-wide control size, injected when no own size was declared. */
+  size?: FormSize;
   /** The form-wide lock the field injects while `<Form disabled>`. */
   disabled?: boolean;
   'aria-describedby'?: string;
@@ -169,4 +182,6 @@ export interface FormFieldContextValue {
   required: boolean;
   /** The resolved required mark position around the label text. */
   requiredMarkPosition: FormRequiredMarkPosition;
+  /** Whether the label text carries the trailing `:` (resolved). */
+  colon: boolean;
 }

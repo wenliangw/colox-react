@@ -49,7 +49,9 @@ The validation and field layer the form controls deliberately left out:
   field (`focusOnInvalid`); `useFormWatch`/`useFormWatchError` read the
   store from outside the tree; the edit-form loop is closed with
   `initialValues`, the silent `setValues` backfill and the user-edit-only
-  `onValuesChange` report. A subsystem of its own, not a prop on
+  `onValuesChange` report; a form-wide `size` cascades and a `colon`
+  finishes the labels Chinese-admin style. A subsystem of its own, not a
+  prop on
   `Input`; every field injects the family `{ event, value }` payload, so all
   twelve leaves read the same way.
 - `FieldArray` — repeating field groups (remaining).

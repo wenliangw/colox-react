@@ -1,5 +1,10 @@
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
+import type {
+  FormLabelAlign,
+  FormLabelPlacement,
+  FormRequiredMarkPosition,
+  FormSize,
+} from './component';
 import type { FormStore, FormValidateOn, FormValuesChangePayload } from './store';
 
 /**
@@ -19,8 +24,12 @@ export interface FormContextValue {
   labelAlign: FormLabelAlign;
   /** The form-wide required mark position around the label text. */
   requiredMarkPosition: FormRequiredMarkPosition;
+  /** The form-wide control size (undefined = inject nothing). */
+  size: FormSize | undefined;
   /** The form-wide lock: every control receives `disabled` while set. */
   disabled: boolean;
+  /** The form-wide colon piece on every label (a field may override). */
+  colon: boolean;
   /** The form-level user-edit report the field carries on each change. */
   onValuesChange?: (payload: FormValuesChangePayload) => void;
 }

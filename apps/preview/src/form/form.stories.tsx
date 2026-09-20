@@ -307,6 +307,28 @@ const EditFormDemo = () => {
   );
 };
 
+// The form-wide size cascades like a state class: a control's own
+// word wins over the form's. The colon rides as CSS paint outside the
+// text — queries stay clean, the star stays glued to its words, and a
+// field can opt out.
+const SizeAndColonDemo = () => (
+  <Form size="sm" colon gap="4" style={demoWidth}>
+    <Form.Field name="org">
+      <Form.Label>组织</Form.Label>
+      <Input placeholder="组织名称" />
+      <Form.Validate required />
+    </Form.Field>
+    <Form.Field name="city">
+      <Form.Label>城市</Form.Label>
+      <Input size="lg" />
+    </Form.Field>
+    <Form.Field name="note" colon={false}>
+      <Form.Label>备注</Form.Label>
+      <Input />
+    </Form.Field>
+  </Form>
+);
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -393,6 +415,9 @@ export const Overview: Story = {
         </Section>
         <Section title="Edit form — setValues backfill and onValuesChange">
           <EditFormDemo />
+        </Section>
+        <Section title="Form-wide size and the label colon">
+          <SizeAndColonDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

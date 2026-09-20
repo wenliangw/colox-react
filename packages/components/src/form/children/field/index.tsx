@@ -33,6 +33,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     labelAlign: labelAlignProp,
     requiredMarkPosition: requiredMarkPositionProp,
     validateOn: validateOnProp,
+    colon: colonProp,
     className,
     style,
     children,
@@ -46,7 +47,9 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     labelAlign,
     requiredMarkPosition,
     validateOn,
+    size,
     disabled: formDisabled,
+    colon,
     onValuesChange,
   } = useFormContext();
   const placement = labelPlacementProp ?? labelPlacement;
@@ -54,6 +57,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const align = labelAlignProp ?? labelAlign;
   const markPosition = requiredMarkPositionProp ?? requiredMarkPosition;
   const policy = validateOnProp ?? validateOn;
+  const colonOn = colonProp ?? colon;
 
   const leaves = useMemo(() => walkFormLeaves(children), [children]);
   const runner = useMemo(() => buildRuleRunner(leaves.validators), [leaves.validators]);
@@ -174,6 +178,12 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     // would shadow an author's own disabled prop.
     injected.disabled = true;
   }
+  if (size !== undefined && controlProps.size === undefined) {
+    // The form-wide control size: a state class — the control's own
+    // declared size wins (unlike disabled, there is no lock), and the
+    // key only lands while the control stayed silent.
+    injected.size = size;
+  }
 
   const controlNode = cloneElement(control, injected);
   const messages = (
@@ -199,6 +209,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     labelledBy: groupControl,
     required,
     requiredMarkPosition: markPosition,
+    colon: colonOn,
   };
 
   const fieldClassName = formFieldVariants({

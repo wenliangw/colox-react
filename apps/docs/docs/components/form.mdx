@@ -238,7 +238,7 @@ injects `aria-required` into the control as its programmatic twin.
   </Form.Field>
 </Form>
 
-## Form-wide lock, focus and per-field policy
+## Form-wide controls, focus and per-field policy
 
 `disabled` locks the whole form — every control receives `disabled` and no
 field can opt out (the sticky grammar of the groups' disabled inheritance).
@@ -271,6 +271,25 @@ change while `validateOn="change"` stays the form default.
     <Form.Label>Password</Form.Label>
     <Input type="password" />
     <Form.Validate required message="Checked on change" />
+  </Form.Field>
+</Form>
+
+`size` cascades the control width — the same word list every leaf speaks
+(`xs | sm | md | lg`) — but it is a state class, not a lock: it lands only on
+controls that declared no own `size`, and the control's own word wins.
+`colon` appends the `：` to every label, the Chinese admin-form habit,
+rendered as a painted piece (the label's text and its queryable name stay the
+author's words); a field can opt out per field.
+
+<Form size="sm" colon>
+  <Form.Field name="s-org">
+    <Form.Label>组织</Form.Label>
+    <Input />
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="s-note" colon={false}>
+    <Form.Label>备注</Form.Label>
+    <Input size="lg" />
   </Form.Field>
 </Form>
 
@@ -345,6 +364,8 @@ const all = useFormWatch(form); // the whole map, auto-save style
 | `labelWidth`           | size token key                            | `'24'`                    |
 | `labelAlign`           | `'start' \| 'end' \| 'justify'`           | `'start'`                 |
 | `requiredMarkPosition` | `'start' \| 'end'`                        | `'start'`                 |
+| `size`                 | `'xs' \| 'sm' \| 'md' \| 'lg'`            | controls' own             |
+| `colon`                | `boolean`                                 | `false`                   |
 | `gap`                  | spacing token key                         | `'4'`                     |
 | `disabled`             | `boolean`                                 | `false`                   |
 | `focusOnInvalid`       | `boolean`                                 | `true`                    |
@@ -357,12 +378,12 @@ layer's own, and native validation stays off).
 
 ### Form.Field / Form.Label / Form.Hint / Form.Validate
 
-| Member          | Props                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?`, `validateOn?` + native `div` attributes |
-| `Form.Label`    | `showRequiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                                      |
-| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                               |
-| `Form.Validate` | the rule props above                                                                                                      |
+| Member          | Props                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?`, `validateOn?`, `colon?` + native `div` attributes |
+| `Form.Label`    | `showRequiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                                                |
+| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                                         |
+| `Form.Validate` | the rule props above                                                                                                                |
 
 ### Hooks
 

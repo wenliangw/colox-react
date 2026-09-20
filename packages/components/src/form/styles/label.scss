@@ -42,3 +42,17 @@
 .colox-form-label__required:last-child {
   margin-inline-start: 0.25em;
 }
+
+// The colon piece: CSS-painted like the star (the label's text stays
+// the author's words — labelled queries and the aria-labelledby path
+// read the clean text), outside the text slot so the justify spread
+// never touches it. It always terminates the label, after the end
+// star.
+.colox-form-label__colon {
+  flex: none;
+  margin-inline-start: 0.125em;
+
+  &::before {
+    content: ':';
+  }
+}

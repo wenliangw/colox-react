@@ -34,6 +34,8 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
     labelWidth = '24',
     labelAlign = 'start',
     requiredMarkPosition = 'start',
+    size,
+    colon = false,
     gap = '4',
     disabled = false,
     focusOnInvalid = true,
@@ -64,7 +66,9 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
       labelWidth,
       labelAlign,
       requiredMarkPosition,
+      size,
       disabled,
+      colon,
       onValuesChange,
     }),
     [
@@ -74,7 +78,9 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
       labelWidth,
       labelAlign,
       requiredMarkPosition,
+      size,
       disabled,
+      colon,
       onValuesChange,
     ],
   );
