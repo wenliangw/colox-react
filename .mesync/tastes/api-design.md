@@ -223,10 +223,13 @@
 
 ## 日期/时间值契约：出口恒 canonical 串，消费便利走公开 cdk 工具面（DateTime 定案）
 
-- **值契约恒串一个词，绝不因「消费方便」放 Date 对象进出**（TimePicker + DatePicker showTime 定案，用户问过 Date 出口后被摊牌劝回）：`datetime = 'YYYY-MM-DDTHH:mm'` T 形固定宽，字典序即时间序（min/max 时间界免费）；入口宽容归一（T/空格双收、date-only 缺时补 00:00），出口恒单一词形。Date 对象进不了值契约四条硬伤：粒度纯度（月/年/时间无诚实 Date，伪造日参差）、Form JSON 序列化下 Date 变线串、原生 Date 可突变 + 时区坑复活（零时区正是为躲它）、对已交付词形全线翻工。
-- **消费体验用公开工具面补，不进值契约**：`toLocalDate(iso)` 一行转 Date，`fromLocalDate` 反向——需要 Date 的消费方（画图、原生 API）由纯函数桥接；「内部表示与出口形态分离」的时间版（内部 canonical 串、消费形态自取）。
+- **值契约恒串一个词，绝不因「消费方便」放 Date 对象进出**（TimePicker + DatePicker showTime 定案，用户问过 Date 出口后被摊牌劝回）：`datetime = 'YYYY-MM-DDTHH:mm'` T 形固定宽，字典序即时间序（min/max 时间界免费）；入口宽容归一（T/空格双收、date-only 缺时补 00:00），出口恒单一词形。Date 对象进不了值契约四条硬伤：粒度纯度（月/年/时间无诚实 Date，伪造日参差）、Form JSON 序列化下 Date 变线串、原生 Date 可突变 + 时区坑复活（零时区正是为躲它）、对已交付词形全线翻工。**组件值契约与工具面是两个域**：工具面（cdk）可以自由收 Date 对象，组件契约依旧只认串。
+- **工具面 = 单一值对象 + 链式调用，不用后缀自证词形**（用户评审批 1 后改拍：Iso 后缀满天飞是「没有单一数据类型」的症状）：`date(source)` 工厂归一 string|Date|`…Z` 即时串 → 不可变 `ColoxDate`，`addDays/addMonths/addYears` 链式、名字即语义不带 iso；`format(source, pattern)` 独立可用——链式不是强制，不必所有调用都从 `date()` 开头。方法名语义化优先（复数词形 `addMonths` 对齐引擎与惯例），输入宽容（双格式恒收）不需要在名字上强调。
+- **显示词与即时词分离**（用户定：「iso 默认输出与 `new Date().toISOString()` 保持一致」）：`format()` / `iso(pattern)` 渲染民用坐标（时区无关显示面）；`iso()` 无参 = UTC 即时词（完整时间 + T + Z + 毫秒位，真 UTC 值）——序列化边界走本地壁钟→UTC，且工厂可回读往返；解析 Z 串不碰 `new Date(string)`（自己解数字 + `Date.UTC` 转本地、先校验后算，日历非法直接抛不滚动）。
+- **format 词表 = 完整标准词 + 补零 + 大小写载义**：年月日、时分秒、星期全支持（`y/M/d/E/H/h/m/s`），`M` 是月 `m` 是分、`H` 24 制 `h` 12 制——大小写即语义；token 长度即补零；「pattern 里没有时间 token 就不渲染时间」（仅年月日 → 舍弃时间），格式带着时间 token 就按格式来。
+- **工具面的错误 = 诚实抛出**（工厂对非法源抛 TypeError），编辑器的故事才是回滚——两个域两种容错，不混。
 - **min/max 双收 string | Date**：`Date` 按**本地日历壁钟**读（getFullYear 族），归一到 ISO 串参与比较——入口宽容只宽容在「作者给的词形」，比较世界永远一根串轴。
 - **零依赖纪律**：需求面已被自家零时区纯算法覆盖（+ 时间只是 60 进制与串比较）时不引入 dayjs/date-fns——库真正强项（时区/相对/duration）没有消费者就不引入；真实缺口出现再评估。
-- **cdk 只收纯函数、两消费者成核、公开面 curated**：date 数学整体抬入 cdk（DatePicker 改吃它）因为两个消费者（TimePicker + showTime）成立；日期/时间方法同居 cdk/date 一个入口；公开面只放 `@colox/react/cdk/date` curated 十函数，网格 builder 这类内部构造器不发——公开路径随将来 cdk 独立包迁移。
+- **cdk 只收纯函数、两消费者成核、公开面 curated**：date 数学整体抬入 cdk（DatePicker 改吃它）因为两个消费者（TimePicker + showTime）成立；日期/时间方法同居 cdk/date 一个入口；公开面只放 `@colox/react/cdk/date` 的值对象工厂三符号，网格 builder 这类内部构造器不发——公开路径随将来 cdk 独立包迁移。
 
-来源：TimePicker + DateTime 集成设计定案四轮对齐（用户拍板值契约串出口 + 公开工具面、min/max 双收、不引日期库；用户指令「cdk 保持 @colox/react/cdk/date 公开路径，因为 cdk 后面会独立一个 package」）。
+来源：TimePicker + DateTime 集成设计定案四轮对齐（用户拍板值契约串出口 + 公开工具面、min/max 双收、不引日期库；用户指令「cdk 保持 @colox/react/cdk/date 公开路径，因为 cdk 后面会独立一个 package」）；批 1 评审后用户改拍公开面形态（「为什么都加 Iso——签名设计问题」→ 链式值对象 + `.iso()` 即时词 + format 独立可用三决）。

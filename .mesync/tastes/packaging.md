@@ -6,5 +6,5 @@
 - **数据定夺**：打包/摇树决策用消费端实测说话（只引 Button 产物 2.7KB vs 全量 10.6KB、残留清零），不靠理论推断。
 - **一行样式优先**：`style.css` 单文件全量是默认体验；CSS 分包等组件样式膨胀到值得维护装配逻辑（或引入 lib-inject-css 接线）再说。
 - **入口即树摇**：一个组件一个构建 entry + exports 子路径——模块级树摇确定性最高，消费端无需关心 rollup 内部 chunk。
-- **cdk 公开面 = 独立 entry + curated 导出**（cdk/date 先例）：公开工具面走自己的构建入口与 exports 子路径（`@colox/react/cdk/date`），只导出消费者要的函数（curated 十函数），内部构造器留在子模块不进 barrel——公开面收窄即未来独立包的搬迁面；路径词形按「将来独立包」预留（cdk/ 前缀就位，迁移只动包名不动路径）。
+- **cdk 公开面 = 独立 entry + curated 导出**（cdk/date 先例）：公开工具面走自己的构建入口与 exports 子路径（`@colox/react/cdk/date`），只导出消费者要的符号（date/format 工厂 + ColoxDate 值对象），内部构造器留在子模块不进 barrel——公开面收窄即未来独立包的搬迁面；路径词形按「将来独立包」预留（cdk/ 前缀就位，迁移只动包名不动路径）。公开面的名字即最终名字（真名导出），不许 dts 露出「internalName as publicName」的别名痕迹——公开 API 的整洁由薄包装/真名保证。
 - **别名只在源码期、产物恒相对路径**（dts/es 双产物）：`@colox/cdk/*` alias 供源码内引用，vite/dts 产物一律重写为相对路径——消费端不需要知道内部包名。
