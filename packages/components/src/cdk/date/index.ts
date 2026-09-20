@@ -1,20 +1,25 @@
 /**
  * `@colox/react/cdk/date` — the public date/time toolbelt.
  *
- * The curated consumer-facing surface of the cdk date core: the value
- * contract stays the canonical ISO string ('YYYY-MM-DD', 'YYYY-MM',
- * 'YYYY', 'HH:mm'), and these helpers move values around it — format
- * for display, parse typed text, compare (lexicographic string order
- * is chronological order), shift days/months, and cross to native
- * `Date` when a consumer genuinely needs one. The panel grid builders
- * stay internal; this file is the whole public contract.
+ * One value type, fluent and immutable: `date(source)` normalizes
+ * `string` (datetime, date, `YYYY-MM`, bare `YYYY`, and the `…Z`
+ * instant word spellings) or native `Date` (read at the local wall
+ * clock) into a `ColoxDate`, whose chainable math (`addDays` /
+ * `addMonths` / `addYears`) keeps civil coordinates all the way
+ * through — the zero-timezone discipline holds. `format` renders the
+ * display words, `iso()` the instant word (`new Date().toISOString()`
+ * shape — full clock, `T`, `Z`, UTC), `toDate()` is the bridge to
+ * native `Date`, and the standalone `format` shorthand works without
+ * the `date()` detour.
+ *
+ * ```ts
+ * import { date, format } from '@colox/react/cdk/date';
+ *
+ * date('2026-03-15T08:30').addDays(2).iso('yyyy-MM-dd'); // '2026-03-17'
+ * date('2026-03-15').format('yyyy/MM/dd');               // '2026/03/15'
+ * date('2026-03-15T08:30').iso();                        // '2026-03-15T00:30:00.000Z' — instant word, UTC
+ * format('2026-03-15', 'yyyy年M月d日');                   // standalone
+ * ```
  */
-export {
-  addDaysIso as addDays,
-  addMonthsIso as addMonths,
-  compareIso as compare,
-  todayIso,
-} from './civil';
-export { formatIso as formatDate, parseDateText } from './format';
-export { formatTime, parseTimeText } from './time';
-export { fromLocalDate, toLocalDate } from './local';
+export { ColoxDate, date, format } from './date-time';
+export type { DateSource } from './date-time';
