@@ -1,12 +1,15 @@
 // The label: the family's small tier, medium weight — it names the
 // field without competing with the control's own text. It splits into
-// the required mark and a text slot (a flex row aligned on the text
-// baseline): the split keeps the mark glued to the text even when the
-// labelAlign axis justifies the text across the column, because the
-// alignment lands on the text slot alone.
+// the required mark and a text slot (an inline flex row aligned on the
+// text baseline) and sizes to its content: the labelAlign axis lines
+// the whole label up inside the column slot, so the mark travels with
+// its text — the star and the words align as one piece. The justify
+// mode alone stretches the text slot across the column (in
+// label-align.scss), keeping the mark glued at the line's edge.
 .colox-form-label {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
+  max-width: 100%;
   font-size: var(--colox-font-size-sm);
   line-height: var(--colox-line-height-sm);
   font-weight: var(--colox-font-weight-medium);
@@ -14,7 +17,6 @@
 }
 
 .colox-form-label__text {
-  flex: 1 1 auto;
   min-width: 0;
 }
 

@@ -1,26 +1,32 @@
 // The label column's text alignment: `start` is the natural block
 // lead (the default), `end` sails the label's trailing edge against
-// the control, and `justify` spreads the text across the column
-// width — the two-to-four character Chinese label trick. The
-// alignment lands on the label's text slot, never on the mark or the
-// column slot: the required star stays glued to the text while the
-// text alone spreads, and because a single-line label is all "last
-// line", justify must also take `text-align-last` (a wrapping label
-// justifies every line).
+// the control. Both land on the column slot with the label sizing to
+// its content (inline-flex), so the alignment moves the label as one
+// piece — the required mark stays glued to its text wherever the text
+// goes. `justify` is the exception that stretches the text slot
+// across the column width (the two-to-four character Chinese label
+// trick): the mark stays outside the slot at the line's edge, and
+// because a single-line label is all "last line", justify must also
+// take `text-align-last` (a wrapping label justifies every line).
 .colox-form-field--label-align-start {
-  .colox-form-label__text {
+  .colox-form__label-slot {
     text-align: start;
   }
 }
 
 .colox-form-field--label-align-end {
-  .colox-form-label__text {
+  .colox-form__label-slot {
     text-align: end;
   }
 }
 
 .colox-form-field--label-align-justify {
+  .colox-form-label {
+    display: flex;
+  }
+
   .colox-form-label__text {
+    flex: 1 1 auto;
     text-align: justify;
     text-align-last: justify;
   }

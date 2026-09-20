@@ -34,7 +34,7 @@ export type FormLabelProps = Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFo
    * the field required; `false` hides it on this label only.
    * @default true
    */
-  requiredMark?: boolean;
+  showRequiredMark?: boolean;
   children: ReactNode;
 };
 

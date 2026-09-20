@@ -171,10 +171,13 @@ const LabelAlignDemo = () => (
 // The required mark: derived from the `required` rules — the star
 // renders while some Form.Validate leaf declares it, leading the text
 // by default (`requiredMarkPosition` on the form, overridable per
-// field; a label hides its own with `requiredMark={false}`).
+// field; a label hides its own with `showRequiredMark={false}`). The
+// star travels with the text under every labelAlign word: end keeps
+// the whole label — star and text — against the control, justify
+// spreads the text alone.
 const RequiredMarkDemo = () => (
   <Stack direction="column" gap="3" style={demoWidth}>
-    <Form labelPlacement="start" labelWidth="16" gap="4">
+    <Form labelPlacement="start" labelWidth="16" labelAlign="end" gap="4">
       <Form.Field name="name">
         <Form.Label>姓名</Form.Label>
         <Input placeholder="Ada" />
@@ -185,8 +188,13 @@ const RequiredMarkDemo = () => (
         <Input placeholder="ada@colox.dev" />
         <Form.Validate required />
       </Form.Field>
+      <Form.Field name="address" labelAlign="justify">
+        <Form.Label>地址</Form.Label>
+        <Input placeholder="Spread label text" />
+        <Form.Validate required />
+      </Form.Field>
       <Form.Field name="note">
-        <Form.Label requiredMark={false}>备注</Form.Label>
+        <Form.Label showRequiredMark={false}>备注</Form.Label>
         <Input placeholder="Required but unmarked" />
         <Form.Validate required />
       </Form.Field>

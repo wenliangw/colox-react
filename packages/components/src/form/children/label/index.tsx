@@ -16,15 +16,15 @@ import type { FormLabelProps } from '../../types';
  * `justify` included) spreads the text alone and the mark stays glued
  * to it. The mark renders while some `Form.Validate required` leaf
  * declares the field required, before or after the text per the
- * field's `requiredMarkPosition`; `requiredMark={false}` hides it on
- * this label only.
+ * field's `requiredMarkPosition`; `showRequiredMark={false}` hides it
+ * on this label only.
  */
 export const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>((props, ref) => {
-  const { children, className, requiredMark = true, ...rest } = props;
+  const { children, className, showRequiredMark = true, ...rest } = props;
   const field = useFormFieldContext();
 
   const mark =
-    field.required && requiredMark ? (
+    field.required && showRequiredMark ? (
       // The glyph comes from CSS (content), not from a text node — the
       // label's text stays what the author wrote (labelled queries and
       // the aria-labelledby path read the clean text), and the empty

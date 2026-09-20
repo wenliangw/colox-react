@@ -207,7 +207,7 @@ describe('Form required mark', () => {
     const { container } = render(
       <Form>
         <Form.Field name="email">
-          <Form.Label requiredMark={false}>Email</Form.Label>
+          <Form.Label showRequiredMark={false}>Email</Form.Label>
           <Input />
           <Form.Validate required />
         </Form.Field>

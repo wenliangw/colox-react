@@ -210,10 +210,12 @@ A field shows the red `*` while some `Form.Validate required` leaf declares it
 required — the mark is derived from the rules, never declared twice.
 `requiredMarkPosition` is `'start'` (the mark leads the text) or `'end'`
 (antd's trail), set on the form and overridable per field; a label hides its
-own mark with `requiredMark={false}`. The visual star is decoration — the
-field injects `aria-required` into the control as its programmatic twin.
+own mark with `showRequiredMark={false}`. The star travels with the text: the
+`labelAlign` axis lines up the whole label — mark and words as one piece — so
+it never drifts away from the words. The visual star is decoration — the field
+injects `aria-required` into the control as its programmatic twin.
 
-<Form labelPlacement="start" labelWidth="16" gap="4">
+<Form labelPlacement="start" labelWidth="16" labelAlign="end" gap="4">
   <Form.Field name="r-name">
     <Form.Label>姓名</Form.Label>
     <Input placeholder="Ada" />
@@ -224,8 +226,13 @@ field injects `aria-required` into the control as its programmatic twin.
     <Input placeholder="ada@colox.dev" />
     <Form.Validate required />
   </Form.Field>
+  <Form.Field name="r-address" labelAlign="justify">
+    <Form.Label>地址</Form.Label>
+    <Input placeholder="Spread label text" />
+    <Form.Validate required />
+  </Form.Field>
   <Form.Field name="r-note">
-    <Form.Label requiredMark={false}>备注</Form.Label>
+    <Form.Label showRequiredMark={false}>备注</Form.Label>
     <Input placeholder="Required but unmarked" />
     <Form.Validate required />
   </Form.Field>
@@ -276,7 +283,7 @@ layer's own, and native validation stays off).
 | Member          | Props                                                                                                      |
 | --------------- | ---------------------------------------------------------------------------------------------------------- |
 | `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?` + native `div` attributes |
-| `Form.Label`    | `requiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                           |
+| `Form.Label`    | `showRequiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                       |
 | `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                |
 | `Form.Validate` | the rule props above                                                                                       |
 
