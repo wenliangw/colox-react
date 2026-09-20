@@ -6,7 +6,7 @@ import {
   decadeOf,
   parseGranularIso,
   partsToIso,
-  todayIso,
+  today,
 } from '@colox/cdk/date/civil';
 
 /** A padded canonical prefix — shared by the view helpers below. */
@@ -33,7 +33,7 @@ export const fallbackViewOf = (picker: DatePickerPicker): DateViewport => {
  * window). Unparsable seeds fall back to 1970-built views.
  */
 export const viewOfValue = (value: string | null, picker: DatePickerPicker): DateViewport => {
-  const parts = parseGranularIso(value === null ? todayIso() : value);
+  const parts = parseGranularIso(value === null ? today() : value);
   if (parts === null) {
     return fallbackViewOf(picker);
   }

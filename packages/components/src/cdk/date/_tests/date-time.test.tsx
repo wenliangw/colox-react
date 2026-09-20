@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ColoxDate, date, format } from '../date-time';
+import { date, format } from '../date-time';
 
 describe('factory input normalization', () => {
   it('accepts date spellings — strict, lenient separators', () => {
@@ -38,7 +38,6 @@ describe('factory input normalization', () => {
   it('passes instances through untouched', () => {
     const value = date('2026-03-15');
     expect(date(value)).toBe(value);
-    expect(date(value)).toBeInstanceOf(ColoxDate);
   });
 });
 

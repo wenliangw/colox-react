@@ -14,8 +14,8 @@ import {
   granularIsoOf,
   parseGranularIso,
   partsToIso,
-  todayIso,
-  weekdayOfParts,
+  today,
+  weekdayOf,
 } from '@colox/cdk/date/civil';
 import { formatIso, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
 import {
@@ -339,7 +339,7 @@ export const useDatePicker = ({
       if (next === null) {
         return;
       }
-      pendingFocusRef.current = anchorOf(next.view, next.level, current, todayIso(), isDisabled);
+      pendingFocusRef.current = anchorOf(next.view, next.level, current, today(), isDisabled);
       setView(next.view);
       setLevel(next.level);
       return;
@@ -358,7 +358,7 @@ export const useDatePicker = ({
     if (target === level || target === 'date') {
       return;
     }
-    pendingFocusRef.current = anchorOf(view, target, current, todayIso(), isDisabled);
+    pendingFocusRef.current = anchorOf(view, target, current, today(), isDisabled);
     setLevel(target);
   };
 
@@ -400,9 +400,9 @@ export const useDatePicker = ({
       } else if (key === 'ArrowDown') {
         next = civilFromDays(daysFromCivil(parts) + 7);
       } else if (key === 'Home') {
-        next = civilFromDays(daysFromCivil(parts) - weekdayOfParts(parts));
+        next = civilFromDays(daysFromCivil(parts) - weekdayOf(parts));
       } else if (key === 'End') {
-        next = civilFromDays(daysFromCivil(parts) + (6 - weekdayOfParts(parts)));
+        next = civilFromDays(daysFromCivil(parts) + (6 - weekdayOf(parts)));
       } else if (key === 'PageUp') {
         next = addMonths(parts, -1);
       } else if (key === 'PageDown') {
@@ -497,7 +497,7 @@ export const useDatePicker = ({
   // The focus anchor: selection first, then today at the level's
   // granularity, then the grid's home — whichever lands inside the
   // view and bounds.
-  const activeIso = anchorOf(view, level, current, todayIso(), isDisabled);
+  const activeIso = anchorOf(view, level, current, today(), isDisabled);
 
   return {
     current,

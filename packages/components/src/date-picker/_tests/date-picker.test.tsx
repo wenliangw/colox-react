@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker } from '../date-picker';
-import { todayIso } from '../../cdk/date/civil';
+import { today } from '../../cdk/date/civil';
 
 const input = () => screen.getByRole('combobox') as HTMLInputElement;
 const shell = () => input().closest('.colox-date-picker') as HTMLElement;
@@ -295,38 +295,38 @@ describe('calendar panel', () => {
   });
 
   it('marks the selected and today cells', () => {
-    const today = todayIso();
-    render(<DatePicker defaultValue={today} />);
+    const todayValue = today();
+    render(<DatePicker defaultValue={todayValue} />);
     fireEvent.click(shell());
-    expect(dayCell(today)).toHaveClass(
+    expect(dayCell(todayValue)).toHaveClass(
       'colox-date-picker__day--today',
       'colox-date-picker__day--selected',
     );
-    expect(dayCell(today)).toHaveAttribute('aria-selected', 'true');
+    expect(dayCell(todayValue)).toHaveAttribute('aria-selected', 'true');
   });
 
   it('marks the current cell in every selection state (subtle is unconditional)', () => {
-    const today = todayIso();
+    const todayValue = today();
     // A different day of the current month (in-view, not the current cell).
-    const other = `${today.slice(0, 8)}${today.slice(8) === '01' ? '02' : '01'}`;
+    const other = `${todayValue.slice(0, 8)}${todayValue.slice(8) === '01' ? '02' : '01'}`;
     // The current cell keeps its class whether or not a value commits;
     // the paint layers (subtle vs. solid fill) resolve in CSS.
     const { unmount } = render(<DatePicker />);
     fireEvent.click(shell());
-    expect(dayCell(today)).toHaveClass('colox-date-picker__day--today');
+    expect(dayCell(todayValue)).toHaveClass('colox-date-picker__day--today');
     unmount();
     render(<DatePicker defaultValue={other} />);
     fireEvent.click(shell());
-    expect(dayCell(today)).toHaveClass('colox-date-picker__day--today');
-    expect(dayCell(today)).not.toHaveClass('colox-date-picker__day--selected');
+    expect(dayCell(todayValue)).toHaveClass('colox-date-picker__day--today');
+    expect(dayCell(todayValue)).not.toHaveClass('colox-date-picker__day--selected');
   });
 
   it('keeps both classes when the selection is the current cell', () => {
-    const today = todayIso();
-    render(<DatePicker defaultValue={today} />);
+    const todayValue = today();
+    render(<DatePicker defaultValue={todayValue} />);
     fireEvent.click(shell());
-    expect(dayCell(today)).toHaveClass('colox-date-picker__day--today');
-    expect(dayCell(today)).toHaveClass('colox-date-picker__day--selected');
+    expect(dayCell(todayValue)).toHaveClass('colox-date-picker__day--today');
+    expect(dayCell(todayValue)).toHaveClass('colox-date-picker__day--selected');
   });
 
   it('shows the trailing clear control when clearable and a value commits (Select parity)', () => {
@@ -448,7 +448,7 @@ describe('month picker', () => {
     render(<DatePicker picker="month" />);
     expect(input()).toHaveAttribute('placeholder', 'yyyy-MM');
     fireEvent.click(shell());
-    const year = Number(todayIso().slice(0, 4));
+    const year = Number(today().slice(0, 4));
     expect(screen.getByText(`${year}年`)).toBeInTheDocument();
     const cells = screen.getAllByRole('gridcell');
     expect(cells).toHaveLength(12);
@@ -459,7 +459,7 @@ describe('month picker', () => {
   it('commits the clicked month as canonical YYYY-MM and closes', () => {
     const handleChange = onChange();
     render(<DatePicker picker="month" onChange={handleChange} />);
-    const year = Number(todayIso().slice(0, 4));
+    const year = Number(today().slice(0, 4));
     fireEvent.click(shell());
     fireEvent.click(dayCell(`${year}-03`));
     expect(handleChange.mock.calls[0][0].value).toBe(`${year}-03`);
@@ -510,7 +510,7 @@ describe('year picker', () => {
     render(<DatePicker picker="year" />);
     expect(input()).toHaveAttribute('placeholder', 'yyyy');
     fireEvent.click(shell());
-    const year = Number(todayIso().slice(0, 4));
+    const year = Number(today().slice(0, 4));
     const decadeStart = Math.floor(year / 10) * 10;
     expect(screen.getByText(`${decadeStart}–${decadeStart + 11}年`)).toBeInTheDocument();
     const cells = screen.getAllByRole('gridcell');

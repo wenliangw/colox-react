@@ -2,7 +2,7 @@ export type {
   DateFormatPart,
   DateFormatToken,
   DateParts,
-  IsoPrecision,
+  ParsePrecision,
   MonthGridCell,
   MonthViewCell,
   YearViewCell,

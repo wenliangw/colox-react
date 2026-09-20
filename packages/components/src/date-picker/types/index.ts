@@ -23,7 +23,7 @@ export type {
   DatePickerPicker,
   DateValue,
   DateViewport,
-  IsoPrecision,
+  ParsePrecision,
   MonthGridCell,
   MonthViewCell,
   YearViewCell,

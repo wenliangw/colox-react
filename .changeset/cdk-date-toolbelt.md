@@ -16,6 +16,8 @@ month vs `m` minute), `iso()` emits the instant word in
 `toISOString()` shape (full clock, `T`, `Z`, UTC) and round-trips
 into the factory, and `toDate()` bridges to native `Date`. A
 standalone `format(value, pattern)` works without the `date()`
-detour. The date picker keeps reading the core from the cdk
+detour. `ColoxDate` exposes its method set as the public type only —
+construction is sealed behind the factory, no internal entries leak
+into the dts. The date picker keeps reading the core from the cdk
 submodules (zero visual change); its util files move along with
 their tests, joined by the new value-object module.

@@ -14,7 +14,7 @@ import {
   parseGranularIso,
   partsToGranularIso,
   partsToIso,
-  weekdayOfParts,
+  weekdayOf,
 } from '../civil';
 
 describe('date-core calendar math', () => {
@@ -38,9 +38,9 @@ describe('date-core calendar math', () => {
 
   it('derives Monday-first weekdays', () => {
     // 2026-03-02 is a Monday; 1970-01-01 was a Thursday (index 3).
-    expect(weekdayOfParts({ year: 2026, month: 3, day: 2 })).toBe(0);
-    expect(weekdayOfParts({ year: 1970, month: 1, day: 1 })).toBe(3);
-    expect(weekdayOfParts({ year: 2026, month: 3, day: 8 })).toBe(6);
+    expect(weekdayOf({ year: 2026, month: 3, day: 2 })).toBe(0);
+    expect(weekdayOf({ year: 1970, month: 1, day: 1 })).toBe(3);
+    expect(weekdayOf({ year: 2026, month: 3, day: 8 })).toBe(6);
   });
 });
 

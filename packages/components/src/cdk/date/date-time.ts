@@ -1,4 +1,4 @@
-import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOfParts } from './civil';
+import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './civil';
 
 /**
  * The cdk date/time value object — an immutable civil date-time
@@ -110,7 +110,10 @@ const instantToLocal = (source: string): DateTimeParts => {
   );
 };
 
-const parseSource = (source: string | Date): DateTimeParts => {
+const parseSource = (source: DateSource): DateTimeParts => {
+  if (source instanceof DateValue) {
+    return source.parts;
+  }
   if (typeof source === 'string') {
     const trimmed = source.trim();
     if (INSTANT.test(trimmed)) {
@@ -141,13 +144,16 @@ const parseSource = (source: string | Date): DateTimeParts => {
     }
     throw new TypeError(`colox: cannot parse date value "${source}"`);
   }
+  // Only native Dates reach this branch: every real ColoxDate instance
+  // is a DateValue, and the first branch returned them.
+  const native = source as Date;
   return toParts(
-    source.getFullYear(),
-    source.getMonth() + 1,
-    source.getDate(),
-    source.getHours(),
-    source.getMinutes(),
-    source.getSeconds(),
+    native.getFullYear(),
+    native.getMonth() + 1,
+    native.getDate(),
+    native.getHours(),
+    native.getMinutes(),
+    native.getSeconds(),
   );
 };
 
@@ -225,7 +231,7 @@ const renderPart = (part: PatternPart, parts: DateTimeParts): string => {
       return pad(parts.day, part.length);
     case 'weekday': {
       const names = part.length >= 4 ? WEEKDAY_FULL : WEEKDAY_SHORT;
-      return names[weekdayOfParts(parts)];
+      return names[weekdayOf(parts)];
     }
     case 'hour24':
       return pad(parts.hour, part.length);
@@ -245,51 +251,23 @@ const renderPattern = (parts: DateTimeParts, pattern: string): string =>
 
 // ——— the value object —————————————————————————————————————————————————
 
-export class ColoxDate {
-  private readonly parts: DateTimeParts;
-
-  private constructor(parts: DateTimeParts) {
-    this.parts = parts;
-  }
-
-  /** The class-side entry: the only way to construct an instance (the `date` factory is the public path). */
-  static fromParts(parts: DateTimeParts): ColoxDate {
-    return new ColoxDate(parts);
-  }
-
+/**
+ * The immutable date/time coordinate the `date` factory produces.
+ * Construction lives entirely behind the factory: the public face is
+ * this method set — no constructor, no internal entries.
+ */
+export interface ColoxDate {
   /** Whole-day shift; the clock part rides along untouched. */
-  addDays(delta: number): ColoxDate {
-    const shifted = civilFromDays(daysFromCivil(this.parts) + delta);
-    return new ColoxDate({
-      ...shifted,
-      hour: this.parts.hour,
-      minute: this.parts.minute,
-      second: this.parts.second,
-    });
-  }
+  addDays(delta: number): ColoxDate;
 
   /** Whole-month shift, clamping the day into the target month; the clock rides along. */
-  addMonths(delta: number): ColoxDate {
-    const shifted = addMonths(this.parts, delta);
-    return new ColoxDate({
-      ...shifted,
-      hour: this.parts.hour,
-      minute: this.parts.minute,
-      second: this.parts.second,
-    });
-  }
+  addMonths(delta: number): ColoxDate;
 
   /** Whole-year shift, clamping Feb 29 into Feb 28 on common years; the clock rides along. */
-  addYears(delta: number): ColoxDate {
-    const year = this.parts.year + delta;
-    const day = Math.min(this.parts.day, daysInMonth(year, this.parts.month));
-    return new ColoxDate({ ...this.parts, year, day });
-  }
+  addYears(delta: number): ColoxDate;
 
   /** Renders through the token pattern (see the module vocabulary). */
-  format(pattern: string): string {
-    return renderPattern(this.parts, pattern);
-  }
+  format(pattern: string): string;
 
   /**
    * The instant word — the value shifted to UTC and serialized
@@ -298,6 +276,56 @@ export class ColoxDate {
    * interchange shape; display rendering stays in `format`. With a
    * pattern, renders the civil coordinates through the token grammar.
    */
+  iso(pattern?: string): string;
+
+  /** The native Date at the browser-local calendar wall clock. */
+  toDate(): Date;
+}
+
+/** The factory gate: instances may only come from `date()`. */
+const FACTORY_TOKEN = Symbol('colox-date-value');
+
+class DateValue implements ColoxDate {
+  /** Module-internal coordinates — the class never leaves this file. */
+  readonly parts: DateTimeParts;
+
+  constructor(token: symbol, parts: DateTimeParts) {
+    if (token !== FACTORY_TOKEN) {
+      throw new TypeError('colox: date values come from the date() factory');
+    }
+    this.parts = parts;
+  }
+
+  addDays(delta: number): ColoxDate {
+    const shifted = civilFromDays(daysFromCivil(this.parts) + delta);
+    return new DateValue(FACTORY_TOKEN, {
+      ...shifted,
+      hour: this.parts.hour,
+      minute: this.parts.minute,
+      second: this.parts.second,
+    });
+  }
+
+  addMonths(delta: number): ColoxDate {
+    const shifted = addMonths(this.parts, delta);
+    return new DateValue(FACTORY_TOKEN, {
+      ...shifted,
+      hour: this.parts.hour,
+      minute: this.parts.minute,
+      second: this.parts.second,
+    });
+  }
+
+  addYears(delta: number): ColoxDate {
+    const year = this.parts.year + delta;
+    const day = Math.min(this.parts.day, daysInMonth(year, this.parts.month));
+    return new DateValue(FACTORY_TOKEN, { ...this.parts, year, day });
+  }
+
+  format(pattern: string): string {
+    return renderPattern(this.parts, pattern);
+  }
+
   iso(pattern?: string): string {
     if (pattern === undefined) {
       return this.toDate().toISOString();
@@ -305,7 +333,6 @@ export class ColoxDate {
     return renderPattern(this.parts, pattern);
   }
 
-  /** The native Date at the browser-local calendar wall clock. */
   toDate(): Date {
     return new Date(
       this.parts.year,
@@ -327,12 +354,12 @@ export class ColoxDate {
  */
 export const date = (source?: DateSource): ColoxDate => {
   if (source === undefined) {
-    return ColoxDate.fromParts(parseSource(new Date()));
+    return new DateValue(FACTORY_TOKEN, parseSource(new Date()));
   }
-  if (source instanceof ColoxDate) {
+  if (source instanceof DateValue) {
     return source;
   }
-  return ColoxDate.fromParts(parseSource(source));
+  return new DateValue(FACTORY_TOKEN, parseSource(source));
 };
 
 /**
@@ -341,6 +368,7 @@ export const date = (source?: DateSource): ColoxDate => {
  * sources the factory does.
  */
 export const format = (source: DateSource, pattern: string): string => {
-  const value = source instanceof ColoxDate ? source : ColoxDate.fromParts(parseSource(source));
+  const value =
+    source instanceof DateValue ? source : new DateValue(FACTORY_TOKEN, parseSource(source));
   return value.format(pattern);
 };

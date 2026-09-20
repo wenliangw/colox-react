@@ -65,7 +65,7 @@ export const civilFromDays = (days: number): DateParts => {
 };
 
 /** Monday-first weekday index: 0 = Monday … 6 = Sunday. */
-export const weekdayOfParts = (parts: DateParts): number => {
+export const weekdayOf = (parts: DateParts): number => {
   const index = (daysFromCivil(parts) + 3) % 7;
   return index < 0 ? index + 7 : index;
 };
@@ -77,7 +77,7 @@ export const weekdayOfParts = (parts: DateParts): number => {
  * month (the others render dimmed).
  */
 export const buildMonthGrid = (year: number, month: number): MonthGridCell[] => {
-  const firstWeekday = weekdayOfParts({ year, month, day: 1 });
+  const firstWeekday = weekdayOf({ year, month, day: 1 });
   const startDays = daysFromCivil({ year, month, day: 1 }) - firstWeekday;
   return Array.from({ length: GRID_CELL_COUNT }, (_, index) => {
     const parts = civilFromDays(startDays + index);
@@ -155,7 +155,7 @@ export const buildYearViewCells = (decadeStart: number): YearViewCell[] =>
   });
 
 /** Today in the browser's local calendar (highlight + view seeding only). */
-export const todayIso = (): string => {
+export const today = (): string => {
   const now = new Date();
   return partsToIso({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() });
 };

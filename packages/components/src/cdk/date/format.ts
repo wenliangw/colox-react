@@ -3,9 +3,9 @@ import type {
   DateFormatToken,
   DateGranularity,
   DateParts,
-  IsoPrecision,
+  ParsePrecision,
 } from './types';
-import { isValidDate, parseGranularIso, partsToGranularIso, weekdayOfParts } from './civil';
+import { isValidDate, parseGranularIso, partsToGranularIso, weekdayOf } from './civil';
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAY_FULL = [
@@ -77,7 +77,7 @@ const renderToken = (part: DateFormatToken, parts: DateParts): string => {
     return part.length === 1 ? text : text.padStart(2, '0');
   }
   const names = part.length >= 4 ? WEEKDAY_FULL : WEEKDAY_SHORT;
-  return names[weekdayOfParts(parts)];
+  return names[weekdayOf(parts)];
 };
 
 /** Renders a canonical granularity ISO value through the `valueFormat` pattern. */
@@ -133,7 +133,7 @@ export const patternToParseSource = (pattern: string): string => {
 /** A parse hit: day-accurate parts plus the precision the text pinned. */
 interface ParsedMatch {
   parts: DateParts;
-  precision: IsoPrecision;
+  precision: ParsePrecision;
 }
 
 const parseByPattern = (text: string, pattern: string): ParsedMatch | null => {
@@ -168,7 +168,7 @@ const parseByPattern = (text: string, pattern: string): ParsedMatch | null => {
   if (!isValidDate(date)) {
     return null;
   }
-  const precision: IsoPrecision = day !== undefined ? 2 : month !== undefined ? 1 : 0;
+  const precision: ParsePrecision = day !== undefined ? 2 : month !== undefined ? 1 : 0;
   return { parts: date, precision };
 };
 
@@ -183,22 +183,22 @@ const parseByGrammar = (text: string): ParsedMatch | null => {
   const full = ISO_STRICT.exec(text) ?? ISO_LENIENT.exec(text);
   if (full !== null) {
     const date = { year: Number(full[1]), month: Number(full[2]), day: Number(full[3]) };
-    return isValidDate(date) ? { parts: date, precision: 2 as IsoPrecision } : null;
+    return isValidDate(date) ? { parts: date, precision: 2 as ParsePrecision } : null;
   }
   const monthMatch = ISO_MONTH.exec(text);
   if (monthMatch !== null) {
     const date = { year: Number(monthMatch[1]), month: Number(monthMatch[2]), day: 1 };
-    return isValidDate(date) ? { parts: date, precision: 1 as IsoPrecision } : null;
+    return isValidDate(date) ? { parts: date, precision: 1 as ParsePrecision } : null;
   }
   const yearMatch = ISO_YEAR.exec(text);
   if (yearMatch !== null) {
     const date = { year: Number(yearMatch[1]), month: 1, day: 1 };
-    return isValidDate(date) ? { parts: date, precision: 0 as IsoPrecision } : null;
+    return isValidDate(date) ? { parts: date, precision: 0 as ParsePrecision } : null;
   }
   return null;
 };
 
-const GRANULARITY_PRECISION: Record<DateGranularity, IsoPrecision> = {
+const GRANULARITY_PRECISION: Record<DateGranularity, ParsePrecision> = {
   year: 0,
   month: 1,
   date: 2,

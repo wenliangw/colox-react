@@ -21,5 +21,5 @@
  * format('2026-03-15', 'yyyy年M月d日');                   // standalone
  * ```
  */
-export { ColoxDate, date, format } from './date-time';
-export type { DateSource } from './date-time';
+export { date, format } from './date-time';
+export type { ColoxDate, DateSource } from './date-time';

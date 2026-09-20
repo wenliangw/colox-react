@@ -47,7 +47,7 @@ export interface YearViewCell {
  * when its precision reaches the field's granularity (typing more
  * precision than the field provides is accepted and truncated).
  */
-export type IsoPrecision = 0 | 1 | 2;
+export type ParsePrecision = 0 | 1 | 2;
 
 /** One compiled piece of a `valueFormat` pattern. */
 export type DateFormatPart =
