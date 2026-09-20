@@ -62,6 +62,9 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const labelId = `${uid}-label`;
   const hintId = `${uid}-hint`;
   const errorId = `${uid}-error`;
+  // One id per hint (the naught keeps the bare id): several hints must
+  // not share a DOM id, and described-by names them all.
+  const hintIds = leaves.hints.map((_, index) => (index === 0 ? hintId : `${hintId}-${index}`));
 
   const booleanControl = isBooleanControl(control);
   const groupControl = isGroupControl(control);
@@ -72,13 +75,6 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const errorLeaf = useFormErrorLeaf(store, name);
   const invalid = error !== undefined;
 
-  // Rules register once per field shape: the store runs them on submit,
-  // the field runs them on its own triggers, both through one runner.
-  useEffect(
-    () => store.registerField(name, { runRules: runner.runRules, deps: runner.deps }),
-    [store, name, runner],
-  );
-
   // The first value the control shows: the author's uncontrolled seed
   // when declared, the family's empty word for its domain otherwise.
   // Injecting it from the very first render keeps the control controlled
@@ -88,11 +84,22 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const seed = controlProps.defaultValue ?? controlProps.defaultChecked ?? emptyWord;
   const current = value === undefined ? seed : value;
 
+  // The seed effect must run before the registration lands so `reset()`
+  // re-seeds from the registration the field actually mounted with.
   useEffect(() => {
     if (store.getValue(name) === undefined) {
       store.setValue(name, seed);
     }
   }, [name, seed, store]);
+
+  // Rules register once per field shape: the store runs them on submit,
+  // the field runs them on its own triggers, both through one runner.
+  // The registration carries the field's first value (the seed) so
+  // `reset()` can restore what the controls show again.
+  useEffect(
+    () => store.registerField(name, { runRules: runner.runRules, deps: runner.deps, seed }),
+    [store, name, runner, seed],
+  );
 
   const handleChange = (payload: unknown) => {
     store.setValue(name, readPayloadValue(payload));
@@ -109,13 +116,14 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     controlProps.onBlur?.(event);
   };
 
-  const describedBy =
-    [
-      leaves.hints.length > 0 && !invalid ? hintId : null,
-      invalid && errorLeaf >= 0 ? errorId : null,
-    ]
-      .filter((id): id is string => id !== null)
-      .join(' ') || undefined;
+  // The hint lines own the description slot while the field is valid; an
+  // error swaps it to the error line (the hints yield to it). Several
+  // hints are all named — assistive tech hears each line.
+  const describedBy = invalid
+    ? errorLeaf >= 0
+      ? errorId
+      : undefined
+    : hintIds.join(' ') || undefined;
 
   const injected: FormControlProps = {
     id: controlId,
@@ -146,7 +154,9 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const controlNode = cloneElement(control, injected);
   const messages = (
     <>
-      {leaves.hints.map((hint, index) => cloneElement(hint, { key: hint.key ?? index }))}
+      {leaves.hints.map((hint, index) =>
+        cloneElement(hint, { key: hint.key ?? index, hintIndex: index }),
+      )}
       {leaves.validators.map((leaf, index) =>
         cloneElement(leaf, { key: leaf.key ?? `rule-${index}`, ruleIndex: index }),
       )}
@@ -157,7 +167,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     name,
     controlId,
     labelId,
-    hintId,
+    hintIds,
     errorId,
     invalid,
     error,

@@ -7,10 +7,12 @@ import type { FormHintProps } from '../../types';
  * The field's helper line: one line of expected-value guidance under
  * the control. It yields to the error: while the field is invalid the
  * hint disappears so the error owns that slot, and the control's
- * `aria-describedby` follows the visible line.
+ * `aria-describedby` follows the visible line. Each hint carries its
+ * own id (`hintIndex` from the field), so several hints stay distinct
+ * nodes and are all named to assistive tech.
  */
 export const FormHint = forwardRef<HTMLDivElement, FormHintProps>((props, ref) => {
-  const { children, className, ...rest } = props;
+  const { children, className, hintIndex = 0, ...rest } = props;
   const field = useFormFieldContext();
 
   if (field.invalid) {
@@ -18,7 +20,12 @@ export const FormHint = forwardRef<HTMLDivElement, FormHintProps>((props, ref) =
   }
 
   return (
-    <div ref={ref} id={field.hintId} className={clsx('colox-form-hint', className)} {...rest}>
+    <div
+      ref={ref}
+      id={field.hintIds[hintIndex]}
+      className={clsx('colox-form-hint', className)}
+      {...rest}
+    >
       {children}
     </div>
   );

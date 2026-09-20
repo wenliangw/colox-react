@@ -25,9 +25,12 @@ export interface FormFieldVerdict {
 }
 
 /**
- * What a field registers with the store: how to run its rules and which
- * fields its validation depends on. The field owns the rules (they come
- * from its `Form.Validate` leaves) and the store owns when to run them.
+ * What a field registers with the store: how to run its rules, which
+ * fields its validation depends on, and the field's first value (the
+ * author's uncontrolled seed or the domain's empty word) — the store
+ * re-seeds from it on `reset()` so the restored values match what the
+ * controls show. The field owns the rules (they come from its
+ * `Form.Validate` leaves) and the store owns when to run them.
  */
 export interface FormFieldRegistration {
   /** Runs the field's rule leaves in order; the first message wins. */
@@ -38,6 +41,13 @@ export interface FormFieldRegistration {
    * the `validateOn` policy.
    */
   deps?: readonly string[];
+  /**
+   * The field's first value: what `reset()` restores when neither the
+   * `useForm` initial values nor an explicit `reset(values)` argument
+   * covers the field. Initial values and explicit arguments win — the
+   * seed is consulted only for fields the restored map does not carry.
+   */
+  seed?: unknown;
 }
 
 /**
@@ -69,15 +79,26 @@ export interface FormStore {
   /**
    * Writes or clears one field's error message. A message written from
    * outside (a server-side verdict) shows on the field's first
-   * `Form.Validate` leaf, or on the field's error slot when it declared
-   * no rules.
+   * `Form.Validate` leaf; a field without any rule leaf has no error
+   * line (the control's `invalid`/aria state still marks it).
    */
   setError(name: string, message: string | undefined): void;
   /** Runs every registered field's rules and returns the fresh errors. */
   validate(): Promise<FormErrors>;
-  /** Runs one field's rules, publishes the outcome and returns it. */
+  /**
+   * Runs one field's rules and publishes the outcome. A run that started
+   * before a newer one (or before `reset()`) settles last is discarded
+   * — the store never lets an older verdict overwrite a newer one. The
+   * return value is the error as it stands when this run settles.
+   */
   validateField(name: string): Promise<string | undefined>;
-  /** Restores the initial values (or the given ones) and clears errors. */
+  /**
+   * Restores the initial values (or the given ones) and clears the
+   * errors. Fields neither the initial values nor the argument cover
+   * return to their registered first value (the control's
+   * `defaultValue` / `defaultChecked` seed or the domain's empty word),
+   * so the store and the controls show the same thing again.
+   */
   reset(nextValues?: FormValues): void;
   /** Subscribes to value/error changes; returns the unsubscribe function. */
   subscribe(listener: () => void): () => void;

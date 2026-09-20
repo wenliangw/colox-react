@@ -24,6 +24,12 @@ function createFormStore(initialValues: FormValues): FormStore {
   let errorLeaves: Record<string, number> = {};
   const fields = new Map<string, FormFieldRegistration>();
   const listeners = new Set<() => void>();
+  // The per-field run counters behind the async guard: each run takes
+  // the next number, and only the latest run may publish — an older
+  // run settling later (slow async rule, change-triggered overlaps,
+  // reset mid-flight) is discarded instead of overriding a fresher
+  // verdict with stale truth.
+  const versions = new Map<string, number>();
 
   const emit = () => {
     for (const listener of listeners) {
@@ -46,7 +52,14 @@ function createFormStore(initialValues: FormValues): FormStore {
     if (field === undefined) {
       return errors[name];
     }
+    const version = (versions.get(name) ?? 0) + 1;
+    versions.set(name, version);
     const verdict = await field.runRules(values[name], values);
+    if (versions.get(name) !== version) {
+      // A newer run (or a reset clearing errors) superseded this one —
+      // report the live truth, publish nothing.
+      return errors[name];
+    }
     publish(name, verdict);
     return verdict.message;
   };
@@ -91,8 +104,23 @@ function createFormStore(initialValues: FormValues): FormStore {
     validateField,
     reset: (nextValues) => {
       values = { ...(nextValues ?? initial) };
+      // Fields the restored map does not cover return to their first
+      // value — the control's declared seed — so the store reads the
+      // same thing the controls show again. Initial values (and the
+      // explicit argument) win over control seeds.
+      for (const [name, registration] of fields) {
+        if (values[name] === undefined && registration.seed !== undefined) {
+          values[name] = registration.seed;
+        }
+      }
       errors = {};
       errorLeaves = {};
+      // Discard in-flight rule runs: whatever settles now is validating
+      // a state that no longer exists and must not publish after the
+      // cleared map it would contradict.
+      for (const name of fields.keys()) {
+        versions.set(name, (versions.get(name) ?? 0) + 1);
+      }
       emit();
     },
     subscribe: (listener) => {

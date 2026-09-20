@@ -21,8 +21,10 @@ export interface FormFieldLeaves {
 /**
  * A component-typed child is an acceptable control: only components can
  * honour the family change payload and the controlled value the field
- * injects. Host elements and fragments are wiring errors, like the
- * AutoComplete host slot.
+ * injects. A host element used directly as a child is a wiring error,
+ * like the AutoComplete host slot. Fragments are unwrapped by the
+ * children traversal below, so a fragment holding exactly one control
+ * is accepted — the one-control rule still applies across it.
  */
 function isComponentTyped(element: ReactElement): boolean {
   const type = element.type;
@@ -38,8 +40,10 @@ function fail(message: string): never {
  * component identity (the family walker precedent): `Form.Label` /
  * `Form.Hint` / `Form.Validate` are members, the remaining
  * component-typed element is the control. Zero or several controls,
- * several labels, fragments and non-element children are hard errors —
- * a field must know exactly which control it speaks through.
+ * several labels and non-element children are hard errors — a field
+ * must know exactly which control it speaks through. (`Children.forEach`
+ * unwraps fragments, so a fragment wrapping the single control is not
+ * an error; the control found inside it is.)
  */
 export function walkFormLeaves(children: ReactNode): FormFieldLeaves {
   let label: ReactElement<FormLabelProps> | null = null;

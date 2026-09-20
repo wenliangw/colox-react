@@ -41,6 +41,14 @@ export type FormLabelProps = Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFo
 /** The field's helper line: yields while the field is invalid. */
 export interface FormHintProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  /**
+   * The hint's declaration index inside the field, injected by
+   * `Form.Field` — each hint line carries its own id so several hints
+   * never share one, and the control's `aria-describedby` names them
+   * all.
+   * @internal
+   */
+  hintIndex?: number;
 }
 
 /** What a `<Form.Validate>` rule run reports back to its leaf. */
@@ -53,8 +61,9 @@ export type FormFieldValidator = (
  * One validation rule (or a small ordered set of rules) for the field
  * it lives in. The first failing rule across the field's leaves shows;
  * the leaf that owns it renders the message. Every rule is optional and
- * they run in the fixed order below — give a leaf one rule when you
- * want one error line per rule.
+ * they run in a fixed order — required, then the numeric bounds, the
+ * lengths, the pattern, then the custom validator — give a leaf one
+ * rule when you want one error line per rule.
  */
 export interface FormValidateProps {
   /** Fails on an empty value (`''`, `null`, `undefined`, `[]`, `false`). */
@@ -135,8 +144,8 @@ export interface FormFieldContextValue {
   controlId: string;
   /** The label's own id, used by the group path (`aria-labelledby`). */
   labelId: string;
-  /** The hint line's id. */
-  hintId: string;
+  /** The hint lines' ids, in declaration order (each hint owns one). */
+  hintIds: string[];
   /** The error line's id. */
   errorId: string;
   /** Whether the control carries the invalid state right now. */

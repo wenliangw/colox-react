@@ -5,7 +5,7 @@ import { Form, useForm } from '..';
 import { Checkbox } from '../../checkbox';
 import { Input } from '../../input';
 import { InputNumber } from '../../input-number';
-import type { FormStore } from '../types';
+import type { FormFieldVerdict, FormStore } from '../types';
 
 const field = (name: string, rule: React.ReactNode, control: React.ReactNode = <Input />) => (
   <Form.Field name={name}>
@@ -193,5 +193,41 @@ describe('Form store', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Fail' }));
     await waitFor(() => expect(screen.getByText('Taken on the server')).toBeInTheDocument());
     expect(screen.getByLabelText('name')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('drops a stale async verdict when a newer run settles first', async () => {
+    const resolves: Array<(message: string | undefined) => void> = [];
+    let captured: FormStore | null = null;
+
+    render(
+      <Harness>
+        {(store) => {
+          captured = store;
+          return (
+            <button
+              type="button"
+              onClick={() => {
+                store.registerField('email', {
+                  runRules: () =>
+                    new Promise<FormFieldVerdict>((resolve) => {
+                      resolves.push((message) => resolve({ message, leaf: 0 }));
+                    }),
+                });
+                void store.validateField('email');
+                void store.validateField('email');
+              }}
+            >
+              Race
+            </button>
+          );
+        }}
+      </Harness>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Race' }));
+    // Two runs are in flight; the newer settles first, the older later.
+    expect(resolves).toHaveLength(2);
+    resolves[1]?.('The fresher verdict');
+    resolves[0]?.('The stale verdict');
+    await waitFor(() => expect(captured?.getError('email')).toBe('The fresher verdict'));
   });
 });

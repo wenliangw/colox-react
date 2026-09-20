@@ -145,6 +145,26 @@ describe('Form.Field wiring', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Digits only'));
   });
 
+  it('gives every hint its own id and names them all', () => {
+    render(
+      <Form>
+        <Form.Field name="city">
+          <Form.Label>City</Form.Label>
+          <Input />
+          <Form.Hint>First line</Form.Hint>
+          <Form.Hint>Second line</Form.Hint>
+        </Form.Field>
+      </Form>,
+    );
+    const [first, second] = screen.getAllByText(/line/);
+    expect(first.id).not.toBe('');
+    expect(first.id).not.toBe(second.id);
+    expect(screen.getByLabelText('City')).toHaveAttribute(
+      'aria-describedby',
+      `${first.id} ${second.id}`,
+    );
+  });
+
   it('merges the consumer className and style on the field root', () => {
     const { container } = render(
       <Form>

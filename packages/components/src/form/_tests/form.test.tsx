@@ -193,4 +193,139 @@ describe('Form root', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Read' }));
     expect(screen.getByTestId('value')).toHaveTextContent('Lisbon');
   });
+
+  it('restores the uncontrolled seeds on reset so store and controls agree', async () => {
+    const Harness = () => {
+      const form = useForm();
+      const [read, setRead] = useState('');
+      return (
+        <>
+          <button type="button" onClick={() => form.reset()}>
+            Reset
+          </button>
+          <button type="button" onClick={() => setRead(JSON.stringify(form.getValues()))}>
+            Read
+          </button>
+          <span data-testid="values">{read}</span>
+          <Form form={form}>
+            <Form.Field name="city">
+              <Form.Label>City</Form.Label>
+              <Input defaultValue="Lisbon" />
+            </Form.Field>
+            <Form.Field name="snack">
+              <Form.Label>Snack</Form.Label>
+              <Input defaultValue="chips" />
+            </Form.Field>
+          </Form>
+        </>
+      );
+    };
+    render(<Harness />);
+    await waitFor(() => expect(screen.getByLabelText('City')).toHaveValue('Lisbon'));
+    fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Porto' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    await waitFor(() => expect(screen.getByLabelText('City')).toHaveValue('Lisbon'));
+    fireEvent.click(screen.getByRole('button', { name: 'Read' }));
+    // The store reads the restored seeds again — not an empty map while
+    // the controls show their defaults.
+    expect(screen.getByTestId('values')).toHaveTextContent('{"city":"Lisbon","snack":"chips"}');
+  });
+
+  it('reset with a partial map restores the uncovered fields from their seeds', () => {
+    const Harness = () => {
+      const form = useForm();
+      return (
+        <>
+          <button type="button" onClick={() => form.reset({ city: 'Faro' })}>
+            Reset
+          </button>
+          <Form form={form}>
+            <Form.Field name="city">
+              <Form.Label>City</Form.Label>
+              <Input defaultValue="Lisbon" />
+            </Form.Field>
+            <Form.Field name="count">
+              <Form.Label>Count</Form.Label>
+              <Input defaultValue="one" />
+            </Form.Field>
+          </Form>
+        </>
+      );
+    };
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(screen.getByLabelText('City')).toHaveValue('Faro');
+    expect(screen.getByLabelText('Count')).toHaveValue('one');
+  });
+
+  it('keeps the useForm initial values over control seeds on reset', () => {
+    const Harness = () => {
+      const form = useForm({ city: 'Braga' });
+      const [read, setRead] = useState('');
+      return (
+        <>
+          <button type="button" onClick={() => form.reset()}>
+            Reset
+          </button>
+          <button type="button" onClick={() => setRead(JSON.stringify(form.getValues()))}>
+            Read
+          </button>
+          <span data-testid="values">{read}</span>
+          <Form form={form}>
+            <Form.Field name="city">
+              <Form.Label>City</Form.Label>
+              <Input defaultValue="Lisbon" />
+            </Form.Field>
+          </Form>
+        </>
+      );
+    };
+    render(<Harness />);
+    expect(screen.getByLabelText('City')).toHaveValue('Braga');
+    fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Porto' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read' }));
+    expect(screen.getByTestId('values')).toHaveTextContent('{"city":"Braga"}');
+  });
+
+  it('stops running the rules of an unmounted field', async () => {
+    const runGone = vi.fn();
+    const Harness = () => {
+      const form = useForm();
+      const [show, setShow] = useState(true);
+      return (
+        <>
+          <button type="button" onClick={() => setShow(false)}>
+            Hide
+          </button>
+          <button type="button" onClick={() => void form.validate()}>
+            Check
+          </button>
+          <Form form={form}>
+            <Form.Field name="city">
+              <Input />
+            </Form.Field>
+            {show ? (
+              <Form.Field name="gone">
+                <Input />
+                <Form.Validate
+                  validate={() => {
+                    runGone();
+                    return 'gone';
+                  }}
+                />
+              </Form.Field>
+            ) : null}
+          </Form>
+        </>
+      );
+    };
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }));
+    await waitFor(() => expect(runGone).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByRole('button', { name: 'Hide' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(runGone).toHaveBeenCalledTimes(1);
+  });
 });

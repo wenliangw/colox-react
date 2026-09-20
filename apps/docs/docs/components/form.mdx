@@ -259,6 +259,12 @@ const form = useForm({ city: 'Lisbon' });
 <Button onClick={() => form.reset({ city: 'Porto' })}>Reset</Button>
 ```
 
+`reset(values?)` restores the first frame: fields the given map does not cover
+(and, without an argument, every field) go back to their uncontrolled
+`defaultValue` / `defaultChecked` — or the `useForm` initial values when they
+were declared — and the errors clear. What the controls show and what
+`getValues()` reads agree again.
+
 ## API
 
 ### Form props
@@ -289,16 +295,16 @@ layer's own, and native validation stays off).
 
 ### FormStore
 
-| Method                               | Notes                                                        |
-| ------------------------------------ | ------------------------------------------------------------ |
-| `getValues()` / `getValue(name)`     | the current values                                           |
-| `getErrors()` / `getError(name)`     | the current errors                                           |
-| `isValid()`                          | whether no field carries an error                            |
-| `setValue(name, value)`              | writes a value (no validation runs)                          |
-| `setError(name, message)`            | a server-side verdict; shows on the field's first error line |
-| `validate()` / `validateField(name)` | runs the rules and returns the outcome                       |
-| `reset(values?)`                     | restores the initial values and clears the errors            |
-| `subscribe(listener)`                | re-renders your own readouts                                 |
+| Method                               | Notes                                                                             |
+| ------------------------------------ | --------------------------------------------------------------------------------- |
+| `getValues()` / `getValue(name)`     | the current values                                                                |
+| `getErrors()` / `getError(name)`     | the current errors                                                                |
+| `isValid()`                          | whether no field carries an error                                                 |
+| `setValue(name, value)`              | writes a value (no validation runs)                                               |
+| `setError(name, message)`            | a server-side verdict; shows on the field's first error line                      |
+| `validate()` / `validateField(name)` | runs the rules and returns the outcome                                            |
+| `reset(values?)`                     | restores the first frame (uncontrolled seeds or initial values) and clears errors |
+| `subscribe(listener)`                | re-renders your own readouts                                                      |
 
 ## Notes and non-goals
 
