@@ -70,6 +70,13 @@
 
 来源：Input v2 设计讨论（用户以密码状态图标为例定出「背机制不背产品」边界）。
 
+## Form 层 API 取向：级联走继承轴、注入只在生效时发生（批 B 定案）
+
+- **能力级联与策略覆盖同走继承轴**：form 级 `disabled` 锁定、form 级 `validateOn` 策略，与 labelPlacement/labelWidth/labelAlign/requiredMarkPosition 同一套「form 级声明 + 字段级覆盖」体系。`disabled` 是能力剥夺类 → **sticky 不可退出**（用户拍板，与 Checkbox/Radio.Group 的 disabled 继承同一语法）；`validateOn` 是策略类 → 字段级可覆盖（「login blur 查重 + password change 强度」混合策略由此表出）。
+- **注入只在生效时发生**：form 级 disabled 只在锁定时给控件注入 `disabled: true`——undefined 键会杀掉作者自设的 disabled（aria-required 同款教训，「注入键只在生效时出现」的延续）。
+- **订阅原语一行收库**：联动/自动保存/实时预览这类「订阅字段变化」样板由公开 hook 收敛成一行（`useFormWatch(store, name?)` / `useFormWatchError(store, name)`）；命名与函数族同词族（useForm/useFormContext/useFormWatch），不满世界造新词。
+- **a11y 落点默认开 + form 级逃生舱**：失败提交聚焦/滚动首个错误控件默认开启（`focusOnInvalid` 默认 true），form 级关闭做逃生舱——错误可及性优先于「库默认无惊喜」，逃生舱留在最小面。
+
 ## Checkbox 组语义与三态（Group 值数组 / indeterminate 纯视觉）
 
 - **组 = 值数组语义**：多选的状态形态就是 `string[]`（`value`/`defaultValue`/`onChange(value: string[])`），成员以原生 `value` prop 声明参与键（表单值 + 组键双职，不发明 `groupKey` 之类的平行 prop）；显式 `checked`/`defaultChecked` 的成员退出组（本人优先），`name`/`disabled` 组继承、本人优先、组 disabled 不可退出。
