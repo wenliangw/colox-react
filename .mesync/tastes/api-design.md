@@ -225,6 +225,7 @@
 
 - **值契约恒串一个词，绝不因「消费方便」放 Date 对象进出**（TimePicker + DatePicker showTime 定案，用户问过 Date 出口后被摊牌劝回）：`datetime = 'YYYY-MM-DDTHH:mm'` T 形固定宽，字典序即时间序（min/max 时间界免费）；入口宽容归一（T/空格双收、date-only 缺时补 00:00），出口恒单一词形。Date 对象进不了值契约四条硬伤：粒度纯度（月/年/时间无诚实 Date，伪造日参差）、Form JSON 序列化下 Date 变线串、原生 Date 可突变 + 时区坑复活（零时区正是为躲它）、对已交付词形全线翻工。**组件值契约与工具面是两个域**：工具面（cdk）可以自由收 Date 对象，组件契约依旧只认串。
 - **工具面 = 单一值对象 + 链式调用，不用后缀自证词形**（用户评审批 1 后改拍：Iso 后缀满天飞是「没有单一数据类型」的症状）：`date(source)` 工厂归一 string|Date|`…Z` 即时串 → 不可变 `ColoxDate`，`addDays/addMonths/addYears` 链式、名字即语义不带 iso；`format(source, pattern)` 独立可用——链式不是强制，不必所有调用都从 `date()` 开头。方法名语义化优先（复数词形 `addMonths` 对齐引擎与惯例），输入宽容（双格式恒收）不需要在名字上强调。
+- **parts 一等格式：出入对等，六字段不丢信息**（用户定名 `dateParts()`/`.parts()` 并拍板六字段）：`date()` 直接吃对象格式（`date({year,month,day})`，钟点字段缺省 0），`.parts()`/`dateParts(value)` 吐 `{year,month,day,hour,minute,second}` 完整坐标——datetime 转对象不丢钟点、回读分毫不差；对象入参同享工厂诚实纪律（日历非法抛 TypeError）。「坐标→值串」方向不再公开：内部拼串留模块私有，外部出值走 `date(parts).iso('yyyy-MM-dd')`。
 - **公开类型只露方法面，构造全封闭**（用户确认）：`ColoxDate` 公开形是纯 interface（dts 只有 6 个方法签名，无 constructor/无 fromParts 这类内部通道）；真身是模块内 DateValue + 工厂令牌——实例只能出自 `date()`。内部实现腔（构造、parts 字段）不进 dts。
 - **命名直白化第二轮（零争议先做）**：`todayIso()`→`today()`、`weekdayOfParts()`→`weekdayOf()`、类型 `IsoPrecision`→`ParsePrecision`——实现词根出局、日期语义即名字；残余的互转/截断/显示函数名的词系选择用户另逐条定。
 - **显示词与即时词分离**（用户定：「iso 默认输出与 `new Date().toISOString()` 保持一致」）：`format()` / `iso(pattern)` 渲染民用坐标（时区无关显示面）；`iso()` 无参 = UTC 即时词（完整时间 + T + Z + 毫秒位，真 UTC 值）——序列化边界走本地壁钟→UTC，且工厂可回读往返；解析 Z 串不碰 `new Date(string)`（自己解数字 + `Date.UTC` 转本地、先校验后算，日历非法直接抛不滚动）。

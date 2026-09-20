@@ -29,13 +29,14 @@ date-picker/
 日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`）：
 `civil.ts`（原 date-core）/`format.ts`（原 format-date）+ 新增 `date-time.ts`（ColoxDate 值对象 +
 组合词表编译器）+ `types.ts`（共享型单一出处，组件 types/utils.ts 再导出）。公开面
-`@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= `date`/`format` 工厂 + 不可变
-`ColoxDate` 值对象：入参 string|Date|`…Z` 即时串双收、`addDays`/`addMonths`/`addYears` 链式、
-`format(pattern)` 组合词表（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s`——`M` 月 vs `m` 分按大小写载义、长度
+`@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= `date`/`format`/`dateParts` 函数 + 不可变
+`ColoxDate` 值对象：入参 string|Date|`…Z` 即时串|parts 对象格式双收、`addDays`/`addMonths`/`addYears`
+链式、`format(pattern)` 组合词表（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s`——`M` 月 vs `m` 分按大小写载义、长度
 即补零）、`iso()` 即时词（`new Date().toISOString()` 形态：完整时间 + T + Z，UTC 真值、工厂可
-回读往返）、`iso(pattern)`/`format` 均渲染民用坐标、`toDate()` 本地壁钟桥；网格 builder 不在
-公开面。原 date-core.test（15）/format-date.test（17）随文件搬入 `cdk/date/_tests/` 改名
-civil/format，另加 date-time 26（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
+回读往返）、`iso(pattern)`/`format` 均渲染民用坐标（坐标拼值词走 `date(parts).iso('yyyy-MM-dd')`，
+内部拼串 `valueWord` 模块私有）、`.parts()`/`dateParts()` 吐六字段对象格式、`toDate()` 本地壁钟桥；
+网格 builder 不在公开面。原 date-core.test（15）/format-date.test（17）随文件搬入 `cdk/date/_tests/` 改名
+civil/format，另加 date-time 32（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
 
 ## 功能逻辑
 
@@ -85,7 +86,7 @@ civil/format，另加 date-time 26（旧公开面遗留 addDaysIso 族已随形�
 
 ## 状态与测试
 
-组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 58（civil 15 + format 17 + date-time 26）——日历数学/格式化解析/值对象。
+组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 64（civil 15 + format 17 + date-time 32）——日历数学/格式化解析/值对象。
 
 ## 构建·门禁
 
