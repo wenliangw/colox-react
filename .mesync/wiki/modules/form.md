@@ -26,7 +26,7 @@ form/
 │   └── read-payload-value.ts    # 从家族载荷读下一值（无 value 键回落 event.target.value）
 ├── children/{field,label,hint,validate}/index.tsx
 ├── variants/                    # labelPlacement（top/start）+ labelAlign（start/end/justify）+ labelWidth（sizeKeys → 类）
-└── styles/                      # base（根/字段/槽）+ label + message（hint/error）+ label-align + label-width
+└── styles/                      # base（根/字段/槽）+ label（星号 mark + 文字槽）+ message（hint/error）+ label-align + label-width
 ```
 
 ## 功能逻辑
@@ -62,7 +62,9 @@ form/
 
 `Form` 根把 children 交给 `<Stack direction="column" gap={gap}>`（默认 `'4'`，spacing 键）——字段间节奏即 Stack 的节奏，无第二套布局。字段自身也是 Stack：`top` = 列（`gap="1-5"`：label / 控件 / 消息）；`start` = 行（`gap="3"`，label 槽固定宽 + 内层列 Stack），label 槽宽度来自 `sizeKeys`（`labelWidth="24"` → `--colox-size-24`，永不 px），`padding-block-start: spacing-2` 让 label 与控件首行文字对齐。`Form.Field` 的 `className`/`style`/原生属性落在字段的 Stack 根上（变体类与布局骨架同元素）。
 
-**labelAlign 轴**（用户拍板第二轮 Form 优化）：start 形态下 label 文字在列内的水平排版对齐——`'start'`（默认，自然行首）/ `'end'`（文字尾部贴向控件）/ `'justify'`（两端对齐，两至四字中文 label 铺满列宽的排版手法；CSS = `text-align: justify` + `text-align-last: justify`，单行 label 全是「最后一行」所以必须带上后者，折行的长 label 每行也均分）。逻辑词（start/end 随 RTL 镜像，justify 无方向），form 级声明 + 字段级覆盖，`top` 形态无列可对齐、恒忽略。落点 = label 槽的 `text-align`（列宽在哪、对齐就在哪），变体类 `colox-form-field--label-align-*` 由 cva 挂在字段根。
+**labelAlign 轴**（用户拍板第二轮 Form 优化）：start 形态下 label 文字在列内的水平排版对齐——`'start'`（默认，自然行首）/ `'end'`（文字尾部贴向控件）/ `'justify'`（两端对齐，两至四字中文 label 铺满列宽的排版手法；CSS = `text-align: justify` + `text-align-last: justify`，单行 label 全是「最后一行」所以必须带上后者，折行的长 label 每行也均分）。逻辑词（start/end 随 RTL 镜像，justify 无方向），form 级声明 + 字段级覆盖，`top` 形态无列可对齐、恒忽略。落点 = label **文字槽**（`.colox-form-label__text`）的 `text-align`（列宽在哪、对齐就在哪），变体类 `colox-form-field--label-align-*` 由 cva 挂在字段根。
+
+**必填星号（required mark）**（用户拍板第三轮 Form 优化）：① **来源自动派生**——`Form.Field` 发现任一 `Form.Validate required` 叶子即 required（星号与真实校验语义同源，不设 `Form.Field required` 双源声明，动态 required 自动跟随）；同一 verdict 驱动控件的 `aria-required="true"` 注入（只在 required 时注入键，undefined 键会盖掉作者自设）。② **位置** `requiredMarkPosition: 'start' | 'end'`（逻辑词，RTL 镜像；`'start'` 前置=`*姓名` 中式、`'end'` 后置=antd 式），form 级 + 字段级覆盖，top/start 两种 placement 都生效。③ **渲染**：label 拆成「星号件 + 文字槽」两块 flex（`align-items: baseline`），星号必须**外于文字槽**——否则 justify 会把星号当字元一并均分扯离文字；星号字形走 **CSS `content: '*'`**（span 为空、`aria-hidden`）——label 的 textContent 保持作者原文（label 查询、aria-labelledby 路径拿干净文本）。④ **隐藏口子**：`Form.Label requiredMark={false}` 单label隐藏（纯视觉选择——字段仍 required，aria-required 照注入）。星号色 = `--colox-color-text-error`（错误文字通道），贴字间距 0.25em。
 
 ## 调用关系
 
@@ -71,13 +73,14 @@ form/
 
 ## 对外接口
 
-- 导出 `Form`（dot：`Field`/`Label`/`Hint`/`Validate`）、`useForm`、`useFormContext`、`formFieldVariants` + 类型（`FormProps`/`FormRef`/`FormLabelPlacement`/`FormLabelAlign`/`FormStore`/`FormValues`/`FormErrors`/`FormValidateOn`/`FormSubmitPayload`/`FormInvalidPayload`/`FormFieldProps`/`FormLabelProps`/`FormHintProps`/`FormValidateProps`/`FormFieldValidator`/`FormFieldContextValue`）。
-- `FormProps`：`form?`（外持 store）、`validateOn?`（默认 `['submit','blur']`）、`labelPlacement?`（`'top'` 默认 / `'start'`）、`labelWidth?`（size 键，默认 `'24'`）、`labelAlign?`（`'start'` 默认 / `'end'` / `'justify'`，仅 start 形态生效）、`gap?`（spacing 键，默认 `'4'`）、`onSubmit?`（仅全绿时发 `{ event, values }`）、`onInvalid?`（`{ event, errors }`）。`noValidate` 恒开、`onSubmit`/`onInvalid` 原生同名已 Omit。
+- 导出 `Form`（dot：`Field`/`Label`/`Hint`/`Validate`）、`useForm`、`useFormContext`、`formFieldVariants` + 类型（`FormProps`/`FormRef`/`FormLabelPlacement`/`FormLabelAlign`/`FormRequiredMarkPosition`/`FormStore`/`FormValues`/`FormErrors`/`FormValidateOn`/`FormSubmitPayload`/`FormInvalidPayload`/`FormFieldProps`/`FormLabelProps`/`FormHintProps`/`FormValidateProps`/`FormFieldValidator`/`FormFieldContextValue`）。
+- `FormProps`：`form?`（外持 store）、`validateOn?`（默认 `['submit','blur']`）、`labelPlacement?`（`'top'` 默认 / `'start'`）、`labelWidth?`（size 键，默认 `'24'`）、`labelAlign?`（`'start'` 默认 / `'end'` / `'justify'`，仅 start 形态生效）、`requiredMarkPosition?`（`'start'` 默认 / `'end'`）、`gap?`（spacing 键，默认 `'4'`）、`onSubmit?`（仅全绿时发 `{ event, values }`）、`onInvalid?`（`{ event, errors }`）。`noValidate` 恒开、`onSubmit`/`onInvalid` 原生同名已 Omit。
 - `FormStore`：`getValues/getValue/getErrors/getError/getErrorLeaf/isValid/setValue/setError/validate/validateField/reset/subscribe/registerField`（`registerField` 归 `Form.Field` 用，文档标注）。
-- 验收：33 例 form 单测（含 labelAlign 轴 2 例：表单级继承+字段级覆盖+默认值断言）；全仓 617 测试绿；真实浏览器 10 项探针。
+- 验收：36 例 form 单测（含 labelAlign 轴 2 例、required mark 3 例：派生+aria-required、位置与字段级覆盖、per-label 隐藏）；全仓 620 测试绿；真实浏览器 9 项探针（required mark 专用）。
 
 ## 决策与来源
 
 - 定案见决策节点「Form 层 API 定案（M3 首件）」；布局两刀（走 Container/Stack 现有骨架、Label 位置轴 top/start 的 token 键）由用户在 Phase 3 开工前拍板。
 - labelAlign 轴见决策节点「Form 补 labelAlign 轴」（4f107390）；词表 `start/end/justify`（逻辑词，不带 center）与默认 `start` 由用户拍板。
+- 必填星号见决策节点「Form 补 required mark（必填星号）」（4f3a4a7e）；「从 required 规则派生 + Label 可隐藏、位置词表 `start/end` 默认 `start`、Form 级+字段级」三刀由用户拍板。
 - 前序依赖：Phase 1 全家族载荷统一（决策 140111f5）、Phase 2.5 表单叶子补强四件（决策 c28061b4）与 readOnly 家族面（决策 a1e2d2a8）——三者正是本层「一条规则读任意控件」的地基。
