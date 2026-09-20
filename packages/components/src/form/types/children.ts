@@ -1,7 +1,7 @@
 import type { HTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react';
 import type { SizeKey } from '@colox/theme';
 import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
-import type { FormValues } from './store';
+import type { FormValidateOn, FormValues } from './store';
 
 /**
  * A field: one name in the store, one control, and the label/hint/
@@ -22,6 +22,13 @@ export interface FormFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
   labelAlign?: FormLabelAlign;
   /** Overrides the form's required mark position around the label text. */
   requiredMarkPosition?: FormRequiredMarkPosition;
+  /**
+   * Overrides the form's validation policy for this field — `'submit'`,
+   * `'blur'`, `'change'` or a mix. The mixed-form classic: a login
+   * checks the name on blur, a password strength on change.
+   * @default the form's validateOn
+   */
+  validateOn?: FormValidateOn | readonly FormValidateOn[];
   /** A `Form.Label`, one control, and any `Form.Hint` / `Form.Validate` leaves. */
   children: ReactNode;
 }
@@ -120,6 +127,8 @@ export interface FormControlProps {
   value?: unknown;
   checked?: unknown;
   invalid?: boolean;
+  /** The form-wide lock the field injects while `<Form disabled>`. */
+  disabled?: boolean;
   'aria-describedby'?: string;
   'aria-labelledby'?: string;
   /**

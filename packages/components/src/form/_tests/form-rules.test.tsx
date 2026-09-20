@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { Form, useForm } from '..';
+import { Form, useForm, useFormWatch, useFormWatchError } from '..';
 import { Checkbox } from '../../checkbox';
 import { Input } from '../../input';
 import { InputNumber } from '../../input-number';
@@ -229,5 +229,53 @@ describe('Form store', () => {
     resolves[1]?.('The fresher verdict');
     resolves[0]?.('The stale verdict');
     await waitFor(() => expect(captured?.getError('email')).toBe('The fresher verdict'));
+  });
+});
+
+describe('useFormWatch', () => {
+  const Harness = ({ children }: { children: (store: FormStore) => React.ReactNode }) => {
+    const store = useForm();
+    return (
+      <>
+        {children(store)}
+        <Form form={store}>
+          {field('name', <Form.Validate required />)}
+          {field('city', <Form.Validate required />)}
+        </Form>
+      </>
+    );
+  };
+
+  it('re-renders along a watched single field', () => {
+    const Watcher = ({ store }: { store: FormStore }) => {
+      const city = useFormWatch(store, 'city') as string;
+      return <span data-testid="city">{city}</span>;
+    };
+    render(<Harness>{(store) => <Watcher store={store} />}</Harness>);
+    expect(screen.getByTestId('city')).toHaveTextContent('');
+    fireEvent.change(screen.getByLabelText('city'), { target: { value: 'Porto' } });
+    expect(screen.getByTestId('city')).toHaveTextContent('Porto');
+  });
+
+  it('re-renders along the whole values map', () => {
+    const Watcher = ({ store }: { store: FormStore }) => {
+      const values = useFormWatch(store);
+      return <span data-testid="values">{JSON.stringify(values)}</span>;
+    };
+    render(<Harness>{(store) => <Watcher store={store} />}</Harness>);
+    expect(screen.getByTestId('values')).toHaveTextContent('{"name":"","city":""}');
+    fireEvent.change(screen.getByLabelText('name'), { target: { value: 'Ada' } });
+    expect(screen.getByTestId('values')).toHaveTextContent('{"name":"Ada","city":""}');
+  });
+
+  it('watches one field error', async () => {
+    const Watcher = ({ store }: { store: FormStore }) => {
+      const error = useFormWatchError(store, 'name');
+      return <span data-testid="error">{error ?? '(none)'}</span>;
+    };
+    render(<Harness>{(store) => <Watcher store={store} />}</Harness>);
+    expect(screen.getByTestId('error')).toHaveTextContent('(none)');
+    fireEvent.blur(screen.getByLabelText('name'));
+    await waitFor(() => expect(screen.getByTestId('error')).toHaveTextContent('此项为必填'));
   });
 });

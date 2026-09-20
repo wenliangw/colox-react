@@ -86,6 +86,23 @@ export interface FormProps extends Omit<
    * @default '4'
    */
   gap?: SpacingKey;
+  /**
+   * Locks the whole form: every field injects `disabled` into its
+   * control. A capability deprivation, so it is sticky — no field can
+   * opt back out — the same grammar as the groups' disabled
+   * inheritance. An author's own `disabled` on a control still works
+   * while the form is not disabled.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * Whether a failed submit moves the viewport to the first invalid
+   * field and focuses its control (the groups scroll only). The error
+   * lines alert on their own; this lands the eye on them without
+   * scrolling a long form by hand.
+   * @default true
+   */
+  focusOnInvalid?: boolean;
   /** Fires with the collected values once every rule passes. */
   onSubmit?: (payload: FormSubmitPayload) => void;
   /** Fires with the errors when the submit validation fails. */

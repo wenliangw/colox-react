@@ -238,6 +238,42 @@ injects `aria-required` into the control as its programmatic twin.
   </Form.Field>
 </Form>
 
+## Form-wide lock, focus and per-field policy
+
+`disabled` locks the whole form — every control receives `disabled` and no
+field can opt out (the sticky grammar of the groups' disabled inheritance).
+While the form is not disabled, an author's own `disabled` on a control keeps
+working.
+
+A failed submit moves the viewport to the first invalid field and focuses its
+control (a group scrolls only), so a long form lands the eye on the first
+error line instead of leaving it off-screen. Turn the landing off form-wide
+with `focusOnInvalid={false}`.
+
+A field overrides the form's validation policy with its own `validateOn` —
+the classic login mix: the name checked on blur, the password on every
+change while `validateOn="change"` stays the form default.
+
+<Form disabled>
+  <Form.Field name="f-name">
+    <Form.Label>Name</Form.Label>
+    <Input />
+  </Form.Field>
+</Form>
+
+<Form validateOn="change">
+  <Form.Field name="p-name" validateOn="blur">
+    <Form.Label>Name</Form.Label>
+    <Input />
+    <Form.Validate required message="Checked on blur" />
+  </Form.Field>
+  <Form.Field name="p-pass">
+    <Form.Label>Password</Form.Label>
+    <Input type="password" />
+    <Form.Validate required message="Checked on change" />
+  </Form.Field>
+</Form>
+
 ## The store
 
 `useForm()` creates the store and hands it to `<Form form={store}>` when the
@@ -265,6 +301,17 @@ const form = useForm({ city: 'Lisbon' });
 were declared — and the errors clear. What the controls show and what
 `getValues()` reads agree again.
 
+`useFormWatch(store, name?)` subscribes to values — one field with a name,
+the whole map without — and `useFormWatchError(store, name)` to one field's
+error. Both are read-only re-render primitives behind dependent fields, live
+summaries and auto-save:
+
+```tsx
+const form = useForm();
+const city = useFormWatch(form, 'city'); // one field
+const all = useFormWatch(form); // the whole map, auto-save style
+```
+
 ## API
 
 ### Form props
@@ -278,6 +325,8 @@ were declared — and the errors clear. What the controls show and what
 | `labelAlign`           | `'start' \| 'end' \| 'justify'`           | `'start'`           |
 | `requiredMarkPosition` | `'start' \| 'end'`                        | `'start'`           |
 | `gap`                  | spacing token key                         | `'4'`               |
+| `disabled`             | `boolean`                                 | `false`             |
+| `focusOnInvalid`       | `boolean`                                 | `true`              |
 | `onSubmit`             | `({ event, values }) => void`             | —                   |
 | `onInvalid`            | `({ event, errors }) => void`             | —                   |
 
@@ -286,12 +335,21 @@ layer's own, and native validation stays off).
 
 ### Form.Field / Form.Label / Form.Hint / Form.Validate
 
-| Member          | Props                                                                                                      |
-| --------------- | ---------------------------------------------------------------------------------------------------------- |
-| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?` + native `div` attributes |
-| `Form.Label`    | `showRequiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                       |
-| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                |
-| `Form.Validate` | the rule props above                                                                                       |
+| Member          | Props                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?`, `validateOn?` + native `div` attributes |
+| `Form.Label`    | `showRequiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                                      |
+| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                               |
+| `Form.Validate` | the rule props above                                                                                                      |
+
+### Hooks
+
+| Hook                             | Notes                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------- |
+| `useForm(initialValues?)`        | creates the store; hand it to `<Form form={store}>` to hold it outside the tree |
+| `useFormContext()`               | the form's store and policy, inside the tree                                    |
+| `useFormWatch(store, name?)`     | re-renders on the field's value — or the whole map without a name               |
+| `useFormWatchError(store, name)` | re-renders on the field's error message                                         |
 
 ### FormStore
 
@@ -303,6 +361,7 @@ layer's own, and native validation stays off).
 | `setValue(name, value)`              | writes a value (no validation runs)                                               |
 | `setError(name, message)`            | a server-side verdict; shows on the field's first error line                      |
 | `validate()` / `validateField(name)` | runs the rules and returns the outcome                                            |
+| `focusFirstInvalid()`                | the failed-submit landing: moves the viewport to the first invalid field          |
 | `reset(values?)`                     | restores the first frame (uncontrolled seeds or initial values) and clears errors |
 | `subscribe(listener)`                | re-renders your own readouts                                                      |
 

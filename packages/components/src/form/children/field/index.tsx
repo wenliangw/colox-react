@@ -32,18 +32,27 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     labelWidth: labelWidthProp,
     labelAlign: labelAlignProp,
     requiredMarkPosition: requiredMarkPositionProp,
+    validateOn: validateOnProp,
     className,
     style,
     children,
     ...rest
   } = props;
 
-  const { store, labelPlacement, labelWidth, labelAlign, requiredMarkPosition, validateOn } =
-    useFormContext();
+  const {
+    store,
+    labelPlacement,
+    labelWidth,
+    labelAlign,
+    requiredMarkPosition,
+    validateOn,
+    disabled: formDisabled,
+  } = useFormContext();
   const placement = labelPlacementProp ?? labelPlacement;
   const width = labelWidthProp ?? labelWidth;
   const align = labelAlignProp ?? labelAlign;
   const markPosition = requiredMarkPositionProp ?? requiredMarkPosition;
+  const policy = validateOnProp ?? validateOn;
 
   const leaves = useMemo(() => walkFormLeaves(children), [children]);
   const runner = useMemo(() => buildRuleRunner(leaves.validators), [leaves.validators]);
@@ -84,8 +93,6 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   const seed = controlProps.defaultValue ?? controlProps.defaultChecked ?? emptyWord;
   const current = value === undefined ? seed : value;
 
-  // The seed effect must run before the registration lands so `reset()`
-  // re-seeds from the registration the field actually mounted with.
   useEffect(() => {
     if (store.getValue(name) === undefined) {
       store.setValue(name, seed);
@@ -94,23 +101,29 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
 
   // Rules register once per field shape: the store runs them on submit,
   // the field runs them on its own triggers, both through one runner.
-  // The registration carries the field's first value (the seed) so
-  // `reset()` can restore what the controls show again.
-  useEffect(
-    () => store.registerField(name, { runRules: runner.runRules, deps: runner.deps, seed }),
-    [store, name, runner, seed],
-  );
+  // The registration also carries the field's first value (the seed) —
+  // `reset()` consults it only where the restored map is missing the
+  // field, so initial values and explicit reset arguments win — and the
+  // focus handle behind the failed-submit landing.
+  useEffect(() => {
+    const focus = () => {
+      const element = document.getElementById(controlId);
+      element?.scrollIntoView?.({ block: 'nearest' });
+      element?.focus?.({ preventScroll: true });
+    };
+    return store.registerField(name, { runRules: runner.runRules, deps: runner.deps, seed, focus });
+  }, [store, name, runner, seed, controlId]);
 
   const handleChange = (payload: unknown) => {
     store.setValue(name, readPayloadValue(payload));
-    if (validateOn.includes('change')) {
+    if (policy.includes('change')) {
       void store.validateField(name);
     }
     controlProps.onChange?.(payload);
   };
 
   const handleBlur = (event: unknown) => {
-    if (validateOn.includes('blur')) {
+    if (policy.includes('blur')) {
       void store.validateField(name);
     }
     controlProps.onBlur?.(event);
@@ -149,6 +162,12 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     // Only injected while required: an `aria-required: undefined` key
     // would shadow an author's own aria-required on the control.
     injected['aria-required'] = 'true';
+  }
+  if (formDisabled) {
+    // The form-wide lock, sticky like the groups' disabled inheritance —
+    // no field exits it. Only injected while set: an undefined key
+    // would shadow an author's own disabled prop.
+    injected.disabled = true;
   }
 
   const controlNode = cloneElement(control, injected);

@@ -106,6 +106,68 @@ describe('Form root', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('此项为必填'));
   });
 
+  it('lets a field override the validation policy', async () => {
+    render(
+      <Form validateOn="change">
+        <Form.Field name="name">
+          <Form.Label>Name</Form.Label>
+          <Input />
+          <Form.Validate required message="Name is required" />
+        </Form.Field>
+        <Form.Field name="mail" validateOn="blur">
+          <Form.Label>Mail</Form.Label>
+          <Input />
+          <Form.Validate required message="Mail is required" />
+        </Form.Field>
+      </Form>,
+    );
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'x' } });
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: '' } });
+    await waitFor(() => expect(screen.getByText('Name is required')).toBeInTheDocument());
+    // The overridden field does not follow the form's change policy…
+    fireEvent.change(screen.getByLabelText('Mail'), { target: { value: 'x' } });
+    fireEvent.change(screen.getByLabelText('Mail'), { target: { value: '' } });
+    expect(screen.queryByText('Mail is required')).toBeNull();
+    // …it validates on its own blur trigger.
+    fireEvent.blur(screen.getByLabelText('Mail'));
+    await waitFor(() => expect(screen.getByText('Mail is required')).toBeInTheDocument());
+  });
+
+  it('focuses the first invalid control when a submit fails', async () => {
+    render(
+      <Form>
+        <Form.Field name="first">
+          <Form.Label>First</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="second">
+          <Form.Label>Second</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>,
+    );
+    fireEvent.submit(formOf('First'));
+    await waitFor(() => expect(screen.getAllByRole('alert')).toHaveLength(2));
+    expect(screen.getByLabelText('First')).toHaveFocus();
+  });
+
+  it('skips the failed-submit focus when focusOnInvalid is off', async () => {
+    render(
+      <Form focusOnInvalid={false}>
+        <Form.Field name="first">
+          <Form.Label>First</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>,
+    );
+    fireEvent.submit(formOf('First'));
+    await waitFor(() => expect(screen.getAllByRole('alert')).toHaveLength(1));
+    expect(screen.getByLabelText('First')).not.toHaveFocus();
+  });
+
   it('publishes the store to its members', () => {
     const Probe = () => {
       const { store } = useFormContext();

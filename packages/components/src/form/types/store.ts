@@ -48,6 +48,12 @@ export interface FormFieldRegistration {
    * seed is consulted only for fields the restored map does not carry.
    */
   seed?: unknown;
+  /**
+   * Moves the viewport to the field's control and focuses it (a group
+   * scrolls only) — the field's piece of the failed-submit focus
+   * behaviour, run by `focusFirstInvalid()`.
+   */
+  focus?: () => void;
 }
 
 /**
@@ -85,6 +91,12 @@ export interface FormStore {
   setError(name: string, message: string | undefined): void;
   /** Runs every registered field's rules and returns the fresh errors. */
   validate(): Promise<FormErrors>;
+  /**
+   * Moves the viewport to the first invalid field (fields order) and
+   * focuses its control — the failed-submit landing, behind the form's
+   * `focusOnInvalid`. Does nothing while the form is valid.
+   */
+  focusFirstInvalid(): void;
   /**
    * Runs one field's rules and publishes the outcome. A run that started
    * before a newer one (or before `reset()`) settles last is discarded

@@ -1,6 +1,7 @@
 export { Form } from './form';
 export { useForm } from './hooks/use-form';
 export { useFormContext } from './context';
+export { useFormWatch, useFormWatchError } from './hooks/use-form-watch';
 export type {
   FormErrors,
   FormFieldContextValue,

@@ -34,6 +34,8 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
     labelAlign = 'start',
     requiredMarkPosition = 'start',
     gap = '4',
+    disabled = false,
+    focusOnInvalid = true,
     className,
     children,
     onSubmit,
@@ -57,14 +59,18 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
       labelWidth,
       labelAlign,
       requiredMarkPosition,
+      disabled,
     }),
-    [store, policy, labelPlacement, labelWidth, labelAlign, requiredMarkPosition],
+    [store, policy, labelPlacement, labelWidth, labelAlign, requiredMarkPosition, disabled],
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const errors = await store.validate();
     if (!store.isValid()) {
+      if (focusOnInvalid) {
+        store.focusFirstInvalid();
+      }
       onInvalid?.({ event, errors });
       return;
     }

@@ -43,7 +43,11 @@ The validation and field layer the form controls deliberately left out:
 - **`Form` + `Form.Field` / `Form.Label` / `Form.Hint` / `Form.Validate` +
   `useForm` — shipped.** Declarative rules (required / pattern / bounds /
   lengths / custom, sync or async), error messages, `deps` field linkage,
-  `validateOn` policy, submit lifecycle. A subsystem of its own, not a prop on
+  `validateOn` policy (form-wide + per-field override), submit lifecycle.
+  The required mark derives from the rules; a form-wide `disabled` lock
+  cascades into every control; a failed submit lands on the first invalid
+  field (`focusOnInvalid`); `useFormWatch`/`useFormWatchError` read the
+  store from outside the tree. A subsystem of its own, not a prop on
   `Input`; every field injects the family `{ event, value }` payload, so all
   twelve leaves read the same way.
 - `FieldArray` — repeating field groups (remaining).

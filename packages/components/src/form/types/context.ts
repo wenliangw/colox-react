@@ -19,4 +19,6 @@ export interface FormContextValue {
   labelAlign: FormLabelAlign;
   /** The form-wide required mark position around the label text. */
   requiredMarkPosition: FormRequiredMarkPosition;
+  /** The form-wide lock: every control receives `disabled` while set. */
+  disabled: boolean;
 }

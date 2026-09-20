@@ -102,6 +102,14 @@ function createFormStore(initialValues: FormValues): FormStore {
       return errors;
     },
     validateField,
+    focusFirstInvalid: () => {
+      for (const [name, registration] of fields) {
+        if (errors[name] !== undefined) {
+          registration.focus?.();
+          return;
+        }
+      }
+    },
     reset: (nextValues) => {
       values = { ...(nextValues ?? initial) };
       // Fields the restored map does not cover return to their first

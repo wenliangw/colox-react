@@ -14,6 +14,7 @@ import {
   Switch,
   Textarea,
   useForm,
+  useFormWatch,
   type FormStore,
 } from '@colox/react';
 import { Section, Hint } from '../showcase/section';
@@ -202,6 +203,68 @@ const RequiredMarkDemo = () => (
   </Stack>
 );
 
+// The form-wide lock: `disabled` cascades into every control with no
+// per-field exit (the sticky grammar of the groups' disabled). A
+// field-level `validateOn` overrides the form policy — the classic
+// login mix of the name checked on blur and the password on change.
+const LockAndPolicyDemo = () => (
+  <Stack direction="column" gap="6" style={demoWidth}>
+    <Form disabled gap="4">
+      <Form.Field name="locked-name">
+        <Form.Label>Locked</Form.Label>
+        <Input />
+      </Form.Field>
+      <Form.Field name="locked-extra">
+        <Form.Label>Extra</Form.Label>
+        <Checkbox>Also disabled</Checkbox>
+      </Form.Field>
+    </Form>
+    <Form validateOn="change" gap="4">
+      <Form.Field name="login-name" validateOn="blur">
+        <Form.Label>Login</Form.Label>
+        <Input autoComplete="username" />
+        <Form.Hint>Checked on blur…</Form.Hint>
+        <Form.Validate required message="Login checked on blur" />
+      </Form.Field>
+      <Form.Field name="login-pass">
+        <Form.Label>Password</Form.Label>
+        <Input type="password" autoComplete="current-password" />
+        <Form.Hint>…strength on change.</Form.Hint>
+        <Form.Validate required message="Password checked on change" />
+      </Form.Field>
+    </Form>
+  </Stack>
+);
+
+// useFormWatch: the one-line read-only subscription behind dependent
+// fields, live summaries and auto-save. The receipts re-render straight
+// from the store, without touching the rules.
+const WatchValue = ({ store, name, label }: { store: FormStore; name: string; label: string }) => {
+  const value = useFormWatch(store, name) as string;
+  return (
+    <Hint>
+      {label}: {value || '—'}
+    </Hint>
+  );
+};
+
+const WatchDemo = () => {
+  const form: FormStore = useForm();
+  const all = useFormWatch(form);
+  return (
+    <Stack direction="column" gap="3" style={demoWidth}>
+      <Form form={form}>
+        <Form.Field name="note">
+          <Form.Label>Note</Form.Label>
+          <Input placeholder="Type and watch the receipts" />
+        </Form.Field>
+      </Form>
+      <WatchValue store={form} name="note" label="useFormWatch(form, 'note')" />
+      <Hint>useFormWatch(form): {JSON.stringify(all)}</Hint>
+    </Stack>
+  );
+};
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -279,6 +342,12 @@ export const Overview: Story = {
         </Section>
         <Section title="Required mark — from the rules, start / end, per-label hide">
           <RequiredMarkDemo />
+        </Section>
+        <Section title="Form-wide lock and a per-field validation policy">
+          <LockAndPolicyDemo />
+        </Section>
+        <Section title="useFormWatch — live read-only subscriptions">
+          <WatchDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

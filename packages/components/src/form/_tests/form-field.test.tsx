@@ -165,6 +165,54 @@ describe('Form.Field wiring', () => {
     );
   });
 
+  it('injects the form-wide disabled lock into every control', () => {
+    render(
+      <Form disabled>
+        <Form.Field name="city">
+          <Form.Label>City</Form.Label>
+          <Input />
+        </Form.Field>
+        <Form.Field name="agree">
+          <Form.Label>Agree</Form.Label>
+          <Checkbox />
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByLabelText('City')).toBeDisabled();
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+  });
+
+  it('locks a group control through the form-wide disabled', () => {
+    render(
+      <Form disabled>
+        <Form.Field name="fruits">
+          <Form.Label>Fruits</Form.Label>
+          <Checkbox.Group>
+            <Checkbox value="apple">Apple</Checkbox>
+          </Checkbox.Group>
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByRole('checkbox', { name: 'Apple' })).toBeDisabled();
+  });
+
+  it('keeps an author disabled while the form lock is off', () => {
+    render(
+      <Form>
+        <Form.Field name="city">
+          <Form.Label>City</Form.Label>
+          <Input disabled />
+        </Form.Field>
+        <Form.Field name="zip">
+          <Form.Label>Zip</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    expect(screen.getByLabelText('City')).toBeDisabled();
+    expect(screen.getByLabelText('Zip')).toBeEnabled();
+  });
+
   it('merges the consumer className and style on the field root', () => {
     const { container } = render(
       <Form>
