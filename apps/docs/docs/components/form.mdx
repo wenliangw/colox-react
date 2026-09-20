@@ -181,6 +181,29 @@ size token key (`labelWidth`, never a px value). Both are overridable per field.
   </Form.Field>
 </Form>
 
+## Label alignment
+
+Inside the start column, `labelAlign` lines the label text up: `'start'` leads
+(default), `'end'` plasters the label against the control, and `'justify'`
+spreads the characters across the whole column width — the two-to-four character
+label trick that keeps a column of Chinese labels tidy. Declare it on the form,
+override it per field; the top placement has no column, so it ignores the axis.
+
+<Form labelPlacement="start" labelWidth="16" labelAlign="end" gap="4">
+  <Form.Field name="m-name">
+    <Form.Label>姓名</Form.Label>
+    <Input placeholder="Ada" />
+  </Form.Field>
+  <Form.Field name="m-mail" labelAlign="justify">
+    <Form.Label>邮箱</Form.Label>
+    <Input placeholder="ada@colox.dev" />
+  </Form.Field>
+  <Form.Field name="m-note" labelAlign="start">
+    <Form.Label>备注</Form.Label>
+    <Input placeholder="Leads (left)" />
+  </Form.Field>
+</Form>
+
 ## The store
 
 `useForm()` creates the store and hands it to `<Form form={store}>` when the
@@ -212,6 +235,7 @@ const form = useForm({ city: 'Lisbon' });
 | `validateOn`     | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']` |
 | `labelPlacement` | `'top' \| 'start'`                        | `'top'`             |
 | `labelWidth`     | size token key                            | `'24'`              |
+| `labelAlign`     | `'start' \| 'end' \| 'justify'`           | `'start'`           |
 | `gap`            | spacing token key                         | `'4'`               |
 | `onSubmit`       | `({ event, values }) => void`             | —                   |
 | `onInvalid`      | `({ event, errors }) => void`             | —                   |
@@ -221,12 +245,12 @@ layer's own, and native validation stays off).
 
 ### Form.Field / Form.Label / Form.Hint / Form.Validate
 
-| Member          | Props                                                              |
-| --------------- | ------------------------------------------------------------------ |
-| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?` + native `div` attributes |
-| `Form.Label`    | native `label` attributes minus `htmlFor` (the field wires it)     |
-| `Form.Hint`     | native `div` attributes (yields while the field is invalid)        |
-| `Form.Validate` | the rule props above                                               |
+| Member          | Props                                                                             |
+| --------------- | --------------------------------------------------------------------------------- |
+| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?` + native `div` attributes |
+| `Form.Label`    | native `label` attributes minus `htmlFor` (the field wires it)                    |
+| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                       |
+| `Form.Validate` | the rule props above                                                              |
 
 ### FormStore
 

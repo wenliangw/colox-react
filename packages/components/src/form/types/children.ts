@@ -1,6 +1,6 @@
 import type { HTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react';
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelPlacement } from './component';
+import type { FormLabelAlign, FormLabelPlacement } from './component';
 import type { FormValues } from './store';
 
 /**
@@ -18,6 +18,8 @@ export interface FormFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
   labelPlacement?: FormLabelPlacement;
   /** Overrides the form's label column width (size token key). */
   labelWidth?: SizeKey;
+  /** Overrides the form's label text alignment inside its column. */
+  labelAlign?: FormLabelAlign;
   /** A `Form.Label`, one control, and any `Form.Hint` / `Form.Validate` leaves. */
   children: ReactNode;
 }

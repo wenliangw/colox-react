@@ -8,6 +8,7 @@ export type {
   FormFieldValidator,
   FormHintProps,
   FormInvalidPayload,
+  FormLabelAlign,
   FormLabelPlacement,
   FormLabelProps,
   FormProps,

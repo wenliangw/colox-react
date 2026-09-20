@@ -30,15 +30,17 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     name,
     labelPlacement: labelPlacementProp,
     labelWidth: labelWidthProp,
+    labelAlign: labelAlignProp,
     className,
     style,
     children,
     ...rest
   } = props;
 
-  const { store, labelPlacement, labelWidth, validateOn } = useFormContext();
+  const { store, labelPlacement, labelWidth, labelAlign, validateOn } = useFormContext();
   const placement = labelPlacementProp ?? labelPlacement;
   const width = labelWidthProp ?? labelWidth;
+  const align = labelAlignProp ?? labelAlign;
 
   const leaves = useMemo(() => walkFormLeaves(children), [children]);
   const runner = useMemo(() => buildRuleRunner(leaves.validators), [leaves.validators]);
@@ -150,6 +152,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
 
   const fieldClassName = formFieldVariants({
     labelPlacement: placement,
+    labelAlign: align,
     labelWidth: width,
     className,
   });

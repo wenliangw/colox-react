@@ -138,6 +138,38 @@ describe('Form root', () => {
     expect(fields[1]).toHaveClass('colox-form-field--start', 'colox-form-field--label-w-20');
   });
 
+  it('aligns the start-placement label text along the labelAlign axis', () => {
+    const { container } = render(
+      <Form labelPlacement="start" labelAlign="end">
+        <Form.Field name="email" labelAlign="justify">
+          <Form.Label>Email</Form.Label>
+          <Input />
+        </Form.Field>
+        <Form.Field name="city">
+          <Form.Label>City</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    const fields = container.querySelectorAll('.colox-form-field');
+    expect(fields[0]).toHaveClass('colox-form-field--label-align-justify');
+    expect(fields[1]).toHaveClass('colox-form-field--label-align-end');
+  });
+
+  it('defaults the label alignment to start', () => {
+    const { container } = render(
+      <Form labelPlacement="start">
+        <Form.Field name="email">
+          <Form.Label>Email</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    expect(container.querySelector('.colox-form-field')).toHaveClass(
+      'colox-form-field--label-align-start',
+    );
+  });
+
   it('seeds the store from an uncontrolled default', async () => {
     const Harness = () => {
       const form = useForm();

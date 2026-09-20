@@ -1,5 +1,5 @@
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelPlacement } from './component';
+import type { FormLabelAlign, FormLabelPlacement } from './component';
 import type { FormStore, FormValidateOn } from './store';
 
 /**
@@ -15,4 +15,6 @@ export interface FormContextValue {
   labelPlacement: FormLabelPlacement;
   /** The form-wide label column width (size token key). */
   labelWidth: SizeKey;
+  /** The form-wide label text alignment inside its column. */
+  labelAlign: FormLabelAlign;
 }

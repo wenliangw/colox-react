@@ -145,6 +145,29 @@ const StartPlacementDemo = () => (
   </Stack>
 );
 
+// The label text alignment inside the start-placement column: `end`
+// plasters the label against the control, `justify` spreads the
+// characters across the fixed width — the two-to-four character
+// Chinese label trick for a tidy column, `start` leads (the default).
+const LabelAlignDemo = () => (
+  <Stack direction="column" gap="3" style={demoWidth}>
+    <Form labelPlacement="start" labelWidth="16" labelAlign="end" gap="4">
+      <Form.Field name="name">
+        <Form.Label>姓名</Form.Label>
+        <Input placeholder="Ada" />
+      </Form.Field>
+      <Form.Field name="email" labelAlign="justify">
+        <Form.Label>邮箱</Form.Label>
+        <Input placeholder="ada@colox.dev" />
+      </Form.Field>
+      <Form.Field name="note" labelAlign="start">
+        <Form.Label>备注</Form.Label>
+        <Input placeholder="Leads (left)" />
+      </Form.Field>
+    </Form>
+  </Stack>
+);
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -216,6 +239,9 @@ export const Overview: Story = {
         </Section>
         <Section title="Label placement — top (default) and start with a token width">
           <StartPlacementDemo />
+        </Section>
+        <Section title="Label alignment — start / end / justify inside the column">
+          <LabelAlignDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

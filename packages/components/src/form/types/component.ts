@@ -10,6 +10,16 @@ import type { FormInvalidPayload, FormStore, FormSubmitPayload, FormValidateOn }
 export type FormLabelPlacement = 'top' | 'start';
 
 /**
+ * How the label text lines up inside its column behind
+ * `labelPlacement="start"`: `'start'` leads, `'end'` trails, `'justify'`
+ * spreads the whole line across the column width (the two-to-four
+ * character Chinese labels trick). Logical words again — start/end
+ * mirror under RTL, justify has no direction. Ignored by the top
+ * placement, which has no column to align in.
+ */
+export type FormLabelAlign = 'start' | 'end' | 'justify';
+
+/**
  * The form root: a `<form>` (native validation off, this layer owns it)
  * laying its fields out in a column through Stack — the family's
  * token-keyed spacing vocabulary, no second layout system. Pairs with
@@ -44,6 +54,13 @@ export interface FormProps extends Omit<
    * @default '24'
    */
   labelWidth?: SizeKey;
+  /**
+   * How the label text lines up inside its column when a field's
+   * `labelPlacement` is `'start'`; a field may override it per field.
+   * Ignored by the top placement (no column to align in).
+   * @default 'start'
+   */
+  labelAlign?: FormLabelAlign;
   /**
    * The vertical rhythm between fields at the form root — a spacing
    * token key, the same vocabulary Stack speaks. Free-form arrangements

@@ -1,0 +1,24 @@
+// The label column's text alignment: `start` is the natural block
+// lead (the default), `end` plasters the label's sailing edge against
+// the control, and `justify` spreads the line across the whole fixed
+// column — the two-to-four character Chinese label trick. A
+// single-line label is all "last line", so justify must also take
+// `text-align-last`; a wrapping label justifies every line.
+.colox-form-field--label-align-start {
+  .colox-form__label-slot {
+    text-align: start;
+  }
+}
+
+.colox-form-field--label-align-end {
+  .colox-form__label-slot {
+    text-align: end;
+  }
+}
+
+.colox-form-field--label-align-justify {
+  .colox-form__label-slot {
+    text-align: justify;
+    text-align-last: justify;
+  }
+}

@@ -8,7 +8,7 @@ export type {
   FormValidateOn,
   FormValues,
 } from './store';
-export type { FormLabelPlacement, FormProps, FormRef } from './component';
+export type { FormLabelAlign, FormLabelPlacement, FormProps, FormRef } from './component';
 export type { FormContextValue } from './context';
 export type {
   FormControlProps,
