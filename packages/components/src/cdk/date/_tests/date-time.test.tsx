@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { date, format } from '../date-time';
+import { date, dateParts, format } from '../date-time';
 
 describe('factory input normalization', () => {
   it('accepts date spellings — strict, lenient separators', () => {
@@ -153,5 +153,63 @@ describe('toDate bridge', () => {
     expect(value.getHours()).toBe(8);
     expect(value.getMinutes()).toBe(30);
     expect(value.getSeconds()).toBe(5);
+  });
+});
+
+describe('parts format', () => {
+  it('emits the full six-field coordinate from parts()', () => {
+    expect(date('2026-03-15T08:30:05').parts()).toEqual({
+      year: 2026,
+      month: 3,
+      day: 15,
+      hour: 8,
+      minute: 30,
+      second: 5,
+    });
+  });
+
+  it('round-trips parts back through the factory losslessly', () => {
+    const value = date('2026-03-15T08:30:05');
+    expect(date(value.parts()).format('yyyy-MM-dd HH:mm:ss')).toBe('2026-03-15 08:30:05');
+  });
+
+  it('accepts the parts format as input — day-only with the clock defaulting to zero', () => {
+    const value = date({ year: 2026, month: 3, day: 2 });
+    expect(value.format('yyyy-MM-dd HH:mm:ss')).toBe('2026-03-02 00:00:00');
+    expect(value.parts()).toEqual({ year: 2026, month: 3, day: 2, hour: 0, minute: 0, second: 0 });
+  });
+
+  it('validates the parts input like any other source', () => {
+    expect(() => date({ year: 2026, month: 2, day: 30 })).toThrow(TypeError);
+    expect(() => date({ year: 2026, month: 13, day: 1 })).toThrow(TypeError);
+    expect(() => date({ year: 2026, month: 3, day: 2, hour: 24 })).toThrow(TypeError);
+  });
+
+  it('returns a fresh object each call — mutating it cannot touch the value', () => {
+    const value = date('2026-03-15');
+    const parts = value.parts();
+    parts.day = 99;
+    expect(value.format('yyyy-MM-dd')).toBe('2026-03-15');
+    expect(value.parts().day).toBe(15);
+  });
+
+  it('yields the coordinate from strings, Dates and instances without the date() detour', () => {
+    expect(dateParts('2026/3/2')).toEqual({
+      year: 2026,
+      month: 3,
+      day: 2,
+      hour: 0,
+      minute: 0,
+      second: 0,
+    });
+    expect(dateParts(new Date(2026, 2, 15, 8, 30))).toEqual({
+      year: 2026,
+      month: 3,
+      day: 15,
+      hour: 8,
+      minute: 30,
+      second: 0,
+    });
+    expect(dateParts(date('2026-03-15T08:30'))).toEqual(date('2026-03-15T08:30').parts());
   });
 });

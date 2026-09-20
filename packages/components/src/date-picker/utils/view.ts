@@ -5,7 +5,6 @@ import {
   buildYearViewCells,
   decadeOf,
   parseGranularIso,
-  partsToIso,
   today,
 } from '@colox/cdk/date/civil';
 
@@ -65,11 +64,7 @@ export const viewBeginsAt = (view: DateViewport, level: DatePanelLevel): string 
   if (level === 'year') {
     return pad(viewDecadeOf(view), 4);
   }
-  return partsToIso({
-    year: viewYearOf(view),
-    month: view.picker === 'date' ? view.month : 1,
-    day: 1,
-  });
+  return `${pad(viewYearOf(view), 4)}-${pad(view.picker === 'date' ? view.month : 1, 2)}-01`;
 };
 
 /** Whether a granularity iso belongs to the level's grid. */

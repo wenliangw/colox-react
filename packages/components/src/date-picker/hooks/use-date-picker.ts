@@ -13,10 +13,10 @@ import {
   daysFromCivil,
   granularIsoOf,
   parseGranularIso,
-  partsToIso,
   today,
   weekdayOf,
 } from '@colox/cdk/date/civil';
+import { date } from '@colox/cdk/date';
 import { formatIso, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
 import {
   belongsToView,
@@ -408,7 +408,7 @@ export const useDatePicker = ({
       } else if (key === 'PageDown') {
         next = addMonths(parts, 1);
       }
-      return next === null ? null : partsToIso(next);
+      return next === null ? null : date(next).iso('yyyy-MM-dd');
     }
     if (level === 'month') {
       // The 3×4 grid: Left/Right ±1 month, Up/Down ±3, PageUp/Down

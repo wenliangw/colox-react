@@ -1,4 +1,5 @@
 import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './civil';
+import type { DateParts } from './types';
 
 /**
  * The cdk date/time value object — an immutable civil date-time
@@ -14,11 +15,13 @@ import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from 
  *   normalize to their implicit day 1 — no hidden granularity.
  */
 
-/** What the `date` factory and `format` accept: ISO-ish strings, native Dates or an instance. */
-export type DateSource = string | Date | ColoxDate;
-
-/** The coordinates a pattern token renders. */
-interface DateTimeParts {
+/**
+ * The plain-object coordinate (the parts format): what `.parts()` and
+ * `dateParts()` emit and what the `date` factory reads back — the full
+ * civil+clock coordinate, calendar- and clock-validated. The day-only
+ * `DateParts` shape the calendar math speaks is also accepted as input.
+ */
+export interface DateTimeParts {
   year: number;
   month: number;
   day: number;
@@ -26,6 +29,9 @@ interface DateTimeParts {
   minute: number;
   second: number;
 }
+
+/** What `date`, `dateParts` and `format` accept: value strings, native Dates, an instance or the parts format. */
+export type DateSource = string | Date | ColoxDate | DateParts | DateTimeParts;
 
 const pad = (value: number, length: number): string =>
   length <= 1 ? String(value) : String(value).padStart(length, '0');
@@ -112,7 +118,7 @@ const instantToLocal = (source: string): DateTimeParts => {
 
 const parseSource = (source: DateSource): DateTimeParts => {
   if (source instanceof DateValue) {
-    return source.parts;
+    return source.coords;
   }
   if (typeof source === 'string') {
     const trimmed = source.trim();
@@ -144,16 +150,27 @@ const parseSource = (source: DateSource): DateTimeParts => {
     }
     throw new TypeError(`colox: cannot parse date value "${source}"`);
   }
-  // Only native Dates reach this branch: every real ColoxDate instance
-  // is a DateValue, and the first branch returned them.
-  const native = source as Date;
+  if (source instanceof Date) {
+    const native = source as Date;
+    return toParts(
+      native.getFullYear(),
+      native.getMonth() + 1,
+      native.getDate(),
+      native.getHours(),
+      native.getMinutes(),
+      native.getSeconds(),
+    );
+  }
+  // The parts format — day-only or full coordinates. Missing clock
+  // fields default to zero; invalid calendars throw like bad strings.
+  const parts = source as Partial<DateTimeParts>;
   return toParts(
-    native.getFullYear(),
-    native.getMonth() + 1,
-    native.getDate(),
-    native.getHours(),
-    native.getMinutes(),
-    native.getSeconds(),
+    Number(parts.year),
+    Number(parts.month),
+    Number(parts.day),
+    parts.hour ?? 0,
+    parts.minute ?? 0,
+    parts.second ?? 0,
   );
 };
 
@@ -278,6 +295,9 @@ export interface ColoxDate {
    */
   iso(pattern?: string): string;
 
+  /** The plain-object coordinate (`DateTimeParts`): the parts format `date()` reads back. */
+  parts(): DateTimeParts;
+
   /** The native Date at the browser-local calendar wall clock. */
   toDate(): Date;
 }
@@ -287,70 +307,75 @@ const FACTORY_TOKEN = Symbol('colox-date-value');
 
 class DateValue implements ColoxDate {
   /** Module-internal coordinates — the class never leaves this file. */
-  readonly parts: DateTimeParts;
+  readonly coords: DateTimeParts;
 
-  constructor(token: symbol, parts: DateTimeParts) {
+  constructor(token: symbol, coords: DateTimeParts) {
     if (token !== FACTORY_TOKEN) {
       throw new TypeError('colox: date values come from the date() factory');
     }
-    this.parts = parts;
+    this.coords = coords;
   }
 
   addDays(delta: number): ColoxDate {
-    const shifted = civilFromDays(daysFromCivil(this.parts) + delta);
+    const shifted = civilFromDays(daysFromCivil(this.coords) + delta);
     return new DateValue(FACTORY_TOKEN, {
       ...shifted,
-      hour: this.parts.hour,
-      minute: this.parts.minute,
-      second: this.parts.second,
+      hour: this.coords.hour,
+      minute: this.coords.minute,
+      second: this.coords.second,
     });
   }
 
   addMonths(delta: number): ColoxDate {
-    const shifted = addMonths(this.parts, delta);
+    const shifted = addMonths(this.coords, delta);
     return new DateValue(FACTORY_TOKEN, {
       ...shifted,
-      hour: this.parts.hour,
-      minute: this.parts.minute,
-      second: this.parts.second,
+      hour: this.coords.hour,
+      minute: this.coords.minute,
+      second: this.coords.second,
     });
   }
 
   addYears(delta: number): ColoxDate {
-    const year = this.parts.year + delta;
-    const day = Math.min(this.parts.day, daysInMonth(year, this.parts.month));
-    return new DateValue(FACTORY_TOKEN, { ...this.parts, year, day });
+    const year = this.coords.year + delta;
+    const day = Math.min(this.coords.day, daysInMonth(year, this.coords.month));
+    return new DateValue(FACTORY_TOKEN, { ...this.coords, year, day });
   }
 
   format(pattern: string): string {
-    return renderPattern(this.parts, pattern);
+    return renderPattern(this.coords, pattern);
   }
 
   iso(pattern?: string): string {
     if (pattern === undefined) {
       return this.toDate().toISOString();
     }
-    return renderPattern(this.parts, pattern);
+    return renderPattern(this.coords, pattern);
+  }
+
+  parts(): DateTimeParts {
+    return { ...this.coords };
   }
 
   toDate(): Date {
     return new Date(
-      this.parts.year,
-      this.parts.month - 1,
-      this.parts.day,
-      this.parts.hour,
-      this.parts.minute,
-      this.parts.second,
+      this.coords.year,
+      this.coords.month - 1,
+      this.coords.day,
+      this.coords.hour,
+      this.coords.minute,
+      this.coords.second,
     );
   }
 }
 
 /**
  * The `date` factory: normalizes `string` (datetime, date, `YYYY-MM`
- * and bare `YYYY` spellings) or native `Date` (read at the local wall
- * clock) into a `ColoxDate`; no argument is the current local time.
- * Unparsable or invalid sources throw a `TypeError` — the toolbelt
- * reports honestly, the editors roll back.
+ * and bare `YYYY` spellings), native `Date` (read at the local wall
+ * clock) or the parts format (`{ year, month, day, hour?, minute?,
+ * second? }`) into a `ColoxDate`; no argument is the current local
+ * time. Unparsable or invalid sources throw a `TypeError` — the
+ * toolbelt reports honestly, the editors roll back.
  */
 export const date = (source?: DateSource): ColoxDate => {
   if (source === undefined) {
@@ -363,9 +388,15 @@ export const date = (source?: DateSource): ColoxDate => {
 };
 
 /**
+ * The plain-object coordinate of a value — the parts format, without
+ * the `date()` detour: accepts the same sources the factory does and
+ * returns `{ year, month, day, hour, minute, second }`.
+ */
+export const dateParts = (source: DateSource): DateTimeParts => parseSource(source);
+
+/**
  * The standalone formatter: `format(source, pattern)` without the
- * `date()` detour — accepts the same `string | Date | ColoxDate`
- * sources the factory does.
+ * `date()` detour — accepts the same sources the factory does.
  */
 export const format = (source: DateSource, pattern: string): string => {
   const value =

@@ -28,7 +28,12 @@ export const isValidDate = ({ year, month, day }: DateParts): boolean => {
   return day <= daysInMonth(year, month);
 };
 
-export const partsToIso = ({ year, month, day }: DateParts): string => {
+/**
+ * The canonical day value word (`YYYY-MM-DD`, fixed 10-char width) —
+ * module-private: the public way from coordinates to a value string
+ * is `date(parts).iso('yyyy-MM-dd')` on the toolbelt entry.
+ */
+const valueWord = ({ year, month, day }: DateParts): string => {
   const yyyy = String(year).padStart(4, '0');
   const mm = String(month).padStart(2, '0');
   const dd = String(day).padStart(2, '0');
@@ -82,7 +87,7 @@ export const buildMonthGrid = (year: number, month: number): MonthGridCell[] => 
   return Array.from({ length: GRID_CELL_COUNT }, (_, index) => {
     const parts = civilFromDays(startDays + index);
     return {
-      iso: partsToIso(parts),
+      iso: valueWord(parts),
       day: parts.day,
       inMonth: parts.year === year && parts.month === month,
     };
@@ -125,7 +130,7 @@ export const partsToGranularIso = (parts: DateParts, granularity: DateGranularit
   if (granularity === 'month') {
     return `${year}-${String(parts.month).padStart(2, '0')}`;
   }
-  return partsToIso(parts);
+  return valueWord(parts);
 };
 
 /** The decade window a year belongs to (2026 → 2020). */
@@ -157,5 +162,5 @@ export const buildYearViewCells = (decadeStart: number): YearViewCell[] =>
 /** Today in the browser's local calendar (highlight + view seeding only). */
 export const today = (): string => {
   const now = new Date();
-  return partsToIso({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() });
+  return valueWord({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() });
 };
