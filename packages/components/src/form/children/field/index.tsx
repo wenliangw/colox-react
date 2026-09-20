@@ -31,21 +31,31 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     labelPlacement: labelPlacementProp,
     labelWidth: labelWidthProp,
     labelAlign: labelAlignProp,
+    requiredMarkPosition: requiredMarkPositionProp,
     className,
     style,
     children,
     ...rest
   } = props;
 
-  const { store, labelPlacement, labelWidth, labelAlign, validateOn } = useFormContext();
+  const { store, labelPlacement, labelWidth, labelAlign, requiredMarkPosition, validateOn } =
+    useFormContext();
   const placement = labelPlacementProp ?? labelPlacement;
   const width = labelWidthProp ?? labelWidth;
   const align = labelAlignProp ?? labelAlign;
+  const markPosition = requiredMarkPositionProp ?? requiredMarkPosition;
 
   const leaves = useMemo(() => walkFormLeaves(children), [children]);
   const runner = useMemo(() => buildRuleRunner(leaves.validators), [leaves.validators]);
   const control = leaves.control as ReactElement<FormControlProps>;
   const controlProps = control.props;
+
+  // A field is required when some rule leaf declares it — the label's
+  // mark and the control's aria-required both read this one verdict.
+  const required = useMemo(
+    () => leaves.validators.some((leaf) => leaf.props.required),
+    [leaves.validators],
+  );
 
   const uid = useId();
   const controlId = controlProps.id ?? `${uid}-control`;
@@ -127,6 +137,11 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   } else {
     injected.value = current;
   }
+  if (required) {
+    // Only injected while required: an `aria-required: undefined` key
+    // would shadow an author's own aria-required on the control.
+    injected['aria-required'] = 'true';
+  }
 
   const controlNode = cloneElement(control, injected);
   const messages = (
@@ -148,6 +163,8 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     error,
     errorLeaf,
     labelledBy: groupControl,
+    required,
+    requiredMarkPosition: markPosition,
   };
 
   const fieldClassName = formFieldVariants({

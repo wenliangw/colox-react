@@ -20,6 +20,15 @@ export type FormLabelPlacement = 'top' | 'start';
 export type FormLabelAlign = 'start' | 'end' | 'justify';
 
 /**
+ * Where a field's required mark sits relative to the label text:
+ * `'start'` leads (the `*姓名` pattern), `'end'` trails it. Logical
+ * words — the mark mirrors with the writing direction under RTL. The
+ * mark itself only shows while some `Form.Validate required` leaf
+ * declares the field required; `Form.Label` can hide it per label.
+ */
+export type FormRequiredMarkPosition = 'start' | 'end';
+
+/**
  * The form root: a `<form>` (native validation off, this layer owns it)
  * laying its fields out in a column through Stack — the family's
  * token-keyed spacing vocabulary, no second layout system. Pairs with
@@ -61,6 +70,14 @@ export interface FormProps extends Omit<
    * @default 'start'
    */
   labelAlign?: FormLabelAlign;
+  /**
+   * Where the required mark (the red `*`) sits relative to the label
+   * text — `'start'` leads, `'end'` trails; a field may override it per
+   * field. The mark shows on every field some `Form.Validate required`
+   * leaf declares required; a `Form.Label` can hide its own.
+   * @default 'start'
+   */
+  requiredMarkPosition?: FormRequiredMarkPosition;
   /**
    * The vertical rhythm between fields at the form root — a spacing
    * token key, the same vocabulary Stack speaks. Free-form arrangements

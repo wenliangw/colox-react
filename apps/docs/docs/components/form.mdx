@@ -204,6 +204,33 @@ override it per field; the top placement has no column, so it ignores the axis.
   </Form.Field>
 </Form>
 
+## Required mark
+
+A field shows the red `*` while some `Form.Validate required` leaf declares it
+required — the mark is derived from the rules, never declared twice.
+`requiredMarkPosition` is `'start'` (the mark leads the text) or `'end'`
+(antd's trail), set on the form and overridable per field; a label hides its
+own mark with `requiredMark={false}`. The visual star is decoration — the
+field injects `aria-required` into the control as its programmatic twin.
+
+<Form labelPlacement="start" labelWidth="16" gap="4">
+  <Form.Field name="r-name">
+    <Form.Label>姓名</Form.Label>
+    <Input placeholder="Ada" />
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="r-mail" requiredMarkPosition="end">
+    <Form.Label>邮箱</Form.Label>
+    <Input placeholder="ada@colox.dev" />
+    <Form.Validate required />
+  </Form.Field>
+  <Form.Field name="r-note">
+    <Form.Label requiredMark={false}>备注</Form.Label>
+    <Input placeholder="Required but unmarked" />
+    <Form.Validate required />
+  </Form.Field>
+</Form>
+
 ## The store
 
 `useForm()` creates the store and hands it to `<Form form={store}>` when the
@@ -229,28 +256,29 @@ const form = useForm({ city: 'Lisbon' });
 
 ### Form props
 
-| Prop             | Type                                      | Default             |
-| ---------------- | ----------------------------------------- | ------------------- |
-| `form`           | `FormStore`                               | the form's own      |
-| `validateOn`     | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']` |
-| `labelPlacement` | `'top' \| 'start'`                        | `'top'`             |
-| `labelWidth`     | size token key                            | `'24'`              |
-| `labelAlign`     | `'start' \| 'end' \| 'justify'`           | `'start'`           |
-| `gap`            | spacing token key                         | `'4'`               |
-| `onSubmit`       | `({ event, values }) => void`             | —                   |
-| `onInvalid`      | `({ event, errors }) => void`             | —                   |
+| Prop                   | Type                                      | Default             |
+| ---------------------- | ----------------------------------------- | ------------------- |
+| `form`                 | `FormStore`                               | the form's own      |
+| `validateOn`           | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']` |
+| `labelPlacement`       | `'top' \| 'start'`                        | `'top'`             |
+| `labelWidth`           | size token key                            | `'24'`              |
+| `labelAlign`           | `'start' \| 'end' \| 'justify'`           | `'start'`           |
+| `requiredMarkPosition` | `'start' \| 'end'`                        | `'start'`           |
+| `gap`                  | spacing token key                         | `'4'`               |
+| `onSubmit`             | `({ event, values }) => void`             | —                   |
+| `onInvalid`            | `({ event, errors }) => void`             | —                   |
 
 Native `<form>` attributes pass through (`onSubmit`/`onInvalid` are the form
 layer's own, and native validation stays off).
 
 ### Form.Field / Form.Label / Form.Hint / Form.Validate
 
-| Member          | Props                                                                             |
-| --------------- | --------------------------------------------------------------------------------- |
-| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?` + native `div` attributes |
-| `Form.Label`    | native `label` attributes minus `htmlFor` (the field wires it)                    |
-| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                       |
-| `Form.Validate` | the rule props above                                                              |
+| Member          | Props                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| `Form.Field`    | `name`, `labelPlacement?`, `labelWidth?`, `labelAlign?`, `requiredMarkPosition?` + native `div` attributes |
+| `Form.Label`    | `requiredMark?` + native `label` attributes minus `htmlFor` (the field wires it)                           |
+| `Form.Hint`     | native `div` attributes (yields while the field is invalid)                                                |
+| `Form.Validate` | the rule props above                                                                                       |
 
 ### FormStore
 

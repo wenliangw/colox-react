@@ -32,6 +32,7 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
     labelPlacement = 'top',
     labelWidth = '24',
     labelAlign = 'start',
+    requiredMarkPosition = 'start',
     gap = '4',
     className,
     children,
@@ -49,8 +50,15 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
   );
 
   const contextValue = useMemo<FormContextValue>(
-    () => ({ store, validateOn: policy, labelPlacement, labelWidth, labelAlign }),
-    [store, policy, labelPlacement, labelWidth, labelAlign],
+    () => ({
+      store,
+      validateOn: policy,
+      labelPlacement,
+      labelWidth,
+      labelAlign,
+      requiredMarkPosition,
+    }),
+    [store, policy, labelPlacement, labelWidth, labelAlign, requiredMarkPosition],
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

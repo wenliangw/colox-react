@@ -1,5 +1,5 @@
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelAlign, FormLabelPlacement } from './component';
+import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
 import type { FormStore, FormValidateOn } from './store';
 
 /**
@@ -17,4 +17,6 @@ export interface FormContextValue {
   labelWidth: SizeKey;
   /** The form-wide label text alignment inside its column. */
   labelAlign: FormLabelAlign;
+  /** The form-wide required mark position around the label text. */
+  requiredMarkPosition: FormRequiredMarkPosition;
 }

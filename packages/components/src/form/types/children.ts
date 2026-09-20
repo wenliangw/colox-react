@@ -1,6 +1,6 @@
 import type { HTMLAttributes, LabelHTMLAttributes, ReactNode } from 'react';
 import type { SizeKey } from '@colox/theme';
-import type { FormLabelAlign, FormLabelPlacement } from './component';
+import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
 import type { FormValues } from './store';
 
 /**
@@ -20,12 +20,21 @@ export interface FormFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
   labelWidth?: SizeKey;
   /** Overrides the form's label text alignment inside its column. */
   labelAlign?: FormLabelAlign;
+  /** Overrides the form's required mark position around the label text. */
+  requiredMarkPosition?: FormRequiredMarkPosition;
   /** A `Form.Label`, one control, and any `Form.Hint` / `Form.Validate` leaves. */
   children: ReactNode;
 }
 
 /** The field's label: same words as the native element, wired for you. */
 export type FormLabelProps = Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> & {
+  /**
+   * Whether this label shows the field's required mark (the red `*`).
+   * The mark appears while some `Form.Validate required` leaf declares
+   * the field required; `false` hides it on this label only.
+   * @default true
+   */
+  requiredMark?: boolean;
   children: ReactNode;
 };
 
@@ -104,6 +113,12 @@ export interface FormControlProps {
   invalid?: boolean;
   'aria-describedby'?: string;
   'aria-labelledby'?: string;
+  /**
+   * Set to `'true'` while some rule leaf declares the field required —
+   * the programmatic twin of the label's visual required mark.
+   * @internal
+   */
+  'aria-required'?: 'true';
   /** The family change payload channel the field wraps. */
   onChange?: (payload: unknown) => void;
   onBlur?: (event: unknown) => void;
@@ -132,4 +147,8 @@ export interface FormFieldContextValue {
   errorLeaf: number;
   /** Whether the label is wired through `aria-labelledby` (group controls). */
   labelledBy: boolean;
+  /** Whether some rule leaf declares the field required (mark + aria). */
+  required: boolean;
+  /** The resolved required mark position around the label text. */
+  requiredMarkPosition: FormRequiredMarkPosition;
 }

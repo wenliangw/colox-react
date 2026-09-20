@@ -168,6 +168,32 @@ const LabelAlignDemo = () => (
   </Stack>
 );
 
+// The required mark: derived from the `required` rules — the star
+// renders while some Form.Validate leaf declares it, leading the text
+// by default (`requiredMarkPosition` on the form, overridable per
+// field; a label hides its own with `requiredMark={false}`).
+const RequiredMarkDemo = () => (
+  <Stack direction="column" gap="3" style={demoWidth}>
+    <Form labelPlacement="start" labelWidth="16" gap="4">
+      <Form.Field name="name">
+        <Form.Label>姓名</Form.Label>
+        <Input placeholder="Ada" />
+        <Form.Validate required />
+      </Form.Field>
+      <Form.Field name="mail" requiredMarkPosition="end">
+        <Form.Label>邮箱</Form.Label>
+        <Input placeholder="ada@colox.dev" />
+        <Form.Validate required />
+      </Form.Field>
+      <Form.Field name="note">
+        <Form.Label requiredMark={false}>备注</Form.Label>
+        <Input placeholder="Required but unmarked" />
+        <Form.Validate required />
+      </Form.Field>
+    </Form>
+  </Stack>
+);
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -242,6 +268,9 @@ export const Overview: Story = {
         </Section>
         <Section title="Label alignment — start / end / justify inside the column">
           <LabelAlignDemo />
+        </Section>
+        <Section title="Required mark — from the rules, start / end, per-label hide">
+          <RequiredMarkDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

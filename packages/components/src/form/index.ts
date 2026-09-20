@@ -13,6 +13,7 @@ export type {
   FormLabelProps,
   FormProps,
   FormRef,
+  FormRequiredMarkPosition,
   FormStore,
   FormSubmitPayload,
   FormValidateOn,

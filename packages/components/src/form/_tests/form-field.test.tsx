@@ -159,6 +159,66 @@ describe('Form.Field wiring', () => {
   });
 });
 
+describe('Form required mark', () => {
+  it('derives the mark from a required rule and injects aria-required', () => {
+    const { container } = render(
+      <Form>
+        <Form.Field name="email">
+          <Form.Label>Email</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="city">
+          <Form.Label>City</Form.Label>
+          <Input />
+        </Form.Field>
+      </Form>,
+    );
+    const labels = container.querySelectorAll('.colox-form-label');
+    expect(labels).toHaveLength(2);
+    // Default position 'start': the mark leads the label text.
+    expect(labels[0]?.firstElementChild).toHaveClass('colox-form-label__required');
+    expect(container.querySelectorAll('.colox-form-label__required')).toHaveLength(1);
+    expect(screen.getByLabelText('Email')).toHaveAttribute('aria-required', 'true');
+    expect(screen.getByLabelText('City')).not.toHaveAttribute('aria-required');
+  });
+
+  it('renders the mark after the text on the end position and overrides per field', () => {
+    const { container } = render(
+      <Form requiredMarkPosition="end">
+        <Form.Field name="email">
+          <Form.Label>Email</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="city" requiredMarkPosition="start">
+          <Form.Label>City</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>,
+    );
+    const labels = container.querySelectorAll('.colox-form-label');
+    expect(labels[0]?.lastElementChild).toHaveClass('colox-form-label__required');
+    expect(labels[1]?.firstElementChild).toHaveClass('colox-form-label__required');
+  });
+
+  it('hides the mark per label while the programmatic verdict stays', () => {
+    const { container } = render(
+      <Form>
+        <Form.Field name="email">
+          <Form.Label requiredMark={false}>Email</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>,
+    );
+    expect(container.querySelector('.colox-form-label__required')).toBeNull();
+    // Hiding the star is a visual choice: the field is still required.
+    expect(screen.getByLabelText('Email')).toHaveAttribute('aria-required', 'true');
+  });
+});
+
 describe('Form.Field validation tree', () => {
   it('requires exactly one control child', () => {
     expect(() =>
