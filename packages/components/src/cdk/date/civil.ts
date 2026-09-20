@@ -35,15 +35,6 @@ export const partsToIso = ({ year, month, day }: DateParts): string => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-export const isoToParts = (iso: string): DateParts | null => {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (match === null) {
-    return null;
-  }
-  const parts = { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
-  return isValidDate(parts) ? parts : null;
-};
-
 /**
  * Days since 1970-01-01 for a civil date (Howard Hinnant's algorithm) —
  * the zero-timezone date algebra that keeps weekday math from drifting
@@ -98,10 +89,6 @@ export const buildMonthGrid = (year: number, month: number): MonthGridCell[] => 
   });
 };
 
-/** Shifts day-accurate parts by whole days. */
-export const addDays = (parts: DateParts, delta: number): DateParts =>
-  civilFromDays(daysFromCivil(parts) + delta);
-
 /** Shifts a date by whole months, clamping the day into the target month. */
 export const addMonths = (parts: DateParts, delta: number): DateParts => {
   const index = parts.year * 12 + (parts.month - 1) + delta;
@@ -109,40 +96,6 @@ export const addMonths = (parts: DateParts, delta: number): DateParts => {
   const month = index - year * 12 + 1;
   return { year, month, day: Math.min(parts.day, daysInMonth(year, month)) };
 };
-
-/**
- * Whole-day shift on a canonical granularity ISO value: `'2026-03'`
- * and bare `'2026'` count their implicit day 1. Returns null for
- * calendar-invalid input.
- */
-export const addDaysIso = (iso: string, delta: number): string | null => {
-  const parts = parseGranularIso(iso);
-  return parts === null ? null : partsToIso(addDays(parts, delta));
-};
-
-/**
- * Whole-month shift on a canonical granularity ISO value, keeping the
- * input's granularity: `'2026-03'` + 1 → `'2026-04'` (the implicit
- * day 1 is not fabricated into the output). Returns null for
- * calendar-invalid input.
- */
-export const addMonthsIso = (iso: string, delta: number): string | null => {
-  const parts = parseGranularIso(iso);
-  if (parts === null) {
-    return null;
-  }
-  const shifted = addMonths(parts, delta);
-  if (iso.length <= 4) {
-    return String(shifted.year).padStart(4, '0');
-  }
-  if (iso.length <= 7) {
-    return `${String(shifted.year).padStart(4, '0')}-${String(shifted.month).padStart(2, '0')}`;
-  }
-  return partsToIso(shifted);
-};
-
-/** Lexicographic ISO comparison: canonical strings sort chronologically. */
-export const compareIso = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 /**
  * Parses a canonical granularity ISO value — `YYYY`, `YYYY-MM` or

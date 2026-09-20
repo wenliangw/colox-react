@@ -11,7 +11,6 @@ import {
   granularIsoOf,
   isLeapYear,
   isValidDate,
-  isoToParts,
   parseGranularIso,
   partsToGranularIso,
   partsToIso,
@@ -31,7 +30,7 @@ describe('date-core calendar math', () => {
 
   it('round-trips civil dates through day numbers in both directions', () => {
     for (const iso of ['1970-01-01', '2026-03-02', '2000-02-29', '0001-01-01', '9999-12-31']) {
-      const parts = isoToParts(iso);
+      const parts = parseGranularIso(iso);
       expect(parts).not.toBeNull();
       expect(partsToIso(civilFromDays(daysFromCivil(parts!)))).toBe(iso);
     }
@@ -115,8 +114,6 @@ describe('month shifting and bounds', () => {
 
   it('turns parts into padded canonical ISO', () => {
     expect(partsToIso({ year: 2026, month: 3, day: 2 })).toBe('2026-03-02');
-    expect(isoToParts('2026-03-02')).toEqual({ year: 2026, month: 3, day: 2 });
-    expect(isoToParts('2026-3-2')).toBeNull();
   });
 });
 

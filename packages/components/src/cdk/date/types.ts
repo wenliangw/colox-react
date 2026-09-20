@@ -15,12 +15,6 @@ export interface DateParts {
   day: number;
 }
 
-/** Clock coordinates: 24-hour hour (0–23) and minute (0–59). */
-export interface TimeParts {
-  hour: number;
-  minute: number;
-}
-
 /** One cell of the 42-cell (6×7) month grid. */
 export interface MonthGridCell {
   /** The cell's canonical ISO date (adjacent-month fill included). */
@@ -62,7 +56,3 @@ export type DateFormatPart =
 
 /** One compiled token of a `valueFormat` pattern. */
 export type DateFormatToken = Extract<DateFormatPart, { length: number }>;
-
-/** One compiled piece of a time format pattern (case matters: `H` is 24h, `h` is 12h). */
-export type TimeFormatPart =
-  { type: 'hour24' | 'hour12' | 'minute'; length: number } | { type: 'literal'; text: string };

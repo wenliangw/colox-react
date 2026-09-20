@@ -18,4 +18,4 @@ into the factory, and `toDate()` bridges to native `Date`. A
 standalone `format(value, pattern)` works without the `date()`
 detour. The date picker keeps reading the core from the cdk
 submodules (zero visual change); its util files move along with
-their tests, joined by the new time, local and value-object modules.
+their tests, joined by the new value-object module.
