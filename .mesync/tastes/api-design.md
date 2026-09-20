@@ -57,7 +57,8 @@
 
 - 布尔开关命名表达「允许什么能力」且默认 false：`allowTogglePassword`（用户改拍自我的 `showVisibilityToggle`：「有点复杂，可以改名 allowTogglePassword 默认 false，为 true 且 type 是 password 才开」）。
 - 激活条件写进 prop 语义本身（`allowTogglePassword && type==='password'` 才生效），不发明「万事皆开」的笼统开关；`show*` 系命名太笼统（show 的是按钮还是状态？），能力词直给目的。
-- 将来做 Boolean 开关类 prop（autoComplete 视觉件、下拉清空、格式化器等）沿用：`allow<Ability>` + 精确条件绑定 + 默认 false。
+- **显示权重：视觉件的显示开关属 `show<What>` 词族**（2026 Form required mark 用户拍板 `showRequiredMark`）：开关的对象是「某个可见件的显隐」而非「某个能力」时，`show*` 直指对象、语义够准——必填星号默认显示（从规则派生），`showRequiredMark={false}` 单处隐藏。边界：能力型布尔（allow/能否）+默认 false；显隐型布尔（show/显不显）+默认 true（跟着真相显示，否定是局部例外）。
+- 将来做 Boolean 开关类 prop（autoComplete 视觉件、下拉清空、格式化器等）沿用：`allow<Ability>` + 精确条件绑定 + 默认 false；纯视觉件的显隐口子归 `show<What>` + 默认显示。</think>
 
 来源：Input v2 props 定案（用户对该命名的改拍）。
 
@@ -143,9 +144,10 @@
 - 组件名描述**容器职责**：绝对定位容器定名 Positioner 而非 Absolute（absolute 是子件行为，容器只提供定位上下文）。
 - `gap` 只收 spacing token 键（20 键全刻度），不收任意数字/px——间距永远落在主题网格上；`align`/`justify` 收语义词（start/center/between…）不收 flexbox 裸值；direction 含反向值。
 - **对齐词一律 box-alignment 逻辑词族（start/center/end），禁物理 left/right**（RTL 下物理词镜像错位）。Container 的 `align` 与 Stack 的 `align` 同词族但不同职：Container 管壳自身行内轴放置（对标 align-self），Stack 管 flex 子项的交叉轴——文档写明区别，不换词。
-  - Form 的 `labelAlign`（2026 兑现：start 形态 label 列内文字对齐 `start/end/justify`）沿用同一纪律——text-align 词也走逻辑词，antd 的 left/right 物理词不被采纳（用户拍板）；**新轴默认取现状词**（start = 开启即既有视觉，不破现有表单），业务场景一行 form 级声明即全局生效；轴向的继承走既有体系（form 级声明 + `Form.Field` 字段级覆盖），落点打在拥有该几何的元素上（label 槽，列宽与对齐同处），justify 单行文本需 `text-align-last: justify`（单行 label 全是「最后一行」）。
-  - 对齐轴与装饰件分开：Form 的 required mark（2026）是**外于文字槽的独立件**——justify 会把行内所有字元均匀扯开，星号若进文字流会被拉离文字（孤悬列首）；星号件在文字槽外 + 对齐只作用于文字槽，星号永远贴字。同理往后「对齐轴 + 装饰件」共存的场景都用这个结构。
-  - **装饰字形走 CSS content 不污染文本面**：required 星号是空 span + `::before { content: '*' }`（aria-hidden）——label 的 textContent 保持作者原文（label 类查询、aria-labelledby 拿干净文本，测试无 * 前缀）；装饰的语义孪生（aria-required）落在真控件上。「显示跟着真相走」：星号**从 required 规则派生**（单一真相源，不设双源显式声明），隐藏（`requiredMark={false}`）是纯视觉选择、不改程序化语义。
+  - Form 的 `labelAlign`（2026 兑现：start 形态 label 列内文字对齐 `start/end/justify`）沿用同一纪律——text-align 词也走逻辑词，antd 的 left/right 物理词不被采纳（用户拍板）；**新轴默认取现状词**（start = 开启即既有视觉，不破现有表单），业务场景一行 form 级声明即全局生效；轴向的继承走既有体系（form 级声明 + `Form.Field` 字段级覆盖）；justify 单行文本需 `text-align-last: justify`（单行 label 全是「最后一行」）。
+  - 对齐轴与装饰件分开：Form 的 required mark（2026）是**外于文字槽的独立件**——justify 会把行内所有字元均匀扯开，星号若进文字流会被拉离文字（孤悬列首）；同理往后「对齐轴 + 装饰件」共存的场景都用这个结构。
+  - **对齐的舞台是列槽、label 整体被对齐**：start/end 对齐作用于槽里的整个 label（内容宽收缩、星号+文字一体移动），星号在任何对齐词下都贴文字；justify 是唯一例外（文字槽撑满列宽铺满、星号守行缘）。教训来自用户指正：把 `flex: 1` 给文字槽，end 下文字走列右、星号滞留行首——先被拉宽的子件会偷走对齐语义，对齐**不作用于拉伸件**。
+  - **装饰字形走 CSS content 不污染文本面**：required 星号是空 span + `::before { content: '*' }`（aria-hidden）——label 的 textContent 保持作者原文（label 类查询、aria-labelledby 拿干净文本，测试无 * 前缀）；装饰的语义孪生（aria-required）落在真控件上。「显示跟着真相走」：星号**从 required 规则派生**（单一真相源，不设双源显式声明），隐藏（`showRequiredMark={false}`）是纯视觉选择、不改程序化语义。
 - 修饰类（direction/gap/align/justify 档）**始终全量输出**（含默认档，同 Button CVA 惯例）；CSS 忠实默认（方向 row、对齐 stretch、分布 start、gap 无类即 0）。
 
 ## ColoxTheme 运行时：组合式 API，props 不堆 Provider
