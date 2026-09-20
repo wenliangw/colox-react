@@ -83,6 +83,13 @@ export interface FormStore {
   /** Writes a value programmatically (no validation runs). */
   setValue(name: string, value: unknown): void;
   /**
+   * Batch-loads values — the edit-form backfill behind fetching a record
+   * into the form. Only the given keys are written (merged over the
+   * current values); no validation runs and nothing is reported to
+   * `onValuesChange` — a load is not a user edit.
+   */
+  setValues(values: FormValues): void;
+  /**
    * Writes or clears one field's error message. A message written from
    * outside (a server-side verdict) shows on the field's first
    * `Form.Validate` leaf; a field without any rule leaf has no error
@@ -131,4 +138,16 @@ export interface FormSubmitPayload {
 export interface FormInvalidPayload {
   event: FormEvent<HTMLFormElement>;
   errors: FormErrors;
+}
+
+/**
+ * One user edit carried to `onValuesChange`: which field changed, its
+ * next value, and the post-change snapshot of all values. Programmatic
+ * writes (`setValue`, `setValues`, `reset`) never produce one — the
+ * report is the echo of an interaction, not of a load.
+ */
+export interface FormValuesChangePayload {
+  name: string;
+  value: unknown;
+  values: FormValues;
 }

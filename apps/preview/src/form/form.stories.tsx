@@ -265,6 +265,48 @@ const WatchDemo = () => {
   );
 };
 
+// The edit-form loop: setValues backfills a fetched record without
+// touching the rules, and onValuesChange reports only the user's own
+// edits with the post-change snapshot — loads and resets stay silent.
+const EditFormDemo = () => {
+  const form: FormStore = useForm();
+  const [log, setLog] = useState<string[]>([]);
+  return (
+    <Stack direction="column" gap="3" style={demoWidth}>
+      <Stack direction="row" gap="2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.setValues({ name: 'Ada', email: 'ada@colox.dev' })}
+        >
+          setValues
+        </Button>
+        <Button type="button" variant="outline" onClick={() => form.reset()}>
+          reset
+        </Button>
+      </Stack>
+      <Form
+        form={form}
+        onValuesChange={({ name, value }) =>
+          setLog((lines) => [...lines.slice(-1), `${name}=${String(value)}`])
+        }
+      >
+        <Form.Field name="name">
+          <Form.Label>Name</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+        <Form.Field name="email">
+          <Form.Label>Email</Form.Label>
+          <Input />
+          <Form.Validate required />
+        </Form.Field>
+      </Form>
+      <Hint>onValuesChange: {log.join(' · ') || '—'}</Hint>
+    </Stack>
+  );
+};
+
 // The store handed in from outside: imperative validate/reset from a
 // toolbar, values read on demand.
 const ExternalStoreDemo = () => {
@@ -348,6 +390,9 @@ export const Overview: Story = {
         </Section>
         <Section title="useFormWatch — live read-only subscriptions">
           <WatchDemo />
+        </Section>
+        <Section title="Edit form — setValues backfill and onValuesChange">
+          <EditFormDemo />
         </Section>
         <Section title="An externally held store">
           <ExternalStoreDemo />

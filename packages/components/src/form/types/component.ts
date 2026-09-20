@@ -1,6 +1,13 @@
 import type { FormHTMLAttributes, ReactNode } from 'react';
 import type { SizeKey, SpacingKey } from '@colox/theme';
-import type { FormInvalidPayload, FormStore, FormSubmitPayload, FormValidateOn } from './store';
+import type {
+  FormInvalidPayload,
+  FormStore,
+  FormSubmitPayload,
+  FormValidateOn,
+  FormValues,
+  FormValuesChangePayload,
+} from './store';
 
 /**
  * Where a field's label sits: `'top'` stacks it above the control,
@@ -44,6 +51,13 @@ export interface FormProps extends Omit<
    * creates its own — reachable inside through `useFormContext()`.
    */
   form?: FormStore;
+  /**
+   * The form's initial values while it owns its store — the way a form
+   * with no external store declares them (with an external store, pass
+   * them to `useForm(initialValues)` instead; this prop is ignored).
+   * `reset()` restores back to these.
+   */
+  initialValues?: FormValues;
   /**
    * When rules run, form-wide: `'submit'`, `'blur'`, `'change'` or a
    * mix. Submit always validates everything; `deps` re-validation
@@ -107,6 +121,13 @@ export interface FormProps extends Omit<
   onSubmit?: (payload: FormSubmitPayload) => void;
   /** Fires with the errors when the submit validation fails. */
   onInvalid?: (payload: FormInvalidPayload) => void;
+  /**
+   * Fires for every user edit — which field changed, its next value and
+   * the full post-change snapshot. Behind dependent fields, auto-save
+   * and live previews with an edit timestamp; programmatic writes
+   * (`setValue` / `setValues` / `reset`) report nothing.
+   */
+  onValuesChange?: (payload: FormValuesChangePayload) => void;
   children: ReactNode;
 }
 

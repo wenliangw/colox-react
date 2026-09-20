@@ -1,6 +1,6 @@
 import type { SizeKey } from '@colox/theme';
 import type { FormLabelAlign, FormLabelPlacement, FormRequiredMarkPosition } from './component';
-import type { FormStore, FormValidateOn } from './store';
+import type { FormStore, FormValidateOn, FormValuesChangePayload } from './store';
 
 /**
  * What the form publishes to its fields: the store, the validation
@@ -21,4 +21,6 @@ export interface FormContextValue {
   requiredMarkPosition: FormRequiredMarkPosition;
   /** The form-wide lock: every control receives `disabled` while set. */
   disabled: boolean;
+  /** The form-level user-edit report the field carries on each change. */
+  onValuesChange?: (payload: FormValuesChangePayload) => void;
 }

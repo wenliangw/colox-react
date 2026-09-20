@@ -301,6 +301,26 @@ const form = useForm({ city: 'Lisbon' });
 were declared — and the errors clear. What the controls show and what
 `getValues()` reads agree again.
 
+`setValues(partial)` is the edit-form backfill: it merges the given keys over
+the current values, runs no validation and reports nothing — a fetched record
+loads silently, the rules wait for the user's next edit. A form that holds no
+external store declares its initial values on the form itself
+(`initialValues`, ignored when a `form` store is passed).
+
+`onValuesChange` fires for every user edit with `{ name, value, values }` —
+the changed field, its next value and the post-change snapshot. Programmatic
+writes never produce one, so auto-save can watch this channel without saving
+back the record it just loaded:
+
+```tsx
+<Form
+  initialValues={{ name: 'Ada', email: 'ada@colox.dev' }}
+  onValuesChange={({ values }) => save(values)}
+>
+  {/* fields */}
+</Form>
+```
+
 `useFormWatch(store, name?)` subscribes to values — one field with a name,
 the whole map without — and `useFormWatchError(store, name)` to one field's
 error. Both are read-only re-render primitives behind dependent fields, live
@@ -316,19 +336,21 @@ const all = useFormWatch(form); // the whole map, auto-save style
 
 ### Form props
 
-| Prop                   | Type                                      | Default             |
-| ---------------------- | ----------------------------------------- | ------------------- |
-| `form`                 | `FormStore`                               | the form's own      |
-| `validateOn`           | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']` |
-| `labelPlacement`       | `'top' \| 'start'`                        | `'top'`             |
-| `labelWidth`           | size token key                            | `'24'`              |
-| `labelAlign`           | `'start' \| 'end' \| 'justify'`           | `'start'`           |
-| `requiredMarkPosition` | `'start' \| 'end'`                        | `'start'`           |
-| `gap`                  | spacing token key                         | `'4'`               |
-| `disabled`             | `boolean`                                 | `false`             |
-| `focusOnInvalid`       | `boolean`                                 | `true`              |
-| `onSubmit`             | `({ event, values }) => void`             | —                   |
-| `onInvalid`            | `({ event, errors }) => void`             | —                   |
+| Prop                   | Type                                      | Default                   |
+| ---------------------- | ----------------------------------------- | ------------------------- |
+| `form`                 | `FormStore`                               | the form's own            |
+| `initialValues`        | `FormValues`                              | — (form-owned store only) |
+| `validateOn`           | `'submit' \| 'blur' \| 'change' \| array` | `['submit','blur']`       |
+| `labelPlacement`       | `'top' \| 'start'`                        | `'top'`                   |
+| `labelWidth`           | size token key                            | `'24'`                    |
+| `labelAlign`           | `'start' \| 'end' \| 'justify'`           | `'start'`                 |
+| `requiredMarkPosition` | `'start' \| 'end'`                        | `'start'`                 |
+| `gap`                  | spacing token key                         | `'4'`                     |
+| `disabled`             | `boolean`                                 | `false`                   |
+| `focusOnInvalid`       | `boolean`                                 | `true`                    |
+| `onSubmit`             | `({ event, values }) => void`             | —                         |
+| `onInvalid`            | `({ event, errors }) => void`             | —                         |
+| `onValuesChange`       | `({ name, value, values }) => void`       | —                         |
 
 Native `<form>` attributes pass through (`onSubmit`/`onInvalid` are the form
 layer's own, and native validation stays off).
@@ -359,6 +381,7 @@ layer's own, and native validation stays off).
 | `getErrors()` / `getError(name)`     | the current errors                                                                |
 | `isValid()`                          | whether no field carries an error                                                 |
 | `setValue(name, value)`              | writes a value (no validation runs)                                               |
+| `setValues(values)`                  | edit-form backfill: merges the given keys, silent — no validation, no report      |
 | `setError(name, message)`            | a server-side verdict; shows on the field's first error line                      |
 | `validate()` / `validateField(name)` | runs the rules and returns the outcome                                            |
 | `focusFirstInvalid()`                | the failed-submit landing: moves the viewport to the first invalid field          |

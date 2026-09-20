@@ -20,6 +20,7 @@ export type {
   FormValidateOn,
   FormValidateProps,
   FormValues,
+  FormValuesChangePayload,
 } from './types';
 export { formFieldVariants } from './variants';
 export type { FormFieldVariants } from './variants';

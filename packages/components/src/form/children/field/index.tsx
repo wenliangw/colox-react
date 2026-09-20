@@ -47,6 +47,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
     requiredMarkPosition,
     validateOn,
     disabled: formDisabled,
+    onValuesChange,
   } = useFormContext();
   const placement = labelPlacementProp ?? labelPlacement;
   const width = labelWidthProp ?? labelWidth;
@@ -115,7 +116,11 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>((props, ref)
   }, [store, name, runner, seed, controlId]);
 
   const handleChange = (payload: unknown) => {
-    store.setValue(name, readPayloadValue(payload));
+    const next = readPayloadValue(payload);
+    store.setValue(name, next);
+    // The report is the echo of the interaction: only the user-edit
+    // channel produces it, with the post-write snapshot.
+    onValuesChange?.({ name, value: next, values: store.getValues() });
     if (policy.includes('change')) {
       void store.validateField(name);
     }

@@ -28,6 +28,7 @@ const DEFAULT_VALIDATE_ON: readonly FormValidateOn[] = ['submit', 'blur'];
 const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
   const {
     form,
+    initialValues,
     validateOn,
     labelPlacement = 'top',
     labelWidth = '24',
@@ -40,10 +41,14 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
     children,
     onSubmit,
     onInvalid,
+    onValuesChange,
     ...rest
   } = props;
 
-  const ownStore = useForm();
+  // initialValues seed only the form-owned store: with an external store
+  // the consumer holds the loading channel (useForm(initialValues) and
+  // setValues) and the prop is ignored.
+  const ownStore = useForm(form === undefined ? initialValues : undefined);
   const store = form ?? ownStore;
 
   const policy = useMemo<readonly FormValidateOn[]>(
@@ -60,8 +65,18 @@ const FormRoot = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
       labelAlign,
       requiredMarkPosition,
       disabled,
+      onValuesChange,
     }),
-    [store, policy, labelPlacement, labelWidth, labelAlign, requiredMarkPosition, disabled],
+    [
+      store,
+      policy,
+      labelPlacement,
+      labelWidth,
+      labelAlign,
+      requiredMarkPosition,
+      disabled,
+      onValuesChange,
+    ],
   );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

@@ -7,6 +7,7 @@ export type {
   FormSubmitPayload,
   FormValidateOn,
   FormValues,
+  FormValuesChangePayload,
 } from './store';
 export type {
   FormLabelAlign,

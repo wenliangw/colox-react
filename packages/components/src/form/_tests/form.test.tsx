@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Form, useForm, useFormContext } from '..';
 import { Input } from '../../input';
-import type { FormErrors, FormValues } from '../types';
+import type { FormErrors, FormStore, FormValues, FormValuesChangePayload } from '../types';
 
 const NameField = ({ required = true }: { required?: boolean } = {}) => (
   <Form.Field name="name">
@@ -389,5 +389,102 @@ describe('Form root', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Check' }));
     await new Promise((resolve) => setTimeout(resolve, 30));
     expect(runGone).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Edit form data', () => {
+  it('seeds a form-owned store from initialValues', async () => {
+    const onSubmit = vi.fn();
+    render(
+      <Form initialValues={{ name: 'Ada' }} onSubmit={onSubmit}>
+        <NameField />
+      </Form>,
+    );
+    expect(screen.getByLabelText('Name')).toHaveValue('Ada');
+    fireEvent.submit(formOf('Name'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledOnce());
+    const [payload] = onSubmit.mock.calls[0] as [{ values: FormValues }];
+    expect(payload.values).toEqual({ name: 'Ada' });
+  });
+
+  it('ignores initialValues when an external store is passed', () => {
+    let captured!: FormStore;
+    const Harness = () => {
+      const form = useForm();
+      captured = form;
+      return (
+        <Form form={form} initialValues={{ name: 'Ada' }}>
+          <NameField required={false} />
+        </Form>
+      );
+    };
+    render(<Harness />);
+    expect(screen.getByLabelText('Name')).toHaveValue('');
+    expect(captured.getValues()).toEqual({ name: '' });
+  });
+
+  it('backfills values through setValues without validating or reporting', () => {
+    let store!: FormStore;
+    const reports: FormValuesChangePayload[] = [];
+    const Harness = () => {
+      const form = useForm();
+      store = form;
+      return (
+        <Form form={form} onValuesChange={(payload) => reports.push(payload)}>
+          <NameField />
+          <Form.Field name="bio">
+            <Form.Label>Bio</Form.Label>
+            <Input />
+            <Form.Validate minLength={5} />
+          </Form.Field>
+          <Form.Field name="zip">
+            <Form.Label>Zip</Form.Label>
+            <Input />
+          </Form.Field>
+        </Form>
+      );
+    };
+    render(<Harness />);
+    act(() => store.setValues({ name: 'Ada', bio: 'hi' }));
+    expect(screen.getByLabelText('Name')).toHaveValue('Ada');
+    expect(screen.getByLabelText('Bio')).toHaveValue('hi');
+    // Merged over the current values; the covered zip keeps its seed.
+    expect(store.getValues()).toEqual({ name: 'Ada', bio: 'hi', zip: '' });
+    // A load sets nothing off: no rule ran on the too-short bio and no
+    // change was reported.
+    expect(store.getError('bio')).toBeUndefined();
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(reports).toEqual([]);
+  });
+
+  it('reports only user edits to onValuesChange with the post-change snapshot', () => {
+    let store!: FormStore;
+    const reports: FormValuesChangePayload[] = [];
+    const Harness = () => {
+      const form = useForm();
+      store = form;
+      return (
+        <Form form={form} onValuesChange={(payload) => reports.push(payload)}>
+          <NameField />
+          <Form.Field name="city">
+            <Form.Label>City</Form.Label>
+            <Input />
+          </Form.Field>
+        </Form>
+      );
+    };
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Ada' } });
+    expect(reports).toEqual([{ name: 'name', value: 'Ada', values: { name: 'Ada', city: '' } }]);
+    // Programmatic writes stay silent: loads and resets are not edits.
+    act(() => store.setValues({ city: 'Porto' }));
+    act(() => store.reset());
+    expect(reports).toHaveLength(1);
+    fireEvent.change(screen.getByLabelText('City'), { target: { value: 'Lisbon' } });
+    expect(reports[1]).toEqual({
+      name: 'city',
+      value: 'Lisbon',
+      values: { name: '', city: 'Lisbon' },
+    });
   });
 });

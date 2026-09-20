@@ -89,6 +89,13 @@ function createFormStore(initialValues: FormValues): FormStore {
       emit();
       runDependents(name);
     },
+    setValues: (nextValues) => {
+      // The edit-form backfill: only the given keys are written, no
+      // validation runs (deps included) and nothing reports to
+      // onValuesChange — a load is not a user edit.
+      values = { ...values, ...nextValues };
+      emit();
+    },
     setError: (name, message) => {
       // An error written from outside has no rule to blame: it shows on
       // the field's first rule leaf (or nowhere when it declared none).
