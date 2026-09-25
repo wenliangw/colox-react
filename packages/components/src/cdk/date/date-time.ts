@@ -420,11 +420,21 @@ export function dateParts(
 }
 
 /**
- * The standalone formatter: `format(source, pattern)` without the
- * `date()` detour — accepts the same sources the factory does.
+ * The standalone display renderer: `format(source, pattern)` without
+ * the `date()` detour, and the display outlet never throws — a null
+ * source renders null, an unparsable string or invalid Date renders
+ * null, and only a real coordinate renders the word. Callers decide
+ * their own empty display (`format(value, pattern) ?? ''`); loudness
+ * is their policy, not the toolbelt's.
  */
-export const format = (source: DateSource, pattern: string): string => {
-  const value =
-    source instanceof DateValue ? source : new DateValue(FACTORY_TOKEN, parseSource(source));
-  return value.format(pattern);
-};
+export function format(source: null, pattern: string): null;
+export function format(source: string | null, pattern: string): string | null;
+export function format(source: ColoxDate | DateParts | DateTimeParts, pattern: string): string;
+export function format(source: string | Date, pattern: string): string | null;
+export function format(source: DateSource | null, pattern: string): string | null {
+  if (source === null) {
+    return null;
+  }
+  const parts = dateParts(source, null);
+  return parts === null ? null : renderPattern(parts, pattern);
+}

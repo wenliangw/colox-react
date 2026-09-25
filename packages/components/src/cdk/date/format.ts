@@ -1,23 +1,6 @@
-import type {
-  DateFormatPart,
-  DateFormatToken,
-  DateGranularity,
-  DateParts,
-  ParsePrecision,
-} from './types';
-import { isValidDate, weekdayOf } from './civil';
-import { date, dateParts } from './date-time';
-
-export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-export const WEEKDAY_FULL = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-];
+import type { DateFormatPart, DateGranularity, DateParts, ParsePrecision } from './types';
+import { isValidDate } from './civil';
+import { date } from './date-time';
 
 /**
  * The default display pattern per granularity: the pattern mirrors the
@@ -62,42 +45,6 @@ export const compilePattern = (pattern: string): DateFormatPart[] => {
     }
   }
   return parts;
-};
-
-const renderToken = (part: DateFormatToken, parts: DateParts): string => {
-  if (part.type === 'year') {
-    const text = String(parts.year);
-    return part.length <= 2 ? text.slice(-2).padStart(part.length, '0') : text.padStart(4, '0');
-  }
-  if (part.type === 'month') {
-    const text = String(parts.month);
-    return part.length === 1 ? text : text.padStart(2, '0');
-  }
-  if (part.type === 'day') {
-    const text = String(parts.day);
-    return part.length === 1 ? text : text.padStart(2, '0');
-  }
-  const names = part.length >= 4 ? WEEKDAY_FULL : WEEKDAY_SHORT;
-  return names[weekdayOf(parts)];
-};
-
-/** Renders a canonical granularity ISO value through the `valueFormat` pattern. */
-export const formatIso = (iso: string | null, pattern: string): string => {
-  if (iso === null) {
-    return '';
-  }
-  const parts = dateParts(iso, null);
-  if (parts === null) {
-    return '';
-  }
-  return compilePattern(pattern)
-    .map((part) => {
-      if (part.type === 'literal') {
-        return part.text;
-      }
-      return renderToken(part, parts);
-    })
-    .join('');
 };
 
 const escapeLiteral = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -16,7 +16,6 @@ export type {
 export type { UseDatePickerParams, UseDatePickerResult } from './hooks';
 export type {
   DateFormatPart,
-  DateFormatToken,
   DatePanelLevel,
   DateParts,
   DatePickerGridCell,

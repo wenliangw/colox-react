@@ -142,6 +142,21 @@ describe('standalone format', () => {
     expect(format(new Date(2026, 2, 15, 8, 30), 'HH:mm')).toBe('08:30');
     expect(format(date('2026-03-15'), 'MM-dd')).toBe('03-15');
   });
+
+  it('renders granular value words, filling the missing fields as 1', () => {
+    expect(format('2026-03', 'yyyy-MM')).toBe('2026-03');
+    expect(format('2026', 'yyyy')).toBe('2026');
+    expect(format('2026-03', 'yyyy/M')).toBe('2026/3');
+    // Weekday of a month value resolves at its 1st (2026-01-01 is a Thursday).
+    expect(format('2026-01', 'yyyy-MM EEE')).toBe('2026-01 Thu');
+  });
+
+  it('renders null for empty and unparsable sources instead of throwing', () => {
+    expect(format(null, 'yyyy-MM-dd')).toBeNull();
+    expect(format('', 'yyyy-MM-dd')).toBeNull();
+    expect(format('not-a-date', 'yyyy-MM-dd')).toBeNull();
+    expect(format('2026-13', 'yyyy-MM-dd')).toBeNull();
+  });
 });
 
 describe('toDate bridge', () => {

@@ -1,6 +1,5 @@
 export type {
   DateFormatPart,
-  DateFormatToken,
   DateParts,
   ParsePrecision,
   MonthGridCell,

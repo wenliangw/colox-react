@@ -23,7 +23,10 @@ optional fallback argument shifts the honest TypeError into a
 caller-owned safety net: `dateParts(value, null)` returns null for
 unparsable sources (the value-word gate the picker engine reads
 through), `dateParts(value, parts)` returns the given coordinate
-untouched.
+untouched. The display outlet never throws either: `format` renders
+null for null sources and unparsable strings/Dates, so UIs map
+their own empty text with a plain `?? ''`, and loudness (warn /
+throw) stays the caller's policy.
 `ColoxDate` exposes its method set as the public type only —
 construction is sealed behind the factory, no internal entries leak
 into the dts. The date picker keeps reading the core from the cdk

@@ -15,8 +15,8 @@ import {
   today,
   weekdayOf,
 } from '@colox/cdk/date/civil';
-import { date, dateParts } from '@colox/cdk/date';
-import { formatIso, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
+import { date, dateParts, format } from '@colox/cdk/date';
+import { isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
 import {
   belongsToView,
   viewBeginsAt,
@@ -103,8 +103,8 @@ export const useDatePicker = ({
   // with `??` (which would swallow a controlled null).
   const current = isControlled ? value : innerValue;
 
-  const [draft, setDraft] = useState<string>(() =>
-    formatIso(isControlled ? (value ?? null) : (defaultValue ?? null), valueFormat),
+  const [draft, setDraft] = useState<string>(
+    () => format(isControlled ? (value ?? null) : (defaultValue ?? null), valueFormat) ?? '',
   );
   const lastCommittedRef = useRef<string | null>(current);
   // Cross-view keyboard hops change the view — the target cell only
@@ -126,7 +126,7 @@ export const useDatePicker = ({
   useEffect(() => {
     if (current !== lastCommittedRef.current) {
       lastCommittedRef.current = current;
-      setDraft(formatIso(current, valueFormat));
+      setDraft(format(current ?? null, valueFormat) ?? '');
     }
   }, [current, valueFormat]);
 
@@ -219,12 +219,12 @@ export const useDatePicker = ({
     if (parsed === null || isDisabled(parsed)) {
       // Partial or out-of-range: roll back to the last committed value.
       if (draft !== '') {
-        setDraft(formatIso(current, valueFormat));
+        setDraft(format(current ?? null, valueFormat) ?? '');
       }
     } else if (parsed !== lastCommittedRef.current) {
-      commit(makeChangeEvent(), parsed, formatIso(parsed, valueFormat));
+      commit(makeChangeEvent(), parsed, format(parsed, valueFormat) ?? '');
     } else {
-      setDraft(formatIso(parsed, valueFormat));
+      setDraft(format(parsed, valueFormat) ?? '');
     }
     onBlur?.(event);
   };
@@ -343,7 +343,7 @@ export const useDatePicker = ({
       setLevel(next.level);
       return;
     }
-    commit(makeChangeEvent(), iso, formatIso(iso, valueFormat));
+    commit(makeChangeEvent(), iso, format(iso, valueFormat) ?? '');
     closePanel();
     inputRef.current?.focus();
   };

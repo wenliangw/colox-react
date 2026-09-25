@@ -1,13 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  WEEKDAY_FULL,
-  WEEKDAY_SHORT,
-  compilePattern,
-  formatIso,
-  isDraftAllowed,
-  parseDateText,
-  patternToParseSource,
-} from '../format';
+import { compilePattern, isDraftAllowed, parseDateText, patternToParseSource } from '../format';
 
 describe('pattern compilation', () => {
   it('splits tokens from literal separators', () => {
@@ -36,35 +28,6 @@ describe('pattern compilation', () => {
     expect(patternToParseSource('yyyy-M-d EEE')).toBe(
       '^(\\d{4})-(\\d{1,2})-(\\d{1,2}) (?:[A-Za-z]+)$',
     );
-  });
-});
-
-describe('formatIso', () => {
-  it('renders the canonical value through the pattern', () => {
-    expect(formatIso('2026-03-02', 'yyyy-MM-dd')).toBe('2026-03-02');
-    expect(formatIso('2026-01-02', 'yy-MM-dd')).toBe('26-01-02');
-    expect(formatIso('2026-01-02', 'yyyy/M/d')).toBe('2026/1/2');
-    expect(formatIso('2026-01-02', 'd.M.yyyy')).toBe('2.1.2026');
-  });
-
-  it('adds weekday names — short and full (2026-03-02 is a Monday)', () => {
-    expect(formatIso('2026-03-02', 'yyyy-MM-dd EEE')).toBe('2026-03-02 Mon');
-    expect(formatIso('2026-03-02', 'yyyy-MM-dd EEEE')).toBe('2026-03-02 Monday');
-    expect(WEEKDAY_SHORT).toHaveLength(7);
-    expect(WEEKDAY_FULL).toHaveLength(7);
-  });
-
-  it('renders nothing for an unparsable value', () => {
-    expect(formatIso('', 'yyyy-MM-dd')).toBe('');
-    expect(formatIso('not-a-date', 'yyyy-MM-dd')).toBe('');
-  });
-
-  it('renders granular values, filling missing month/day as 1', () => {
-    expect(formatIso('2026-03', 'yyyy-MM')).toBe('2026-03');
-    expect(formatIso('2026', 'yyyy')).toBe('2026');
-    expect(formatIso('2026-03', 'yyyy/M')).toBe('2026/3');
-    // Weekday of a month value resolves at its 1st (2026-01-01 is a Thursday).
-    expect(formatIso('2026-01', 'yyyy-MM EEE')).toBe('2026-01 Thu');
   });
 });
 

@@ -53,6 +53,3 @@ export type ParsePrecision = 0 | 1 | 2;
 export type DateFormatPart =
   | { type: 'year' | 'month' | 'day' | 'weekday'; length: number }
   | { type: 'literal'; text: string };
-
-/** One compiled token of a `valueFormat` pattern. */
-export type DateFormatToken = Extract<DateFormatPart, { length: number }>;
