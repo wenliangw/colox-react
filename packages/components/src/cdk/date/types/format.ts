@@ -13,3 +13,6 @@ export type DateFormatPart =
       length: number;
     }
   | { type: 'literal'; text: string };
+
+/** The token member of a compiled pattern: every `DateFormatPart` type except the literal. */
+export type PatternTokenType = Exclude<DateFormatPart['type'], 'literal'>;

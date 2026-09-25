@@ -1,6 +1,28 @@
 /** The granularity a date-ish field edits: a single day, a month, or a year. */
 export type DateGranularity = 'date' | 'month' | 'year';
 
+/**
+ * The boundaries `dateStartOf`/`dateEndOf` walk: week granularity is
+ * Monday-first (a week starts on Monday). Unlike `DateGranularity`
+ * (the picker's edit granularity), this ladder covers the clock down
+ * to the whole second.
+ */
+export type Granularity = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+
+/** The units `dateDiff` measures — calendar truth down to the whole second (week is deliberately absent). */
+export type DiffUnit = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+
+/**
+ * A measured difference: `count` handfuls of the requested unit plus
+ * the honest residue in the next-lower unit — year/month residues in
+ * days, day in hours, hour in minutes, minute in seconds; seconds
+ * are the floor, so the second unit leaves remainder 0.
+ */
+export interface DiffResult {
+  count: number;
+  remainder: number;
+}
+
 /** Calendar coordinates: the 1-based month as users write it (1–12). */
 export interface DateParts {
   year: number;

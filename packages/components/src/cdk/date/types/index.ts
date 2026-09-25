@@ -9,9 +9,12 @@
 export type {
   DateGranularity,
   DateParts,
+  DiffResult,
+  DiffUnit,
+  Granularity,
   MonthGridCell,
   MonthViewCell,
   YearViewCell,
 } from './calendar';
-export type { DateFormatPart, ParsePrecision } from './format';
+export type { DateFormatPart, ParsePrecision, PatternTokenType } from './format';
 export type { DatePartsFull, DateTimeParts, DateValue } from './value';

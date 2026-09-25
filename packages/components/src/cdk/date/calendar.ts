@@ -1,4 +1,13 @@
-import type { DateParts, DateTimeParts, MonthGridCell, MonthViewCell, YearViewCell } from './types';
+import type {
+  DateParts,
+  DateTimeParts,
+  DiffResult,
+  DiffUnit,
+  Granularity,
+  MonthGridCell,
+  MonthViewCell,
+  YearViewCell,
+} from './types';
 import { DAYS_IN_MONTH, GRID_CELL_COUNT } from './constants/calendar';
 
 export const isLeapYear = (year: number): boolean =>
@@ -147,9 +156,6 @@ export const shiftSeconds = (parts: DateTimeParts, seconds: number): DateTimePar
   };
 };
 
-/** The granularities `dateStartOf`/`dateEndOf` speak. */
-export type Granularity = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
-
 /** The first moment of the granularity period: Monday starts the week, midnight starts the day. */
 export const startOf = (parts: DateTimeParts, granularity: Granularity): DateTimeParts => {
   switch (granularity) {
@@ -195,15 +201,6 @@ export const endOf = (parts: DateTimeParts, granularity: Granularity): DateTimeP
       return { ...parts };
   }
 };
-
-/** The units `dateDiff` measures — calendar truth down to the whole second. */
-export type DiffUnit = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
-
-/** A measured difference: whole units plus the honest residue in the next-lower unit. */
-export interface DiffResult {
-  count: number;
-  remainder: number;
-}
 
 const secondOfDay = (parts: DateTimeParts): number =>
   parts.hour * 3600 + parts.minute * 60 + parts.second;

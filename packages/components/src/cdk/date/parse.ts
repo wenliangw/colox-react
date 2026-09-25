@@ -1,9 +1,6 @@
 import { DATETIME, DATE, INSTANT, YEAR, YEAR_MONTH } from './constants/patterns';
 import { daysInMonth } from './calendar';
-import type { DateParts, DateTimeParts } from './types';
-
-/** Everything the normalizer accepts: value strings, native Dates, or the parts formats. */
-export type ParseSource = string | Date | DateParts | DateTimeParts;
+import type { DateValue, DateTimeParts } from './types';
 
 const isValidClock = (hour: number, minute: number, second: number): boolean =>
   Number.isInteger(hour) &&
@@ -84,7 +81,7 @@ export const instantToLocal = (source: string): DateTimeParts => {
  * Calendar- or clock-invalid sources throw — the toolbelt reports
  * honestly, the editors roll back.
  */
-export const parseSource = (source: ParseSource): DateTimeParts => {
+export const parseSource = (source: DateValue): DateTimeParts => {
   if (typeof source === 'string') {
     const trimmed = source.trim();
     if (INSTANT.test(trimmed)) {

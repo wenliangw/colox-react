@@ -1,7 +1,7 @@
 import { WEEKDAY_FULL, WEEKDAY_SHORT } from './constants/calendar';
 import { TOKEN_TYPES } from './constants/format';
 import { weekdayOf } from './calendar';
-import type { DateFormatPart, DateTimeParts } from './types';
+import type { DateFormatPart, DateTimeParts, PatternTokenType } from './types';
 
 /**
  * The combined date/time token vocabulary. Case carries the word for
@@ -11,17 +11,15 @@ import type { DateFormatPart, DateTimeParts } from './types';
  * date rendering and parsing lives by.
  */
 
-type TokenType = Exclude<DateFormatPart['type'], 'literal'>;
-
 const pad = (value: number, length: number): string =>
   length <= 1 ? String(value) : String(value).padStart(length, '0');
 
-const tokenLetter = (char: string): TokenType | null => {
+const tokenLetter = (char: string): PatternTokenType | null => {
   const direct = (TOKEN_TYPES as Record<string, string>)[char];
   if (direct !== undefined) {
-    return direct as TokenType;
+    return direct as PatternTokenType;
   }
-  return ((TOKEN_TYPES as Record<string, string>)[char.toLowerCase()] as TokenType) ?? null;
+  return ((TOKEN_TYPES as Record<string, string>)[char.toLowerCase()] as PatternTokenType) ?? null;
 };
 
 /** Month/minute/hour tokens carry their word in the letter case — runs stay case-exact for them. */

@@ -40,7 +40,7 @@ import {
   startOf,
   weekdayOf,
 } from './calendar';
-import type { DiffUnit, Granularity } from './calendar';
+import type { DiffUnit, Granularity } from './types';
 import { parseSource, toParts } from './parse';
 import { renderPattern } from './format';
 import type { DateParts, DatePartsFull, DateValue, DateTimeParts } from './types';
@@ -51,9 +51,11 @@ export type {
   DatePartsFull,
   DateTimeParts,
   DateValue,
+  DiffResult,
+  DiffUnit,
+  Granularity,
   ParsePrecision,
 } from './types';
-export type { DiffUnit, Granularity } from './calendar';
 
 // ——— rendering ————————————————————————————————————————————————————————
 
