@@ -36,7 +36,7 @@ date-picker/
 回读往返）、`iso(pattern)`/`format` 均渲染民用坐标（坐标拼值词走 `date(parts).iso('yyyy-MM-dd')`，
 内部拼串 `valueWord` 模块私有）、`.parts()`/`dateParts()` 吐六字段对象格式、`toDate()` 本地壁钟桥；
 网格 builder 不在公开面。原 date-core.test（15）/format-date.test（17）随文件搬入 `cdk/date/_tests/` 改名
-civil/format，另加 date-time 35（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
+civil/format，另加 date-time 37（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
 
 ## 功能逻辑
 
@@ -47,7 +47,7 @@ civil/format，另加 date-time 35（旧公开面遗留 addDaysIso 族已随形�
 ### 格式化/解析（cdk/date/format，原 format-date）
 
 - **pattern 编译**：`y/m/d/e`（大小写不敏感）为 token，同字母连续段记一条长度；其余字符为 literal。`yyyy`=4 位、`yy`=2 位（parse 映射 2000-2099）、`M/d`=不补零、`MM/dd`=补零、`EEE`=短星期名、`EEEE`=全名（英文规范词，Java/antd 标准表）。weekday parse 位匹配 `[A-Za-z]+` 并丢弃（display-only）。
-- **formatIso**：canonical ISO → pattern 渲染；ISO 不可解析（null/畸形）返回空串。
+- **显示渲染并入公开 `format`（formatIso 死亡）**：值词→显示词走 toolbelt 的 `format(value, pattern) ?? ''`（`format` 显示出口不抛——null 源/认不出/坏 Date 均渲染 null，音量是调用方政策）；word 表 `y/M/d/E/H/h/m/s` 大小写载义、`M` 月 vs `m` 分、`H` 24 制 vs `h` 12 制；引擎侧 `renderToken`/WEEKDAY 词表随之删除，`compilePattern` 的 token 流留下（`parseDateText`/`isDraftAllowed` 还在吃）。
 - **parseDateText（精度化）**：先 pattern 解析（year 必需、月/日 token 缺位补 1；精度 = 出现的粒度档）→ 再规范语法阶梯（严格 `^\d{4}-\d{2}-\d{2}$` + 宽松 `^\d{4}[/-]\d{1,2}[/-]\d{1,2}$` + 年月 `^\d{4}[/-]\d{1,2}$` + 裸年 `^\d{4}$`）→ `isValidDate` 验证 → 精度 ≥ picker 粒度才产出 canonical（更细截断到 picker、更粗 null 回滚）。非法返回 null（编辑器回滚语义）。
 - **草稿门禁 isDraftAllowed 是宽松过滤**：数字/字母/空格/规范分隔符 `/ - .`/pattern literal 字符全放行——门禁只挡明显废字符，严格校验在 commit/blur 的 parse。IME 合成中透传仅显示。
 
@@ -86,7 +86,7 @@ civil/format，另加 date-time 35（旧公开面遗留 addDaysIso 族已随形�
 
 ## 状态与测试
 
-组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 66（civil 14 + format 17 + date-time 35）——日历数学/格式化解析/值对象。
+组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 64（civil 14 + format 13 + date-time 37）——日历数学/格式化解析/值对象。
 
 ## 构建·门禁
 

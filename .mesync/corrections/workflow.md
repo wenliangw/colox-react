@@ -61,7 +61,7 @@
 
 ## 必须检查
 
-- **不信工具回执**：报「Updated successfully」≠ 磁盘已变。本会话三起前科——base.scss 两次 edit（display:none→opacity 让位）报成功但磁盘仍旧版（靠 computed-style 探针 + 测试红灯锁定）；tastes/styling.md 新章节报成功但 git status 里文件无 M（编辑被吞）；test.tsx 出现我没写过的重复区段（状态错位产生拼接垃圾）。
+- **不信工具回执**：报「Updated successfully」≠ 磁盘已变。本会话四起前科——base.scss 两次 edit（display:none→opacity 让位）报成功但磁盘仍旧版（靠 computed-style 探针 + 测试红灯锁定）；tastes/styling.md 新章节报成功但 git status 里文件无 M（编辑被吞）；test.tsx 出现我没写过的重复区段（状态错位产生拼接垃圾）；format.ts 的 import 瘦身与 WEEKDAY 导出删除两笔 edit 均报成功、重读仍是旧态（靠 typecheck 报 `DateFormatToken` 缺失导出 + 重读文件锁定，第二轮才真正落盘）。
 - **写后立即验证**：每次编辑后马上对关键标记跑 `grep`/`sed` 抽查；大改优先整文件 `write` 而非多段 `edit`（edit 的 old_string 在状态错位时匹配到旧底本，产生拼接垃圾）。
 - **三重对齐才可交付**：测试全绿 + `git status` 包含预期文件 + 关键标记 grep 命中；三者齐了才算改完成。小改动只做窄验证即可，但该窄验证必须真跑。
 - 为什么：现象指向会话运行时的快照恢复（本会话出现过 checkpoint 压缩 + runtime-context snapshot 替换，时间线与回退位置吻合），根因在 harness 内部、不可见，但协议在 agent 侧可守；静默回退最危险的是「测试恰好不覆盖」的文档类文件（styling.md 差点就这样丢了）。
