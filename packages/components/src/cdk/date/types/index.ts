@@ -14,4 +14,4 @@ export type {
   YearViewCell,
 } from './calendar';
 export type { DateFormatPart, ParsePrecision } from './format';
-export type { ColoxDate, DateSource, DateTimeParts } from './value';
+export type { ColoxDate, DatePartsFull, DateSource, DateTimeParts, DateValue } from './value';

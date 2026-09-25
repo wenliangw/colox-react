@@ -19,6 +19,20 @@ export interface DateTimeParts {
 export type DateSource = string | Date | ColoxDate | DateParts | DateTimeParts;
 
 /**
+ * What the pure toolbelt reads: value strings, native `Date`, or the
+ * plain parts formats — the chain instance is retired from the input
+ * vocabulary.
+ */
+export type DateValue = string | Date | DateParts | DateTimeParts;
+
+/**
+ * The full coordinate `dateParts` emits: the six calendar- and
+ * clock-validated fields plus `weekday` (Monday-first index,
+ * `0 = Monday … 6 = Sunday`).
+ */
+export type DatePartsFull = DateTimeParts & { weekday: number };
+
+/**
  * The immutable date/time coordinate the `date` factory produces.
  * Construction lives entirely behind the factory: the public face is
  * this method set — no constructor, no internal entries.

@@ -1,4 +1,4 @@
-import type { DateParts, MonthGridCell, MonthViewCell, YearViewCell } from './types';
+import type { DateParts, DateTimeParts, MonthGridCell, MonthViewCell, YearViewCell } from './types';
 import { DAYS_IN_MONTH, GRID_CELL_COUNT } from './constants/calendar';
 
 export const isLeapYear = (year: number): boolean =>
@@ -116,4 +116,150 @@ export const buildYearViewCells = (decadeStart: number): YearViewCell[] =>
 export const today = (): string => {
   const now = new Date();
   return valueWord({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() });
+};
+
+// ——— the pure shift/structure math —————————————————————————————————————
+// The public capability functions are thin wiring over these: every
+// entry parses to the coordinate (parse.ts), does its algebra here,
+// and re-validates through `toParts` on the way out.
+
+/** Whole-year shift on a full coordinate, clamping Feb 29 into Feb 28; the clock rides along. */
+export const addYears = (parts: DateTimeParts, delta: number): DateTimeParts => {
+  const year = parts.year + delta;
+  return {
+    year,
+    month: parts.month,
+    day: Math.min(parts.day, daysInMonth(year, parts.month)),
+    hour: parts.hour,
+    minute: parts.minute,
+    second: parts.second,
+  };
+};
+
+/** Exact second-precision shift — the base of every sub-month `add*`; handles negatives. */
+export const shiftSeconds = (parts: DateTimeParts, seconds: number): DateTimeParts => {
+  const total =
+    daysFromCivil(parts) * 86400 + parts.hour * 3600 + parts.minute * 60 + parts.second + seconds;
+  const dayNumber = Math.floor(total / 86400);
+  const secondOfDay = total - dayNumber * 86400;
+  const date = civilFromDays(dayNumber);
+  return {
+    year: date.year,
+    month: date.month,
+    day: date.day,
+    hour: Math.floor(secondOfDay / 3600),
+    minute: Math.floor((secondOfDay % 3600) / 60),
+    second: secondOfDay % 60,
+  };
+};
+
+/** The granularities `dateStartOf`/`dateEndOf` speak. */
+export type Granularity = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+
+/** The first moment of the granularity period: Monday starts the week, midnight starts the day. */
+export const startOf = (parts: DateTimeParts, granularity: Granularity): DateTimeParts => {
+  switch (granularity) {
+    case 'year':
+      return { ...parts, month: 1, day: 1, hour: 0, minute: 0, second: 0 };
+    case 'month':
+      return { ...parts, day: 1, hour: 0, minute: 0, second: 0 };
+    case 'week':
+      return shiftSeconds({ ...parts, hour: 0, minute: 0, second: 0 }, -weekdayOf(parts) * 86400);
+    case 'day':
+      return { ...parts, hour: 0, minute: 0, second: 0 };
+    case 'hour':
+      return { ...parts, minute: 0, second: 0 };
+    case 'minute':
+      return { ...parts, second: 0 };
+    case 'second':
+      return { ...parts };
+  }
+};
+
+/** The last moment of the granularity period: Sunday 23:59:59 ends the week, 23:59:59 ends the day. */
+export const endOf = (parts: DateTimeParts, granularity: Granularity): DateTimeParts => {
+  switch (granularity) {
+    case 'year':
+      return { ...parts, month: 12, day: 31, hour: 23, minute: 59, second: 59 };
+    case 'month':
+      return {
+        ...parts,
+        day: daysInMonth(parts.year, parts.month),
+        hour: 23,
+        minute: 59,
+        second: 59,
+      };
+    case 'week':
+      return shiftSeconds(startOf(parts, 'week'), 7 * 86400 - 1);
+    case 'day':
+      return { ...parts, hour: 23, minute: 59, second: 59 };
+    case 'hour':
+      return { ...parts, minute: 59, second: 59 };
+    case 'minute':
+      return { ...parts, second: 59 };
+    case 'second':
+      return { ...parts };
+  }
+};
+
+/** The units `dateDiff` measures — calendar truth down to the whole second. */
+export type DiffUnit = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+
+/** A measured difference: whole units plus the honest residue in the next-lower unit. */
+export interface DiffResult {
+  count: number;
+  remainder: number;
+}
+
+const secondOfDay = (parts: DateTimeParts): number =>
+  parts.hour * 3600 + parts.minute * 60 + parts.second;
+
+const compareParts = (a: DateTimeParts, b: DateTimeParts): number => {
+  const days = daysFromCivil(a) - daysFromCivil(b);
+  return days !== 0 ? days : secondOfDay(a) - secondOfDay(b);
+};
+
+const secondsBetween = (from: DateTimeParts, to: DateTimeParts): number =>
+  (daysFromCivil(to) - daysFromCivil(from)) * 86400 + secondOfDay(to) - secondOfDay(from);
+
+const pushYears = (start: DateTimeParts, delta: number): DateTimeParts => addYears(start, delta);
+
+const pushMonths = (start: DateTimeParts, delta: number): DateTimeParts => {
+  const date = addMonths(start, delta);
+  return { ...start, year: date.year, month: date.month, day: date.day };
+};
+
+/**
+ * Calendar-truth difference: `count` is the max number of whole units
+ * pushed forward from `start` without crossing `end`; `remainder` is
+ * the real residue to that pushed point, measured in the next-lower
+ * unit (year/month → day, day → hour, hour → minute, minute →
+ * second; seconds are the floor, so `second` leaves remainder 0).
+ * `end` before `start` yields the flipped negative result.
+ */
+export const diffOf = (end: DateTimeParts, start: DateTimeParts, unit: DiffUnit): DiffResult => {
+  if (compareParts(start, end) > 0) {
+    const flipped = diffOf(start, end, unit);
+    return { count: -flipped.count, remainder: -flipped.remainder };
+  }
+  if (unit === 'year' || unit === 'month') {
+    const push = unit === 'year' ? pushYears : pushMonths;
+    let count =
+      unit === 'year'
+        ? end.year - start.year
+        : (end.year - start.year) * 12 + (end.month - start.month);
+    if (compareParts(push(start, count), end) > 0) {
+      count -= 1;
+    }
+    const pushed = push(start, count);
+    return { count, remainder: secondsBetween(pushed, end) / 86400 };
+  }
+  if (unit === 'second') {
+    return { count: secondsBetween(start, end), remainder: 0 };
+  }
+  const secondsPerUnit = unit === 'day' ? 86400 : unit === 'hour' ? 3600 : 60;
+  const remainderPerUnit = unit === 'day' ? 3600 : unit === 'hour' ? 60 : 1;
+  const count = Math.floor(secondsBetween(start, end) / secondsPerUnit);
+  const pushed = shiftSeconds(start, count * secondsPerUnit);
+  return { count, remainder: secondsBetween(pushed, end) / remainderPerUnit };
 };
