@@ -17,7 +17,7 @@
  * ```ts
  * import { date, dateParts, format } from '@colox/react/cdk/date';
  *
- * date('2026-03-15T08:30').addDays(2).iso('yyyy-MM-dd'); // '2026-03-17'
+ * date('2026-03-15T08:30').addDays(2).format('yyyy-MM-dd'); // '2026-03-17'
  * date('2026-03-15').format('yyyy/MM/dd');               // '2026/03/15'
  * date('2026-03-15T08:30').iso();                        // '2026-03-15T00:30:00.000Z' — instant word, UTC
  * format('2026-03-15', 'yyyy年M月d日');                   // standalone

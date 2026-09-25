@@ -21,7 +21,7 @@ export const isValidDate = ({ year, month, day }: DateParts): boolean => {
 /**
  * The canonical day value word (`YYYY-MM-DD`, fixed 10-char width) —
  * module-private: the public way from coordinates to a value string
- * is `date(parts).iso(...)` on the toolbelt entry.
+ * is `date(parts).format(...)` on the toolbelt entry.
  */
 const valueWord = ({ year, month, day }: DateParts): string => {
   const yyyy = String(year).padStart(4, '0');

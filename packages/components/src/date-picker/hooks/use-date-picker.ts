@@ -400,7 +400,7 @@ export const useDatePicker = ({
       } else if (key === 'PageDown') {
         next = addMonths(parts, 1);
       }
-      return next === null ? null : date(next).iso('yyyy-MM-dd');
+      return next === null ? null : date(next).format('yyyy-MM-dd');
     }
     if (level === 'month') {
       // The 3×4 grid: Left/Right ±1 month, Up/Down ±3, PageUp/Down

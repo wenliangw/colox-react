@@ -68,8 +68,8 @@ describe('instant word (iso)', () => {
   });
 
   it('renders civil coordinates through a pattern when given one', () => {
-    expect(date('2026-03-15T08:30').iso('HH:mm')).toBe('08:30');
-    expect(date('2026-03-15T08:30').iso('yyyy/MM/dd')).toBe('2026/03/15');
+    expect(date('2026-03-15T08:30').format('HH:mm')).toBe('08:30');
+    expect(date('2026-03-15T08:30').format('yyyy/MM/dd')).toBe('2026/03/15');
   });
 });
 
@@ -247,8 +247,8 @@ describe('parts format', () => {
 
   it('renders the canonical value-word ladder through patterns — pattern is the granularity', () => {
     const parts = { year: 2026, month: 3, day: 2 };
-    expect(date(parts).iso('yyyy')).toBe('2026');
-    expect(date(parts).iso('yyyy-MM')).toBe('2026-03');
-    expect(date(parts).iso('yyyy-MM-dd')).toBe('2026-03-02');
+    expect(date(parts).format('yyyy')).toBe('2026');
+    expect(date(parts).format('yyyy-MM')).toBe('2026-03');
+    expect(date(parts).format('yyyy-MM-dd')).toBe('2026-03-02');
   });
 });

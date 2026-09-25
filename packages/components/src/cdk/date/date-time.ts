@@ -286,11 +286,14 @@ class DateValue implements ColoxDate {
     return renderPattern(this.coords, pattern);
   }
 
-  iso(pattern?: string): string {
-    if (pattern === undefined) {
-      return this.toDate().toISOString();
-    }
-    return renderPattern(this.coords, pattern);
+  /**
+   * The instant word — the value shifted to UTC and serialized
+   * exactly like `new Date().toISOString()`: full clock, milliseconds
+   * and `Z` (e.g. `'2026-03-15T00:30:00.000Z'`). This is the wire/
+   * interchange shape; display and value rendering stay in `format`.
+   */
+  iso(): string {
+    return this.toDate().toISOString();
   }
 
   parts(): DateTimeParts {

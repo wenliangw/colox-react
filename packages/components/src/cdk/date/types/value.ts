@@ -40,10 +40,9 @@ export interface ColoxDate {
    * The instant word — the value shifted to UTC and serialized
    * exactly like `new Date().toISOString()`: full clock, milliseconds
    * and `Z` (e.g. `'2026-03-15T00:30:00.000Z'`). This is the wire/
-   * interchange shape; display rendering stays in `format`. With a
-   * pattern, renders the civil coordinates through the token grammar.
+   * interchange shape; display and value rendering stay in `format`.
    */
-  iso(pattern?: string): string;
+  iso(): string;
 
   /** The plain-object coordinate (`DateTimeParts`): the parts format `date()` reads back. */
   parts(): DateTimeParts;
