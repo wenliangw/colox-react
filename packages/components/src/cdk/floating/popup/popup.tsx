@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useState, useImperativeHandle, useRef } from 're
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import { useFloatingPosition } from '../hooks/use-floating-position';
-import type { PopupProps } from './types';
+import type { PopupProps } from '../types';
 
 import './styles/popup.scss';
 

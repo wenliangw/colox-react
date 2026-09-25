@@ -1,15 +1,6 @@
 import { useEffect } from 'react';
-import type { RefObject } from 'react';
 
-export interface UseDismissibleOptions {
-  open: boolean;
-  /** The trigger reference (the combobox control or its shell). */
-  triggerRef: RefObject<HTMLElement | null>;
-  /** The portal-mounted panel. */
-  panelRef: RefObject<HTMLElement | null>;
-  /** Closes the popup: outside pointerdown, Escape or window focus loss. */
-  onDismiss: () => void;
-}
+import type { UseDismissibleOptions } from '../types';
 
 /**
  * The popup family's close channels: a pointerdown landing outside
