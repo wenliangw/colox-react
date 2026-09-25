@@ -236,6 +236,9 @@
 - **工具面的错误 = 诚实抛出，显示出口除外**：归一化工厂（date/dateParts 无兜底）对非法源抛 TypeError，编辑器的故事才是回滚；显示层（format）不抛、认不出渲染 null——两层两种容错，不混。
 - **min/max 双收 string | Date**：`Date` 按**本地日历壁钟**读（getFullYear 族），归一到 ISO 串参与比较——入口宽容只宽容在「作者给的词形」，比较世界永远一根串轴。
 - **零依赖纪律**：需求面已被自家零时区纯算法覆盖（+ 时间只是 60 进制与串比较）时不引入 dayjs/date-fns——库真正强项（时区/相对/duration）没有消费者就不引入；真实缺口出现再评估。
+- **纯函数 cdk 的设计秩序 = API 面先行**（用户立方法，与组件设计同款）：先设计「公开哪些方法」，公开面保持纯函数干净——每个词一条规则、无隐式形态、无双模；功能复杂度由内部分层消化（types/constants/按域模块），**内部再怎么重构，API 面保持一致**。cdk/date 已按此节奏走到今天：五连并入与 types/constants 分层全在内部，公开面的变更只有收窄与更名（iso 无参化、专门词并入通用词），从未改语义。
+- **纯函数是基座、链式是薄糖**（用户修正先前「值对象 + 链式」重心）：大多日期库都是纯函数调用方式，date 的核心设计从链式值对象为中心改为纯函数套件为中心——解析/渲染/数学/有效性/比较/today/即时词/原生桥接各能力域以独立纯函数公开；链式语义更清晰、保留为上层糖（锦上添花，不承载能力本体）。时区/本地化等缺口按同一基座占位接入，不让当前形态封死未来。先前批 1「链式值对象三决」是阶段产物，此条为较新立场。
+- **日期纯函数命名纪律（用户逐项定）**：能力动词前置 `date` 族前缀（dateFormat/dateParts/dateDiff/dateStartOf/dateEndOf/dateTimestamp）配裸谓语语法（addDays/today）；add 全族复数（addMonths 非 addMonth，week/day/hour/minute/second 七大粒度齐备）；diff 诚实 raw（精确秒差、取整与转换是调用方的事）；pattern 唯一标准（国际规范 + 单字母不补零双补零 + h/H 并存）。
 - **cdk 只收纯函数、两消费者成核、公开面 curated**：date 数学整体抬入 cdk（DatePicker 改吃它）因为两个消费者（TimePicker + showTime）成立；日期/时间方法同居 cdk/date 一个入口；公开面只放 `@colox/react/cdk/date` 的值对象工厂三符号，网格 builder 这类内部构造器不发——公开路径随将来 cdk 独立包迁移。
 
 来源：TimePicker + DateTime 集成设计定案四轮对齐（用户拍板值契约串出口 + 公开工具面、min/max 双收、不引日期库；用户指令「cdk 保持 @colox/react/cdk/date 公开路径，因为 cdk 后面会独立一个 package」）；批 1 评审后用户改拍公开面形态（「为什么都加 Iso——签名设计问题」→ 链式值对象 + `.iso()` 即时词 + format 独立可用三决）。
