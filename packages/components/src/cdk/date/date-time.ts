@@ -1,6 +1,6 @@
 import { WEEKDAY_FULL, WEEKDAY_SHORT } from './constants/calendar';
-import { DATETIME, DATE, INSTANT, YEAR, YEAR_MONTH } from './constants/patterns';
 import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './civil';
+import { parseSource } from './parse';
 import type { ColoxDate, DateParts, DateSource, DateTimeParts } from './types';
 
 /**
@@ -21,134 +21,14 @@ const pad = (value: number, length: number): string =>
   length <= 1 ? String(value) : String(value).padStart(length, '0');
 
 // ——— input normalization ————————————————————————————————————————————
+// The grammar lives in parse.ts; only the value-object intercept
+// stays here — the factory hands instances through untouched.
 
-const isValidClock = (hour: number, minute: number, second: number): boolean =>
-  Number.isInteger(hour) &&
-  hour >= 0 &&
-  hour <= 23 &&
-  Number.isInteger(minute) &&
-  minute >= 0 &&
-  minute <= 59 &&
-  Number.isInteger(second) &&
-  second >= 0 &&
-  second <= 59;
-
-/** A full civil+clock coordinate, calendar- and clock-validated. */
-const toParts = (
-  year: number,
-  month: number,
-  day: number,
-  hour = 0,
-  minute = 0,
-  second = 0,
-): DateTimeParts => {
-  const calendarValid =
-    Number.isInteger(year) &&
-    year >= 1 &&
-    year <= 9999 &&
-    Number.isInteger(month) &&
-    month >= 1 &&
-    month <= 12 &&
-    Number.isInteger(day) &&
-    day >= 1 &&
-    day <= daysInMonth(year, month);
-  if (!calendarValid || !isValidClock(hour, minute, second)) {
-    throw new TypeError(
-      `colox: invalid date value ${year}-${month}-${day} ${hour}:${minute}:${second}`,
-    );
-  }
-  return { year, month, day, hour, minute, second };
-};
-
-/**
- * An instant word (`…Z`): the UTC digits are validated as a civil
- * coordinate, the instant itself is built with `Date.UTC` (never
- * `new Date(string)`), and the local wall clock is read back off the
- * instant — the round-trip `date(x.iso())` lands on the same civil
- * coordinates it started from.
- */
-const instantToLocal = (source: string): DateTimeParts => {
-  const match = INSTANT.exec(source);
-  if (match === null) {
-    throw new TypeError(`colox: cannot parse date value "${source}"`);
-  }
-  const utc = toParts(
-    Number(match[1]),
-    Number(match[2]),
-    Number(match[3]),
-    Number(match[4]),
-    Number(match[5]),
-    Number(match[6]),
-  );
-  const local = new Date(
-    Date.UTC(utc.year, utc.month - 1, utc.day, utc.hour, utc.minute, utc.second),
-  );
-  return toParts(
-    local.getFullYear(),
-    local.getMonth() + 1,
-    local.getDate(),
-    local.getHours(),
-    local.getMinutes(),
-    local.getSeconds(),
-  );
-};
-
-const parseSource = (source: DateSource): DateTimeParts => {
+const parseValue = (source: DateSource): DateTimeParts => {
   if (source instanceof DateValue) {
     return source.coords;
   }
-  if (typeof source === 'string') {
-    const trimmed = source.trim();
-    if (INSTANT.test(trimmed)) {
-      return instantToLocal(trimmed);
-    }
-    const dateTime = DATETIME.exec(trimmed);
-    if (dateTime !== null) {
-      return toParts(
-        Number(dateTime[1]),
-        Number(dateTime[2]),
-        Number(dateTime[3]),
-        Number(dateTime[4]),
-        Number(dateTime[5]),
-        dateTime[6] === undefined ? 0 : Number(dateTime[6]),
-      );
-    }
-    const date = DATE.exec(trimmed);
-    if (date !== null) {
-      return toParts(Number(date[1]), Number(date[2]), Number(date[3]));
-    }
-    const yearMonth = YEAR_MONTH.exec(trimmed);
-    if (yearMonth !== null) {
-      return toParts(Number(yearMonth[1]), Number(yearMonth[2]), 1);
-    }
-    const year = YEAR.exec(trimmed);
-    if (year !== null) {
-      return toParts(Number(year[1]), 1, 1);
-    }
-    throw new TypeError(`colox: cannot parse date value "${source}"`);
-  }
-  if (source instanceof Date) {
-    const native = source as Date;
-    return toParts(
-      native.getFullYear(),
-      native.getMonth() + 1,
-      native.getDate(),
-      native.getHours(),
-      native.getMinutes(),
-      native.getSeconds(),
-    );
-  }
-  // The parts format — day-only or full coordinates. Missing clock
-  // fields default to zero; invalid calendars throw like bad strings.
-  const parts = source as Partial<DateTimeParts>;
-  return toParts(
-    Number(parts.year),
-    Number(parts.month),
-    Number(parts.day),
-    parts.hour ?? 0,
-    parts.minute ?? 0,
-    parts.second ?? 0,
-  );
+  return parseSource(source as string | Date | DateParts | DateTimeParts);
 };
 
 // ——— pattern compilation —————————————————————————————————————————————
@@ -322,12 +202,12 @@ class DateValue implements ColoxDate {
  */
 export const date = (source?: DateSource): ColoxDate => {
   if (source === undefined) {
-    return new DateValue(FACTORY_TOKEN, parseSource(new Date()));
+    return new DateValue(FACTORY_TOKEN, parseValue(new Date()));
   }
   if (source instanceof DateValue) {
     return source;
   }
-  return new DateValue(FACTORY_TOKEN, parseSource(source));
+  return new DateValue(FACTORY_TOKEN, parseValue(source));
 };
 
 /**
@@ -353,7 +233,7 @@ export function dateParts(
   fallback?: DateParts | DateTimeParts | null,
 ): DateTimeParts | DateParts | null {
   try {
-    return parseSource(source);
+    return parseValue(source);
   } catch (error) {
     if (arguments.length === 1) {
       throw error;
