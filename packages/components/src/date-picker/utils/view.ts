@@ -5,7 +5,7 @@ import {
   buildYearViewCells,
   decadeOf,
   today,
-} from '@colox/cdk/date/civil';
+} from '@colox/cdk/date/calendar';
 import { dateParts } from '@colox/cdk/date';
 
 /** A padded canonical prefix — shared by the view helpers below. */

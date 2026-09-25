@@ -11,7 +11,7 @@ import {
   isLeapYear,
   isValidDate,
   weekdayOf,
-} from '../civil';
+} from '../calendar';
 import { date, dateParts } from '../date-time';
 
 describe('date-core calendar math', () => {

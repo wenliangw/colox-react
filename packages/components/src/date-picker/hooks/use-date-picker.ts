@@ -7,7 +7,13 @@ import type {
   UseDatePickerParams,
   UseDatePickerResult,
 } from '../types';
-import { addMonths, civilFromDays, daysFromCivil, today, weekdayOf } from '@colox/cdk/date/civil';
+import {
+  addMonths,
+  civilFromDays,
+  daysFromCivil,
+  today,
+  weekdayOf,
+} from '@colox/cdk/date/calendar';
 import { date, dateParts, format } from '@colox/cdk/date';
 import { GRANULARITY_PATTERN, isDraftAllowed, parseDateText } from '../utils/format';
 import {

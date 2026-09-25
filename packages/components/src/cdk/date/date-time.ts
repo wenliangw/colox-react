@@ -1,5 +1,5 @@
 import { WEEKDAY_FULL, WEEKDAY_SHORT } from './constants/calendar';
-import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './civil';
+import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './calendar';
 import { parseSource } from './parse';
 import type { ColoxDate, DateParts, DateSource, DateTimeParts } from './types';
 

@@ -1,4 +1,4 @@
-import { isValidDate } from '@colox/cdk/date/civil';
+import { isValidDate } from '@colox/cdk/date/calendar';
 import { date } from '@colox/cdk/date';
 import { compilePattern, patternToParseSource } from '@colox/cdk/date/format';
 import type { ParsePrecision } from '@colox/cdk/date/types';

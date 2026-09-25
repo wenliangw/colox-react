@@ -1,5 +1,5 @@
 import { DATETIME, DATE, INSTANT, YEAR, YEAR_MONTH } from './constants/patterns';
-import { daysInMonth } from './civil';
+import { daysInMonth } from './calendar';
 import type { DateParts, DateTimeParts } from './types';
 
 /** Everything the normalizer accepts: value strings, native Dates, or the parts formats. */
