@@ -7,16 +7,9 @@ import type {
   UseDatePickerParams,
   UseDatePickerResult,
 } from '../types';
-import {
-  addMonths,
-  civilFromDays,
-  daysFromCivil,
-  granularIsoOf,
-  today,
-  weekdayOf,
-} from '@colox/cdk/date/civil';
+import { addMonths, civilFromDays, daysFromCivil, today, weekdayOf } from '@colox/cdk/date/civil';
 import { date, dateParts, format } from '@colox/cdk/date';
-import { isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
+import { GRANULARITY_PATTERN, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
 import {
   belongsToView,
   viewBeginsAt,
@@ -43,8 +36,8 @@ const anchorOf = (
   today: string,
   isDisabled: (iso: string) => boolean,
 ): string | null => {
-  const currentAtLevel = current === null ? null : granularIsoOf(current, level);
-  const todayAtLevel = granularIsoOf(today, level);
+  const currentAtLevel = current === null ? null : format(current, GRANULARITY_PATTERN[level]);
+  const todayAtLevel = format(today, GRANULARITY_PATTERN[level]);
   return (
     [currentAtLevel, todayAtLevel, viewBeginsAt(view, level)].find(
       (candidate) =>

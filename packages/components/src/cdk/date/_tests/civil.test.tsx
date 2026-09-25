@@ -8,7 +8,6 @@ import {
   daysFromCivil,
   daysInMonth,
   decadeOf,
-  granularIsoOf,
   isLeapYear,
   isValidDate,
   weekdayOf,
@@ -116,21 +115,6 @@ describe('month shifting and bounds', () => {
 });
 
 describe('granularity values and views', () => {
-  it('passes non-canonical words through granularIsoOf untouched', () => {
-    // The public value-word gate is dateParts(source, null); the strict
-    // private reader backs granularIsoOf's anchors only.
-    expect(granularIsoOf('2026-013', 'date')).toBe('2026-013');
-    expect(granularIsoOf('2026-3', 'year')).toBe('2026-3');
-    expect(granularIsoOf('26', 'year')).toBe('26');
-    expect(granularIsoOf('2026-03-02-04', 'date')).toBe('2026-03-02-04');
-  });
-
-  it('derives the current cell at the picker granularity', () => {
-    expect(granularIsoOf('2026-03-02', 'date')).toBe('2026-03-02');
-    expect(granularIsoOf('2026-03-02', 'month')).toBe('2026-03');
-    expect(granularIsoOf('2026-03-02', 'year')).toBe('2026');
-  });
-
   it('builds the 12-month and 12-year grids', () => {
     const months = buildMonthViewCells(2026);
     expect(months).toHaveLength(12);

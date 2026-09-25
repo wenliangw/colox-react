@@ -1,10 +1,4 @@
-import type {
-  DateGranularity,
-  DateParts,
-  MonthGridCell,
-  MonthViewCell,
-  YearViewCell,
-} from './types';
+import type { DateParts, MonthGridCell, MonthViewCell, YearViewCell } from './types';
 
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -29,24 +23,13 @@ export const isValidDate = ({ year, month, day }: DateParts): boolean => {
 };
 
 /**
- * Renders day-accurate parts down to the granularity's canonical
- * value word (`YYYY`, `YYYY-MM` or the fixed 10-char `YYYY-MM-DD`) —
+ * The canonical day value word (`YYYY-MM-DD`, fixed 10-char width) —
  * module-private: the public way from coordinates to a value string
- * is `date(parts).iso('yyyy'/'yyyy-MM'/'yyyy-MM-dd')` on the
- * toolbelt entry, the pattern being the granularity.
+ * is `date(parts).iso(...)` on the toolbelt entry.
  */
-const valueWord = (
-  { year, month, day }: DateParts,
-  granularity: DateGranularity = 'date',
-): string => {
+const valueWord = ({ year, month, day }: DateParts): string => {
   const yyyy = String(year).padStart(4, '0');
-  if (granularity === 'year') {
-    return yyyy;
-  }
   const mm = String(month).padStart(2, '0');
-  if (granularity === 'month') {
-    return `${yyyy}-${mm}`;
-  }
   const dd = String(day).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
 };
@@ -113,36 +96,8 @@ export const addMonths = (parts: DateParts, delta: number): DateParts => {
   return { year, month, day: Math.min(parts.day, daysInMonth(year, month)) };
 };
 
-/**
- * Module-private read of a canonical value word — `YYYY`, `YYYY-MM`
- * or `YYYY-MM-DD` — into day-accurate parts (missing month/day
- * default to 1). Calendar-invalid words return null; padding is
- * strict (canonical), no calendar exceptions. This is the deep
- * defense for `granularIsoOf`'s internal anchors only: the public
- * value-word gate lives on the toolbelt entry as
- * `dateParts(source, null)` — civil cannot import it back (cycle).
- */
-const parseValueWord = (iso: string): DateParts | null => {
-  const match = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/.exec(iso);
-  if (match === null) {
-    return null;
-  }
-  const parts = {
-    year: Number(match[1]),
-    month: match[2] === undefined ? 1 : Number(match[2]),
-    day: match[3] === undefined ? 1 : Number(match[3]),
-  };
-  return isValidDate(parts) ? parts : null;
-};
-
 /** The decade window a year belongs to (2026 → 2020). */
 export const decadeOf = (year: number): number => Math.floor(year / 10) * 10;
-
-/** The current cell's granularity iso, e.g. today for a year picker is `YYYY`. */
-export const granularIsoOf = (iso: string, granularity: DateGranularity): string => {
-  const parts = parseValueWord(iso);
-  return parts === null ? iso : valueWord(parts, granularity);
-};
 
 /** The 12 month cells of a year (month view), canonical `YYYY-MM`. */
 export const buildMonthViewCells = (year: number): MonthViewCell[] =>

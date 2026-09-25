@@ -151,6 +151,12 @@ describe('standalone format', () => {
     expect(format('2026-01', 'yyyy-MM EEE')).toBe('2026-01 Thu');
   });
 
+  it('projects a full date onto coarser granularities — the pattern is the level', () => {
+    expect(format('2026-03-02', 'yyyy-MM-dd')).toBe('2026-03-02');
+    expect(format('2026-03-02', 'yyyy-MM')).toBe('2026-03');
+    expect(format('2026-03-02', 'yyyy')).toBe('2026');
+  });
+
   it('renders null for empty and unparsable sources instead of throwing', () => {
     expect(format(null, 'yyyy-MM-dd')).toBeNull();
     expect(format('', 'yyyy-MM-dd')).toBeNull();

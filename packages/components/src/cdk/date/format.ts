@@ -153,7 +153,7 @@ const GRANULARITY_PRECISION: Record<DateGranularity, ParsePrecision> = {
 };
 
 /** The value-word pattern each granularity renders — the canonical ladder. */
-const GRANULARITY_PATTERN: Record<DateGranularity, string> = {
+export const GRANULARITY_PATTERN: Record<DateGranularity, string> = {
   year: 'yyyy',
   month: 'yyyy-MM',
   date: 'yyyy-MM-dd',
