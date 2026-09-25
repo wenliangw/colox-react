@@ -212,4 +212,15 @@ describe('parts format', () => {
     });
     expect(dateParts(date('2026-03-15T08:30'))).toEqual(date('2026-03-15T08:30').parts());
   });
+
+  it('turns the honest throw into a null signal when a null fallback is given', () => {
+    expect(dateParts('not a date', null)).toBeNull();
+    expect(dateParts('2026-13', null)).toBeNull();
+    expect(() => dateParts('not a date')).toThrow(TypeError);
+  });
+
+  it('returns the fallback coordinate untouched for unparsable sources', () => {
+    const fallback = { year: 1970, month: 1, day: 1 };
+    expect(dateParts('not a date', fallback)).toBe(fallback);
+  });
 });

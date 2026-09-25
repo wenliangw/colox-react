@@ -4,9 +4,9 @@ import {
   buildMonthViewCells,
   buildYearViewCells,
   decadeOf,
-  parseGranularIso,
   today,
 } from '@colox/cdk/date/civil';
+import { dateParts } from '@colox/cdk/date';
 
 /** A padded canonical prefix — shared by the view helpers below. */
 const pad = (value: number, width: number): string => String(value).padStart(width, '0');
@@ -29,13 +29,11 @@ export const fallbackViewOf = (picker: DatePickerPicker): DateViewport => {
 /**
  * The viewport seeded from a value — or today when empty — resolved
  * at the picker's granularity (a calendar month, a year, a decade
- * window). Unparsable seeds fall back to 1970-built views.
+ * window). Unparsable seeds fall back to 1970-built views through
+ * the coordinate fallback.
  */
 export const viewOfValue = (value: string | null, picker: DatePickerPicker): DateViewport => {
-  const parts = parseGranularIso(value === null ? today() : value);
-  if (parts === null) {
-    return fallbackViewOf(picker);
-  }
+  const parts = dateParts(value === null ? today() : value, { year: 1970, month: 1, day: 1 });
   if (picker === 'month') {
     return { picker, year: parts.year };
   }
@@ -69,7 +67,7 @@ export const viewBeginsAt = (view: DateViewport, level: DatePanelLevel): string 
 
 /** Whether a granularity iso belongs to the level's grid. */
 export const belongsToView = (iso: string, view: DateViewport, level: DatePanelLevel): boolean => {
-  const parts = parseGranularIso(iso);
+  const parts = dateParts(iso, null);
   if (parts === null) {
     return false;
   }
@@ -92,7 +90,7 @@ export const viewportOfCell = (
   view: DateViewport,
   level: DatePanelLevel,
 ): DateViewport => {
-  const parts = parseGranularIso(iso);
+  const parts = dateParts(iso, null);
   if (parts === null) {
     return fallbackViewOf(view.picker);
   }

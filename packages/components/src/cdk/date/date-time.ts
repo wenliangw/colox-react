@@ -390,9 +390,34 @@ export const date = (source?: DateSource): ColoxDate => {
 /**
  * The plain-object coordinate of a value — the parts format, without
  * the `date()` detour: accepts the same sources the factory does and
- * returns `{ year, month, day, hour, minute, second }`.
+ * returns `{ year, month, day, hour, minute, second }`. Unparsable
+ * sources throw a `TypeError`.
+ *
+ * A `fallback` argument turns the honest throw into a caller-owned
+ * safety net: `dateParts(source, null)` reads a value the caller
+ * does not fully trust and hands back `null` when it is not one —
+ * the engine's value-word gate — while `dateParts(source, parts)` is
+ * the fallback coordinate itself (returned untouched on failure).
  */
-export const dateParts = (source: DateSource): DateTimeParts => parseSource(source);
+export function dateParts(source: DateSource): DateTimeParts;
+export function dateParts(source: DateSource, fallback: null): DateTimeParts | null;
+export function dateParts(
+  source: DateSource,
+  fallback: DateParts | DateTimeParts,
+): DateTimeParts | DateParts;
+export function dateParts(
+  source: DateSource,
+  fallback?: DateParts | DateTimeParts | null,
+): DateTimeParts | DateParts | null {
+  try {
+    return parseSource(source);
+  } catch (error) {
+    if (arguments.length === 1) {
+      throw error;
+    }
+    return fallback === undefined ? null : fallback;
+  }
+}
 
 /**
  * The standalone formatter: `format(source, pattern)` without the

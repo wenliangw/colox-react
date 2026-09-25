@@ -11,11 +11,10 @@ import {
   granularIsoOf,
   isLeapYear,
   isValidDate,
-  parseGranularIso,
   partsToGranularIso,
   weekdayOf,
 } from '../civil';
-import { date } from '../date-time';
+import { date, dateParts } from '../date-time';
 
 describe('date-core calendar math', () => {
   it('knows leap years and month lengths', () => {
@@ -30,7 +29,7 @@ describe('date-core calendar math', () => {
 
   it('round-trips civil dates through day numbers in both directions', () => {
     for (const iso of ['1970-01-01', '2026-03-02', '2000-02-29', '0001-01-01', '9999-12-31']) {
-      const parts = parseGranularIso(iso);
+      const parts = dateParts(iso, null);
       expect(parts).not.toBeNull();
       expect(date(civilFromDays(daysFromCivil(parts!))).iso('yyyy-MM-dd')).toBe(iso);
     }
@@ -118,14 +117,13 @@ describe('month shifting and bounds', () => {
 });
 
 describe('granularity values and views', () => {
-  it('parses granularity ISOs, filling missing month/day as 1', () => {
-    expect(parseGranularIso('2026')).toEqual({ year: 2026, month: 1, day: 1 });
-    expect(parseGranularIso('2026-03')).toEqual({ year: 2026, month: 3, day: 1 });
-    expect(parseGranularIso('2026-03-02')).toEqual({ year: 2026, month: 3, day: 2 });
-    expect(parseGranularIso('2026-13')).toBeNull();
-    expect(parseGranularIso('2026-3')).toBeNull();
-    expect(parseGranularIso('26')).toBeNull();
-    expect(parseGranularIso('2026-03-02-04')).toBeNull();
+  it('passes non-canonical words through granularIsoOf untouched', () => {
+    // The public value-word gate is dateParts(source, null); the strict
+    // private reader backs granularIsoOf's anchors only.
+    expect(granularIsoOf('2026-013', 'date')).toBe('2026-013');
+    expect(granularIsoOf('2026-3', 'year')).toBe('2026-3');
+    expect(granularIsoOf('26', 'year')).toBe('26');
+    expect(granularIsoOf('2026-03-02-04', 'date')).toBe('2026-03-02-04');
   });
 
   it('canonicalizes parts to the picker granularity', () => {

@@ -103,12 +103,15 @@ export const addMonths = (parts: DateParts, delta: number): DateParts => {
 };
 
 /**
- * Parses a canonical granularity ISO value — `YYYY`, `YYYY-MM` or
- * `YYYY-MM-DD` — into day-accurate parts (missing month/day default
- * to 1). Calendar-invalid values return null. Padding is strict:
- * 2-digit months/days (canonical), no calendar exceptions.
+ * Module-private read of a canonical value word — `YYYY`, `YYYY-MM`
+ * or `YYYY-MM-DD` — into day-accurate parts (missing month/day
+ * default to 1). Calendar-invalid words return null; padding is
+ * strict (canonical), no calendar exceptions. This is the deep
+ * defense for `granularIsoOf`'s internal anchors only: the public
+ * value-word gate lives on the toolbelt entry as
+ * `dateParts(source, null)` — civil cannot import it back (cycle).
  */
-export const parseGranularIso = (iso: string): DateParts | null => {
+const parseValueWord = (iso: string): DateParts | null => {
   const match = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/.exec(iso);
   if (match === null) {
     return null;
@@ -138,7 +141,7 @@ export const decadeOf = (year: number): number => Math.floor(year / 10) * 10;
 
 /** The current cell's granularity iso, e.g. today for a year picker is `YYYY`. */
 export const granularIsoOf = (iso: string, granularity: DateGranularity): string => {
-  const parts = parseGranularIso(iso);
+  const parts = parseValueWord(iso);
   return parts === null ? iso : partsToGranularIso(parts, granularity);
 };
 

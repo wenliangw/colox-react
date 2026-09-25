@@ -5,7 +5,8 @@ import type {
   DateParts,
   ParsePrecision,
 } from './types';
-import { isValidDate, parseGranularIso, partsToGranularIso, weekdayOf } from './civil';
+import { isValidDate, partsToGranularIso, weekdayOf } from './civil';
+import { dateParts } from './date-time';
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAY_FULL = [
@@ -85,7 +86,7 @@ export const formatIso = (iso: string | null, pattern: string): string => {
   if (iso === null) {
     return '';
   }
-  const parts = parseGranularIso(iso);
+  const parts = dateParts(iso, null);
   if (parts === null) {
     return '';
   }

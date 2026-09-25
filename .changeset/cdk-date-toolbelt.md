@@ -18,7 +18,12 @@ into the factory, and `toDate()` bridges to native `Date`. A
 standalone `format(value, pattern)` works without the `date()`
 detour, `date` accepts the parts format (`{ year, month, day,
 hour?, minute?, second? }`), and `parts()` / the standalone
-`dateParts(value)` yield the full six-field coordinate back.
+`dateParts(value)` yield the full six-field coordinate back. An
+optional fallback argument shifts the honest TypeError into a
+caller-owned safety net: `dateParts(value, null)` returns null for
+unparsable sources (the value-word gate the picker engine reads
+through), `dateParts(value, parts)` returns the given coordinate
+untouched.
 `ColoxDate` exposes its method set as the public type only —
 construction is sealed behind the factory, no internal entries leak
 into the dts. The date picker keeps reading the core from the cdk

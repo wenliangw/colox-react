@@ -12,11 +12,10 @@ import {
   civilFromDays,
   daysFromCivil,
   granularIsoOf,
-  parseGranularIso,
   today,
   weekdayOf,
 } from '@colox/cdk/date/civil';
-import { date } from '@colox/cdk/date';
+import { date, dateParts } from '@colox/cdk/date';
 import { formatIso, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
 import {
   belongsToView,
@@ -310,7 +309,7 @@ export const useDatePicker = ({
    * the picked cell's year/month.
    */
   const descendFrom = (iso: string): { view: DateViewport; level: DatePanelLevel } | null => {
-    const parts = parseGranularIso(iso);
+    const parts = dateParts(iso, null);
     if (parts === null) {
       return null;
     }
@@ -385,7 +384,7 @@ export const useDatePicker = ({
 
   /** One grid rotation step at the level's granularity (null = off-map). */
   const moveCell = (iso: string, key: string): string | null => {
-    const parts = parseGranularIso(iso);
+    const parts = dateParts(iso, null);
     if (parts === null) {
       return null;
     }
