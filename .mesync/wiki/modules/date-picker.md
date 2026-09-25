@@ -13,43 +13,43 @@ date-picker/
 ├── hooks/
 │   └── use-date-picker.ts    # 状态机单源：draft 门禁/提交/blur 回滚/open/view/网格键盘
 ├── utils/
-│   ├── view.ts               # 视口纯函数（viewOfValue/gridCellsOf/层级跃迁），吃 cdk/date 的构造器
+│   ├── view.ts               # 视口纯函数（viewOfValue/gridCellsOf/层级跃迁），吃 cdk/date 公开面 + grid builder
+│   ├── format.ts             # 本家格式化偏门：PICKER_DEFAULT_FORMAT/GRANULARITY_PATTERN/精度档 + parseDateText/draft 门（吃 cdk 的 compilePattern/patternToParseSource 与公开 dateFormat/isValidDate）
 │   └── locale.ts             # 面板 chrome 本地化：中文默认（月标/周头/日·月·十年三标题格式串）+ resolve/compose
 ├── controls/
 │   ├── panel.tsx            # 面板（header 导航 + 日格/月格/年格三视图；--empty 空态作用域）
 │   └── clear-button.tsx     # clearable 尾部 X 钮（IconButton base + 站点定位类，Select 同款）
 ├── _tests/
-│   ├── date-picker.test.tsx  # 55 个：契约/编辑状态机/面板/键盘/月·年 picker 组
+│   ├── date-picker.test.tsx  # 62 个：契约/编辑状态机/面板/键盘/月·年 picker 组/层级钻取
+│   ├── format-utils.test.tsx # 10 个：parseDateText 精度阶梯 + draft 门（随偏门回迁入本家）
 │   └── locale.test.tsx       # 7 个：中文默认/逐字段回退/不突变/compose 定制/占位透传
 ├── types/{component,utils,hooks,controls,index}.ts
 ├── styles/{base,palette,size,index}.scss  # 外壳 = Input 契约 + 面板 overlay 织物 + compact 网格 + palette 私有变量
 └── variants/{size,palette,index}.ts       # size 四档 + palette 六族双轴
 ```
 
-日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`，结构随批 3 标准化）：
-`civil.ts`（原 date-core：日历数学）/`format.ts`（原 format-date：模式编译/解析）+ `date-time.ts`
-（ColoxDate 值对象 + 组合词表渲染）+ `types/`（共享型分域——`calendar` 日历/`format` 格式/`value`
-值对象 + index 桶，组件 types/utils.ts 再导出）+ `constants/`（`calendar` 月长/网格 42 格/周名双表、
-`patterns` 全部九个日期正则、`format` 默认格式/词表/档位映像三张表）。公开面
-`@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= `date`/`format`/`dateParts` 函数 + 不可变
-`ColoxDate` 值对象：入参 string|Date|`…Z` 即时串|parts 对象格式双收、`addDays`/`addMonths`/`addYears`
-链式、`format(pattern)` 组合词表（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s`——`M` 月 vs `m` 分按大小写载义、长度
-即补零）、`iso()` 只无参即时词（`new Date().toISOString()` 形态：完整时间 + T + Z，UTC 真值、工厂可回读往返）、pattern 渲染（值词/显示词）一律走 `format`（坐标拼值词走 `date(parts).format('yyyy-MM-dd')`，
-内部拼串 `valueWord` 模块私有）、`.parts()`/`dateParts()` 吐六字段对象格式、`toDate()` 本地壁钟桥；
-网格 builder 不在公开面。原 date-core.test（15）/format-date.test（17）随文件搬入 `cdk/date/_tests/` 改名
-civil/format，另加 date-time 38（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
+日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`）。纯函数化后内部分四域：`calendar.ts`（公历数学：Hinnant 零时区 days/civil 互转 + shiftSeconds/addYears/startOf/endOf/diffOf 等移位结构数学）、`parse.ts`（归一化：string|Date|parts → 六字段坐标）、`format.ts`（词表引擎：pattern 编译 + 渲染一体）、`constants/`（月长/网格 42 格/周名双表 + 五个日期正则 + token 字母表）+ `types/`（calendar/format/value 分域 + index 桶）。公开面 `@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= **纯函数能力套件**（用户立方法：API 面先行、纯函数为基座、链式只是上层糖）：
+
+- **`dateParts(source, fallback?)`** 吐七字段坐标（六字段 + 周一开头 weekday 0-6；入参 string|Date|parts 双收，串词 datetime/date/年月/裸年/Z 即时串全语法——Z 串解析不碰 `new Date(string)`，自己解数字 + `Date.UTC` 转本地 + 先校验后算、往返成立）；兜底参数 = 值词门（认不出给调用方声明的兜底，无参诚实抛）
+- **`dateFormat(source, pattern)`** 唯一格式化标准（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s` 大小写载义、单字母不补零双补零、h 12 制与 H 24 制并存），**显示出口不抛**（null/垃圾渲染 null，组件 `?? ''`）
+- **`addYears`/`addMonths`/`addWeeks`/`addDays`/`addHours`/`addMinutes`/`addSeconds`**（年/月日历真值 clamp——2/29 进 2/28、31 号进月末；周/日/时/分/秒进位）返回纯坐标（DateTimeParts）
+- **`dateDiff(end, start, unit)`** 日历真值 `{ count, remainder }`（count = 从 start 不越过 end 推满的整数单元；余数降维链：年/月→天、天→时、时→分、分→秒，秒为地板；end < start 翻负）
+- **`dateStartOf`/`dateEndOf(source, granularity)`** 七档粒度（year/month/week/day/hour/minute/second），**周一开头、周日 23:59:59 收尾**
+- **`today()`** 原生 `Date`（本地当天零点）、**`dateTimestamp(source)`** 本地壁钟毫秒、**`DATEID()`** 17 位纯数字 ID（13 位毫秒 + 4 位同毫秒序号、无分隔符）、**`secondsToMinutes`/`Hours`/`Days`/`Weeks`** 裸换算不取整（取整是调用方政策）
+
+网格 builder 不公开；链式值对象/`date()` 工厂/`iso()` 即时词随纯函数化**整体退场**（链式等纯函数基座稳定后再作糖包回；时区/本地化是点名缺口）；组件只吃公开面。cdk 测试：calendar 12 + format 3 + surface 24（纯函数套件覆盖面）。
 
 ## 功能逻辑
 
-### 日期数学零时区（cdk/date/civil，原 date-core）
+### 日期数学零时区（cdk/date/calendar，原 date-core/civil）
 
-不碰 `Date.parse`/`new Date(iso)`——`YYYY-MM-DD` 被 Date 按 UTC 午夜解析，跨时区 weekday 会漂移。日历数学走 **Howard Hinnant 纯算法**：`daysFromCivil`/`civilFromDays` 以 1970-01-01 为锚互转天数与公历坐标；weekday = `(days + 3) % 7` 周一开头（1970-01-01 是周四=3 校验过）。衍生物全部同源：`buildMonthGrid`（首周一对齐的 6×7 固定 42 格，前后邻月填充保面板形状）、`addMonths`（日 clamp 进目标月长）、`today`（系统本地日历，只做高亮与视图播种）；粒度工具：`dateParts(source, null)`（公开值词门，认不出给 null 各站自译退路）、`decadeOf`、`buildMonthViewCells`（12 月格）、`buildYearViewCells`（12 年十年窗）。字词档位投影（锚点/今天高亮）走 `format(value, GRANULARITY_PATTERN[level])`——`GRANULARITY_PATTERN`（yyy-MM-dd/yyyy-MM/yyyy 三档）随 export 出 format.ts；`granularIsoOf` 与其私有的 `parseValueWord` 一并死亡。
+不碰 `Date.parse`/`new Date(iso)`——`YYYY-MM-DD` 被 Date 按 UTC 午夜解析，跨时区 weekday 会漂移。日历数学走 **Howard Hinnant 纯算法**：`daysFromCivil`/`civilFromDays` 以 1970-01-01 为锚互转天数与公历坐标；weekday = `(days + 3) % 7` 周一开头（1970-01-01 是周四=3 校验过）。衍生物全部同源：`buildMonthGrid`（首周一对齐的 6×7 固定 42 格，前后邻月填充保面板形状）、`addMonths`/`addYears`（日 clamp 进目标月长/年）、`shiftSeconds`（时分秒进位基座）、`startOf`/`endOf`（七档粒度边界，周一起周）、`diffOf`（日历真值 count/remainder）；粒度工具：`decadeOf`、`buildMonthViewCells`（12 月格）、`buildYearViewCells`（12 年十年窗）。字词档位投影（锚点/今天高亮/面板 other 拼接）走 `dateFormat(value, GRANULARITY_PATTERN[level])`——`GRANULARITY_PATTERN`（yyyy-MM-dd/yyyy-MM/yyyy 三档）随偏门迁回组件 `utils/format.ts`；`granularIsoOf` 与其私有的 `parseValueWord` 已死亡。
 
-### 格式化/解析（cdk/date/format，原 format-date）
+### 格式化/解析（cdk/date/format + picker utils/format）
 
-- **pattern 编译**：`y/m/d/e`（大小写不敏感）为 token，同字母连续段记一条长度；其余字符为 literal。`yyyy`=4 位、`yy`=2 位（parse 映射 2000-2099）、`M/d`=不补零、`MM/dd`=补零、`EEE`=短星期名、`EEEE`=全名（英文规范词，Java/antd 标准表）。weekday parse 位匹配 `[A-Za-z]+` 并丢弃（display-only）。
-- **显示渲染并入公开 `format`（formatIso 死亡）**：值词→显示词走 toolbelt 的 `format(value, pattern) ?? ''`（`format` 显示出口不抛——null 源/认不出/坏 Date 均渲染 null，音量是调用方政策）；word 表 `y/M/d/E/H/h/m/s` 大小写载义、`M` 月 vs `m` 分、`H` 24 制 vs `h` 12 制；引擎侧 `renderToken`/WEEKDAY 词表随之删除，`compilePattern` 的 token 流留下（`parseDateText`/`isDraftAllowed` 还在吃）。
-- **parseDateText（精度化）**：先 pattern 解析（year 必需、月/日 token 缺位补 1；精度 = 出现的粒度档）→ 再规范语法阶梯（严格 `^\d{4}-\d{2}-\d{2}$` + 宽松 `^\d{4}[/-]\d{1,2}[/-]\d{1,2}$` + 年月 `^\d{4}[/-]\d{1,2}$` + 裸年 `^\d{4}$`）→ `isValidDate` 验证 → 精度 ≥ picker 粒度才产出 canonical（更细截断到 picker、更粗 null 回滚），截断规范化走 `date(parts).format(GRANULARITY_PATTERN[g])`。非法返回 null（编辑器回滚语义）。
+- **pattern 编译/渲染一体**：`compilePattern`/`renderPattern` 同居 cdk/format.ts——token 字母 `M` 月 vs `m` 分、`H` 24 制 vs `h` 12 制大小写载义，`y`/`d`/`e`/`s` 大小写不敏感，载义键的大小写 run 精确到 case；其余字符为 literal。`yyyy`=4 位、`yy`=2 位（parse 映射 2000-2099）、单字母不补零双补零、`EEE`=短星期名、`EEEE`=全名。weekday parse 位匹配 `[A-Za-z]+` 并丢弃（display-only）。
+- **显示渲染走公开 `dateFormat`**：值词→显示词 = `dateFormat(value, pattern) ?? ''`（显示出口不抛——null 源/认不出/坏 Date 均渲染 null，音量是调用方政策）。
+- **组件偏门回迁本家 `utils/format.ts`**：`parseDateText`（先 pattern 解析——year 必需、月/日 token 缺位补 1、精度 = 出现的粒度档；再规范语法阶梯（严格 `^\d{4}-\d{2}-\d{2}$` + 宽松 `^\d{4}[/-]\d{1,2}[/-]\d{1,2}$` + 年月/裸年）→ `isValidDate` 验证 → 精度 ≥ picker 粒度才产出 canonical（更细截断、更粗 null 回滚），截断规范化走公开 `dateFormat(parts, GRANULARITY_PATTERN[g])`）、`GRANULARITY_PATTERN`/`PICKER_DEFAULT_FORMAT`/精度档三张表与 SOP 时间 token 捕获后丢弃——cdk/format 只留纯引擎（编译 + 渲染 + patternToParseSource）。
 - **草稿门禁 isDraftAllowed 是宽松过滤**：数字/字母/空格/规范分隔符 `/ - .`/pattern literal 字符全放行——门禁只挡明显废字符，严格校验在 commit/blur 的 parse。IME 合成中透传仅显示。
 
 ### 面板 chrome 本地化（locale）
@@ -87,7 +87,7 @@ civil/format，另加 date-time 38（旧公开面遗留 addDaysIso 族已随形�
 
 ## 状态与测试
 
-组件相关 69 个测试（locale 7 + 行为 62——原 date-core 15 / format-date 17 随批 1 搬入 cdk/date 后归 cdk 计数）：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）、行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）。cdk/date 自有 63（civil 12 + format 13 + date-time 38）——日历数学/格式化解析/值对象。
+组件相关 79 个测试：locale 7（中文默认含 year/decade/逐字段回退/不突变调用方/compose 定制/占位透传）+ 行为 62（契约 8 + 编辑状态机 14 + 面板/清除 18 + 键盘 6 + 月 picker 5 + 年 picker 4 + 层级钻取 7——见 _tests/date-picker.test.tsx 分组注释）+ 本家 format-utils 10（parseDateText 7 + draft 门 3，随偏门回迁入组件计数）。cdk/date 自有 39（calendar 12 + format 3 + surface 24）：日历数学/词表引擎/纯函数套件覆盖面（date-time 值对象 38 随链式退场删除）。
 
 ## 构建·门禁
 
