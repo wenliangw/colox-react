@@ -1,5 +1,5 @@
 import { isValidDate } from '@colox/cdk/date/calendar';
-import { date } from '@colox/cdk/date';
+import { dateFormat } from '@colox/cdk/date';
 import { compilePattern, patternToParseSource } from '@colox/cdk/date/format';
 import type { ParsePrecision } from '@colox/cdk/date/types';
 import type { DatePanelLevel } from '../types';
@@ -116,11 +116,11 @@ export const parseDateText = (
   const required = GRANULARITY_PRECISION[granularity];
   const fromPattern = parseByPattern(trimmed, pattern);
   if (fromPattern !== null && fromPattern.precision >= required) {
-    return date(fromPattern.parts).format(GRANULARITY_PATTERN[granularity]);
+    return dateFormat(fromPattern.parts, GRANULARITY_PATTERN[granularity]);
   }
   const fromGrammar = parseByGrammar(trimmed);
   if (fromGrammar !== null && fromGrammar.precision >= required) {
-    return date(fromGrammar.parts).format(GRANULARITY_PATTERN[granularity]);
+    return dateFormat(fromGrammar.parts, GRANULARITY_PATTERN[granularity]);
   }
   return null;
 };

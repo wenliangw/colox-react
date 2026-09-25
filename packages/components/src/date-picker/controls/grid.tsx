@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import type { DatePanelLevel, DatePickerGridCell, DatePickerGridProps } from '../types';
-import { format } from '@colox/cdk/date';
+import { dateFormat } from '@colox/cdk/date';
 import { GRANULARITY_PATTERN } from '../utils/format';
 import { gridCellsOf } from '../utils/view';
 
@@ -50,7 +50,7 @@ const DatePickerGridCell = ({
   isDisabled,
 }: DatePickerGridCellProps) => {
   const isSelected = cell.iso === selected;
-  const isCurrent = cell.iso === format(today, GRANULARITY_PATTERN[level]);
+  const isCurrent = cell.iso === dateFormat(today, GRANULARITY_PATTERN[level]);
   const disabled = isDisabled(cell.iso);
   return (
     <button

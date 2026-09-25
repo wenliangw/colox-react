@@ -112,12 +112,6 @@ export const buildYearViewCells = (decadeStart: number): YearViewCell[] =>
     return { iso: String(year).padStart(4, '0'), year };
   });
 
-/** Today in the browser's local calendar (highlight + view seeding only). */
-export const today = (): string => {
-  const now = new Date();
-  return valueWord({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() });
-};
-
 // ——— the pure shift/structure math —————————————————————————————————————
 // The public capability functions are thin wiring over these: every
 // entry parses to the coordinate (parse.ts), does its algebra here,

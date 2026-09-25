@@ -7,14 +7,8 @@ import type {
   UseDatePickerParams,
   UseDatePickerResult,
 } from '../types';
-import {
-  addMonths,
-  civilFromDays,
-  daysFromCivil,
-  today,
-  weekdayOf,
-} from '@colox/cdk/date/calendar';
-import { date, dateParts, format } from '@colox/cdk/date';
+import { addMonths, civilFromDays, daysFromCivil, weekdayOf } from '@colox/cdk/date/calendar';
+import { dateFormat, dateParts, today } from '@colox/cdk/date';
 import { GRANULARITY_PATTERN, isDraftAllowed, parseDateText } from '../utils/format';
 import {
   belongsToView,
@@ -39,11 +33,11 @@ const anchorOf = (
   view: DateViewport,
   level: DatePanelLevel,
   current: string | null,
-  today: string,
+  today: Date | string,
   isDisabled: (iso: string) => boolean,
 ): string | null => {
-  const currentAtLevel = current === null ? null : format(current, GRANULARITY_PATTERN[level]);
-  const todayAtLevel = format(today, GRANULARITY_PATTERN[level]);
+  const currentAtLevel = current === null ? null : dateFormat(current, GRANULARITY_PATTERN[level]);
+  const todayAtLevel = dateFormat(today, GRANULARITY_PATTERN[level]);
   return (
     [currentAtLevel, todayAtLevel, viewBeginsAt(view, level)].find(
       (candidate) =>
@@ -103,7 +97,7 @@ export const useDatePicker = ({
   const current = isControlled ? value : innerValue;
 
   const [draft, setDraft] = useState<string>(
-    () => format(isControlled ? (value ?? null) : (defaultValue ?? null), valueFormat) ?? '',
+    () => dateFormat(isControlled ? (value ?? null) : (defaultValue ?? null), valueFormat) ?? '',
   );
   const lastCommittedRef = useRef<string | null>(current);
   // Cross-view keyboard hops change the view — the target cell only
@@ -125,7 +119,7 @@ export const useDatePicker = ({
   useEffect(() => {
     if (current !== lastCommittedRef.current) {
       lastCommittedRef.current = current;
-      setDraft(format(current ?? null, valueFormat) ?? '');
+      setDraft(dateFormat(current ?? null, valueFormat) ?? '');
     }
   }, [current, valueFormat]);
 
@@ -218,12 +212,12 @@ export const useDatePicker = ({
     if (parsed === null || isDisabled(parsed)) {
       // Partial or out-of-range: roll back to the last committed value.
       if (draft !== '') {
-        setDraft(format(current ?? null, valueFormat) ?? '');
+        setDraft(dateFormat(current ?? null, valueFormat) ?? '');
       }
     } else if (parsed !== lastCommittedRef.current) {
-      commit(makeChangeEvent(), parsed, format(parsed, valueFormat) ?? '');
+      commit(makeChangeEvent(), parsed, dateFormat(parsed, valueFormat) ?? '');
     } else {
-      setDraft(format(parsed, valueFormat) ?? '');
+      setDraft(dateFormat(parsed, valueFormat) ?? '');
     }
     onBlur?.(event);
   };
@@ -342,7 +336,7 @@ export const useDatePicker = ({
       setLevel(next.level);
       return;
     }
-    commit(makeChangeEvent(), iso, format(iso, valueFormat) ?? '');
+    commit(makeChangeEvent(), iso, dateFormat(iso, valueFormat) ?? '');
     closePanel();
     inputRef.current?.focus();
   };
@@ -406,7 +400,7 @@ export const useDatePicker = ({
       } else if (key === 'PageDown') {
         next = addMonths(parts, 1);
       }
-      return next === null ? null : date(next).format('yyyy-MM-dd');
+      return next === null ? null : dateFormat(next, 'yyyy-MM-dd');
     }
     if (level === 'month') {
       // The 3×4 grid: Left/Right ±1 month, Up/Down ±3, PageUp/Down

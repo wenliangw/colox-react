@@ -4,9 +4,8 @@ import {
   buildMonthViewCells,
   buildYearViewCells,
   decadeOf,
-  today,
 } from '@colox/cdk/date/calendar';
-import { dateParts } from '@colox/cdk/date';
+import { dateParts, today } from '@colox/cdk/date';
 
 /** A padded canonical prefix — shared by the view helpers below. */
 const pad = (value: number, width: number): string => String(value).padStart(width, '0');

@@ -63,6 +63,25 @@ describe('dateParts — the full coordinate', () => {
     expect(dateParts('garbage', fallback)).toBe(fallback);
     expect(() => dateParts('garbage')).toThrow(TypeError);
   });
+
+  it('speaks the whole input vocabulary: space clock, year-month, bare year, day-parts', () => {
+    expect(dateParts('2026-03-15 08:30:05')).toMatchObject({ hour: 8, minute: 30, second: 5 });
+    expect(dateParts('2026-03')).toMatchObject({ year: 2026, month: 3, day: 1 });
+    expect(dateParts('2026')).toMatchObject({ year: 2026, month: 1, day: 1 });
+    expect(dateParts({ year: 2026, month: 3, day: 2, hour: 23 })).toMatchObject({
+      day: 2,
+      hour: 23,
+      minute: 0,
+    });
+    expect(dateParts('2026-3-2')).toMatchObject({ year: 2026, month: 3, day: 2 });
+  });
+
+  it('round-trips the instant word: UTC digits read back onto the local wall clock', () => {
+    const local = new Date(2026, 2, 15, 0, 30, 0);
+    const instantWord = local.toISOString();
+    expect(dateParts(instantWord)).toEqual(dateParts(local));
+    expect(dateFormat(instantWord, 'yyyy-MM-dd')).toBe(dateFormat(local, 'yyyy-MM-dd'));
+  });
 });
 
 describe('dateFormat — the display outlet', () => {

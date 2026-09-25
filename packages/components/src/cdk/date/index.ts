@@ -30,9 +30,6 @@
  * without a fallback, the `add*` family, `dateDiff`, `dateStartOf`/
  * `dateEndOf`, `dateTimestamp`) report garbage honestly with a
  * `TypeError`.
- *
- * The chained `date()` value object stays available as the sugary
- * layer over the same core while it is being phased out.
  */
 import {
   addMonths as shiftMonths,
@@ -48,14 +45,11 @@ import { parseSource, toParts } from './parse';
 import { renderPattern } from './format';
 import type { DateParts, DatePartsFull, DateValue, DateTimeParts } from './types';
 
-export { date, format } from './date-time';
 export type {
-  ColoxDate,
   DateFormatPart,
   DateParts,
   DatePartsFull,
   DateTimeParts,
-  DateSource,
   DateValue,
   ParsePrecision,
 } from './types';

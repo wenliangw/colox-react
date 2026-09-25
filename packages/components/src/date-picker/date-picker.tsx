@@ -8,7 +8,7 @@ import { DatePickerClearButton } from './controls/clear-button';
 import { DatePickerPanel } from './controls/panel';
 import { useDatePicker } from './hooks/use-date-picker';
 import type { DatePickerProps, DatePickerRef } from './types';
-import { today } from '@colox/cdk/date/calendar';
+import { dateFormat, today } from '@colox/cdk/date';
 import { resolveDateLocale } from './utils/locale';
 import { PICKER_DEFAULT_FORMAT } from './utils/format';
 import { datePickerPaletteStyles } from './variants/palette';
@@ -157,7 +157,7 @@ const DatePickerRoot = forwardRef<DatePickerRef, DatePickerProps>((props, ref) =
           view={editor.view}
           locale={resolvedLocale}
           selected={editor.current}
-          today={today()}
+          today={dateFormat(today(), 'yyyy-MM-dd') ?? ''}
           activeIso={editor.activeIso}
           onShiftView={editor.shiftView}
           onShiftDoubleView={editor.shiftDoubleView}

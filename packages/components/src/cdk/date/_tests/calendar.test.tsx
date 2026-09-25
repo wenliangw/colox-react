@@ -12,7 +12,7 @@ import {
   isValidDate,
   weekdayOf,
 } from '../calendar';
-import { date, dateParts } from '../date-time';
+import { dateFormat, dateParts } from '../index';
 
 describe('date-core calendar math', () => {
   it('knows leap years and month lengths', () => {
@@ -29,7 +29,7 @@ describe('date-core calendar math', () => {
     for (const iso of ['1970-01-01', '2026-03-02', '2000-02-29', '0001-01-01', '9999-12-31']) {
       const parts = dateParts(iso, null);
       expect(parts).not.toBeNull();
-      expect(date(civilFromDays(daysFromCivil(parts!))).format('yyyy-MM-dd')).toBe(iso);
+      expect(dateFormat(civilFromDays(daysFromCivil(parts!)), 'yyyy-MM-dd')).toBe(iso);
     }
   });
 
@@ -110,7 +110,7 @@ describe('month shifting and bounds', () => {
   });
 
   it('turns parts into padded canonical ISO', () => {
-    expect(date({ year: 2026, month: 3, day: 2 }).format('yyyy-MM-dd')).toBe('2026-03-02');
+    expect(dateFormat({ year: 2026, month: 3, day: 2 }, 'yyyy-MM-dd')).toBe('2026-03-02');
   });
 });
 
