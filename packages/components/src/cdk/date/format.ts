@@ -1,19 +1,10 @@
 import type { DateFormatPart, DateGranularity, DateParts, ParsePrecision } from './types';
 import { isValidDate } from './civil';
 import { date } from './date-time';
+import { GRANULARITY_PATTERN, GRANULARITY_PRECISION, TOKEN_TYPES } from './constants/format';
+import { ISO_LENIENT, ISO_MONTH, ISO_STRICT, ISO_YEAR } from './constants/patterns';
 
-/**
- * The default display pattern per granularity: the pattern mirrors the
- * value shape (`date` shows the full date, `year` the bare year) —
- * always overridable through `valueFormat`.
- */
-export const PICKER_DEFAULT_FORMAT: Record<DateGranularity, string> = {
-  date: 'yyyy-MM-dd',
-  month: 'yyyy-MM',
-  year: 'yyyy',
-};
-
-const TOKEN_TYPES = { y: 'year', m: 'month', d: 'day', e: 'weekday' } as const;
+export { GRANULARITY_PATTERN, PICKER_DEFAULT_FORMAT } from './constants/format';
 
 const isTokenLetter = (char: string): boolean => char.toLowerCase() in TOKEN_TYPES;
 
@@ -120,12 +111,6 @@ const parseByPattern = (text: string, pattern: string): ParsedMatch | null => {
   return { parts: date, precision };
 };
 
-const ISO_STRICT = /^(\d{4})-(\d{2})-(\d{2})$/;
-const ISO_LENIENT = /^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/;
-// Coarser grammars for the coarser granularities: month and bare year.
-const ISO_MONTH = /^(\d{4})[/-](\d{1,2})$/;
-const ISO_YEAR = /^(\d{4})$/;
-
 /** The canonical ISO grammars across precisions: full date, year-month, bare year. */
 const parseByGrammar = (text: string): ParsedMatch | null => {
   const full = ISO_STRICT.exec(text) ?? ISO_LENIENT.exec(text);
@@ -144,19 +129,6 @@ const parseByGrammar = (text: string): ParsedMatch | null => {
     return isValidDate(date) ? { parts: date, precision: 0 as ParsePrecision } : null;
   }
   return null;
-};
-
-const GRANULARITY_PRECISION: Record<DateGranularity, ParsePrecision> = {
-  year: 0,
-  month: 1,
-  date: 2,
-};
-
-/** The value-word pattern each granularity renders — the canonical ladder. */
-export const GRANULARITY_PATTERN: Record<DateGranularity, string> = {
-  year: 'yyyy',
-  month: 'yyyy-MM',
-  date: 'yyyy-MM-dd',
 };
 
 /**

@@ -28,4 +28,4 @@
  * ```
  */
 export { date, dateParts, format } from './date-time';
-export type { ColoxDate, DateSource, DateTimeParts } from './date-time';
+export type { ColoxDate, DateSource, DateTimeParts } from './types';

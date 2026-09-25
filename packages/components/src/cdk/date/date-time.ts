@@ -1,5 +1,7 @@
+import { WEEKDAY_FULL, WEEKDAY_SHORT } from './constants/calendar';
+import { DATETIME, DATE, INSTANT, YEAR, YEAR_MONTH } from './constants/patterns';
 import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './civil';
-import type { DateParts } from './types';
+import type { ColoxDate, DateParts, DateSource, DateTimeParts } from './types';
 
 /**
  * The cdk date/time value object — an immutable civil date-time
@@ -15,35 +17,10 @@ import type { DateParts } from './types';
  *   normalize to their implicit day 1 — no hidden granularity.
  */
 
-/**
- * The plain-object coordinate (the parts format): what `.parts()` and
- * `dateParts()` emit and what the `date` factory reads back — the full
- * civil+clock coordinate, calendar- and clock-validated. The day-only
- * `DateParts` shape the calendar math speaks is also accepted as input.
- */
-export interface DateTimeParts {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-}
-
-/** What `date`, `dateParts` and `format` accept: value strings, native Dates, an instance or the parts format. */
-export type DateSource = string | Date | ColoxDate | DateParts | DateTimeParts;
-
 const pad = (value: number, length: number): string =>
   length <= 1 ? String(value) : String(value).padStart(length, '0');
 
 // ——— input normalization ————————————————————————————————————————————
-
-const DATETIME = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/;
-const DATE = /^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/;
-const YEAR_MONTH = /^(\d{4})[/-](\d{1,2})$/;
-const YEAR = /^(\d{4})$/;
-/** The instant word `iso()` emits: full clock, milliseconds, `Z`. Offsets stay an extension point. */
-const INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?Z$/;
 
 const isValidClock = (hour: number, minute: number, second: number): boolean =>
   Number.isInteger(hour) &&
@@ -230,9 +207,6 @@ const compilePattern = (pattern: string): PatternPart[] => {
   return parts;
 };
 
-const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const WEEKDAY_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
 const renderPart = (part: PatternPart, parts: DateTimeParts): string => {
   if (part.type === 'literal') {
     return part.text;
@@ -267,40 +241,6 @@ const renderPattern = (parts: DateTimeParts, pattern: string): string =>
     .join('');
 
 // ——— the value object —————————————————————————————————————————————————
-
-/**
- * The immutable date/time coordinate the `date` factory produces.
- * Construction lives entirely behind the factory: the public face is
- * this method set — no constructor, no internal entries.
- */
-export interface ColoxDate {
-  /** Whole-day shift; the clock part rides along untouched. */
-  addDays(delta: number): ColoxDate;
-
-  /** Whole-month shift, clamping the day into the target month; the clock rides along. */
-  addMonths(delta: number): ColoxDate;
-
-  /** Whole-year shift, clamping Feb 29 into Feb 28 on common years; the clock rides along. */
-  addYears(delta: number): ColoxDate;
-
-  /** Renders through the token pattern (see the module vocabulary). */
-  format(pattern: string): string;
-
-  /**
-   * The instant word — the value shifted to UTC and serialized
-   * exactly like `new Date().toISOString()`: full clock, milliseconds
-   * and `Z` (e.g. `'2026-03-15T00:30:00.000Z'`). This is the wire/
-   * interchange shape; display rendering stays in `format`. With a
-   * pattern, renders the civil coordinates through the token grammar.
-   */
-  iso(pattern?: string): string;
-
-  /** The plain-object coordinate (`DateTimeParts`): the parts format `date()` reads back. */
-  parts(): DateTimeParts;
-
-  /** The native Date at the browser-local calendar wall clock. */
-  toDate(): Date;
-}
 
 /** The factory gate: instances may only come from `date()`. */
 const FACTORY_TOKEN = Symbol('colox-date-value');

@@ -1,9 +1,5 @@
 import type { DateParts, MonthGridCell, MonthViewCell, YearViewCell } from './types';
-
-const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-/** The month grid is 6×7 (42 cells) — a fixed shape keeps the panel height stable. */
-export const GRID_CELL_COUNT = 42;
+import { DAYS_IN_MONTH, GRID_CELL_COUNT } from './constants/calendar';
 
 export const isLeapYear = (year: number): boolean =>
   (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
