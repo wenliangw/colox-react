@@ -9,7 +9,7 @@ import type {
 } from '../types';
 import { addMonths, civilFromDays, daysFromCivil, today, weekdayOf } from '@colox/cdk/date/civil';
 import { date, dateParts, format } from '@colox/cdk/date';
-import { GRANULARITY_PATTERN, isDraftAllowed, parseDateText } from '@colox/cdk/date/format';
+import { GRANULARITY_PATTERN, isDraftAllowed, parseDateText } from '../utils/format';
 import {
   belongsToView,
   viewBeginsAt,

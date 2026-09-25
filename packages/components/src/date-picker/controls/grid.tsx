@@ -2,7 +2,7 @@ import type { KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import type { DatePanelLevel, DatePickerGridCell, DatePickerGridProps } from '../types';
 import { format } from '@colox/cdk/date';
-import { GRANULARITY_PATTERN } from '@colox/cdk/date/format';
+import { GRANULARITY_PATTERN } from '../utils/format';
 import { gridCellsOf } from '../utils/view';
 
 interface DatePickerGridCellProps {

@@ -10,7 +10,7 @@ import { useDatePicker } from './hooks/use-date-picker';
 import type { DatePickerProps, DatePickerRef } from './types';
 import { today } from '@colox/cdk/date/civil';
 import { resolveDateLocale } from './utils/locale';
-import { PICKER_DEFAULT_FORMAT } from '@colox/cdk/date/format';
+import { PICKER_DEFAULT_FORMAT } from './utils/format';
 import { datePickerPaletteStyles } from './variants/palette';
 import { datePickerVariants } from './variants';
 
