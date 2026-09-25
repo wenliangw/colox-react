@@ -223,4 +223,11 @@ describe('parts format', () => {
     const fallback = { year: 1970, month: 1, day: 1 };
     expect(dateParts('not a date', fallback)).toBe(fallback);
   });
+
+  it('renders the canonical value-word ladder through patterns — pattern is the granularity', () => {
+    const parts = { year: 2026, month: 3, day: 2 };
+    expect(date(parts).iso('yyyy')).toBe('2026');
+    expect(date(parts).iso('yyyy-MM')).toBe('2026-03');
+    expect(date(parts).iso('yyyy-MM-dd')).toBe('2026-03-02');
+  });
 });

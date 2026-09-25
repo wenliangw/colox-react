@@ -11,7 +11,6 @@ import {
   granularIsoOf,
   isLeapYear,
   isValidDate,
-  partsToGranularIso,
   weekdayOf,
 } from '../civil';
 import { date, dateParts } from '../date-time';
@@ -124,13 +123,6 @@ describe('granularity values and views', () => {
     expect(granularIsoOf('2026-3', 'year')).toBe('2026-3');
     expect(granularIsoOf('26', 'year')).toBe('26');
     expect(granularIsoOf('2026-03-02-04', 'date')).toBe('2026-03-02-04');
-  });
-
-  it('canonicalizes parts to the picker granularity', () => {
-    const parts = { year: 2026, month: 3, day: 2 };
-    expect(partsToGranularIso(parts, 'date')).toBe('2026-03-02');
-    expect(partsToGranularIso(parts, 'month')).toBe('2026-03');
-    expect(partsToGranularIso(parts, 'year')).toBe('2026');
   });
 
   it('derives the current cell at the picker granularity', () => {

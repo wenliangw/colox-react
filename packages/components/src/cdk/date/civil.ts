@@ -29,13 +29,24 @@ export const isValidDate = ({ year, month, day }: DateParts): boolean => {
 };
 
 /**
- * The canonical day value word (`YYYY-MM-DD`, fixed 10-char width) —
+ * Renders day-accurate parts down to the granularity's canonical
+ * value word (`YYYY`, `YYYY-MM` or the fixed 10-char `YYYY-MM-DD`) —
  * module-private: the public way from coordinates to a value string
- * is `date(parts).iso('yyyy-MM-dd')` on the toolbelt entry.
+ * is `date(parts).iso('yyyy'/'yyyy-MM'/'yyyy-MM-dd')` on the
+ * toolbelt entry, the pattern being the granularity.
  */
-const valueWord = ({ year, month, day }: DateParts): string => {
+const valueWord = (
+  { year, month, day }: DateParts,
+  granularity: DateGranularity = 'date',
+): string => {
   const yyyy = String(year).padStart(4, '0');
+  if (granularity === 'year') {
+    return yyyy;
+  }
   const mm = String(month).padStart(2, '0');
+  if (granularity === 'month') {
+    return `${yyyy}-${mm}`;
+  }
   const dd = String(day).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
 };
@@ -124,25 +135,13 @@ const parseValueWord = (iso: string): DateParts | null => {
   return isValidDate(parts) ? parts : null;
 };
 
-/** Renders day-accurate parts down to the field's canonical granularity. */
-export const partsToGranularIso = (parts: DateParts, granularity: DateGranularity): string => {
-  if (granularity === 'year') {
-    return String(parts.year).padStart(4, '0');
-  }
-  const year = String(parts.year).padStart(4, '0');
-  if (granularity === 'month') {
-    return `${year}-${String(parts.month).padStart(2, '0')}`;
-  }
-  return valueWord(parts);
-};
-
 /** The decade window a year belongs to (2026 → 2020). */
 export const decadeOf = (year: number): number => Math.floor(year / 10) * 10;
 
 /** The current cell's granularity iso, e.g. today for a year picker is `YYYY`. */
 export const granularIsoOf = (iso: string, granularity: DateGranularity): string => {
   const parts = parseValueWord(iso);
-  return parts === null ? iso : partsToGranularIso(parts, granularity);
+  return parts === null ? iso : valueWord(parts, granularity);
 };
 
 /** The 12 month cells of a year (month view), canonical `YYYY-MM`. */

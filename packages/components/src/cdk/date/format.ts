@@ -5,8 +5,8 @@ import type {
   DateParts,
   ParsePrecision,
 } from './types';
-import { isValidDate, partsToGranularIso, weekdayOf } from './civil';
-import { dateParts } from './date-time';
+import { isValidDate, weekdayOf } from './civil';
+import { date, dateParts } from './date-time';
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAY_FULL = [
@@ -205,6 +205,13 @@ const GRANULARITY_PRECISION: Record<DateGranularity, ParsePrecision> = {
   date: 2,
 };
 
+/** The value-word pattern each granularity renders — the canonical ladder. */
+const GRANULARITY_PATTERN: Record<DateGranularity, string> = {
+  year: 'yyyy',
+  month: 'yyyy-MM',
+  date: 'yyyy-MM-dd',
+};
+
 /**
  * Parses typed text to a canonical value at the field granularity
  * (or null): the configured `valueFormat` pattern first, then the
@@ -223,11 +230,11 @@ export const parseDateText = (
   const required = GRANULARITY_PRECISION[granularity];
   const fromPattern = parseByPattern(trimmed, pattern);
   if (fromPattern !== null && fromPattern.precision >= required) {
-    return partsToGranularIso(fromPattern.parts, granularity);
+    return date(fromPattern.parts).iso(GRANULARITY_PATTERN[granularity]);
   }
   const fromGrammar = parseByGrammar(trimmed);
   if (fromGrammar !== null && fromGrammar.precision >= required) {
-    return partsToGranularIso(fromGrammar.parts, granularity);
+    return date(fromGrammar.parts).iso(GRANULARITY_PATTERN[granularity]);
   }
   return null;
 };
