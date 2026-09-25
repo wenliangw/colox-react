@@ -34,8 +34,7 @@ date-picker/
 `@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= `date`/`format`/`dateParts` 函数 + 不可变
 `ColoxDate` 值对象：入参 string|Date|`…Z` 即时串|parts 对象格式双收、`addDays`/`addMonths`/`addYears`
 链式、`format(pattern)` 组合词表（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s`——`M` 月 vs `m` 分按大小写载义、长度
-即补零）、`iso()` 即时词（`new Date().toISOString()` 形态：完整时间 + T + Z，UTC 真值、工厂可
-回读往返）、`iso(pattern)`/`format` 均渲染民用坐标（坐标拼值词走 `date(parts).iso('yyyy-MM-dd')`，
+即补零）、`iso()` 只无参即时词（`new Date().toISOString()` 形态：完整时间 + T + Z，UTC 真值、工厂可回读往返）、pattern 渲染（值词/显示词）一律走 `format`（坐标拼值词走 `date(parts).format('yyyy-MM-dd')`，
 内部拼串 `valueWord` 模块私有）、`.parts()`/`dateParts()` 吐六字段对象格式、`toDate()` 本地壁钟桥；
 网格 builder 不在公开面。原 date-core.test（15）/format-date.test（17）随文件搬入 `cdk/date/_tests/` 改名
 civil/format，另加 date-time 38（旧公开面遗留 addDaysIso 族已随形态更换清扫）。
@@ -50,7 +49,7 @@ civil/format，另加 date-time 38（旧公开面遗留 addDaysIso 族已随形�
 
 - **pattern 编译**：`y/m/d/e`（大小写不敏感）为 token，同字母连续段记一条长度；其余字符为 literal。`yyyy`=4 位、`yy`=2 位（parse 映射 2000-2099）、`M/d`=不补零、`MM/dd`=补零、`EEE`=短星期名、`EEEE`=全名（英文规范词，Java/antd 标准表）。weekday parse 位匹配 `[A-Za-z]+` 并丢弃（display-only）。
 - **显示渲染并入公开 `format`（formatIso 死亡）**：值词→显示词走 toolbelt 的 `format(value, pattern) ?? ''`（`format` 显示出口不抛——null 源/认不出/坏 Date 均渲染 null，音量是调用方政策）；word 表 `y/M/d/E/H/h/m/s` 大小写载义、`M` 月 vs `m` 分、`H` 24 制 vs `h` 12 制；引擎侧 `renderToken`/WEEKDAY 词表随之删除，`compilePattern` 的 token 流留下（`parseDateText`/`isDraftAllowed` 还在吃）。
-- **parseDateText（精度化）**：先 pattern 解析（year 必需、月/日 token 缺位补 1；精度 = 出现的粒度档）→ 再规范语法阶梯（严格 `^\d{4}-\d{2}-\d{2}$` + 宽松 `^\d{4}[/-]\d{1,2}[/-]\d{1,2}$` + 年月 `^\d{4}[/-]\d{1,2}$` + 裸年 `^\d{4}$`）→ `isValidDate` 验证 → 精度 ≥ picker 粒度才产出 canonical（更细截断到 picker、更粗 null 回滚），截断规范化走 `date(parts).iso(GRANULARITY_PATTERN[g])`。非法返回 null（编辑器回滚语义）。
+- **parseDateText（精度化）**：先 pattern 解析（year 必需、月/日 token 缺位补 1；精度 = 出现的粒度档）→ 再规范语法阶梯（严格 `^\d{4}-\d{2}-\d{2}$` + 宽松 `^\d{4}[/-]\d{1,2}[/-]\d{1,2}$` + 年月 `^\d{4}[/-]\d{1,2}$` + 裸年 `^\d{4}$`）→ `isValidDate` 验证 → 精度 ≥ picker 粒度才产出 canonical（更细截断到 picker、更粗 null 回滚），截断规范化走 `date(parts).format(GRANULARITY_PATTERN[g])`。非法返回 null（编辑器回滚语义）。
 - **草稿门禁 isDraftAllowed 是宽松过滤**：数字/字母/空格/规范分隔符 `/ - .`/pattern literal 字符全放行——门禁只挡明显废字符，严格校验在 commit/blur 的 parse。IME 合成中透传仅显示。
 
 ### 面板 chrome 本地化（locale）
