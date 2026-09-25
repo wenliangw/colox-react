@@ -96,8 +96,14 @@ describe('Form rules', () => {
     );
     fireEvent.change(screen.getByLabelText('confirm'), { target: { value: 'a' } });
     fireEvent.blur(screen.getByLabelText('confirm'));
-    // password is still empty at this point, so the pair matches
-    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+    // confirm 'a' against the still-empty password: the pair mismatches
+    // and the blur run shows the error.
+    await waitFor(() => expect(screen.getByText('两次输入不一致')).toBeInTheDocument());
+    // password becomes 'a': the deps signal re-runs confirm and the
+    // matching pair clears the error, without touching confirm.
+    fireEvent.change(screen.getByLabelText('password'), { target: { value: 'a' } });
+    await waitFor(() => expect(screen.queryByText('两次输入不一致')).toBeNull());
+    // password drifts to 'b': the deps signal fails confirm again.
     fireEvent.change(screen.getByLabelText('password'), { target: { value: 'b' } });
     await waitFor(() => expect(screen.getByText('两次输入不一致')).toBeInTheDocument());
   });
