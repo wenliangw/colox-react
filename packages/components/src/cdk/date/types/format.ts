@@ -8,5 +8,8 @@ export type ParsePrecision = 0 | 1 | 2;
 
 /** One compiled piece of a `valueFormat` pattern. */
 export type DateFormatPart =
-  | { type: 'year' | 'month' | 'day' | 'weekday'; length: number }
+  | {
+      type: 'year' | 'month' | 'day' | 'weekday' | 'hour24' | 'hour12' | 'minute' | 'second';
+      length: number;
+    }
   | { type: 'literal'; text: string };

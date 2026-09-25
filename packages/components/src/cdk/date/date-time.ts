@@ -1,5 +1,5 @@
-import { WEEKDAY_FULL, WEEKDAY_SHORT } from './constants/calendar';
-import { civilFromDays, daysFromCivil, daysInMonth, addMonths, weekdayOf } from './calendar';
+import { civilFromDays, daysFromCivil, daysInMonth, addMonths } from './calendar';
+import { renderPattern } from './format';
 import { parseSource } from './parse';
 import type { ColoxDate, DateParts, DateSource, DateTimeParts } from './types';
 
@@ -17,108 +17,12 @@ import type { ColoxDate, DateParts, DateSource, DateTimeParts } from './types';
  *   normalize to their implicit day 1 — no hidden granularity.
  */
 
-const pad = (value: number, length: number): string =>
-  length <= 1 ? String(value) : String(value).padStart(length, '0');
-
-// ——— input normalization ————————————————————————————————————————————
-// The grammar lives in parse.ts; only the value-object intercept
-// stays here — the factory hands instances through untouched.
-
 const parseValue = (source: DateSource): DateTimeParts => {
   if (source instanceof DateValue) {
     return source.coords;
   }
   return parseSource(source as string | Date | DateParts | DateTimeParts);
 };
-
-// ——— pattern compilation —————————————————————————————————————————————
-
-/**
- * The combined date/time token vocabulary. Case carries the word for
- * `M`/`m` (month vs minute) and `H`/`h` (24-hour vs 12-hour); every
- * other token letter is case-insensitive. Token length drives the
- * zero-padding (`M` bare, `MM` padded) — the same grammar rules the
- * `format`, `iso` and the date editor's own compiler live by.
- */
-type TokenType = 'year' | 'month' | 'day' | 'weekday' | 'hour24' | 'hour12' | 'minute' | 'second';
-
-type PatternPart = { type: TokenType; length: number } | { type: 'literal'; text: string };
-
-const tokenLetter = (char: string): TokenType | null => {
-  if (char === 'M') {
-    return 'month';
-  }
-  if (char === 'm') {
-    return 'minute';
-  }
-  if (char === 'H') {
-    return 'hour24';
-  }
-  if (char === 'h') {
-    return 'hour12';
-  }
-  const map: Record<string, TokenType> = { y: 'year', d: 'day', e: 'weekday', s: 'second' };
-  return map[char.toLowerCase()] ?? null;
-};
-
-/** Compiles the combined pattern: same-letter runs make one token, the rest are literals. */
-const compilePattern = (pattern: string): PatternPart[] => {
-  const parts: PatternPart[] = [];
-  let index = 0;
-  while (index < pattern.length) {
-    const type = tokenLetter(pattern[index]);
-    if (type !== null) {
-      // Runs keep the case-themselves: `HH` and `hh` are distinct tokens.
-      let end = index;
-      while (end < pattern.length && pattern[end] === pattern[index]) {
-        end += 1;
-      }
-      parts.push({ type, length: end - index });
-      index = end;
-    } else {
-      let end = index;
-      while (end < pattern.length && tokenLetter(pattern[end]) === null) {
-        end += 1;
-      }
-      parts.push({ type: 'literal', text: pattern.slice(index, end) });
-      index = end;
-    }
-  }
-  return parts;
-};
-
-const renderPart = (part: PatternPart, parts: DateTimeParts): string => {
-  if (part.type === 'literal') {
-    return part.text;
-  }
-  switch (part.type) {
-    case 'year': {
-      const text = String(parts.year);
-      return part.length <= 2 ? text.slice(-2).padStart(part.length, '0') : text.padStart(4, '0');
-    }
-    case 'month':
-      return pad(parts.month, part.length);
-    case 'day':
-      return pad(parts.day, part.length);
-    case 'weekday': {
-      const names = part.length >= 4 ? WEEKDAY_FULL : WEEKDAY_SHORT;
-      return names[weekdayOf(parts)];
-    }
-    case 'hour24':
-      return pad(parts.hour, part.length);
-    case 'hour12':
-      return pad(parts.hour % 12 || 12, part.length);
-    case 'minute':
-      return pad(parts.minute, part.length);
-    case 'second':
-      return pad(parts.second, part.length);
-  }
-};
-
-const renderPattern = (parts: DateTimeParts, pattern: string): string =>
-  compilePattern(pattern)
-    .map((part) => renderPart(part, parts))
-    .join('');
 
 // ——— the value object —————————————————————————————————————————————————
 

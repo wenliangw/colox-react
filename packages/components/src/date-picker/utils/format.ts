@@ -62,9 +62,10 @@ const parseByPattern = (text: string, pattern: string): ParsedMatch | null => {
       year = part.length <= 2 ? 2000 + value : value;
     } else if (part.type === 'month') {
       month = value;
-    } else {
+    } else if (part.type === 'day') {
       day = value;
     }
+    // time tokens capture-and-discard — the picker edits calendar words only
   }
   if (year === undefined) {
     return null;
