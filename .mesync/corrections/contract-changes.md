@@ -10,6 +10,6 @@
 - [ ] **barrel 导出**：新载荷类型进组件 barrel（根 `src/index.ts` 走 `export *`，只需组件 barrel 一行）。
 - [ ] **三处文档同步**：docs mdx 的 props 表 + 「accepts all native attributes」句（自持后该句必须显式排除该 prop）、preview stories 用法、wiki 模块文档。
 - [ ] **测试断言换形**：断言载荷字段（`payload.value`）而非原生（`event.target.value`）；`vi.fn<T>()` 的泛型是「函数签名」不是「载荷类型」（`vi.fn<(p: XPayload) => void>()`）。
-- [ ] **公开面换形态 = 旧形态的辅助符号同步清扫**：flat 函数面 → 值对象面（cdk/date）这类公开形态重设计后，为旧形态而生的导出与内部 helper 必须**删除到底**——不只是改 index/barrel：`addDaysIso`/`addMonthsIso`、`local.ts`、`time.ts` 这类「为旧公开面服务、新形态已取代」的符号/模块，grep 零消费者就要删除（含测试与 types.ts 里的配套类型）。检查法：对每个被替换的旧符号 grep 消费侧，全零即删；旧的 Iso 后缀名要留在「组件引擎」里必须先证明该引擎真在吃它（`todayIso`/`parseGranularIso` 是 date-picker 在吃的，其余不是）。
+- [ ] **公开面换形态 = 旧形态的辅助符号同步清扫**：flat 函数面 → 值对象面（cdk/date）这类公开形态重设计后，为旧形态而生的导出与内部 helper 必须**删除到底**——不只是改 index/barrel：`addDaysIso`/`addMonthsIso`、`local.ts`、`time.ts` 这类「为旧公开面服务、新形态已取代」的符号/模块，grep 零消费者就要删除（含测试与 types.ts 里的配套类型）。检查法：对每个被替换的旧符号 grep 消费侧，全零即删；旧的 Iso 后缀名要留在「组件引擎」里必须先证明该引擎真在吃它（`today` 仍被 date-picker 吃；`parseGranularIso` 已并入 `dateParts(source, null)` 兜底参数、公开导出删除——值→坐标只有一个公开入口，严格读入降为 civil 模块私有 `parseValueWord` 只喂 `granularIsoOf`）。
 - **为什么**：本轮表单叶子载荷统一（`{ event, value }` 全家族）一次触及 5 个叶子 + 1 个注入方 + 5 个 barrel + 3 处文档；漏一处 tsc 或测试就红，而其中的注入链（AutoComplete←Input）在测试里才现形。
 - **为什么**：本轮公开面改值对象后，先只改了 barrel 别名，内部十函数原样留存；被用户指出「addDaysIso 等方法没有清理」——公开面换词形时，旧词形的中间态全部成了死代码，必须一并清除（含测试计数、wiki 模块文件清单随之更新）。

@@ -42,7 +42,7 @@ civil/format，另加 date-time 32（旧公开面遗留 addDaysIso 族已随形�
 
 ### 日期数学零时区（cdk/date/civil，原 date-core）
 
-不碰 `Date.parse`/`new Date(iso)`——`YYYY-MM-DD` 被 Date 按 UTC 午夜解析，跨时区 weekday 会漂移。日历数学走 **Howard Hinnant 纯算法**：`daysFromCivil`/`civilFromDays` 以 1970-01-01 为锚互转天数与公历坐标；weekday = `(days + 3) % 7` 周一开头（1970-01-01 是周四=3 校验过）。衍生物全部同源：`buildMonthGrid`（首周一对齐的 6×7 固定 42 格，前后邻月填充保面板形状）、`addMonths`（日 clamp 进目标月长）、`today`（系统本地日历，只做高亮与视图播种）；粒度工具：`parseGranularIso`（`YYYY`→`YYYY-MM`→`YYYY-MM-DD` 阶梯、缺位日/月补 1）、`partsToGranularIso`（按 picker 截断规范化）、`granularIsoOf`、`decadeOf`、`buildMonthViewCells`（12 月格）、`buildYearViewCells`（12 年十年窗）。
+不碰 `Date.parse`/`new Date(iso)`——`YYYY-MM-DD` 被 Date 按 UTC 午夜解析，跨时区 weekday 会漂移。日历数学走 **Howard Hinnant 纯算法**：`daysFromCivil`/`civilFromDays` 以 1970-01-01 为锚互转天数与公历坐标；weekday = `(days + 3) % 7` 周一开头（1970-01-01 是周四=3 校验过）。衍生物全部同源：`buildMonthGrid`（首周一对齐的 6×7 固定 42 格，前后邻月填充保面板形状）、`addMonths`（日 clamp 进目标月长）、`today`（系统本地日历，只做高亮与视图播种）；粒度工具：`dateParts(source, null)`（公开值词门，认不出给 null 各站自译退路）、`partsToGranularIso`（按 picker 截断规范化）、`granularIsoOf`（内部锚走模块私有严格读入 `parseValueWord`——防循环依赖的深度防御）、`decadeOf`、`buildMonthViewCells`（12 月格）、`buildYearViewCells`（12 年十年窗）。
 
 ### 格式化/解析（cdk/date/format，原 format-date）
 
