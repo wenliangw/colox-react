@@ -26,9 +26,11 @@ date-picker/
 └── variants/{size,palette,index}.ts       # size 四档 + palette 六族双轴
 ```
 
-日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`）：
-`civil.ts`（原 date-core）/`format.ts`（原 format-date）+ 新增 `date-time.ts`（ColoxDate 值对象 +
-组合词表编译器）+ `types.ts`（共享型单一出处，组件 types/utils.ts 再导出）。公开面
+日期/时间纯函数自 TimePicker 批 1 起整体抬入 **cdk/date**（`src/cdk/date/`，结构随批 3 标准化）：
+`civil.ts`（原 date-core：日历数学）/`format.ts`（原 format-date：模式编译/解析）+ `date-time.ts`
+（ColoxDate 值对象 + 组合词表渲染）+ `types/`（共享型分域——`calendar` 日历/`format` 格式/`value`
+值对象 + index 桶，组件 types/utils.ts 再导出）+ `constants/`（`calendar` 月长/网格 42 格/周名双表、
+`patterns` 全部九个日期正则、`format` 默认格式/词表/档位映像三张表）。公开面
 `@colox/react/cdk/date`（exports 子路径 + 独立构建入口）= `date`/`format`/`dateParts` 函数 + 不可变
 `ColoxDate` 值对象：入参 string|Date|`…Z` 即时串|parts 对象格式双收、`addDays`/`addMonths`/`addYears`
 链式、`format(pattern)` 组合词表（`y`/`M`/`d`/`E`/`H`/`h`/`m`/`s`——`M` 月 vs `m` 分按大小写载义、长度
