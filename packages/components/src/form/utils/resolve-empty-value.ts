@@ -9,12 +9,13 @@ import { Select } from '../../select';
 import { Slider } from '../../slider';
 import { Switch } from '../../switch';
 import { Textarea } from '../../textarea';
+import { TimePicker } from '../../time-picker';
 
 /**
  * The family's empty word for a control: the value a field holds before
  * anyone has touched it. Every leaf has one and they differ by domain
- * (`''` for text, `null` for number/date, `[]` for a selection, `false`
- * for a boolean, the minimum for a range), so the field picks the word
+ * (`''` for text, `null` for number/date/time, `[]` for a selection,
+ * `false` for a boolean, the minimum for a range), so the field picks the word
  * by component identity — the same family knowledge the boolean
  * judgement uses. An unknown component falls back to the text word,
  * which is the family default.
@@ -28,7 +29,7 @@ export function resolveEmptyValue(element: ReactElement): unknown {
   if (type === Checkbox.Group) {
     return [];
   }
-  if (type === InputNumber || type === DatePicker) {
+  if (type === InputNumber || type === DatePicker || type === TimePicker) {
     return null;
   }
   if (type === Slider) {

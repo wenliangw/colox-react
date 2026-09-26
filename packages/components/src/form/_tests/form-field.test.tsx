@@ -6,6 +6,7 @@ import { Input } from '../../input';
 import { Radio } from '../../radio';
 import { Select } from '../../select';
 import { Switch } from '../../switch';
+import { TimePicker } from '../../time-picker';
 import type { InputChangePayload } from '../../input';
 
 describe('Form.Field wiring', () => {
@@ -101,6 +102,34 @@ describe('Form.Field wiring', () => {
     fireEvent.submit(control.closest('form') as HTMLFormElement);
     await waitFor(() => expect(onSubmit).toHaveBeenCalledOnce());
     expect(onSubmit.mock.calls[0]?.[0].values).toEqual({ fruit: 'banana' });
+  });
+
+  it('seeds TimePicker with the null word and collects its canonical payload', async () => {
+    const onSubmit = vi.fn();
+    render(
+      <Form onSubmit={onSubmit}>
+        <Form.Field name="pickup">
+          <Form.Label>Pickup time</Form.Label>
+          <TimePicker />
+        </Form.Field>
+      </Form>,
+    );
+    const control = screen.getByLabelText('Pickup time');
+    expect(control).toHaveAttribute('name', 'pickup');
+
+    // The untouched empty word is null — the time domain's word, like
+    // InputNumber and DatePicker.
+    fireEvent.submit(control.closest('form') as HTMLFormElement);
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledOnce());
+    expect(onSubmit.mock.calls[0]?.[0].values).toEqual({ pickup: null });
+
+    // A typed complete word commits through the family payload: the
+    // canonical spelling lands in the store and in the submit word.
+    fireEvent.change(control, { target: { value: '15:30:45' } });
+    expect(control).toHaveValue('15:30:45');
+    fireEvent.submit(control.closest('form') as HTMLFormElement);
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[0].values).toEqual({ pickup: '15:30:45' });
   });
 
   it('marks the control invalid and swaps the described line', async () => {
