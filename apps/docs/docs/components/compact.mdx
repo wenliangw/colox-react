@@ -1,0 +1,110 @@
+---
+sidebar_position: 15
+---
+
+import { Button, Compact, Input, Select } from '@colox/react';
+import '@colox/react/style.css';
+
+# Compact
+
+`Compact` is the visual joining base: it seams sibling members into one unit —
+shared borders, radii only at the group's two ends, and a focus ring that
+breathes across junctions. It is deliberately **wordless**: no gap, no
+alignment, no direction — spacing and layout stay with [`Stack`](./stack),
+the seam stays here.
+
+Every member keeps its own value, state and `{ event, value }` payload.
+`Compact` never speaks for them.
+
+## Segments
+
+Several inputs joined as one unit — each still holds its own value, so in a
+form each segment rides its own `Form.Field`:
+
+<Compact style={{ width: 260 }}>
+  <Input aria-label="segment 1" />
+  <Input aria-label="segment 2" />
+  <Input aria-label="segment 3" />
+  <Input aria-label="segment 4" />
+</Compact>
+
+```mdx
+<Compact style={{ width: 260 }}>
+  <Input />
+  <Input />
+  <Input />
+  <Input />
+</Compact>
+```
+
+## Action member
+
+A button that joins visually but keeps its own click — the search / captcha
+recipe:
+
+<Compact>
+  <Input placeholder="Search…" style={{ width: 220 }} />
+  <Button>Search</Button>
+</Compact>
+
+```mdx
+<Compact>
+  <Input placeholder="Search…" style={{ width: 220 }} />
+  <Button>Search</Button>
+</Compact>
+```
+
+## Addons
+
+Non-control members (¥ prefix, unit suffix) ride the
+`colox-compact__addon` class: a segment look that produces no value.
+
+<Compact>
+  <span className="colox-compact__addon">¥</span>
+  <Input placeholder="0.00" style={{ width: 140 }} />
+  <span className="colox-compact__addon">/件</span>
+</Compact>
+
+```mdx
+<Compact>
+  <span className="colox-compact__addon">¥</span>
+  <Input placeholder="0.00" style={{ width: 140 }} />
+  <span className="colox-compact__addon">/件</span>
+</Compact>
+```
+
+## Mixed controls
+
+A `Select` prefix still owns its value — the seam is purely visual:
+
+<Compact>
+  <Select style={{ width: 96 }} aria-label="区号">
+    <Select.Option value="86" text="+86" />
+    <Select.Option value="1" text="+1" />
+  </Select>
+  <Input placeholder="号码" style={{ width: 200 }} />
+</Compact>
+
+```mdx
+<Compact>
+  <Select style={{ width: 96 }} aria-label="区号">
+    <Select.Option value="86" text="+86" />
+  </Select>
+  <Input placeholder="号码" style={{ width: 200 }} />
+</Compact>
+```
+
+## The seam rules
+
+- Members sit flush: a `-1px` pull collapses two 1px borders into one line
+  (the pull stays in lock-step with the members' border width).
+- Radii live only at the two ends (`--colox-radius-lg`, the members' own
+  radius token); a lone child keeps its shape untouched.
+- A member in a state — `:focus-within` or `aria-invalid="true"` — rises
+  above the junction, so its ring or red border paints the seam it sits at.
+- Logical properties throughout: the seam is RTL-safe.
+
+## Props
+
+`Compact` declares no words of its own — it accepts the standard
+`HTMLAttributes<HTMLDivElement>` (`className`, `style`, `id`, `ref`, …).

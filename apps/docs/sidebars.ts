@@ -24,9 +24,11 @@ const sidebars: SidebarsConfig = {
       label: 'Form',
       collapsed: false,
       items: [
+        { type: 'doc', id: 'components/form', label: 'Form' },
         { type: 'doc', id: 'components/input', label: 'Input' },
         { type: 'doc', id: 'components/input-number', label: 'InputNumber' },
         { type: 'doc', id: 'components/date-picker', label: 'DatePicker' },
+        { type: 'doc', id: 'components/time-picker', label: 'TimePicker' },
         { type: 'doc', id: 'components/textarea', label: 'Textarea' },
         { type: 'doc', id: 'components/select', label: 'Select' },
         { type: 'doc', id: 'components/checkbox', label: 'Checkbox' },
@@ -42,6 +44,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         { type: 'doc', id: 'components/anchor', label: 'Anchor' },
+        { type: 'doc', id: 'components/compact', label: 'Compact' },
         { type: 'doc', id: 'components/container', label: 'Container' },
         { type: 'doc', id: 'components/grid', label: 'Grid' },
         { type: 'doc', id: 'components/positioner', label: 'Positioner' },

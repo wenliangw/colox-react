@@ -427,7 +427,9 @@ layer's own, and native validation stays off).
 
 ## Notes and non-goals
 
-- `Form.FieldArray`, an `InputGroup` and a time picker are not shipped; the
-  milestone list in the [roadmap](../roadmap) tracks them.
+- `Form.FieldArray` is not shipped — its design re-opens in a dedicated
+  alignment round (see the [roadmap](../roadmap)). A time picker and
+  [`Compact`](./compact) (the visual joining base; it never aggregates
+  values, so a joined group keeps one `Form.Field` per member) are shipped.
 - Native form attributes still work: `<form>` submission is intercepted only to
   run the rules first, and controls keep their `name` for native `FormData`.

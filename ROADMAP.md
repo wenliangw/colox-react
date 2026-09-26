@@ -39,7 +39,7 @@ flexbox / grid / absolute trio. `Select` retro-fitted onto the shared
 
 ## What comes next
 
-### M3 — Form layer (in progress)
+### M3 — Form layer (complete)
 
 The validation and field layer the form controls deliberately left out:
 
@@ -67,16 +67,22 @@ The validation and field layer the form controls deliberately left out:
   row numbering is author-side, the export stays object-shaped
   (`rows.0.title` rebuilds to `{ rows: { 0: { title } } }` — no array
   synthesis so far), and unmounting an invalid field leaves an orphan error
-  in the map that blocks submit until `unregister`. The alignment round
-  settles the three candidates: numeric-segment array synthesis, a
-  `Form.Array` / `FieldArray` primitive, and the unmount-clears-error fix
-  (remaining).
-- `InputGroup` — the sibling component whose class namespace `colox-input-group*`
-  is already reserved (remaining).
+  in the map that blocks submit until `unregister`. **Deferred — the design
+  direction re-opens in a dedicated alignment round** (the block-level
+  machinery above stays; the `Form.Array` / `FieldArray` primitive shape,
+  numeric-segment array synthesis and the unmount-clears-error fix are
+  theirs to settle).
+- `Compact` — the visual joining base that replaced the reserved `InputGroup`
+  slot — **shipped**: the seam primitive that joins the adjacent members into
+  one unit (shared borders, radii only at the two ends, a state member paints
+  the seam). Wordless by design — no gap/alignment/direction — members keep
+  their own values and payloads; the same design makes the future
+  `ButtonGroup`/`IconGroup` visual layer.
 - `TimePicker` — the time sibling of `DatePicker` (same shell, panel and
-  IconButton recipe); the cdk `date` core (canonical-string clock math,
-  curated `@colox/react/cdk/date` toolbelt) is shipped, the component
-  itself is next (remaining).
+  IconButton recipe) — **shipped**: the cdk `date` core (canonical-string
+  clock math, curated `@colox/react/cdk/date` toolbelt) plus the component
+  itself, with the three cyclic rolling columns, the confirm commit and
+  the throttle-gated direct-write glide.
 
 ### M4 — Overlay family (planned)
 

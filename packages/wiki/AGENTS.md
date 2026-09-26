@@ -77,6 +77,21 @@ exactly, apply the reason, not the letter.
 - `[featured cell]` → `<Grid.Item span={n}>`. Why: span is the item-axis
   vocabulary; it rides a custom property so arbitrary counts stay class-free.
 
+## Compact — quick rules
+
+- `[join adjacent controls into one visual unit]` → `<Compact>`: the members
+  seam (shared borders, radii only at the two ends) while each keeps its own
+  value, state and payload — a focused/invalid member paints the seam it sits
+  at. Why: the seam is purely visual; Compact never speaks for its members.
+- `[non-control addon member]` → `colox-compact__addon` (¥ prefix, unit
+  suffix): a segment look that produces no value. Why: addons join the unit,
+  not the value stream.
+- `[spacing around joined members]` → not Compact: `Stack`/`Container`/`Grid`
+  compose the layout around it. Why: Compact owns the seam only — no gap,
+  alignment or direction words.
+- `[form values in a joined group]` → each input-ish member keeps its own
+  `Form.Field` and name. Why: the group never aggregates values.
+
 ## Form — quick rules
 
 - `[a validated form]` → `<Form>` owns values, rules and the submit lifecycle;
