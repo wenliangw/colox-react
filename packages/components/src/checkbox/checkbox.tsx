@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
 import { IconCheck } from '@colox/icons';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import type { CheckboxProps, CheckboxRef } from './types';
 import { CheckboxGroup } from './children/group';
 import { useCheckboxGroupContext } from './hooks/use-checkbox-group-context';
@@ -45,6 +46,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
   useIndeterminate({ inputRef, indeterminate });
 
   const group = useCheckboxGroupContext();
+  const compact = useCompactContext();
   const state = resolveCheckboxState({
     memberValue,
     checked,
@@ -53,7 +55,7 @@ const CheckboxRoot = forwardRef<CheckboxRef, CheckboxProps>((props, ref) => {
     invalid,
     readOnly,
     name,
-    size,
+    size: size ?? compact?.size,
     group,
   });
 

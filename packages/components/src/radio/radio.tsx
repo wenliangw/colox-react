@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import type { RadioProps, RadioRef } from './types';
 import { RadioGroup } from './children/group';
 import { useRadioGroupContext } from './hooks/use-radio-group-context';
@@ -42,6 +43,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
   const group = useRadioGroupContext();
+  const compact = useCompactContext();
   const state = resolveRadioState({
     memberValue,
     checked,
@@ -50,7 +52,7 @@ const RadioRoot = forwardRef<RadioRef, RadioProps>((props, ref) => {
     invalid,
     readOnly,
     name,
-    size,
+    size: size ?? compact?.size,
     group,
   });
 

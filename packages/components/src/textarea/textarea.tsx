@@ -11,6 +11,7 @@ import { resolveTextareaSlots } from './utils/resolve-textarea-slots';
 import { TextareaClearButton } from './controls/clear-button';
 import { TextareaResizeHandle } from './controls/resize-handle';
 import { textareaVariants } from './variants';
+import { useCompactContext } from '@colox/cdk/compact-context';
 
 import './styles/index.scss';
 
@@ -71,11 +72,12 @@ export const Textarea = forwardRef<TextareaRef, TextareaProps>((props, ref) => {
   const slots = resolveTextareaSlots({ clearable, disabled, readOnly });
 
   const hasFooter = showCount || slots.showClear || autosize.resizable;
+  const compact = useCompactContext();
 
   return (
     <div
       className={clsx(
-        textareaVariants({ size }),
+        textareaVariants({ size: size ?? compact?.size }),
         { 'colox-textarea--invalid': invalid, 'colox-textarea--disabled': disabled },
         className,
       )}

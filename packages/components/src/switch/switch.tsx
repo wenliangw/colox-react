@@ -3,6 +3,7 @@ import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
 import type { SwitchProps, SwitchRef } from './types';
 import { switchVariants } from './variants';
+import { useCompactContext } from '@colox/cdk/compact-context';
 
 import './styles/index.scss';
 
@@ -48,11 +49,15 @@ const SwitchRoot = forwardRef<SwitchRef, SwitchProps>((props, ref) => {
     }
     onChange?.({ event, value: event.target.checked });
   };
+  const compact = useCompactContext();
 
   return (
     <label
       className={clsx(
-        switchVariants({ size, palette }),
+        switchVariants({
+          size: size ?? compact?.size,
+          palette: palette ?? compact?.palette,
+        }),
         {
           'colox-switch--invalid': invalid,
           'colox-switch--readonly': readOnly,

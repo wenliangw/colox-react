@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { IconCalendar } from '@colox/icons';
 import { InputControl } from '@colox/cdk/input-control';
 import { Popup, useDismissible } from '@colox/cdk/floating';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import { DatePickerClearButton } from './controls/clear-button';
 import { DatePickerPanel } from './controls/panel';
 import { useDatePicker } from './hooks/use-date-picker';
@@ -91,7 +92,8 @@ const DatePickerRoot = forwardRef<DatePickerRef, DatePickerProps>((props, ref) =
 
   const openable = !disabled && !readOnly;
   const resolvedLocale = resolveDateLocale(locale);
-  const paletteClass = datePickerPaletteStyles[palette ?? 'primary'];
+  const compact = useCompactContext();
+  const paletteClass = datePickerPaletteStyles[palette ?? compact?.palette ?? 'primary'];
   const showClear = openable && clearable && editor.current !== null;
 
   // Shell clicks open the panel — except clicks on built-in buttons
@@ -126,7 +128,7 @@ const DatePickerRoot = forwardRef<DatePickerRef, DatePickerProps>((props, ref) =
     <div
       ref={shellRef}
       className={clsx(
-        datePickerVariants({ size, palette }),
+        datePickerVariants({ size: size ?? compact?.size, palette: palette ?? compact?.palette }),
         {
           'colox-date-picker--invalid': invalid,
           'colox-date-picker--disabled': disabled,

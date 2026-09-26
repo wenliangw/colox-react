@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react';
 import clsx from 'clsx';
 import { IconClock } from '@colox/icons';
 import { InputControl } from '@colox/cdk/input-control';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import { Popup, useDismissible } from '@colox/cdk/floating';
 import { TimePickerClearButton } from './controls/clear-button';
 import { TimePickerPanel } from './controls/panel';
@@ -76,7 +77,8 @@ const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) =
   });
 
   const openable = !disabled && !readOnly;
-  const paletteClass = timePickerPaletteStyles[palette ?? 'primary'];
+  const compact = useCompactContext();
+  const paletteClass = timePickerPaletteStyles[palette ?? compact?.palette ?? 'primary'];
   const showClear = openable && clearable && editor.current !== null;
 
   // Shell clicks open the panel — except clicks on built-in buttons
@@ -111,7 +113,7 @@ const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) =
     <div
       ref={shellRef}
       className={clsx(
-        timePickerVariants({ size, palette }),
+        timePickerVariants({ size: size ?? compact?.size, palette: palette ?? compact?.palette }),
         {
           'colox-time-picker--invalid': invalid,
           'colox-time-picker--disabled': disabled,

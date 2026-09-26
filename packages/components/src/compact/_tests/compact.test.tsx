@@ -60,4 +60,44 @@ describe('Compact', () => {
     expect(screen.getByLabelText('number')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send' })).toBeInTheDocument();
   });
+
+  it('inherits the unit size into members, clone-free, via context', () => {
+    render(
+      <Compact size="sm">
+        <Input aria-label="word" />
+        <Button>Go</Button>
+      </Compact>,
+    );
+    expect(screen.getByLabelText('word').closest('.colox-input')).toHaveClass('colox-input--sm');
+    expect(screen.getByRole('button')).toHaveClass('colox-button--sm');
+  });
+
+  it('lets a member’s own size win over the unit default', () => {
+    render(
+      <Compact size="sm">
+        <Input aria-label="word" size="lg" />
+        <Button size="xs">Go</Button>
+      </Compact>,
+    );
+    expect(screen.getByLabelText('word').closest('.colox-input')).toHaveClass('colox-input--lg');
+    expect(screen.getByRole('button')).toHaveClass('colox-button--xs');
+  });
+
+  it('inherits the unit palette into the members that carry one', () => {
+    render(
+      <Compact palette="error">
+        <Button>Go</Button>
+      </Compact>,
+    );
+    expect(screen.getByRole('button')).toHaveClass('colox-button--error');
+  });
+
+  it('keeps the divide modifier on the seam root', () => {
+    const { container } = render(
+      <Compact className="colox-compact--divide">
+        <Input aria-label="shared" />
+      </Compact>,
+    );
+    expect(container.firstElementChild).toHaveClass('colox-compact--divide');
+  });
 });

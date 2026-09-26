@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { IconChevronDown } from '@colox/icons';
 import { useDismissible } from '@colox/cdk/floating';
 import { filterComboboxOptions, useComboboxKeyboard } from '@colox/cdk/combobox';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import { SelectClearButton } from './children/clear-button';
 import { SelectControl } from './children/control';
 import { FormSelectValues } from './children/form-values';
@@ -57,7 +58,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     open,
     defaultOpen,
     name,
-    size = 'md',
+    size,
     invalid = false,
     disabled = false,
     readOnly = false,
@@ -78,6 +79,11 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     onOpenChange,
     ...rest
   } = props;
+
+  const compact = useCompactContext();
+  // The member's own word wins, the enclosing Compact's serves next,
+  // 'md' closes the chain (the previous hard default, now last).
+  const resolvedSize = size ?? compact?.size ?? 'md';
 
   const isMultiple = mode === 'multiple';
 
@@ -104,7 +110,10 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   // Resolve the members into option records; the member's own size wins,
   // the parent's tier follows. The tag template is captured from the
   // same walk — a single component child the tags unit clones per chip.
-  const options = useMemo(() => compileSelectOptions(children, size), [children, size]);
+  const options = useMemo(
+    () => compileSelectOptions(children, resolvedSize),
+    [children, resolvedSize],
+  );
   const tagTemplate = useMemo(() => findSelectTemplate(children), [children]);
   const visibleOptions = useMemo(
     () =>
@@ -323,7 +332,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
     <div
       ref={rootRef}
       className={clsx(
-        selectVariants({ size }),
+        selectVariants({ size: resolvedSize }),
         {
           'colox-select--open': state.isOpen,
           'colox-select--clearable': showClear,
@@ -345,7 +354,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
             options={options}
             disabled={disabled || readOnly}
             tagTemplate={tagTemplate}
-            fallbackSize={size}
+            fallbackSize={resolvedSize}
             onRemove={(tagValue, event) =>
               state.toggle(tagValue, event, findSelectOption(options, tagValue))
             }

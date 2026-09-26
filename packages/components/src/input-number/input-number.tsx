@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import clsx from 'clsx';
 import { InputControl } from '@colox/cdk/input-control';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import { Stepper } from './controls/stepper';
 import { useInputNumber } from './hooks/use-input-number';
 import type { InputNumberProps, InputNumberRef } from './types';
@@ -54,11 +55,12 @@ const InputNumberRoot = forwardRef<InputNumberRef, InputNumberProps>((props, ref
     onBlur,
     onKeyDown,
   });
+  const compact = useCompactContext();
 
   return (
     <div
       className={clsx(
-        inputNumberVariants({ size }),
+        inputNumberVariants({ size: size ?? compact?.size }),
         { 'colox-input-number--invalid': invalid, 'colox-input-number--disabled': disabled },
         className,
       )}

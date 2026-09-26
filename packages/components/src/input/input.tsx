@@ -7,6 +7,7 @@ import { resolveInputSlots } from './utils/resolve-input-slots';
 import { ClearButton } from './controls/clear-button';
 import { VisibilityToggle } from './controls/visibility-toggle';
 import { InputControl } from '@colox/cdk/input-control';
+import { useCompactContext } from '@colox/cdk/compact-context';
 import { inputVariants } from './variants';
 
 import './styles/index.scss';
@@ -47,6 +48,7 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     onCompositionEnd,
     ...rest
   } = props;
+  const compact = useCompactContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
@@ -73,7 +75,7 @@ export const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   return (
     <div
       className={clsx(
-        inputVariants({ size }),
+        inputVariants({ size: size ?? compact?.size }),
         { 'colox-input--invalid': invalid, 'colox-input--disabled': disabled },
         className,
       )}

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import type { SliderProps, SliderRef } from './types';
 import { resolveSliderMarks } from './utils/resolve-slider-marks';
 import { sliderVariants } from './variants';
+import { useCompactContext } from '@colox/cdk/compact-context';
 
 import './styles/index.scss';
 
@@ -61,11 +62,15 @@ const SliderRoot = forwardRef<SliderRef, SliderProps>((props, ref) => {
   const markItems = marks === undefined ? null : resolveSliderMarks({ marks, min, max });
   const span = max - min;
   const progress = span <= 0 ? 0 : ((current - min) / span) * 100;
+  const compact = useCompactContext();
 
   return (
     <div
       className={clsx(
-        sliderVariants({ size, palette }),
+        sliderVariants({
+          size: size ?? compact?.size,
+          palette: palette ?? compact?.palette,
+        }),
         {
           'colox-slider--invalid': invalid,
           'colox-slider--readonly': readOnly,
