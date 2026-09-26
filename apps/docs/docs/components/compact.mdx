@@ -106,22 +106,41 @@ A `Select` prefix still owns its value — the seam is purely visual:
   squared, a member's own `rounded` form squares inside a group, and a
   lone child keeps its shape untouched. Shape-keeping members (Switch,
   Slider) are exempt — their design rounds them, the seam doesn't.
-- Focus belongs to the unit: whichever member holds the focus, one ring
-  traces the whole seam (`:focus-within` on the group, the end-corner
-  radius). Inside the group a member draws no second layer — its own
-  ring stays silent and the input family keeps its resting border token
-  (invalid members keep their red border). Button variants keep their
+- Focus belongs to the unit — for the input family: when the focus sits
+  inside one of those members (or its panel is open — the `--open` class
+  keeps the ring alive even though the panel's focus lives in a portal),
+  one brand ring traces the whole seam (`:focus-within:has(...)` on the
+  group, the end-corner radius). Inside the group a member draws no
+  second layer — the input family's own ring stays silent and its border
+  keeps the resting token (invalid members keep their red border).
+  Buttons and their kin keep their own focus affordance: the unit ring
+  does not pretend they are a text control. Button variants keep their
   own palette borders: the Compact layer never reaches into variant
   colours.
 - An invalid member invalidates the unit: the whole outline reddens
-  (input family + addons; buttons keep their palette), and any focus
-  inside the unit rings it red — Compact reads as one control, never as
-  loose members.
+  (input family + addons; buttons keep their palette), and any
+  engagement inside the unit (family focus, open panel) rings it red —
+  Compact reads as one control, never as loose members.
+- `size` and `palette` are inherited words: `<Compact size="sm">` serves
+  them to every member that carries the word, through context. The
+  member's own `size`/`palette` always wins; a Form-level `size` injected
+  into the control also beats the Compact default. No cloning is
+  involved — members stay the author's own elements. Members without a
+  palette word simply ignore it.
+- `colox-compact--divide` is the divider gesture: the members drop their
+  own borders, the unit draws one frame (`--colox-color-border-muted`),
+  and each boundary after the first carries a thin divider
+  (`--colox-color-border-subtle`). An invalid member reddens the frame
+  and the dividers together. Plain members + addons still seam with the
+  classic overlapping borders when the modifier is absent.
 - Elevation and press-scale belong to standalone buttons: a member's
   shadow or active scale stays quiet inside the seam.
 - Logical properties throughout: the seam is RTL-safe.
 
 ## Props
 
-`Compact` declares no words of its own — it accepts the standard
-`HTMLAttributes<HTMLDivElement>` (`className`, `style`, `id`, `ref`, …).
+`Compact` accepts the standard `HTMLAttributes<HTMLDivElement>`
+(`className`, `style`, `id`, `ref`, …) plus two inherited state words:
+`size` (`'xs' | 'sm' | 'md' | 'lg'`) and `palette`
+(`'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success'`) — both
+optional, both shared as context defaults.

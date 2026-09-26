@@ -84,6 +84,41 @@ export const Overview: Story = {
         </div>
       </Section>
 
+      <Section title="Sized unit — one word inherited by every member">
+        <div style={track}>
+          <Compact size="sm" palette="info">
+            <Select aria-label="sized select" style={{ width: 96 }}>
+              <Select.Option value="1" text="+1" />
+            </Select>
+            <Input aria-label="sized input" placeholder="small" style={{ width: 140 }} />
+            <Button>Go</Button>
+          </Compact>
+        </div>
+        <div
+          style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
+        >
+          <code>size</code> and <code>palette</code> ride the context: members take them as
+          defaults, and a member&apos;s own word always wins. No cloning — the members stay the
+          author&apos;s elements.
+        </div>
+      </Section>
+
+      <Section title="Divide — one frame, thin inner dividers">
+        <div style={track}>
+          <Compact className="colox-compact--divide" style={{ width: 360 }}>
+            <Input aria-label="divide segment 1" placeholder="seg 1" />
+            <Input aria-label="divide segment 2" placeholder="seg 2" />
+            <Input aria-label="divide segment 3" placeholder="seg 3" />
+          </Compact>
+        </div>
+        <div
+          style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
+        >
+          <code>colox-compact--divide</code>: members drop their own borders, the unit draws one
+          frame, and a subtle line partitions each boundary — glued boxes become one control.
+        </div>
+      </Section>
+
       <Section title="States — one invalid member, one invalid unit">
         <div style={track}>
           <Compact>
