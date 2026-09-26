@@ -99,7 +99,9 @@ A `Select` prefix still owns its value — the seam is purely visual:
 - Members sit flush: a `-1px` pull collapses two 1px borders into one line
   (the pull stays in lock-step with the members' border width).
 - Radii live only at the two ends (`--colox-radius-lg`, the members' own
-  radius token); a lone child keeps its shape untouched.
+  radius token). The seam owns the member shapes: inner corners are
+  squared, a member's own `rounded` form squares inside a group, and a
+  lone child keeps its shape untouched.
 - A member in a state — `:focus-within` or `aria-invalid="true"` — rises
   above the junction, so its ring or red border paints the seam it sits at.
 - Logical properties throughout: the seam is RTL-safe.

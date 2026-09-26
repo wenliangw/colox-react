@@ -2,10 +2,16 @@
 // border at each junction, round only at the group's two ends, and let a
 // focused/invalid member rise so its own border + ring paint the seam.
 //
-// The one literal that must stay in lock-step with the members' own
-// 1px border: the -1px pull (a member's border must land exactly on its
-// left neighbour's). Radii reuse the members' `--colox-radius-lg` token,
-// never a private value.
+// Two literals stay in lock-step with the members' own geometry: the -1px
+// pull (a member's border must land exactly on its left neighbour's 1px
+// border) and the corner squaring (members ship their own radius, so every
+// corner the seam touches is zeroed explicitly). Radii reuse the members'
+// `--colox-radius-lg` token, never a private value.
+//
+// The radius rules are written at 0,3,0 (a class plus two pseudo-classes)
+// on purpose: the members' own base radius is 0,1,0, and a tie there is
+// decided by stylesheet order — which let the members' rounded corners
+// through again (the first version's bug).
 
 .colox-compact {
   display: inline-flex;
@@ -15,7 +21,6 @@
   // previous one's border band, so two 1px borders collapse into one line.
   > * {
     position: relative;
-    border-radius: 0;
 
     & + * {
       margin-inline-start: -1px;
@@ -29,16 +34,27 @@
     }
   }
 
-  // The two ends keep their radii; the middle keeps radius 0. A lone
-  // child is no seam at all, so it keeps its own shape untouched.
+  // Middle members: every corner squared (the junction corners would
+  // otherwise keep the members' own radius).
+  > *:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  // The two ends keep their outer radii; their inner corners are squared
+  // so the seam is straight. A lone child matches none of these rules —
+  // it is no seam at all, so its own shape stays untouched.
   > :first-child:not(:last-child) {
     border-start-start-radius: var(--colox-radius-lg);
     border-end-start-radius: var(--colox-radius-lg);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
 
   > :last-child:not(:first-child) {
     border-start-end-radius: var(--colox-radius-lg);
     border-end-end-radius: var(--colox-radius-lg);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
   }
 }
 
