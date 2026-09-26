@@ -618,3 +618,34 @@ describe('Select refs', () => {
     expect(ref.current).toBeInstanceOf(HTMLInputElement);
   });
 });
+
+describe('Select shell pointer continuity', () => {
+  it('parks the focus through a chevron press — the empty window never paints', () => {
+    renderFruits();
+    const chevron = document.querySelector('.colox-select__chevron') as HTMLElement;
+    // fireEvent returns false when the handler cancels the mousedown: the
+    // shell cannot take focus, so without the cancel the browser would
+    // blur the active element and paint an empty focus window before the
+    // click moves focus to the control (a ring flicker inside a Compact).
+    expect(fireEvent.mouseDown(chevron)).toBe(false);
+    // The control and built-in buttons keep their native press behaviour.
+    expect(fireEvent.mouseDown(screen.getByRole('combobox'))).toBe(true);
+  });
+
+  it('closes an open panel with the chevron — the control keeps the focus', () => {
+    renderFruits();
+    const control = screen.getByRole('combobox');
+    fireEvent.click(control);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    // jsdom never runs the browser's focus-on-click default — park the
+    // focus manually to mirror the real page state before the gesture.
+    control.focus();
+    expect(document.activeElement).toBe(control);
+
+    const chevron = document.querySelector('.colox-select__chevron') as HTMLElement;
+    fireEvent.mouseDown(chevron);
+    fireEvent.click(chevron);
+    expect(screen.queryByRole('listbox')).toBeNull();
+    expect(document.activeElement).toBe(control);
+  });
+});

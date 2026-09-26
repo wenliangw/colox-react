@@ -270,15 +270,44 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
   };
 
   const handleShellClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (disabled || state.isOpen) {
+    if (disabled) {
       return;
     }
     const target = event.target;
-    if (!(target instanceof HTMLElement) || target.closest('button') !== null) {
+    // Buttons and the searchable input own their clicks — the input's
+    // caret placement keeps the panel open. Element (not HTMLElement):
+    // an author icon without pointer-events none can surface as the
+    // target, and SVGs are Elements.
+    if (!(target instanceof Element) || target.closest('button, input') !== null) {
+      return;
+    }
+    // The trailing chevron toggles: closed → focus the control (the focus
+    // handler owns the open); open → close explicitly (the mousedown guard
+    // keeps the focus parked, so the blur path never pre-closes). Clicks
+    // on the selection area (value display, tags) stay no-ops as before.
+    if (state.isOpen) {
+      if (target.closest('.colox-select__trailing') !== null) {
+        handleControlClose();
+      }
       return;
     }
     // Focus the control — the focus handler owns the open.
     controlRef.current?.focus();
+  };
+
+  const handleShellMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    if (disabled) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('button, input') !== null) {
+      return;
+    }
+    // The shell itself cannot take focus: an unprevented mousedown would
+    // blur the active element and paint an empty focus window before the
+    // click moves focus to the control — inside a Compact the unit ring
+    // would flicker off and back. Keep the focus parked for the click.
+    event.preventDefault();
   };
 
   const showClear =
@@ -306,6 +335,7 @@ const SelectRoot = forwardRef<SelectRef, SelectProps>((props, ref) => {
       )}
       style={style}
       onClick={handleShellClick}
+      onMouseDown={handleShellMouseDown}
       {...rest}
     >
       <div className="colox-select__inner">
