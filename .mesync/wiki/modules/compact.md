@@ -39,7 +39,7 @@
 
 ## 测试与验收
 
-8 例渲染单测(根/直系子件、className/rest、ref、混编、size 继承、自声优先、palette 继承、divide 类)+ **10 条规格门禁**(`_tests/compact-spec.test.tsx`,源级断言,icons spec lint 同先例):半径规则、形状件豁免、输入族组环+成员环静默划区、红环双形态、invalid+addon、divide 外框/分割线/卸边框/转红、输入族定宽均分/边框钉、按钮阴影/缩放静默——把七轮目视教训锁成机器检查。cdk 门禁全绿 + story/docs 构建通过;视觉终判仍靠真实浏览器(jsdom 看不见接缝,教训:第一轮交付「圆角只在两端」在 jsdom 通过、目视现形)。入口:ES/CJS/dts 子路径 `@colox/react/compact`,样式随 `style.css` 聚合。
+9 例渲染单测(根/直系子件、className/rest、ref、混编、size 继承、自声优先、palette 继承、单元 palette 类、divide 类)+ **11 条规格门禁**(`_tests/compact-spec.test.tsx`,源级断言,icons spec lint 同先例):半径规则、形状件豁免、输入族组环+成员环静默划区、红环双形态、palette 私有变量通道与六族映射、invalid+addon、divide 外框/短浮动条/卸边框/转红、输入族定宽均分/边框钉、按钮阴影/缩放静默——把七轮目视教训锁成机器检查。十修(环/框/线随单元 palette 词)后用户 Storybook 目检通过:「功能没有太大问题」。cdk 门禁全绿 + story/docs 构建通过;视觉终判仍靠真实浏览器(jsdom 看不见接缝,教训:第一轮交付「圆角只在两端」在 jsdom 通过、目视现形)。入口:ES/CJS/dts 子路径 `@colox/react/compact`,样式随 `style.css` 聚合。
 
 ## 关联决策
 
