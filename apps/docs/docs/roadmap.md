@@ -22,15 +22,15 @@ discipline and non-goals — lives in the repository:
 
 ## Next
 
-| Milestone                     | Contents                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| M3 Form layer (in progress)   | remaining: `FieldArray`, `InputGroup`, `TimePicker`                      |
-| M4 Overlay                    | `Tooltip`, `Popover`, `Modal`, `Drawer`, `Toast`                         |
-| M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`       |
-| M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps` |
-| M7 Data display               | `Table`, `VirtualList`, `Tree`                                           |
-| M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                          |
-| M9 Combobox consumers         | `Mentions`, `Cascader`, `TreeSelect`, `Transfer`                         |
+| Milestone                     | Contents                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| M3 Form layer (in progress)   | delivered: `Form` + fields + rules + TimePicker panel refresh — remaining: `FieldArray` (dynamic list form), `InputGroup` |
+| M4 Overlay                    | `Tooltip`, `Popover`, `Modal`, `Drawer`, `Toast`                                                                          |
+| M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`                                                        |
+| M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps`                                                  |
+| M7 Data display               | `Table`, `VirtualList`, `Tree`                                                                                            |
+| M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                                                                           |
+| M9 Combobox consumers         | `Mentions`, `Cascader`, `TreeSelect`, `Transfer`                                                                          |
 
 Components with no product scenario yet (Carousel, Tour, Upload, …) are listed as
 "on demand" in the repository roadmap and enter a milestone when a real need
