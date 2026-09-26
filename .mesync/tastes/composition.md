@@ -48,9 +48,9 @@ dot-part 只在两种情形成立（ColoxTheme 演进给出的判据，Input 消
 
 ## dot-part 语义化表达（AutoComplete 定稿确立）
 
-- **槽命名对区域语义负责**：组合式组件的非叶子 slot 用区域语义词命名——宿主锚定槽 = `Target`（与 cdk floating 的 target/reference 词一致）、集合声明区域 = `Suggestions`（复数=区域容器）、叶子 = 家族同名同义词（`Option`：value+text+disabled+children 契约直用 Select 词，不造新词）。
+- **槽命名对区域语义负责**：组合式组件的非叶子 slot 用区域语义词命名——宿主锚定槽两个词各司其职：**交互浮层家族 = `Trigger`**（交互触点词——槽的职分是受理 hover/focus 交互，不是提供参照；Tooltip 定稿、用户原词、Radix 同词、将来 Popover 沿用）、**combobox 家族 = `Target`**（定位参照词，与 cdk floating 的 target/reference 一致，AutoComplete 定稿；cdk 弹层件里 reference/trigger 两词本就并存）、集合声明区域 = `Suggestions`（复数=区域容器）、叶子 = 家族同名同义词（`Option`：value+text+disabled+children 契约直用 Select 词，不造新词）。
 - **两层点号上限**：dot-part 全部两层（`AutoComplete.Option`）；「区域容器 → 单一种类叶子」中间不夹命名层（`Suggestion.Option` 的三层 = 名字税，被用户采纳二层方案）。
-- **声明叶渲染 null 不进 DOM**：结构件（Target/Suggestions）与声明叶（Option）本体全部渲染 null，真实 DOM 由根渲染（锚点 div 包注入后宿主）+ portal 面板组成——DOM 无声明碎片，遍历判形靠显式类型不靠消去法。
+- **声明叶渲染 null 不进 DOM**：结构件（Target/Suggestions）与声明叶（Option）本体全部渲染 null，真实 DOM 由根渲染（锚点 div 包注入后宿主）+ portal 面板组成——DOM 无声明碎片，遍历判形靠显式类型不靠消去法。**Tooltip 双通道的部件分工同构但不对称**：Trigger 是声明叶（渲染 null、宿主由根抽走注入）、Content 是内容载具（自有 DOM、直接渲染 portal 面板）——同语义双源（`content` prop 与 `Content` part 同给）编译期硬错误，判别规则见 api-design 卷。
 - **宿主注入契约**（Select.Template 路线第二消费者）：宿主槽的子元素 = 恰好一个组件型元素，cloneElement 注入值词（value/onChange/aria-*）覆盖同名、静态词（size/placeholder/disabled/…）自持；DOM 宿主元素 = 编译期硬错误。
 - **欠账**：既有 dot-part（Select.Template/Option、ColoxTheme._、Stack._、Radio/Checkbox.Group）在 AutoComplete 交付后按此审视回顾（见 tastes/delivery.md 欠账条目）。
 

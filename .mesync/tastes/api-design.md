@@ -184,6 +184,17 @@
 
 来源：Select tag 定制定案（决策 c7778102，caused_by 59aa4801 选项叶子化改判）。
 
+## 双通道 API：props 直给普案 + 声明树定制（Tooltip 定案）
+
+- 同一组件两形态并存：普通文字走 `content` prop 直给（`<Tooltip content="删除">`），定制 DOM 走组合树（`Tooltip.Trigger` + `Tooltip.Content`）。用户裁决：一般 tooltip 仅展示普通文字直接 props，确有定制 DOM 场景才组合式——双形态共存而非二选一。
+- 判别 = 子树走查（任一 part 在场即组合模式）；组合模式各 part 恰一、props 模式 children 恰一个 trigger 元素（**组件型/DOM 均可**——tooltip 注入面只有 aria 归因，cloneElement 对 DOM 同样成立；AutoComplete 报 DOM 宿主硬错误的起因是值词契约注入对裸 DOM 无意义，此处不适用）；`content` prop 与组合模式同给 = **编译期硬错误**（同语义双通道不设优先级，Select 模板双通道被否教训的延续——不是禁止双形态，是禁止无裁决地并存）；content 空值 = 不弹（等价关闭语义，条件提示通道）。
+- part 分工：Trigger = 声明叶（渲染 null，宿主由根抽走并注入 `aria-describedby`——作者已有值**合并保留**不覆盖）；Content = 内容载具（自有 DOM，`className`/`style` 逃生舱落在内容盒）。
+- 宿主槽词 = `Trigger`（用户原词，交互触点语义；与 AutoComplete 的 `Target` 定位参照词按家族分界——combobox 走 Target、交互浮层走 Trigger，词界见 composition 卷）。
+- `variant = 'dark' | 'light'`（默认 dark，用户要求两种形式）；`showArrow` 布尔默认开（装饰箭头，随 variant 染色；名字与「显示」语义对齐，定名轮把 `arrow` 改为 `showArrow`）；`size = 'sm' | 'md' | 'lg'` 三档阶梯（提示层字体比正文错一位）。
+- **延时对象**：`delay = { in?: number, out?: number }`（用户词面；部分对象与缺省 merge：in 300 / out 0；focus 通道恒零延迟即时开、`in` 只管 hover 通道）。
+- **closeOnScroll 布尔**：默认 `false` = 滚动时跟随（autoUpdate 既有机制零成本）；`true` = window 捕获滚动即关面板。滚动关闭是显式开关不是默认行为。
+- **可见性词族 `visible`/`visibleOn`**（定名轮用户把 `open` 改 `visible`、`onOpenChange` 改 `onVisibleChange`）：`visibleOn = 'hover' | 'click' | 'manual'`（默认 hover——hover+focus 双通道、focus 零延迟即时开；click 即时 toggle；manual=受控 `visible` 直排、交互不自动开合、`onVisibleChange` 在 manual 下纯无声）；**无 `defaultVisible`**（hover/click 是纯展示通道无需首显词、manual 受控，default 无消费方）；无 onChange（提示层无值字面）。
+
 ## 布尔开关用真 input + checked 词形，不仿 button 路
 
 - Switch 兑现（2026，Checkbox 同构）：**真 `<input type="checkbox" role="switch">` 即控件**——ref/name/value/键盘/焦点全原生、表单零成本；否决 antd 的 button+role 路（牺牲原生表达去手写键盘/表单）。

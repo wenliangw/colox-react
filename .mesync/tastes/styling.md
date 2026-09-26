@@ -32,3 +32,10 @@
 - **「无滚动条」是滚轮型小窗的隐藏术，不是建模副产物**：TimePicker 列的滚动世界曾是「窗口不滚、条带自滑」（无滚动条是副产物）——经原生滚动改造（用户实测条带动画卡顿 + 三列选中行错位）后列变成**真滚动容器**，但滚动条是「平台 chrome 补充件」场合外的东西（48px 宽的滚轮槽贴一根 8px 滚动条 = 视觉噪音），于是走到**隐藏术**：`scrollbar-width: none` + `::-webkit-scrollbar { display: none }`——细则：可见滚动条走 Textarea 那条「双引擎配方 + token 上色」；**滚轮型小窗走隐藏术**。两条线区分「要不要 chrome」，再区分「chrome 长什么样」；`overscroll-behavior: contain` 防惯性外溢进页面。**滚轮型小窗的对齐感 = 点击归位 + 打开 seat，不用 scroll-snap 教训**：时选轮的强对齐案（`scroll-snap-type: y mandatory` + `scroll-padding-top` 吸附线）把自由滚动钳成格进格出，被用户对比 antd 后否决——半格停靠合法、编辑感来自点击后的平滑归位 glide；scroll-snap 只有在「停靠本身是产品语义」（轮播/卡片页）的世界才是正当场景，滚轮时间窗不是。
 
 来源：TimePicker 批 3 六条优化（用户直给：选中样式 subtle、底部确认按钮才提交、列滚轮滚动但不展示滚动条；DatePicker surface→subtle 目视修正同源）+ 原生滚动改造（滚动条隐藏术随真滚动容器一并落地）。
+
+## 提示层表面：明暗双面 + 进场动画 + 箭头向阴影（Tooltip 对齐定案）
+
+- **明暗双面**：dark（默认）= 深底浅字（inverse 面族 token）；light = `bg-default` 白底 + `border-muted` 描边 + 阴影——白底浮层在亮背景页必须描边才出生（浅底 chip「边缘定义」教义的浮层版）。
+- **进场 = fade + scale**（0.92→1 过渡，token 驱动、时长 fast）：动画与 placement 无关（Popup 已占 opacity+位移轨道，Tooltip 只补 scale 口感；分方向进场需要解析后 placement 的 JS 状态注入、先渲染后翻面会闪错向，不值）；遵守 motion 轴（reduced 直显）；**退场暂无**（Popup 无退出通道，与 Popover 一起补）。
+- **阴影方向跟箭头走**：定位解析出的真实 placement 写 `data-placement` 数据属性（`useFloatingPosition` 微扩展，additive、picker 族零变化），content 按 `[data-placement^="bottom"]` 等属性选择器把阴影向箭头所在侧偏移——箭头在哪边、阴影就向哪边落；值取 shadow token 不写死；arrow 贴边与阴影方向同一属性驱动（flip 之后方向自动正确）。
+- arrow = CSS 旋转方块贴边（装饰零 floating-ui arrow 中间件），随 variant 同染，light 变体的描边接缝用同色补齐。
