@@ -40,7 +40,11 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   // …unless the unit holds an invalid member — then any focus inside
   // (whichever member) rings the whole seam red. Browsers without :has()
   // degrade to the brand ring; the red outline below still marks it.
-  &:focus-within:has(> [aria-invalid='true']) {
+  //
+  // The invalid signal is keyed on the `--invalid` CLASS: the family puts
+  // aria-invalid on the inner control, not the shell root, so an
+  // attribute check on the direct child never fires (half-red frame bug).
+  &:focus-within:has(> [class*='--invalid']) {
     box-shadow: 0 0 0 2px var(--colox-color-red-muted);
   }
 
@@ -88,10 +92,12 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
     // The input family's focus border change would draw a second layer
     // right under the unit ring — the same brand line twice. Their
     // resting border is the single muted token the whole family shares,
-    // so the focused member keeps it (invalid members keep their red
-    // border, hence the [aria-invalid] exclusion). Button variants keep
-    // their own borders — Compact never reaches into variant palettes.
-    &:is(#{$compact-input-family}):focus-within:not([aria-invalid='true']) {
+    // so the focused member keeps it. Invalid members keep their red
+    // border — their root carries the `--invalid` class (aria-invalid
+    // lives on the inner control), so the exclusion keys on the class.
+    // Button variants keep their own borders — Compact never reaches
+    // into variant palettes.
+    &:is(#{$compact-input-family}):focus-within:not([class*='--invalid']) {
       border-color: var(--colox-color-border-muted);
     }
   }
@@ -104,7 +110,7 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   // hence the substring check) and buttons keep their variant borders.
   // Placed after the focus border pin: the two selectors tie at 0,4,0,
   // and the tint must win.
-  &:has(> [aria-invalid='true'])
+  &:has(> [class*='--invalid'])
     > *:is(#{$compact-input-family}, .colox-compact__addon):not([class*='--disabled']) {
     border-color: var(--colox-color-red-solid);
   }

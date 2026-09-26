@@ -44,7 +44,7 @@ describe('Compact seam contract', () => {
   });
 
   it('turns the unit ring red whenever focus sits inside an invalid unit', () => {
-    expect(seam).toContain("&:focus-within:has(> [aria-invalid='true'])");
+    expect(seam).toContain("&:focus-within:has(> [class*='--invalid'])");
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-red-muted)');
   });
 
@@ -60,15 +60,19 @@ describe('Compact seam contract', () => {
     ]) {
       expect(seam).toContain(shell);
     }
-    expect(seam).toContain(':focus-within:not([aria-invalid');
+    expect(seam).toContain(":focus-within:not([class*='--invalid'])");
     expect(seam).toContain('border-color: var(--colox-color-border-muted);');
   });
 
   it('invalidates the whole unit — outline reddens, no per-segment surgery', () => {
-    expect(seam).toContain("&:has(> [aria-invalid='true'])");
+    expect(seam).toContain("&:has(> [class*='--invalid'])");
     expect(seam).toContain('.colox-compact__addon');
     expect(seam).toContain('border-color: var(--colox-color-red-solid);');
     expect(seam).toContain("[class*='--disabled']");
+    // The family signals invalid via the `--invalid` class on the shell
+    // root — aria-invalid lives on the inner control: keying the direct
+    // child on the attribute never fires (the half-red-frame bug).
+    expect(seam).not.toContain('aria-invalid=');
     expect(seam).not.toContain('border-inline-color: transparent');
     expect(seam).not.toContain('z-index');
   });
