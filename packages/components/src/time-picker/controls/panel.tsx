@@ -1,5 +1,5 @@
+import { HOUR_COUNT, MINUTE_COUNT, SECOND_COUNT } from '../constants/time';
 import type { TimePickerPanelProps } from '../types';
-import { HOUR_COUNT, MINUTE_COUNT, SECOND_COUNT } from '../utils/format';
 import { TimePickerColumn } from './time-column';
 
 /** The time panel: the three cyclic columns riding the popup carrier plus the confirm footer (assembly only). */

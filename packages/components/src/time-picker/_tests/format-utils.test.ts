@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { COLUMN_FOCUS_SLOT, COLUMN_STEP, COLUMN_VISIBLE } from '../constants/column';
+import { TIME_DEFAULT_FORMAT } from '../constants/time';
 import {
-  COLUMN_FOCUS_SLOT,
-  COLUMN_STEP,
-  COLUMN_VISIBLE,
-  TIME_DEFAULT_FORMAT,
   canonicalBoundOf,
   formatTimeValue,
   isTimeDraftAllowed,

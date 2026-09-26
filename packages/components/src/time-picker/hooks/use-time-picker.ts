@@ -6,11 +6,9 @@ import type {
   KeyboardEventHandler,
 } from 'react';
 import type { TimeColumnUnit, TimeParts, UseTimePickerParams, UseTimePickerResult } from '../types';
+import { COLUMN_STEP } from '../constants/column';
+import { HOUR_COUNT, MINUTE_COUNT, SECOND_COUNT } from '../constants/time';
 import {
-  COLUMN_STEP,
-  HOUR_COUNT,
-  MINUTE_COUNT,
-  SECOND_COUNT,
   canonicalBoundOf,
   formatTimeValue,
   isTimeDraftAllowed,

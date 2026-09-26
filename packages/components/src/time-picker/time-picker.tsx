@@ -7,8 +7,8 @@ import { Popup, useDismissible } from '@colox/cdk/floating';
 import { TimePickerClearButton } from './controls/clear-button';
 import { TimePickerPanel } from './controls/panel';
 import { useTimePicker } from './hooks/use-time-picker';
+import { TIME_DEFAULT_FORMAT } from './constants/time';
 import type { TimePickerProps, TimePickerRef } from './types';
-import { TIME_DEFAULT_FORMAT } from './utils/format';
 import { timePickerPaletteStyles } from './variants/palette';
 import { timePickerVariants } from './variants';
 

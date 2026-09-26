@@ -2,44 +2,20 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { IconChevronDown, IconChevronUp } from '@colox/icons';
 import { throttle } from '@colox/cdk/utils/throttle';
-import type { TimePickerColumnProps } from '../types';
 import {
-  COLUMN_FOCUS_SLOT,
   COLUMN_OPTION_STRIDE,
   COLUMN_STEP,
-  COLUMN_VISIBLE,
-  mod,
-} from '../utils/format';
-
-/**
- * Rendered window: a flight margin around the focus slot's 3-up/4-down
- * window (10 lead + 12 trail = 22 options), positioned inside a
- * three-lap track by two spacer elements.
- */
-const RANGE_LEAD = COLUMN_STEP + COLUMN_FOCUS_SLOT;
-const RANGE_TRAIL = 1 + (COLUMN_VISIBLE - 1 - COLUMN_FOCUS_SLOT) + COLUMN_STEP;
-
-/** The track repeats the option cycle on three laps so the wheel can roll through 23 → 00 seamlessly. */
-const LAP_COUNT = 3;
-
-/** The focus slot's top offset inside the viewport (the re-align target). */
-const SLOT_OFFSET_PX = COLUMN_FOCUS_SLOT * COLUMN_OPTION_STRIDE;
-
-/** The wheel maps one option per 50 px (a ~100 px notch = two options). */
-const WHEEL_ITEM_PX = 50;
-/** A line-mode delta unit equals three options (browser scroll lines). */
-const WHEEL_LINE_ITEMS = 3;
-
-/**
- * A scroll counts as running until it quiets for this long; the
- * listbox wears `--scrolling` and the cells' pointer events stay off,
- * so cells streaming under the cursor cannot flash their hover wash
- * mid-roll — the wash may only appear once the wheel really rests.
- */
-const SCROLLING_QUIET_MS = 100;
-
-/** The re-align glide's duration — also the chevron step's throttle window. */
-const GLIDE_MS = 240;
+  GLIDE_MS,
+  LAP_COUNT,
+  RANGE_LEAD,
+  RANGE_TRAIL,
+  SCROLLING_QUIET_MS,
+  SLOT_OFFSET_PX,
+  WHEEL_ITEM_PX,
+  WHEEL_LINE_ITEMS,
+} from '../constants/column';
+import type { TimePickerColumnProps } from '../types';
+import { mod } from '../utils/format';
 
 /** Ease-out cubic: the glide's tempo (a snappier ride than the UA's slow easing). */
 const EASE_OUT_CUBIC = (progress: number): number => 1 - Math.pow(1 - progress, 3);

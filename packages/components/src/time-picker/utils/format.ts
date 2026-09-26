@@ -1,36 +1,7 @@
 import { dateFormat } from '@colox/cdk/date';
 import { compilePattern, patternToParseSource } from '@colox/cdk/date/format';
+import { TIME_DEFAULT_FORMAT } from '../constants/time';
 import type { TimeParts } from '../types';
-
-/** The default display pattern — the canonical word shape (`HH:mm:ss`). */
-export const TIME_DEFAULT_FORMAT = 'HH:mm:ss';
-
-/** The hour/minute/second cycle sizes (all three columns wrap). */
-export const HOUR_COUNT = 24;
-export const MINUTE_COUNT = 60;
-export const SECOND_COUNT = 60;
-
-/** The visible option count per column viewport (8 slots). */
-export const COLUMN_VISIBLE = 8;
-
-/**
- * The arrow-button scroll step: a full viewport minus one — the
- * adjacent window keeps exactly one option in common, so a 60-option
- * column needs 9 clicks to walk a lap (8/9ths overlap per step).
- */
-export const COLUMN_STEP = 7;
-
-/** The fixed slot (0-based) the pending option rests at (3 above, 4 below). */
-export const COLUMN_FOCUS_SLOT = 3;
-
-/**
- * Column geometry — the TS mirror of the SCSS literals (option height
- * 28px, gap 2px): the scroll maths ride the stride, so they must stay
- * in lock-step with `base.scss`.
- */
-export const COLUMN_OPTION_HEIGHT = 28;
-export const COLUMN_OPTION_GAP = 2;
-export const COLUMN_OPTION_STRIDE = COLUMN_OPTION_HEIGHT + COLUMN_OPTION_GAP;
 
 const TIME_LENIENT = /^(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/;
 
