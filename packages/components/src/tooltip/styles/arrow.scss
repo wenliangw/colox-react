@@ -15,8 +15,10 @@
 // the panel's translucent color-mix, and the backdrop blur reads the
 // same CSS variable the content box declares (--colox-tooltip-blur) —
 // the arrow is just the bubble's surface sticking out, both canvases
-// share one borderless geometry. A soft drop-shadow lifts the
-// triangle off the page on both canvases.
+// share one borderless geometry. No shadow of any kind: a shadow
+// painted under a translucent fill bleeds through it and tints the
+// light arrow gray — the frosted fill and the blur alone carry the
+// edge definition.
 .colox-tooltip__content--arrow {
   &::before {
     content: '';
@@ -27,9 +29,6 @@
     rotate: 45deg;
     -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
     backdrop-filter: blur(var(--colox-tooltip-blur));
-    filter: drop-shadow(
-      0 2px 4px color-mix(in srgb, var(--colox-palette-gray-900) 20%, transparent)
-    );
   }
 }
 

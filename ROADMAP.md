@@ -96,9 +96,11 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   is a compile error, an empty content renders nothing), hover/click/manual
   visibility (`delay` as `{ in, out }`, timers always cancel their
   opposite, focus instant), `closeOnScroll` as the explicit opt-out of
-  the default follow, dark/light surfaces with sm/md/lg tiers, and the
-  arrow plus the directional shadow pinned to the resolved placement
-  (`data-placement` from the cdk popup, post-flip). Upgrade side: the
+  the default follow, dark/light surfaces with sm/md/lg tiers — both
+  frosted (translucent fill + backdrop blur, borderless, shadowless) —
+  and the arrow pinned to the resolved placement (`data-placement`
+  from the cdk popup, post-flip) while staying aimed at the trigger
+  under boundary collision. Upgrade side: the
   cdk `useFloatingPosition`/`Popup` gained the optional
   `fallbackPlacements` chain — pickers unchanged.
 - `Popover`, `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.

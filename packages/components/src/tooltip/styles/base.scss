@@ -5,8 +5,10 @@
 // through it to the trigger. The fill is frosted: the surface color
 // rides color-mix at partial alpha and a backdrop blur turns it glassy
 // instead of a flat plate — a hint floats above a page that stays
-// readable through it. The base tier is `md` (the size axis shifts one
-// ladder step in either direction).
+// readable through it. No drop shadow: a shadow bleeds through the
+// translucent fill and grays the light arrow; the frosted fill and
+// the blur alone define the edges. The base tier is `md` (the size
+// axis shifts one ladder step in either direction).
 .colox-popup.colox-tooltip__panel {
   pointer-events: none;
 }
@@ -26,5 +28,4 @@
   color: var(--colox-color-text-inverse);
   -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
   backdrop-filter: blur(var(--colox-tooltip-blur));
-  box-shadow: var(--colox-shadow-md);
 }
