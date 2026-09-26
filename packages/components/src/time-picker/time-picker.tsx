@@ -16,16 +16,9 @@ import './styles/index.scss';
 
 /**
  * Single-line time editor: a bare text input in the Input family
- * shell (typing takes the canonical `HH:mm` grammar and the
- * configured `valueFormat`), a decorative clock glyph at the trailing
- * edge, and a self-drawn panel riding the cdk popup carrier. The
- * panel holds the two cyclic columns — hours and minutes, 8 visible
- * options each, chevron steps of 7, no scrollbar — and picking an
- * option merges it into the value, commits and closes (the same
- * pick-and-commit semantics as the date-only picker). The change
- * payload is `{ event, value }`; `clearable` follows the Select
- * interaction (the trailing glyph swaps into the ✕ control on
- * hover/focus).
+ * shell plus a self-drawn three-column panel — free wheel scroll,
+ * click to pick, the confirm button commits (`{ event, value }`
+ * payloads; `clearable` follows the Select interaction).
  */
 const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) => {
   const {
@@ -37,6 +30,7 @@ const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) =
     min,
     max,
     valueFormat: rawValueFormat,
+    confirmText = '确定',
     clearable = false,
     open,
     defaultOpen,
@@ -115,14 +109,16 @@ const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) =
     >
       <InputControl
         ref={inputRef}
-        className="colox-time-picker__control"
+        className={clsx('colox-time-picker__control', {
+          'colox-time-picker__control--pending': editor.preview,
+        })}
         type="text"
         role="combobox"
         aria-expanded={editor.open}
         aria-haspopup="dialog"
         aria-invalid={invalid || undefined}
         placeholder={valueFormat}
-        value={editor.draft}
+        value={editor.display}
         onChange={editor.handleChange}
         onBlur={editor.handleBlur}
         onKeyDown={editor.handleKeyDown}
@@ -144,17 +140,19 @@ const TimePickerRoot = forwardRef<TimePickerRef, TimePickerProps>((props, ref) =
         onClick={(event) => event.stopPropagation()}
       >
         <TimePickerPanel
-          hourAnchor={editor.hourAnchor}
-          minuteAnchor={editor.minuteAnchor}
-          hourCursor={editor.hourCursor}
-          minuteCursor={editor.minuteCursor}
+          hourValue={editor.hourValue}
+          minuteValue={editor.minuteValue}
+          secondValue={editor.secondValue}
           hourSelected={editor.hourSelected}
           minuteSelected={editor.minuteSelected}
-          isDisabledHour={editor.isDisabledHour}
-          isDisabledMinute={editor.isDisabledMinute}
+          secondSelected={editor.secondSelected}
+          confirmText={confirmText}
+          confirmBlocked={editor.confirmBlocked}
+          isDisabledOption={editor.isDisabledOption}
           onSelectOption={editor.handleSelectOption}
+          onScrollColumn={editor.moveColumn}
           onColumnKeyDown={editor.handleColumnKeyDown}
-          onScrollColumn={editor.scrollColumn}
+          onConfirm={editor.handleConfirm}
         />
       </Popup>
     </div>

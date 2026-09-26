@@ -21,41 +21,51 @@ export interface TimePickerProps extends Omit<
   invalid?: boolean;
   /**
    * The palette family that colors the selection semantics: the
-   * selected option fills the family solid, the keyboard focus ring
-   * rides the muted pair (off-state fabric stays neutral — the
+   * pending option wears the family subtle wash, the keyboard focus
+   * ring rides the muted pair (off-state fabric stays neutral — the
    * Switch/Slider "only paint the active state" discipline).
    * @default 'primary'
    */
   palette?: TimePickerPalette;
   /**
-   * The selected value as the canonical `HH:mm` word — fixed width,
-   * zero padded, so lexical order equals time order. `null` is the
-   * empty state. Without `value` the field is uncontrolled:
+   * The selected value as the canonical `HH:mm:ss` word — fixed
+   * width, zero padded, so lexical order equals time order. `null`
+   * is the empty state. Without `value` the field is uncontrolled:
    * `defaultValue` seeds it.
    */
   value?: string | null;
   /**
-   * Uncontrolled initial value (canonical `HH:mm`).
+   * Uncontrolled initial value (canonical `HH:mm:ss`).
    * @default null
    */
   defaultValue?: string | null;
   /**
-   * Lower bound: the canonical `HH:mm` word or a native `Date` read
-   * at the local wall clock (hour + minute). Out-of-range options
-   * render disabled, typed values hold silently until blur rolls
-   * them back — the same editor mechanics as the DatePicker.
+   * Lower bound: the canonical `HH:mm:ss` word or a native `Date`
+   * read at the local wall clock (hour + minute + second).
+   * Out-of-range options render disabled, typed values hold silently
+   * until blur rolls them back — the same editor mechanics as the
+   * DatePicker.
    */
   min?: string | Date;
   /** Upper bound (same mechanics as `min`). */
   max?: string | Date;
   /**
    * The display format: hour tokens `H`/`HH` (plus `h`/`hh`) and
-   * minute `m`/`mm` — any other character is a literal separator.
-   * The internal value and the change payload stay canonical
-   * (`HH:mm`) regardless of the format.
-   * @default 'HH:mm'
+   * minute `m`/`mm` plus second `s`/`ss` — any other character is a
+   * literal separator. The internal value and the change payload
+   * stay canonical (`HH:mm:ss`) regardless of the format.
+   * @default 'HH:mm:ss'
    */
   valueFormat?: string;
+  /**
+   * The panel footer's confirm button text — the one customization
+   * point of the footer for now (a whole-footer slot stays out until
+   * a real consumer exists; i18n machinery comes with the locale
+   * request, not before). The rest of the panel chrome is Chinese by
+   * default, so the button follows.
+   * @default '确定'
+   */
+  confirmText?: string;
   /**
    * Shows the trailing ✕ clear control when a value commits — the
    * Select interaction: it swaps in for the clock glyph on
@@ -74,10 +84,11 @@ export interface TimePickerProps extends Omit<
    */
   defaultOpen?: boolean;
   /**
-   * Fires whenever a complete time commits — typed or picked: the
-   * payload carries the native change event plus the canonical
-   * `HH:mm` value (`null` when cleared). Partial drafts never
-   * notify; blur rolls invalid or out-of-bounds drafts back.
+   * Fires whenever a complete time commits — typed, or confirmed
+   * from the panel: the payload carries the native change event plus
+   * the canonical `HH:mm:ss` value (`null` when cleared). Picks
+   * inside the panel only preview (the field shows the tentative
+   * word in gray) until the panel's confirm button commits them.
    */
   onChange?: (payload: TimePickerChangePayload) => void;
   /** Fires when the time panel opens or closes. */
@@ -87,7 +98,7 @@ export interface TimePickerProps extends Omit<
 /**
  * The time commit payload: `event` stays the native change event
  * (a change-shaped synthetic for programmatic commits — panel
- * selection and Clear), `value` is the canonical `HH:mm` word —
+ * confirmation and Clear), `value` is the canonical `HH:mm:ss` word —
  * `null` when the field is empty.
  */
 export interface TimePickerChangePayload {

@@ -6,56 +6,58 @@ export interface TimePickerClearButtonProps {
   onClear: () => void;
 }
 
-/** The panel assembly contract: two cyclic columns under the hook's window state. */
+/** The panel assembly contract: three cyclic columns plus the confirm footer. */
 export interface TimePickerPanelProps {
-  /** The hour column's window anchor (unwrapped — wraps at render). */
-  hourAnchor: number;
-  /** The minute column's window anchor (unwrapped). */
-  minuteAnchor: number;
-  /** The hour column's keyboard cursor slot (unwrapped). */
-  hourCursor: number;
-  /** The minute column's keyboard cursor slot (unwrapped). */
-  minuteCursor: number;
-  /** The committed hour (option value), or null when empty. */
+  /** Column values (plain clock components within their cycles). */
+  hourValue: number;
+  minuteValue: number;
+  secondValue: number;
+  /** The pending hour (option value): committed parts when untouched, the system clock on an empty open. */
   hourSelected: number | null;
-  /** The committed minute (option value), or null when empty. */
+  /** The pending minute. */
   minuteSelected: number | null;
-  /** Whether an hour option is out of bounds at the committed minute. */
-  isDisabledHour: (hour: number) => boolean;
-  /** Whether a minute option is out of bounds at the committed hour. */
-  isDisabledMinute: (minute: number) => boolean;
-  /** Selects an option: merges it into the value, commits and closes. */
+  /** The pending second. */
+  secondSelected: number | null;
+  /** The confirm button text (the footer's single customization point). */
+  confirmText: string;
+  /** Whether the pending word sits out of bounds (confirm disabled). */
+  confirmBlocked: boolean;
+  /** Whether an option value's merge with the pending anchor falls out of bounds (any unit). */
+  isDisabledOption: (unit: TimeColumnUnit, value: number) => boolean;
+  /** Lands a column on an option value (click): updates the pending word, panel stays open. */
   onSelectOption: (unit: TimeColumnUnit, value: number) => void;
-  /** Column keyboard rotation fired from an option button. */
-  onColumnKeyDown: (
-    event: KeyboardEvent<HTMLButtonElement>,
-    unit: TimeColumnUnit,
-    value: number,
-  ) => void;
-  /** Scrolls a column window by the arrow-button step (±7). */
+  /** Moves a column by a relative step (chevrons ±7). */
   onScrollColumn: (unit: TimeColumnUnit, delta: number) => void;
+  /** Column keyboard rotation fired from an option button. */
+  onColumnKeyDown: (event: KeyboardEvent<HTMLButtonElement>, unit: TimeColumnUnit) => void;
+  /** Commits the pending word, closes the panel and returns focus to the field. */
+  onConfirm: () => void;
 }
 
-/** One cyclic column: the up/down step buttons around the 8-option listbox. */
+/** One cyclic column: step buttons around a scrollable 8-option viewport (no scrollbar). */
 export interface TimePickerColumnProps {
   /** Which clock component the column holds. */
   unit: TimeColumnUnit;
-  /** The listbox aria label ("Hours" / "Minutes"). */
+  /** The listbox aria label ("Hours" / "Minutes" / "Seconds"). */
   label: string;
-  /** The window anchor (unwrapped — options wrap at render). */
-  anchor: number;
-  /** The keyboard cursor slot (unwrapped — the tabIndex-0 option). */
-  cursor: number;
-  /** The cycle size (24 hours / 60 minutes). */
+  /** The cycle size (24 hours / 60 minutes / 60 seconds). */
   count: number;
-  /** The committed option value, or null when empty. */
+  /**
+   * The value the column points at: whenever it changes the column
+   * glides it onto the focus slot (three options above, four below;
+   * free wheel scrolling may leave the view elsewhere, a re-align
+   * glide always lands the value there) — options render `mod count`
+   * for the cyclic wrap.
+   */
+  value: number;
+  /** The pending option value (mod count) wearing the subtle selection; null after a re-seat cleared a pick. */
   selected: number | null;
-  /** Whether an option value is out of bounds. */
+  /** Whether an option value's merge with the pending word is out of bounds. */
   isDisabled: (value: number) => boolean;
-  /** Picks an option (merge + commit + close). */
+  /** Lands the column on an option value (click/keyboard Enter). */
   onSelect: (value: number) => void;
-  /** Keyboard rotation fired from an option button. */
-  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>, value: number) => void;
-  /** Scrolls the window by ±7 (the step buttons). */
+  /** Moves the column by a relative step (chevron clicks ±7). */
   onScroll: (delta: number) => void;
+  /** Keyboard rotation fired from an option button (the unit rides in the closure). */
+  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
 }

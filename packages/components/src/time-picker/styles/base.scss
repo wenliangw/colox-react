@@ -46,6 +46,12 @@
 
 .colox-time-picker__control {
   box-sizing: border-box;
+
+  // The uncommitted pick previews in the value slot wearing the
+  // placeholder gray until Confirm commits it.
+  &--pending {
+    color: var(--colox-color-text-subtle);
+  }
 }
 
 .colox-time-picker__trailing {
@@ -62,15 +68,19 @@
 }
 
 // Private palette variables: the panel's selection semantics read
-// these — the selected option fills the family solid, the focus ring
-// rides the muted pair (Switch/Slider discipline: only the active
-// state paints). The popup root is a PORTAL — it escapes the shell's
-// DOM tree, so the variables must live on the popup itself (the
-// shell is not an ancestor of the panel). The palette family classes
-// are likewise re-applied on the popup root (see time-picker.tsx),
-// so the palette.scss mappings hit both.
+// these — the pending option wears the family subtle wash and the
+// solid text, the focus ring rides the muted pair, the Confirm button
+// fills the solid (Switch/Slider discipline: only the active states
+// paint). The popup root is a PORTAL — it escapes the shell's DOM
+// tree, so the variables must live on the popup itself (the shell is
+// not an ancestor of the panel). The palette family classes are
+// likewise re-applied on the popup root (see time-picker.tsx), so the
+// palette.scss mappings hit both.
 .colox-time-picker__popup {
   --colox-time-picker-palette-solid: var(--colox-color-brand-solid);
+  --colox-time-picker-palette-solid-hover: var(--colox-color-brand-solid-hover);
+  --colox-time-picker-palette-solid-active: var(--colox-color-brand-solid-active);
+  --colox-time-picker-palette-subtle: var(--colox-color-brand-subtle);
   --colox-time-picker-palette-muted: var(--colox-color-brand-muted);
   --colox-time-picker-palette-inverse: var(--colox-color-brand-inverse);
 }
@@ -112,18 +122,25 @@
     opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 }
 
-// The panel: two columns side by side on the overlay fabric. The
-// width is intrinsic — 2 × 48px columns + a 8px gap + 2 × 12px
-// padding — it never stretches into the host's width.
+// The panel: three columns side by side over a confirm footer, on the
+// overlay fabric. The width is intrinsic — 3 × 48px columns + 2 × 8px
+// gaps + 2 × 12px padding — it never stretches into the host's
+// width.
 .colox-time-picker__panel {
   display: flex;
-  gap: var(--colox-spacing-2);
+  flex-direction: column;
+  gap: var(--colox-spacing-1-5);
   padding: var(--colox-spacing-1-5);
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-md);
   background-color: var(--colox-color-bg-overlay);
   box-shadow: var(--colox-shadow-md);
   color: var(--colox-color-text-default);
+}
+
+.colox-time-picker__columns {
+  display: flex;
+  gap: var(--colox-spacing-2);
 }
 
 .colox-time-picker__column {
@@ -149,13 +166,66 @@
   &:hover {
     color: var(--colox-color-text-default);
   }
+
+  // The glide's throttle window wears the LOCKED gray: color-only,
+  // the family's disabled-text token, no background change — the
+  // click is absorbed for the ride's duration, and it must look so.
+  &--locked {
+    color: var(--colox-color-text-disabled);
+    cursor: default;
+
+    &:hover {
+      color: var(--colox-color-text-disabled);
+    }
+  }
 }
 
-// The 8-option window: a plain flex stack, no scrollbar — the
-// chevrons are the scroll, the cyclic wrap happens at render.
+// The viewport is a real natively-scrolling container cropping the
+// 8-slot window (item 28px + gap 2px). The scrollbar is outright
+// hidden (both the modern Firefox rule and the WebKit pseudo) — the
+// wheel scrolls, the chevrons ride the same scrollTop write channel
+// (a rAF direct-write glide), the scrollbar simply never paints.
+// `overscroll-behavior: contain` keeps the trackpad inertia inside
+// the panel instead of chaining into the page behind it.
+//
+// The wheel scrolls FREELY: fractional rest positions are legal —
+// alignment is a click action (the re-align glide), never a scroll
+// constraint, so no scroll-snap lives here.
 .colox-time-picker__listbox {
-  display: flex;
-  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 238px;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // While the wheel rolls, the CELLS go pointer-events: none (antd's
+  // trick): cells racing under the cursor cannot flash their hover
+  // wash and stray clicks inside the momentum window are swallowed.
+  // The viewport itself must STAY hit-testable — wheel events keep
+  // targeting it and keep reaching the preventDefault listener;
+  // killing the container's pointer events would retarget the wheel
+  // to the page and rip the column's scroll away after the first
+  // notch (bug, fixed by scoping the suppression to the options).
+  // The class clears a quiet moment after the last scroll event.
+  &--scrolling {
+    .colox-time-picker__option {
+      pointer-events: none;
+    }
+  }
+}
+
+// The track maps the option cycle onto three laps (see
+// time-column.tsx) via two spacer elements and the options in flow:
+// the 2px margin is the stride gap (28px option + 2px = the 30px
+// COLUMN_OPTION_STRIDE), so the item under viewport slot 3 (the
+// fixed reading band) is exactly
+// `floor((scrollTop + 90px) / 30px) mod count`.
+.colox-time-picker__track {
+  position: relative;
 }
 
 .colox-time-picker__option {
@@ -165,6 +235,7 @@
   width: 48px;
   height: 28px;
   box-sizing: border-box;
+  margin-bottom: 2px;
   border: none;
   border-radius: var(--colox-radius-sm);
   background-color: transparent;
@@ -172,22 +243,73 @@
   color: var(--colox-color-text-default);
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  // Hover = preselection in NEUTRAL GRAY — deliberately not the
+  // family palette: the preselection must not dress up as the
+  // selection (the two would be indistinguishable), the palette wash
+  // stays the selection's own skin. The SELECTED option is excluded
+  // from the wash entirely (选中项不吃 hover): hovering it must not
+  // repaint the palette skin. On leave the real selection shows
+  // again. (While the wheel rolls the listbox wears `--scrolling`
+  // and the cells' pointer events stay off, so cells streaming under
+  // the cursor cannot flash this wash.)
+  &:hover:not(:disabled):not(&--selected) {
     background-color: var(--colox-color-gray-wash-hover);
   }
 
-  // The selected option fills the palette solid — the pick-and-commit
-  // semantics' one active-paint mark.
-  &--selected {
-    background-color: var(--colox-time-picker-palette-solid);
-    color: var(--colox-time-picker-palette-inverse);
-
-    &:hover:not(:disabled) {
-      background-color: var(--colox-time-picker-palette-solid);
-    }
+  // The selected (pending) option wears the palette subtle — the wash
+  // rides the VALUE, not the slot: it scrolls with its cell, leaves
+  // the window with it, and lands back on it after the click's
+  // re-align glide. A free wheel never redraws it.
+  &--selected:not(:disabled) {
+    background-color: var(--colox-time-picker-palette-subtle);
+    color: var(--colox-time-picker-palette-solid);
   }
 
   &--disabled {
+    color: var(--colox-color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 1.5px var(--colox-time-picker-palette-solid),
+      0 0 0 2px var(--colox-time-picker-palette-muted);
+  }
+}
+
+// The confirm footer: the dialog's commit path. The button fills the
+// family solid (the Button solid recipe re-drawn locally — the panel
+// is a self-drawn popup surface) and stretches the panel width.
+.colox-time-picker__footer {
+  display: flex;
+}
+
+.colox-time-picker__confirm {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 var(--colox-spacing-3);
+  border: none;
+  border-radius: var(--colox-radius-sm);
+  background-color: var(--colox-time-picker-palette-solid);
+  font-size: var(--colox-font-size-sm);
+  font-family: var(--colox-font-sans);
+  color: var(--colox-time-picker-palette-inverse);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-time-picker-palette-solid-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--colox-time-picker-palette-solid-active);
+  }
+
+  &:disabled {
+    background-color: var(--colox-color-bg-disabled);
     color: var(--colox-color-text-disabled);
     cursor: not-allowed;
   }

@@ -3,12 +3,9 @@ import { IconButton } from '../../icon-button';
 import type { TimePickerClearButtonProps } from '../types';
 
 /**
- * The built-in `clearable` control, mirroring the Select interaction:
- * the reset, hit shape, focus ring and muted variant colors ride the
- * shared IconButton base; this file keeps only the site program.
- * `mousedown` is prevented so clearing never steals focus from the
- * field; clearing flows through the picker's onChange stream (a
- * change-shaped synthetic committing `null`).
+ * The built-in `clearable` control: the shared IconButton base carries
+ * the hit shape and the muted colors; `mousedown` is prevented so
+ * clearing never steals focus from the field.
  */
 export const TimePickerClearButton = ({ onClear }: TimePickerClearButtonProps) => (
   <IconButton

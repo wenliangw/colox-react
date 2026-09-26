@@ -5,52 +5,49 @@ import type {
   KeyboardEvent as ReactKeyboardEvent,
   KeyboardEventHandler,
 } from 'react';
-import type { TimeColumnUnit, UseTimePickerParams, UseTimePickerResult } from '../types';
+import type { TimeColumnUnit, TimeParts, UseTimePickerParams, UseTimePickerResult } from '../types';
 import {
   COLUMN_STEP,
-  COLUMN_VISIBLE,
   HOUR_COUNT,
   MINUTE_COUNT,
-  anchorAround,
+  SECOND_COUNT,
   canonicalBoundOf,
   formatTimeValue,
   isTimeDraftAllowed,
+  mod,
+  pad,
   parseTimeText,
   timePartsOf,
 } from '../utils/format';
 
-const pad = (value: number): string => String(value).padStart(2, '0');
+/** The current local wall-clock coordinates. */
+const systemParts = (): TimeParts => {
+  const now = new Date();
+  return { hour: now.getHours(), minute: now.getMinutes(), second: now.getSeconds() };
+};
+
+/** The full canonical word of three column offsets (each trimmed to its cycle). */
+const wordOf = (hour: number, minute: number, second: number): string =>
+  `${pad(mod(hour, HOUR_COUNT))}:${pad(mod(minute, MINUTE_COUNT))}:${pad(mod(second, SECOND_COUNT))}`;
+
+/** The clockwise neighbor of each column (ArrowRight hops). */
+const UNIT_NEXT: Record<TimeColumnUnit, TimeColumnUnit> = {
+  hour: 'minute',
+  minute: 'second',
+  second: 'hour',
+};
+
+/** The counter-clockwise neighbor of each column (ArrowLeft hops). */
+const UNIT_PREV: Record<TimeColumnUnit, TimeColumnUnit> = {
+  hour: 'second',
+  minute: 'hour',
+  second: 'minute',
+};
 
 /**
- * The time editor state machine + panel state:
- *
- * - **draft**: every user transition passes the permissive gate
- *   (digits, the colon, the pattern's literals); rejected keystrokes
- *   keep the previous draft. Complete in-bounds words commit
- *   immediately as canonical `HH:mm`; partial drafts never notify and
- *   blur rolls them back — the same `'' → null` empty terminal as the
- *   date editor.
- * - **bounds**: `[min, max]` are editor mechanics, not validation —
- *   options outside them render disabled and a typed out-of-range word
- *   holds silently until blur rolls it back. An option's enablement
- *   equals its merge result: an hour enables iff the merge with the
- *   committed minute stays in bounds (and a minute against the
- *   committed hour), so a pick can never commit an out-of-range word.
- * - **display**: typed text stays verbatim while focused; panel
- *   commits and blur normalization render through `valueFormat`. The
- *   committed value is always the canonical `HH:mm` — the format
- *   never touches the payload.
- * - **panel**: open state (controlled or internal) and the two cyclic
- *   column windows — an unwrapped anchor plus an unwrapped keyboard
- *   cursor per column, invariant `anchor ≤ cursor ≤ anchor + visible
- *   - 1`. Opening seats the committed component (or the system clock
- *   hour/minute when empty) at the anchor slot (three options above,
- *   four below). The step buttons shift a window by the 7-option
- *   step; ↑/↓ walk the cursor one option (the window slides by one
- *   to follow it at the edges), PgUp/PgDn ride the step, Home/End
- *   land the column's bounds, ←/→ swap columns, Enter/Space select.
- *   The consumer's native handlers run after the internal
- *   bookkeeping.
+ * The time editor state machine: typed words commit through the
+ * permissive draft gate, the panel's pending word commits via the
+ * Confirm button (an empty open pre-selects the system clock).
  */
 export const useTimePicker = ({
   inputRef,
@@ -82,23 +79,44 @@ export const useTimePicker = ({
   const [innerOpen, setInnerOpen] = useState<boolean>(defaultOpen ?? false);
   const isOpen = openControlled ? open : innerOpen;
 
-  // The column windows: an unwrapped anchor (window start) plus an
-  // unwrapped keyboard cursor per column. Options wrap at render, the
-  // unwrapped numbers keep the anchor/cursor maths seam-free.
-  const [hourAnchor, setHourAnchor] = useState(0);
-  const [minuteAnchor, setMinuteAnchor] = useState(0);
-  const [hourCursor, setHourCursor] = useState(0);
-  const [minuteCursor, setMinuteCursor] = useState(0);
-  // Cross-column keyboard hops re-render the target cursor slot before
-  // the programmatic focus can land (the date grid's pattern).
-  const pendingFocusRef = useRef<{ unit: TimeColumnUnit; value: number } | null>(null);
+  // The three column values — the pending components of the pending
+  // word. The columns scroll natively to follow them (click/chevron/
+  // keyboard moves glide the value onto the focus slot; the wheel
+  // never changes them). Plus the dirty flag — false while the panel
+  // shows the commit seed (untouched), true after the first move,
+  // when the columns' values become the pending word.
+  const [hourValue, setHourValue] = useState(0);
+  const [minuteValue, setMinuteValue] = useState(0);
+  const [secondValue, setSecondValue] = useState(0);
+  const [dirty, setDirty] = useState(false);
+  // Cross-column keyboard hops re-render the target column's focus
+  // slot before the programmatic focus can land (the date grid's
+  // pattern).
+  const pendingFocusRef = useRef<TimeColumnUnit | null>(null);
 
-  // External value moves resync the draft; own commits update the ref
-  // first so the echo never clobbers what the user is typing.
+  const pendingWord = dirty ? wordOf(hourValue, minuteValue, secondValue) : null;
+  // What the columns currently show: the pending word once touched,
+  // else the committed word (the seed).
+  const anchorWord = dirty ? pendingWord : current;
+  const anchorParts: TimeParts = timePartsOf(anchorWord) ?? { hour: 0, minute: 0, second: 0 };
+
+  // Panel moves echo into the field as the pending draft — the gray
+  // preview. The effect keys on the pending word, so typing (which
+  // sets the draft directly) is never clobbered.
+  useEffect(() => {
+    if (isOpen && dirty && pendingWord !== null) {
+      setDraft(formatTimeValue(pendingWord, valueFormat));
+    }
+  }, [pendingWord, isOpen, dirty, valueFormat]);
+
+  // External value moves resync the draft and reseat the columns;
+  // own commits update the ref first so the echo never clobbers what
+  // the user is typing.
   useEffect(() => {
     if (current !== lastCommittedRef.current) {
       lastCommittedRef.current = current;
       setDraft(formatTimeValue(current ?? null, valueFormat));
+      resettle(current);
     }
   }, [current, valueFormat]);
 
@@ -118,17 +136,14 @@ export const useTimePicker = ({
     [minBound, maxBound],
   );
 
-  const committedParts = timePartsOf(current) ?? { hour: 0, minute: 0 };
-
-  const isDisabledHour = useCallback(
-    (hour: number): boolean => isDisabled(`${pad(hour)}:${pad(committedParts.minute)}`),
-    [isDisabled, committedParts.minute],
-  );
-
-  const isDisabledMinute = useCallback(
-    (minute: number): boolean => isDisabled(`${pad(committedParts.hour)}:${pad(minute)}`),
-    [isDisabled, committedParts.hour],
-  );
+  // An option's enablement equals its merge with the pending anchor —
+  // every pick path is blocked from landing an out-of-range word. The
+  // three columns share the one implementation: the unit's axis swaps
+  // into the anchor parts, the merge word reads the whole clock.
+  const isDisabledOption = (unit: TimeColumnUnit, value: number): boolean => {
+    const parts = { ...anchorParts, [unit]: value };
+    return isDisabled(wordOf(parts.hour, parts.minute, parts.second));
+  };
 
   const makeChangeEvent = (): ChangeEvent<HTMLInputElement> =>
     ({
@@ -161,6 +176,60 @@ export const useTimePicker = ({
     [openControlled, onOpenChange],
   );
 
+  /** Seats the columns on a word's components (or the system clock) and clears the pending. */
+  function resettle(word: string | null) {
+    const parts = timePartsOf(word) ?? systemParts();
+    setHourValue(parts.hour);
+    setMinuteValue(parts.minute);
+    setSecondValue(parts.second);
+    setDirty(false);
+  }
+
+  function openPanel() {
+    if (isOpen) {
+      return;
+    }
+    resettle(current);
+    // The empty open pre-selects the system clock: the columns show
+    // it, the pending word becomes it and Confirm commits it. The
+    // seed is captured once here — a long-open panel keeps the
+    // open-time, it never re-reads the clock at confirm.
+    setDirty(current === null);
+    setOpenPanel(true);
+  }
+
+  function closePanel() {
+    setOpenPanel(false);
+    // Dismissing discards the pending word — the field falls back to
+    // the last committed display (the ref is already synced when a
+    // confirm commit preceded the close).
+    setDraft(formatTimeValue(lastCommittedRef.current ?? null, valueFormat));
+  }
+
+  const columnState = (unit: TimeColumnUnit) => {
+    if (unit === 'hour') {
+      return { value: hourValue, setValue: setHourValue, count: HOUR_COUNT };
+    }
+    if (unit === 'minute') {
+      return { value: minuteValue, setValue: setMinuteValue, count: MINUTE_COUNT };
+    }
+    return { value: secondValue, setValue: setSecondValue, count: SECOND_COUNT };
+  };
+
+  /** A relative step (chevrons ±7, keyboard ±1/±7): the column's value moves, pending comes alive. */
+  const moveColumn = (unit: TimeColumnUnit, delta: number) => {
+    const { setValue, count } = columnState(unit);
+    setDirty(true);
+    setValue((value) => mod(value + delta, count));
+  };
+
+  /** Lands the column on an option value (click, keyboard bounds). */
+  const landColumn = (unit: TimeColumnUnit, value: number) => {
+    const { setValue } = columnState(unit);
+    setDirty(true);
+    setValue(value);
+  };
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.target.value;
     const composing = (event.nativeEvent as InputEvent | undefined)?.isComposing === true;
@@ -183,41 +252,27 @@ export const useTimePicker = ({
     const parsed = parseTimeText(next, valueFormat);
     if (parsed !== null && !isDisabled(parsed) && parsed !== lastCommittedRef.current) {
       commit(event, parsed);
+      resettle(parsed);
     }
   };
 
   const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
-    const parsed = parseTimeText(draft, valueFormat);
-    if (parsed === null || isDisabled(parsed)) {
-      // Partial or out-of-range: roll back to the last committed value.
-      if (draft !== '') {
-        setDraft(formatTimeValue(current ?? null, valueFormat));
+    if (!isOpen) {
+      const parsed = parseTimeText(draft, valueFormat);
+      if (parsed === null || isDisabled(parsed)) {
+        // Partial or out-of-range: roll back to the last committed display.
+        if (draft !== '') {
+          setDraft(formatTimeValue(current ?? null, valueFormat));
+        }
+      } else if (parsed !== lastCommittedRef.current) {
+        commit(makeChangeEvent(), parsed, formatTimeValue(parsed, valueFormat));
+      } else {
+        setDraft(formatTimeValue(parsed, valueFormat));
       }
-    } else if (parsed !== lastCommittedRef.current) {
-      commit(makeChangeEvent(), parsed, formatTimeValue(parsed, valueFormat));
-    } else {
-      setDraft(formatTimeValue(parsed, valueFormat));
     }
+    // While the panel is open the blur is a normal hop into it — the
+    // preview keeps showing: no normalization runs.
     onBlur?.(event);
-  };
-
-  const openPanel = () => {
-    if (isOpen) {
-      return;
-    }
-    // The anchor seats the committed component (or the system clock's
-    // when the value is empty) at the fixed anchor slot.
-    const now = new Date();
-    const parts = timePartsOf(current) ?? { hour: now.getHours(), minute: now.getMinutes() };
-    setHourAnchor(anchorAround(parts.hour));
-    setMinuteAnchor(anchorAround(parts.minute));
-    setHourCursor(parts.hour);
-    setMinuteCursor(parts.minute);
-    setOpenPanel(true);
-  };
-
-  const closePanel = () => {
-    setOpenPanel(false);
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
@@ -228,153 +283,122 @@ export const useTimePicker = ({
     onKeyDown?.(event);
   };
 
-  const columnState = (unit: TimeColumnUnit) =>
-    unit === 'hour'
-      ? {
-          anchor: hourAnchor,
-          cursor: hourCursor,
-          setAnchor: setHourAnchor,
-          setCursor: setHourCursor,
-          count: HOUR_COUNT,
-        }
-      : {
-          anchor: minuteAnchor,
-          cursor: minuteCursor,
-          setAnchor: setMinuteAnchor,
-          setCursor: setMinuteCursor,
-          count: MINUTE_COUNT,
-        };
-
-  /** One cursor step: the window slides by one only at the visible edges. */
-  const moveCursor = (unit: TimeColumnUnit, delta: number) => {
-    const { anchor, cursor, setAnchor, setCursor } = columnState(unit);
-    const next = cursor + delta;
-    if (next < anchor) {
-      setAnchor(next);
-      setCursor(next);
-    } else if (next > anchor + COLUMN_VISIBLE - 1) {
-      setAnchor(next - (COLUMN_VISIBLE - 1));
-      setCursor(next);
-    } else {
-      setCursor(next);
-    }
-  };
-
-  const scrollColumn = (unit: TimeColumnUnit, delta: number) => {
-    // Window and cursor ride the same step — the cursor keeps its slot.
-    const { setAnchor, setCursor } = columnState(unit);
-    setAnchor((anchor) => anchor + delta * COLUMN_STEP);
-    setCursor((cursor) => cursor + delta * COLUMN_STEP);
-  };
-
-  const handleSelectOption = (unit: TimeColumnUnit, option: number) => {
-    const next =
-      unit === 'hour'
-        ? `${pad(option)}:${pad(committedParts.minute)}`
-        : `${pad(committedParts.hour)}:${pad(option)}`;
-    if (isDisabled(next)) {
+  /** Clicking an option lands it — but only merges that stay in bounds. */
+  const handleSelectOption = (unit: TimeColumnUnit, value: number) => {
+    if (isDisabledOption(unit, value)) {
       return;
     }
-    commit(makeChangeEvent(), next, formatTimeValue(next, valueFormat));
+    landColumn(unit, value);
+  };
+
+  /** The Confirm button program: commit the pending word, close, refocus the field. */
+  function handleConfirm() {
+    if (!isOpen) {
+      return;
+    }
+    if (dirty && pendingWord !== null && pendingWord !== current && !isDisabled(pendingWord)) {
+      commit(makeChangeEvent(), pendingWord, formatTimeValue(pendingWord, valueFormat));
+    }
     closePanel();
     inputRef.current?.focus();
-  };
+  }
 
-  const focusOption = (unit: TimeColumnUnit, value: number) => {
-    const column = panelRef.current?.querySelector<HTMLDivElement>(`[data-unit="${unit}"]`);
-    column?.querySelector<HTMLButtonElement>(`[data-time="${value}"]`)?.focus();
-  };
-
-  useEffect(() => {
-    if (pendingFocusRef.current !== null) {
-      const target = pendingFocusRef.current;
-      pendingFocusRef.current = null;
-      focusOption(target.unit, target.value);
+  function handleClear() {
+    if (lastCommittedRef.current !== null) {
+      commit(makeChangeEvent(), null, '');
     }
-  });
+    resettle(null);
+    closePanel();
+    inputRef.current?.focus();
+  }
 
   const handleColumnKeyDown = (
     event: ReactKeyboardEvent<HTMLButtonElement>,
     unit: TimeColumnUnit,
-    value: number,
   ) => {
+    const { count } = columnState(unit);
     if (event.key === 'Enter' || event.key === ' ') {
+      // Consume: the option already IS the pending value — committing
+      // is the Confirm button's (or the field's Enter) job.
       event.preventDefault();
-      handleSelectOption(unit, value);
       return;
     }
     if (event.key === 'ArrowUp') {
       event.preventDefault();
-      moveCursor(unit, -1);
+      moveColumn(unit, -1);
       return;
     }
     if (event.key === 'ArrowDown') {
       event.preventDefault();
-      moveCursor(unit, 1);
+      moveColumn(unit, 1);
       return;
     }
     if (event.key === 'PageUp') {
       event.preventDefault();
-      scrollColumn(unit, -1);
+      moveColumn(unit, -COLUMN_STEP);
       return;
     }
     if (event.key === 'PageDown') {
       event.preventDefault();
-      scrollColumn(unit, 1);
+      moveColumn(unit, COLUMN_STEP);
       return;
     }
     if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault();
-      const { cursor, setAnchor, setCursor, count } = columnState(unit);
-      // Land the column's bound (hour/minute 0 or 23/59), at the
-      // nearest unwrapped occurrence to the cursor, then seat it at
-      // the anchor slot — the window follows the bound, not the lap.
-      const bound = event.key === 'Home' ? 0 : count - 1;
-      const lap = cursor - (((cursor % count) + count) % count);
-      const first = lap + bound;
-      const second = first + count;
-      const seat = Math.abs(first - cursor) <= Math.abs(second - cursor) ? first : second;
-      setAnchor(anchorAround(seat));
-      setCursor(seat);
+      landColumn(unit, event.key === 'Home' ? 0 : count - 1);
       return;
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      const other = columnState(unit === 'hour' ? 'minute' : 'hour');
-      pendingFocusRef.current = {
-        unit: unit === 'hour' ? 'minute' : 'hour',
-        value: ((other.cursor % other.count) + other.count) % other.count,
-      };
+      // The horizontal hop re-renders the target column's focus slot
+      // before the programmatic focus can land (the date grid's pattern).
+      pendingFocusRef.current = UNIT_NEXT[unit];
+      if (event.key === 'ArrowLeft') {
+        pendingFocusRef.current = UNIT_PREV[unit];
+      }
     }
   };
 
+  // Cross-column hops land focus on the target column's focus-slot
+  // option after its re-render (the tabIndex-0 node).
+  useEffect(() => {
+    if (pendingFocusRef.current !== null) {
+      const target = pendingFocusRef.current;
+      pendingFocusRef.current = null;
+      const column = panelRef.current?.querySelector<HTMLElement>(`[data-unit="${target}"]`);
+      column?.querySelector<HTMLButtonElement>('button[tabindex="0"]')?.focus();
+    }
+  });
+
+  // The field shows the tentative word (gray) whenever the panel
+  // previews an uncommitted pick. The draft itself carries the
+  // preview text (panel moves sync it through the pending effect).
+  const preview = isOpen && dirty && pendingWord !== null && pendingWord !== current;
+
   return {
     current,
-    draft,
+    currentText: formatTimeValue(current ?? null, valueFormat),
     open: isOpen,
-    hourAnchor,
-    minuteAnchor,
-    hourCursor,
-    minuteCursor,
-    hourSelected: committedParts.hour,
-    minuteSelected: committedParts.minute,
+    hourValue,
+    minuteValue,
+    secondValue,
+    hourSelected: timePartsOf(anchorWord)?.hour ?? null,
+    minuteSelected: timePartsOf(anchorWord)?.minute ?? null,
+    secondSelected: timePartsOf(anchorWord)?.second ?? null,
+    display: draft,
+    preview,
+    confirmBlocked: dirty && pendingWord !== null && isDisabled(pendingWord),
     handleChange,
     handleBlur,
     handleKeyDown,
     openPanel,
     closePanel,
-    handleClear: () => {
-      if (lastCommittedRef.current !== null) {
-        commit(makeChangeEvent(), null, '');
-      }
-      closePanel();
-      inputRef.current?.focus();
-    },
+    handleConfirm,
+    handleClear,
     handleSelectOption,
     handleColumnKeyDown,
-    scrollColumn,
+    moveColumn,
     isDisabled,
-    isDisabledHour,
-    isDisabledMinute,
+    isDisabledOption,
   };
 };
