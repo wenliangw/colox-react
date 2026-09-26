@@ -1,0 +1,69 @@
+// The arrow is a 6px square rotated 45deg: after the rotation its far
+// corners sit on the four axes, so one rotation state serves every
+// direction — only the edge it hugs differs. The resolved placement
+// word on the panel root (data-placement from cdk useFloatingPosition,
+// post-flip) selects the edge: arrows and shadows never lie about the
+// side the panel actually landed on. The square overpaints the panel
+// edge under it; on the light canvas its two outward edges carry the
+// panel border color and complete the seam.
+.colox-tooltip__content--arrow {
+  &::before {
+    content: '';
+    position: absolute;
+    width: var(--colox-spacing-1-5);
+    height: var(--colox-spacing-1-5);
+    background: inherit;
+    rotate: 45deg;
+  }
+}
+
+.colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content--arrow::before {
+  bottom: calc(var(--colox-spacing-1-5) / -2);
+  left: 50%;
+  translate: -50% 0;
+}
+
+.colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content--arrow::before {
+  top: calc(var(--colox-spacing-1-5) / -2);
+  left: 50%;
+  translate: -50% 0;
+}
+
+.colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content--arrow::before {
+  right: calc(var(--colox-spacing-1-5) / -2);
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content--arrow::before {
+  left: calc(var(--colox-spacing-1-5) / -2);
+  top: 50%;
+  translate: 0 -50%;
+}
+
+// Light seam: the two edges leaving for the trigger continue the panel
+// border (per resolved direction — the corner pointing out decides the
+// pair).
+.colox-tooltip__panel[data-placement^='top']
+  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
+  border-right: 1px solid var(--colox-color-border-muted);
+  border-bottom: 1px solid var(--colox-color-border-muted);
+}
+
+.colox-tooltip__panel[data-placement^='bottom']
+  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
+  border-top: 1px solid var(--colox-color-border-muted);
+  border-left: 1px solid var(--colox-color-border-muted);
+}
+
+.colox-tooltip__panel[data-placement^='left']
+  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
+  border-top: 1px solid var(--colox-color-border-muted);
+  border-right: 1px solid var(--colox-color-border-muted);
+}
+
+.colox-tooltip__panel[data-placement^='right']
+  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
+  border-bottom: 1px solid var(--colox-color-border-muted);
+  border-left: 1px solid var(--colox-color-border-muted);
+}

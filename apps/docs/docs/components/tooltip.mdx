@@ -1,0 +1,129 @@
+---
+sidebar_position: 15
+---
+
+import { Button, Stack, Tooltip } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Tooltip
+
+The hint layer on the floating mechanism (the cdk popup). Tooltip renders
+**no wrapper element** — it clones its trigger in place, exactly where the
+author wrote it, and mounts the panel out of a body portal. The authored DOM
+structure stays untouched.
+
+<CodeBlock className="colox-import" language="tsx">{`import { Tooltip } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Channels
+
+One name, two channels — and giving both is a compile-time error, never a
+priority:
+
+- **Props form**: a single trigger child plus the `content` prop. Falsy content
+  (the empty string, `null`, `false`) renders no tooltip — the conditional
+  body is free.
+- **Composed form**: `<Tooltip.Trigger>` (exactly one; its single child — a
+  component or a bare element — becomes the trigger) plus at most one
+  `<Tooltip.Content>` for custom DOM. `className`/`style` on the Content part
+  are the escape hatch and land on the content box. Composed mode without a
+  Content part renders the plain trigger.
+
+Tooltip injects the interaction surfaces (events) plus `aria-describedby`
+pointing at the panel id; the trigger element keeps its own props — the
+author's `onClick` chains after the tooltip's, `className` concatenates,
+existing `aria-describedby` words survive.
+
+```tsx
+<Tooltip content="The props form.">
+  <Button>Hover me</Button>
+</Tooltip>
+
+<Tooltip>
+  <Tooltip.Trigger>
+    <Button>Custom body</Button>
+  </Tooltip.Trigger>
+  <Tooltip.Content>
+    <Stack direction="column" gap="1">
+      <span>Rich DOM</span>
+      <span>anything you need</span>
+    </Stack>
+  </Tooltip.Content>
+</Tooltip>
+```
+
+## When to use
+
+- Short hints on hover that must never change the DOM around the trigger.
+- Custom bodies: the composed channel keeps the trigger and the panel DOM in
+  your hands, no wrapper in between.
+
+## Surfaces
+
+`variant="dark"` (default) is the inverse canvas; `variant="light"` rides the
+default surface with a border, and its arrow continues the border seam in the
+same color. `size` shifts one ladder step from the base tier — `sm` / `md` /
+`lg`. The decorative arrow and the directional shadow pin to the **resolved**
+placement (after flipping), so decorations never lie about the side the panel
+landed on.
+
+<Tooltip content="The inverse canvas.">
+  <Button>Dark</Button>
+</Tooltip>
+<Tooltip content="The default surface, border and seam." variant="light">
+  <Button>Light</Button>
+</Tooltip>
+<Tooltip content="Small tier." size="sm">
+  <Button>sm</Button>
+</Tooltip>
+<Tooltip content="Large tier." size="lg">
+  <Button>lg</Button>
+</Tooltip>
+
+## Behavior
+
+`visibleOn` picks the trigger channel:
+
+- `"hover"` (default): pointer enter opens after `delay.in` (300ms) with an
+  instant focus channel — focusing opens immediately, blur closes. The close
+  timer and the open timer always cancel each other, so a fast enter/leave
+  never reopens.
+- `"click"`: an instant toggle; Escape, outside pointerdown or window blur
+  close it.
+- `"manual"`: the controlled word — `visible` drives the panel; interactions
+  never auto-open or auto-close, and `onVisibleChange` stays silent (it only
+  speaks the hover/click transitions).
+
+`closeOnScroll` closes on any scroll while open — an explicit opt-out; the
+default follows the trigger through the popup's auto-update stream instead.
+`delay` merges partial objects into the defaults (`{ out: 200 }` keeps the
+300ms open delay).
+
+## Props
+
+| Prop            | Type                             | Default      |
+| --------------- | -------------------------------- | ------------ |
+| content         | `ReactNode`                      | —            |
+| visibleOn       | `'hover' \| 'click' \| 'manual'` | `'hover'`    |
+| visible         | `boolean`                        | —            |
+| showArrow       | `boolean`                        | `true`       |
+| placement       | `Placement`                      | `'top'`      |
+| variant         | `'dark' \| 'light'`              | `'dark'`     |
+| delay           | `{ in?, out? }`                  | `{ 300, 0 }` |
+| closeOnScroll   | `boolean`                        | `false`      |
+| size            | `'sm' \| 'md' \| 'lg'`           | `'md'`       |
+| onVisibleChange | `(visible: boolean) => void`     | —            |
+
+## Boundaries
+
+- **The trigger must accept a ref.** A component or host element without ref
+  support can't be referenced — no invisible span fallback is injected.
+- **Disabled native controls swallow pointer events.** No enter event ever
+  reaches a `disabled` button, so no tooltip opens — wrap it in a container
+  (an Anchor works) when a disabled trigger still needs an explanation.
+- **Entrance only.** The panel animates in (fade + scale, driven by the motion
+  tokens); there is no exit channel yet.
+- **No `defaultVisible`.** The hover/click channels are presentation-only —
+  first-show behavior needs no initial word, and the manual channel is
+  controlled.

@@ -5,6 +5,8 @@ export interface PopupProps extends HTMLAttributes<HTMLDivElement> {
   /** The element the panel positions against (the trigger control/shell). */
   referenceRef: RefObject<HTMLElement | null>;
   open: boolean;
+  /** The flip fallback chain (see useFloatingPosition). */
+  fallbackPlacements?: Placement[];
   placement?: Placement;
   /** Gap between the reference edge and the panel. */
   gap?: number;

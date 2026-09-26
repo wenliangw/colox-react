@@ -1,0 +1,20 @@
+// The entrance only (Popup has no exit channel — mount is the show):
+// fade + a soft scale-in, placement-agnostic so nothing stateside
+// needs to track the resolved direction. The motion tokens gate
+// reduced motion centrally (the theme zeroes the durations), so no
+// local media query belongs here.
+@keyframes colox-tooltip-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.colox-tooltip__content {
+  animation: colox-tooltip-enter var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}

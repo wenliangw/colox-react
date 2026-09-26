@@ -19,13 +19,14 @@ discipline and non-goals — lives in the repository:
   `Switch`, `Slider`, `DatePicker`, `Select`, `AutoComplete`.
 - **Form layer** — `Form` with `Form.Field` / `Form.Label` / `Form.Hint` /
   `Form.Validate` and `useForm`.
+- **Overlay** — `Tooltip` (the hover/focus hint layer).
 
 ## Next
 
 | Milestone                     | Contents                                                                                                                                                                      |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | M3 Form layer (complete)      | delivered: `Form` + fields + rules + TimePicker panel refresh + `Compact` (the visual joining base) — deferred: `FieldArray` (dynamic list form, design re-alignment pending) |
-| M4 Overlay                    | `Tooltip`, `Popover`, `Modal`, `Drawer`, `Toast`                                                                                                                              |
+| M4 Overlay                    | delivered: `Tooltip` — pending: `Popover`, `Modal`, `Drawer`, `Toast`                                                                                                         |
 | M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`                                                                                                            |
 | M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps`                                                                                                      |
 | M7 Data display               | `Table`, `VirtualList`, `Tree`                                                                                                                                                |

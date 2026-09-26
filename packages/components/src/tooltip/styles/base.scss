@@ -1,0 +1,24 @@
+// The hint-layer surfaces: the panel root is the click-through portal
+// carrier (positioning and the enter transition come from cdk Popup),
+// the content box paints the tooltip body. Panel pointer-events stay
+// none for life — a hint is not interactive, the pointer slides
+// through it to the trigger. The base tier is `md` (the size axis
+// shifts one ladder step in either direction).
+.colox-popup.colox-tooltip__panel {
+  pointer-events: none;
+}
+
+.colox-tooltip__content {
+  position: relative;
+  max-width: 280px;
+  padding: var(--colox-spacing-1-5) var(--colox-spacing-3);
+  border-radius: var(--colox-radius-md);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+  white-space: normal;
+  word-break: break-word;
+  background: var(--colox-color-bg-inverse);
+  color: var(--colox-color-text-inverse);
+  box-shadow: var(--colox-shadow-md);
+}

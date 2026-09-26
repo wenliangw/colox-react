@@ -120,6 +120,11 @@
       "import": "./dist/es/time-picker.js",
       "require": "./dist/cjs/time-picker.cjs"
     },
+    "./tooltip": {
+      "types": "./dist/types/tooltip/index.d.ts",
+      "import": "./dist/es/tooltip.js",
+      "require": "./dist/cjs/tooltip.cjs"
+    },
     "./switch": {
       "types": "./dist/types/switch/index.d.ts",
       "import": "./dist/es/switch.js",

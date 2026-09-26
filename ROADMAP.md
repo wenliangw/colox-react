@@ -84,12 +84,24 @@ The validation and field layer the form controls deliberately left out:
   itself, with the three cyclic rolling columns, the confirm commit and
   the throttle-gated direct-write glide.
 
-### M4 — Overlay family (planned)
+### M4 — Overlay family (next)
 
 The cdk `floating` layer already provides positioning, portal and dismissal; this
 milestone adds the semantics on top (focus management, scroll locking, ARIA):
 
-- `Tooltip`, `Popover`, `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification`.
+- `Tooltip` — the hover/focus hint layer on the floating mechanism —
+  **shipped**: zero container (the trigger is cloned in place — no wrapper
+  element enters the authored DOM), two channels (the `content` prop form
+  and the composed `Tooltip.Trigger` + `Tooltip.Content` form; giving both
+  is a compile error, an empty content renders nothing), hover/click/manual
+  visibility (`delay` as `{ in, out }`, timers always cancel their
+  opposite, focus instant), `closeOnScroll` as the explicit opt-out of
+  the default follow, dark/light surfaces with sm/md/lg tiers, and the
+  arrow plus the directional shadow pinned to the resolved placement
+  (`data-placement` from the cdk popup, post-flip). Upgrade side: the
+  cdk `useFloatingPosition`/`Popup` gained the optional
+  `fallbackPlacements` chain — pickers unchanged.
+- `Popover`, `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.
 
 ### M5 — Display and feedback (planned)
 

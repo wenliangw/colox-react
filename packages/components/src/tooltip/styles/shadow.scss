@@ -1,0 +1,27 @@
+// The directional cast: the resolved placement tells which edge the
+// arrow hugs — the shadow leans the same way, so the panel reads as
+// floating off the side it points at. The cast rides a palette-alpha
+// color-mix on top of the base token depth.
+.colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content {
+  box-shadow:
+    0 8px 12px -4px color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent),
+    var(--colox-shadow-md);
+}
+
+.colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content {
+  box-shadow:
+    0 -8px 12px -4px color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent),
+    var(--colox-shadow-md);
+}
+
+.colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content {
+  box-shadow:
+    8px 0 12px -4px color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent),
+    var(--colox-shadow-md);
+}
+
+.colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content {
+  box-shadow:
+    -8px 0 12px -4px color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent),
+    var(--colox-shadow-md);
+}

@@ -18,6 +18,12 @@ export interface UseFloatingPositionOptions {
   floatingRef: RefObject<HTMLElement | null>;
   /** Skip the positioning stream while closed. */
   open: boolean;
+  /**
+   * The flip fallback chain. Defaults to the picker presets
+   * (`top-start` / `bottom-end` / `top-end`); a popup may hand its own
+   * chain (the tooltip resolves the opposite side first).
+   */
+  fallbackPlacements?: Placement[];
   placement?: Placement;
   /** Gap between the reference edge and the panel. */
   gap?: number;

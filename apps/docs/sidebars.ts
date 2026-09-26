@@ -17,6 +17,7 @@ const sidebars: SidebarsConfig = {
       items: [
         { type: 'doc', id: 'components/button', label: 'Button' },
         { type: 'doc', id: 'components/icon-button', label: 'IconButton' },
+        { type: 'doc', id: 'components/tooltip', label: 'Tooltip' },
       ],
     },
     {

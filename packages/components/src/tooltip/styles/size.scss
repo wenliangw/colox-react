@@ -1,0 +1,13 @@
+// The hint-layer content tiers: one ladder step off the base (`md`
+// carries font-size-sm + spacing 1-5/3 in base.scss).
+.colox-tooltip__content--size-sm {
+  padding: var(--colox-spacing-1) var(--colox-spacing-2);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-tooltip__content--size-lg {
+  padding: var(--colox-spacing-2) var(--colox-spacing-4);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}

@@ -1,0 +1,8 @@
+// The light canvas rides the default surface. On light backgrounds it
+// needs the border to read as a floating layer at all; the arrow seam
+// (arrow.scss) continues the same border color through the square.
+.colox-tooltip__content--light {
+  border: 1px solid var(--colox-color-border-muted);
+  background: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+}

@@ -13,8 +13,18 @@ import './styles/popup.scss';
  * visual comes from the consumer's classname on the same element.
  */
 export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
-  const { referenceRef, open, placement, gap, padding, matchWidth, className, children, ...rest } =
-    props;
+  const {
+    referenceRef,
+    open,
+    fallbackPlacements,
+    placement,
+    gap,
+    padding,
+    matchWidth,
+    className,
+    children,
+    ...rest
+  } = props;
 
   const panelRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(ref, () => panelRef.current as HTMLDivElement);
@@ -22,6 +32,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
     referenceRef,
     floatingRef: panelRef,
     open,
+    fallbackPlacements,
     placement,
     gap,
     padding,
