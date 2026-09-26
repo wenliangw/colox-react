@@ -11,7 +11,7 @@
 ## props 顺序：普通属性 → 方法入参 → 事件属性
 
 - Props 声明（`XxxProps` 类型里的字段序）与组件内解构（`const {...} = props`）两处保持同一顺序：**普通属性（值/开关/样式/children/id）在前，方法型入参（如 `filterOption?: (query, option) => boolean`）居中，事件回调（`onChange`/`onSearch`/`onOpenChange`）最后**。
-- 来源：用户 2026-09 指正 Select 的 `filterOption` 位置——方法入参排在普通属性之后、事件属性之前是顺序约定，类型声明与使用两处都要遵守。
+- 来源：用户 2026-09 指正 Select 的 `filterOption` 位置——方法入参排在普通属性之后、事件属性之前是顺序约定，类型声明与使用两处都要遵守。**2026-12 复发 TimePicker**（用户「违反了很多代码习惯…完整的自查一遍」）：panel 合同中 confirmText/confirmBlocked 排在事件回调之后、三列 isDisabled 三枚重复实现、scrollColumn 是 moveColumn 的零语义穿透、columnState/合并词/换列/方向词四条三目链——整改沉淀为新组件自查长清单：**三处同序（接口/解构/调用点）、属性→方法→事件、同构方法合并为族级单实现、穿透 wrapper 一律删除、pad/mod 类公共工具集中 utils、三目链用 guard 消解、模块头注释 ≤3 行**。
 
 ## import 排序约定
 
