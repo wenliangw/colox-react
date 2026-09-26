@@ -11,7 +11,7 @@
 ## 视觉契约(全部在 `styles/base.scss`)
 
 - **接缝**:`> * + * { margin-inline-start: -1px }` —— 与成员自身 1px 边框锁步的唯一字面量(注释标明)。
-- **两端圆角**:`:first-child:not(:last-child)` 起端 / `:last-child:not(:first-child)` 末端,`--colox-radius-lg`(成员自己的半径 token,无私有值);单子件不缝、不动形。
+- **两端圆角**:**半径规则全部写在 0,3,0(类 + 两个伪类)**——成员自己的基类半径是 0,1,0,同分平手会由样式表顺序裁决(聚合 CSS 里 input/select 排在 compact 之后 → 成员圆角复活,首版实踩的 bug);端点规则显式把**内角归零**、外角取 `--colox-radius-lg`(成员自己的半径 token,无私有值),中间件全角归零;单子件不匹配任何半径规则、保持自身形状。成员的 `rounded` 自形在组内由接缝接管。
 - **状态成员画过接缝**:`:focus-within` / `[aria-invalid='true']` 升 z-index——相邻成员会盖住左邻右边界,状态成员升高后自己的色边/ring 画到接缝位。
 - **加件槽**:`colox-compact__addon`(文本/图标等不产值成员):inline-flex + not-nowrap + 描边/bg 同输入件、文本次级色 `--colox-color-text-muted`。纯 CSS 类,不产组件 API、不产值。
 - 逻辑属性全程(RTL 安全,同 Container/Positioner 纪律)。
