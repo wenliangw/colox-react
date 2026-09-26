@@ -28,7 +28,7 @@ until a component ships and gets its bundle.
 | Form         | form provider: field state, rules, submit lifecycle (+ Field / Label / Hint / Validate, useForm)                                    | shipped | pending      |
 | FieldArray   | repeating field groups                                                                                                              | planned | M3           |
 | InputGroup   | grouped input with addons and segments (namespace reserved)                                                                         | planned | M3           |
-| TimePicker   | single-line time editor (DatePicker sibling)                                                                                        | planned | M3           |
+| TimePicker   | single-line time editor (canonical HH:mm value, two cyclic columns with 7-step windows, min/max bounds, valueFormat display)        | shipped | pending      |
 | Tooltip      | hover/focus hint layer                                                                                                              | planned | M4           |
 | Popover      | interactive floating content                                                                                                        | planned | M4           |
 | Modal        | modal dialog with focus management                                                                                                  | planned | M4           |
