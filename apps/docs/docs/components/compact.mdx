@@ -102,8 +102,15 @@ A `Select` prefix still owns its value — the seam is purely visual:
   radius token). The seam owns the member shapes: inner corners are
   squared, a member's own `rounded` form squares inside a group, and a
   lone child keeps its shape untouched.
-- A member in a state — `:focus-within` or `aria-invalid="true"` — rises
-  above the junction, so its ring or red border paints the seam it sits at.
+- Focus belongs to the unit: whichever member holds the focus, one ring
+  traces the whole seam (`:focus-within` on the group, the end-corner
+  radius). Inside the group a member draws no second layer — its own
+  ring stays silent and the input family keeps its resting border token
+  (invalid members keep their red border). Button variants keep their
+  own palette borders: the Compact layer never reaches into variant
+  colours.
+- An invalid member owns the junction with its red border (it rises above
+  the next sibling, ring-free); focusing it turns the unit ring red too.
 - Logical properties throughout: the seam is RTL-safe.
 
 ## Props

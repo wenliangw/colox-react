@@ -98,8 +98,9 @@ export const Overview: Story = {
         <div
           style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
         >
-          The invalid member rises above the junction — its red border reaches the seam (focus rings
-          breathe the same way on <code>:focus-within</code>).
+          The invalid member rises above the junction — its red border reaches the seam. Focus rings
+          the whole unit from outside (try tabbing between members); a member draws no second layer
+          — its own ring and the input family's focus border change stay quiet inside the group.
         </div>
       </Section>
     </div>

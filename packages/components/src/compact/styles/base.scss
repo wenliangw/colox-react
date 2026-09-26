@@ -1,6 +1,7 @@
 // The seam layer. One visual contract: members sit flush, share a single
-// border at each junction, round only at the group's two ends, and let a
-// focused/invalid member rise so its own border + ring paint the seam.
+// border at each junction, round only at the group's two ends, and focus
+// rings the unit as a whole — a member ring inside the group can only
+// bleed over its neighbours, which the unit ring replaces.
 //
 // Two literals stay in lock-step with the members' own geometry: the -1px
 // pull (a member's border must land exactly on its left neighbour's 1px
@@ -8,14 +9,28 @@
 // corner the seam touches is zeroed explicitly). Radii reuse the members'
 // `--colox-radius-lg` token, never a private value.
 //
-// The radius rules are written at 0,3,0 (a class plus two pseudo-classes)
-// on purpose: the members' own base radius is 0,1,0, and a tie there is
-// decided by stylesheet order — which let the members' rounded corners
-// through again (the first version's bug).
+// The member-state overrides are written at 0,3,0 (a class plus two
+// pseudo-classes) on purpose: the members' own radius and focus ring are
+// 0,1,0 / 0,2,0, and a tie voted by stylesheet order already let the
+// members' rounded corners through once (the first version's bug).
 
 .colox-compact {
   display: inline-flex;
   align-items: stretch;
+
+  // Focus belongs to the unit: whichever member holds the focus, one
+  // ring traces the whole seam. The radius mirrors the end corners, so
+  // the ring hugs the same outline the group paints.
+  &:focus-within {
+    border-radius: var(--colox-radius-lg);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  // …unless the focused member is invalid — then the unit ring turns red,
+  // the same palette the invalid member's border uses.
+  &:has(> [aria-invalid='true']:focus-within) {
+    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  }
 
   // Members stack their own borders: every sibling pulls back over the
   // previous one's border band, so two 1px borders collapse into one line.
@@ -26,9 +41,36 @@
       margin-inline-start: -1px;
     }
 
-    // A member in a state must own the junction: raised above the next
-    // sibling, its accent border and its ring paint the seam it sits at.
-    &:focus-within,
+    // Member rings stay quiet inside the group — the unit ring above
+    // replaces them, so nothing ever draws over a neighbour. The
+    // :not(:disabled) pseudo is the specificity carrier (0,3,0 beats the
+    // members' own 0,2,0 focus ring whatever the stylesheet order); a
+    // disabled member cannot focus, so the predicate is inert.
+    &:focus-within:not(:disabled) {
+      box-shadow: none;
+    }
+
+    // The input family's focus border change would draw a second layer
+    // right under the unit ring — the same brand line twice. Their
+    // resting border is the single muted token the whole family shares,
+    // so the focused member keeps it (invalid members keep their red
+    // border, hence the [aria-invalid] exclusion). Button variants keep
+    // their own borders — Compact never reaches into variant palettes.
+    &:is(
+        .colox-input,
+        .colox-input-number,
+        .colox-select,
+        .colox-date-picker,
+        .colox-time-picker,
+        .colox-textarea,
+        .colox-autocomplete
+      ):focus-within:not([aria-invalid='true']) {
+      border-color: var(--colox-color-border-muted);
+    }
+
+    // An invalid member owns the junction: raised above the next sibling,
+    // its red border paints the seam it sits at (border only — its ring
+    // is the group's business, see above).
     &[aria-invalid='true'] {
       z-index: 1;
     }
