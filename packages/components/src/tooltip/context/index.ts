@@ -13,7 +13,7 @@ export const defaultTooltipContextValue: TooltipContextValue = {
   triggerRef: { current: null },
   panelRef: { current: null },
   placement: 'top',
-  gap: 4,
+  gap: 6,
   fallbackPlacements: ['bottom'],
   showArrow: true,
   variant: 'dark',

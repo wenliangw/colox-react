@@ -85,7 +85,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
       triggerRef,
       panelRef,
       placement,
-      gap: showArrow ? 6 : 4,
+      gap: showArrow ? 8 : 6,
       fallbackPlacements,
       showArrow,
       variant,
@@ -133,7 +133,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
           contentId={contentId}
           referenceRef={triggerRef}
           placement={placement}
-          gap={showArrow ? 6 : 4}
+          gap={showArrow ? 8 : 6}
           fallbackPlacements={fallbackPlacements}
           showArrow={showArrow}
           variant={variant}

@@ -1,4 +1,4 @@
-// The arrow is a 6px square rotated 45deg: after the rotation its far
+// The arrow is an 8px square rotated 45deg: after the rotation its far
 // corners sit on the four axes, so one rotation state serves every
 // direction — only the edge it hugs differs. The resolved placement
 // word on the panel root (data-placement from cdk useFloatingPosition,
@@ -10,33 +10,33 @@
   &::before {
     content: '';
     position: absolute;
-    width: var(--colox-spacing-1-5);
-    height: var(--colox-spacing-1-5);
+    width: var(--colox-spacing-2);
+    height: var(--colox-spacing-2);
     background: inherit;
     rotate: 45deg;
   }
 }
 
 .colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content--arrow::before {
-  bottom: calc(var(--colox-spacing-1-5) / -2);
+  bottom: calc(var(--colox-spacing-2) / -2);
   left: 50%;
   translate: -50% 0;
 }
 
 .colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content--arrow::before {
-  top: calc(var(--colox-spacing-1-5) / -2);
+  top: calc(var(--colox-spacing-2) / -2);
   left: 50%;
   translate: -50% 0;
 }
 
 .colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content--arrow::before {
-  right: calc(var(--colox-spacing-1-5) / -2);
+  right: calc(var(--colox-spacing-2) / -2);
   top: 50%;
   translate: 0 -50%;
 }
 
 .colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content--arrow::before {
-  left: calc(var(--colox-spacing-1-5) / -2);
+  left: calc(var(--colox-spacing-2) / -2);
   top: 50%;
   translate: 0 -50%;
 }
