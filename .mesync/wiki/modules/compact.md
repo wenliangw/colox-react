@@ -20,11 +20,14 @@
 - **形状件豁免(五修)**:`$compact-shape-keepers: '.colox-switch', '.colox-slider'`——圆形轨道自己的设计语言,不进半径规则(switcher/slider 若被塞进组,圆角不改形)。
 - **动效与阴影也归组(五修)**:按钮 shadow-sm/md/lg 静态变体在组内静默、`:active { transform: none }`(scale(0.97) 会撕开缝)——抬升/缩放与 ring 同类 artifact。
 - **弹层开着 = 单元 engaged(八修)**:组环宿主扩展为 `&:focus-within, &:has(> [class*='--open'])` —— 成员的弹层在 portal 里、焦点会被带出组子树,`:focus-within` 看不见,但弹层是成员自己的 UX、单元环不该灭。家族根元统一挂 `--open` 状态类:Select 一直有(开态 chevron 旋转也用它)、DatePicker/TimePicker 本轮补上(`colox-date-picker--open`/`--time-picker--open`,无样式、纯状态信号)。**焦点换手空窗(用户第六次逮住:「点击箭头触发弹层时 border 闪一下,选中样式丢失又恢复」)**:不可聚焦的 shell(chevron 是 span)在 mousedown 默认行为里把焦点从组内 Input 拿走(落到 body)——组 `:focus-within` 掉、环灭一帧,click 才把焦点从控制件取回、环复明。修法 = **非交互区 mousedown `preventDefault` 焦点驻车**(三件统一:select/date-picker/time-picker 的 shell,守卫 `closest('button, input')` 豁免按钮与真控件),click 再原子换手,无缝可画;Select 开态点 chevron 同时改成**显式关闭**(原路径是 blur-close + click-refocus-reopen 的隐形双闪)。注意 icon 全 `pointer-events: none`,真实浏览器点击落在背景节点,但守卫判定 target 类型用 `instanceof Element`(不是 HTMLElement)——SVG 也能当 target(jsdom 不认 pointer-events,首版守卫用 HTMLElement 被 SVG 挡掉,单测逮住)。
+- **环只归输入族(九修,用户指名)**:用户「box-shadow 应仅对输入框这类组件支持」——品牌环改挂 `&:focus-within:has(> :is($compact-input-family):focus-within), &:has(> [class*='--open'])`(组环只在焦点落在输入族成员/其弹层开时画);**按钮及其他成员保持自己的焦点 affordance**——静默规则同步划区 `&:is(族):focus-within:not(:disabled)`,按钮自己的 `:focus-visible` 环恢复(它画在自身盒内 + 2px 扩散,越缝 2px 属标准行为,已向用户明示)。红环重构为嵌套 `&:has(> [class*='--invalid']) { &:focus-within:has(> :is(族):focus-within), &:has(> [class*='--open']) {...} }`(0,5,0/0,3,0 稳压品牌环 0,4,0/0,2,0,顺序无关)。
+- **size/palette 继承(九修,用户问「是否可以输入通用属性由子组件继承」→ 答案:可以,走 context 回退)**:Compact 增两个继承词 `size?: 'xs'|'sm'|'md'|'lg'`(镜像 FormSize)、`palette?: primary|gray|info|error|warning|success`(六色并集),经 `@colox/cdk/compact-context`(新建 cdk 内核文件)供给成员;**成员自己的词永远优先**(`size ?? compact?.size`,`select` 的硬默认 'md' 让位为连锁末位 `?? compact?.size ?? 'md'`)、Form 级注入的 size 作为成员 prop 也优先于 compact 默认。**绝不克隆**:Form 级 size 走 cloneElement 注入的先例在 Compact 不适用(定案红线「成员保持作者原元素」),context 是唯一不违反零词本意的通道。消费面 = 全部持 size/palette 的成员:Input/InputNumber/Select/Textarea + Date/TimePicker + Button + Switch/Slider + Checkbox/Radio(经 resolveXxxState 入参);Autocomplete 无 size 词、本轮未接入(报告已列出为开放项)。
+- **divide 分割线(九修,用户指名「中间 border 非常丑,应该用 divide 样式」)**:`colox-compact--divide` 修饰类(零词原则:类不加 prop,同 addon 先例)——成员**卸掉自己的边框**、**单元画一道外框**(`border: 1px solid muted` +半径 lg)、**每个非首成员在自己的 start 边画一条细分割线**(`border-inline-start: 1px solid var(--colox-color-border-subtle)`,subtle token 已有,比外框淡才是「分割」而非「黏合的盒子」);`> * + * { margin-inline-start: 0 }`(分割线坐边界本身,不再 -1px 叠带,否则 1px 背景重叠);invalid 转投**外框 + 全部分割线**一起红(成员边框已卸,原 tint 打在零宽边上无效);**禁用 overflow:hidden**(会吞掉外画的 ring)。无 divide 类 = 传统叠带风格,两态并存。
 - 逻辑属性全程(RTL 安全,同 Container/Positioner 纪律)。
 
 ## API
 
-`CompactProps = HTMLAttributes<HTMLDivElement>`(type alias——零词组件不声明空 interface,eslint no-empty-object-type)。子件即成员,不加包装。ref 直通根 div。
+`CompactProps = HTMLAttributes<HTMLDivElement>` + 两个继承词 `size`/`palette`(可选,context 回退,成员自声优先;两者不进 DOM——从 rest 里抽出)。子件即成员,不加包装、不克隆。ref 直通根 div。`colox-compact__addon`(纯类)与 `colox-compact--divide`(纯修饰类)是零词原则下的两个类态入口。
 
 ## 边界(红线)
 
@@ -34,7 +37,7 @@
 
 ## 测试与验收
 
-4 例单测:根类与直系子件(无包装/克隆)、className 合并与 rest 透传(id/data-*/style)、ref 转发、混编成员(Select 前缀 + Input + Button)不碰成员行为。**9 条规格门禁**(`_tests/compact-spec.test.tsx`,源级断言,icons spec lint 同先例):半径规则、形状件豁免、组环+成员环静默、无 z-index、invalid 接缝透明、输入族定宽均分/边框钉、按钮阴影/缩放静默——把四轮目视教训锁成机器检查。cdk 门禁全绿 + story/docs 构建通过;视觉终判仍靠真实浏览器(jsdom 看不见接缝,教训:第一轮交付「圆角只在两端」在 jsdom 通过、目视现形)。入口:ES/CJS/dts 子路径 `@colox/react/compact`,样式随 `style.css` 聚合。
+8 例渲染单测(根/直系子件、className/rest、ref、混编、size 继承、自声优先、palette 继承、divide 类)+ **10 条规格门禁**(`_tests/compact-spec.test.tsx`,源级断言,icons spec lint 同先例):半径规则、形状件豁免、输入族组环+成员环静默划区、红环双形态、invalid+addon、divide 外框/分割线/卸边框/转红、输入族定宽均分/边框钉、按钮阴影/缩放静默——把七轮目视教训锁成机器检查。cdk 门禁全绿 + story/docs 构建通过;视觉终判仍靠真实浏览器(jsdom 看不见接缝,教训:第一轮交付「圆角只在两端」在 jsdom 通过、目视现形)。入口:ES/CJS/dts 子路径 `@colox/react/compact`,样式随 `style.css` 聚合。
 
 ## 关联决策
 
