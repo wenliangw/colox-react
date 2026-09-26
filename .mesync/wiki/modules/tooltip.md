@@ -68,24 +68,26 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 
 ## 视觉层（按 placement 贴边）
 
-- **箭头**：8px 方块 `rotate: 45deg`（独立 rotate 属性；旋转后四角正对四轴，
-  一个旋转态通吃四向；**clip-path 沿对角线裁掉藏进面板的半边**——玻璃填充是
-  半透明的，被面板盖住的那半边会叠出更深的双重 alpha 斑块，裁剪后可见形
-  恰好=菱形凸出半边正三角形）。挂边按 `data-placement` 前缀（top→bottom:-4px），
-  **沿面板边的中心钉在 `--colox-floating-arrow-offset`**（cdk 每帧刷新，
-  `clamp(spacing-3, var, 100% - spacing-3)` 防出界）——面板被 flip/shift
-  搬移时箭头仍瞄准 trigger；translate -50% 居中。gap 随箭头开关：开 8 / 关 6。
+- **箭头**：纯三角，**整个落在气泡盒外**（top/bottom/left/right: 100%，
+  绝不骑边负偏移）；token 尺寸：底 spacing-3=12px、深 spacing-1-5=6px，
+  **不旋转**，clip-path 按四向各自画三角形。骑边旋转方块被判死刑：
+  backdrop-filter 只采样自身盒内，骑边会把气泡自己的半透明填充 blur 进
+  自己（实测气泡 66 vs 箭头 62 的硬台阶）；全在盒外则箭头背景=页面，与
+  气泡同构同源。沿边的中心仍钉 `--colox-floating-arrow-offset`（clamp
+  防出界、面板被 flip/shift 搬移后箭头仍瞄准 trigger），translate -50%
+  居中；gap 随箭头开关：开 8 / 关 6。
 - **箭头颜色/模糊跟随气泡**：`background: inherit` 直取内容盒的 color-mix
-  填充、backdrop blur 读同一个 CSS 变量 `--colox-tooltip-blur`（8px，
-  内容盒声明）——箭头=气泡表面伸出的部分，任何 variant 调整自动同源。
-  **两变体同一条 8px 无边框、无阴影几何**（light 用 border 会内缩填充致
-  两变体观感不一致——用户否掉；磨砂填充 + blur 自身即边缘定义）。
-- **零阴影（磨砂铁律）**：面板不带 `--colox-shadow-md`、不带定向落影，
-  箭头不带 drop-shadow——**任何阴影都会穿过半透明填充泛上来**：箭头凸出
-  面板边缘恰在阴影散布区，light 的白色半透明叠在下方的灰阴影上就读成
-  灰箭头（用户实测报「应该白色、被 box-shadow 影响成灰色」）；全摘除后
-  玻璃=纯填充+blur，两变体观感完全一致。定向阴影（设计轮「箭头向阴影」
-  语义）随玻璃面落地一并退场——半透明浮层与投影互斥，取舍以玻璃为准。
+  填充、backdrop blur 读同一 CSS 变量 `--colox-tooltip-blur`（8px）——
+  箭头=气泡表面伸出的部分，variant 调整自动同源。**两变体同一条无边框
+  几何**（light 的 border 被用户否掉以来从未回潮）。
+- **阴影（本轮定案：一条 token box-shadow 挂本体盒，机制全撤）**：内容盒
+  自带 `box-shadow: var(--colox-shadow-md)`，箭头 `z-index: 1` 盖在阴影
+  之上——无投影层、无遮罩挖孔、无 6px 让位带。半透明窗仍让阴影渗出几
+  unit（实测 dark delta 0-1、light delta 5）——这是用户拍板「简单需求」
+  的代价。演化线：零阴影终态（light 白底隐身被报）→ 定向投射层 + 箭头侧
+  6px 让位带（白边被报「白色背景层」）→ 遮罩挖孔（用户否掉 mask/复杂度）
+  → 最简（用户指定 box-shadow + z-index 提层思路；z-index 实测不消除透光
+  但用户仍拍板简单优先）。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
@@ -110,7 +112,7 @@ tooltip/
 │   ├── resolve-trigger-surface.ts     # 零容器注入面装配（合并/串联/describedby/ref）
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
 ├── variants/                 # cva 三轴：variant.ts / size.ts / arrow.ts + index.ts
-├── styles/                   # base/variant/size/arrow/animation + index.scss @use 聚合（shadow.scss 随零阴影终态移除）
+├── styles/                   # base/variant/size/arrow/animation + index.scss @use 聚合；阴影=base.scss 内容盒上一条 token box-shadow（无独立投影文件）
 └── _tests/                   # 30 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序
 ```
 
