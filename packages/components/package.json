@@ -35,6 +35,11 @@
       "import": "./dist/es/checkbox.js",
       "require": "./dist/cjs/checkbox.cjs"
     },
+    "./compact": {
+      "types": "./dist/types/compact/index.d.ts",
+      "import": "./dist/es/compact.js",
+      "require": "./dist/cjs/compact.cjs"
+    },
     "./container": {
       "types": "./dist/types/container/index.d.ts",
       "import": "./dist/es/container.js",

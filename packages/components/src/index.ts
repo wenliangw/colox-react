@@ -4,6 +4,7 @@ export * from './anchor';
 export * from './autocomplete';
 export * from './button';
 export * from './checkbox';
+export * from './compact';
 export * from './container';
 export * from './date-picker';
 export * from './form';

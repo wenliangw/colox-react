@@ -12,6 +12,7 @@ const entries = {
   autocomplete: resolve(import.meta.dirname, 'src/autocomplete/index.ts'),
   button: resolve(import.meta.dirname, 'src/button/index.ts'),
   checkbox: resolve(import.meta.dirname, 'src/checkbox/index.ts'),
+  compact: resolve(import.meta.dirname, 'src/compact/index.ts'),
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
   'input-number': resolve(import.meta.dirname, 'src/input-number/index.ts'),
   'date-picker': resolve(import.meta.dirname, 'src/date-picker/index.ts'),

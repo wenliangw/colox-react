@@ -1,0 +1,56 @@
+// The seam layer. One visual contract: members sit flush, share a single
+// border at each junction, round only at the group's two ends, and let a
+// focused/invalid member rise so its own border + ring paint the seam.
+//
+// The one literal that must stay in lock-step with the members' own
+// 1px border: the -1px pull (a member's border must land exactly on its
+// left neighbour's). Radii reuse the members' `--colox-radius-lg` token,
+// never a private value.
+
+.colox-compact {
+  display: inline-flex;
+  align-items: stretch;
+
+  // Members stack their own borders: every sibling pulls back over the
+  // previous one's border band, so two 1px borders collapse into one line.
+  > * {
+    position: relative;
+    border-radius: 0;
+
+    & + * {
+      margin-inline-start: -1px;
+    }
+
+    // A member in a state must own the junction: raised above the next
+    // sibling, its accent border and its ring paint the seam it sits at.
+    &:focus-within,
+    &[aria-invalid='true'] {
+      z-index: 1;
+    }
+  }
+
+  // The two ends keep their radii; the middle keeps radius 0. A lone
+  // child is no seam at all, so it keeps its own shape untouched.
+  > :first-child:not(:last-child) {
+    border-start-start-radius: var(--colox-radius-lg);
+    border-end-start-radius: var(--colox-radius-lg);
+  }
+
+  > :last-child:not(:first-child) {
+    border-start-end-radius: var(--colox-radius-lg);
+    border-end-end-radius: var(--colox-radius-lg);
+  }
+}
+
+// The non-control member: a text/icon addon (¥ prefix, unit suffix) that
+// looks like a segment of the input next to it but produces no value.
+.colox-compact__addon {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  white-space: nowrap;
+  padding-inline: var(--colox-spacing-3);
+  border: 1px solid var(--colox-color-border-muted);
+  background-color: var(--colox-color-bg-default);
+  color: var(--colox-color-text-muted);
+}
