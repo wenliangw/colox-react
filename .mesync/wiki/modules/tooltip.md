@@ -78,13 +78,14 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 - **箭头颜色/模糊跟随气泡**：`background: inherit` 直取内容盒的 color-mix
   填充、backdrop blur 读同一个 CSS 变量 `--colox-tooltip-blur`（8px，
   内容盒声明）——箭头=气泡表面伸出的部分，任何 variant 调整自动同源。
-  **两变体同一条 8px 无边框几何**（light 用 border 会内缩填充致两变体
-  观感不一致，用户否掉——磨砂填充 + drop-shadow 自身即边缘定义）、同一条
-  `filter: drop-shadow(0 2px 4px color-mix(gray-900 20%))` 软投影
-  （light 在白底上靠它出生）。
-- **向箭头侧定向阴影**：内容盒属性选择器驱动，`color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent)`
-  定向落影 ×（top→+y、bottom→-y、left→+x、right→-x）+ token base
-  `--colox-shadow-md` 双层，穿在半透明盒子下依旧成立。
+  **两变体同一条 8px 无边框、无阴影几何**（light 用 border 会内缩填充致
+  两变体观感不一致——用户否掉；磨砂填充 + blur 自身即边缘定义）。
+- **零阴影（磨砂铁律）**：面板不带 `--colox-shadow-md`、不带定向落影，
+  箭头不带 drop-shadow——**任何阴影都会穿过半透明填充泛上来**：箭头凸出
+  面板边缘恰在阴影散布区，light 的白色半透明叠在下方的灰阴影上就读成
+  灰箭头（用户实测报「应该白色、被 box-shadow 影响成灰色」）；全摘除后
+  玻璃=纯填充+blur，两变体观感完全一致。定向阴影（设计轮「箭头向阴影」
+  语义）随玻璃面落地一并退场——半透明浮层与投影互斥，取舍以玻璃为准。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
@@ -109,7 +110,7 @@ tooltip/
 │   ├── resolve-trigger-surface.ts     # 零容器注入面装配（合并/串联/describedby/ref）
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
 ├── variants/                 # cva 三轴：variant.ts / size.ts / arrow.ts + index.ts
-├── styles/                   # base/variant/size/arrow/shadow/animation + index.scss @use 聚合
+├── styles/                   # base/variant/size/arrow/animation + index.scss @use 聚合（shadow.scss 随零阴影终态移除）
 └── _tests/                   # 30 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序
 ```
 
