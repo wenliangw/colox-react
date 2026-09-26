@@ -1,0 +1,140 @@
+---
+sidebar_position: 14
+---
+
+import { TimePicker } from '@colox/react';
+import '@colox/react/style.css';
+
+# TimePicker
+
+A single-line time editor: a bare text input in the Input family shell
+plus a self-drawn panel riding the cdk popup. The panel holds two
+pure-number cyclic columns — hours 00–23 and minutes 00–59 — each an
+8-option window scrolled by the up/down chevron buttons in 7-option
+steps; there is no scrollbar, the chevrons are the scroll. Picking an
+option merges it into the value, commits and closes. The canonical
+value is the fixed-width `HH:mm` word; `null` is the empty state.
+
+```tsx
+import { TimePicker } from '@colox/react';
+```
+
+## When to use
+
+- Any field that collects a time-of-day — schedules, alarms, working
+  hours.
+- When typed entry and picking should both work: the panel selects,
+  keystrokes parse and normalize the same `HH:mm` word.
+- When a time bound (`min`/`max`) must disable out-of-range options
+  instead of leaving invalid picks to a form layer.
+
+## Examples
+
+### Basic
+
+Times commit as they resolve; typing takes the canonical `HH:mm`
+grammar and the lenient `H:m` spelling. Open the panel with a click,
+ArrowDown or Enter; the window seats the committed value at slot 4
+(three options above, four below) and the system clock when the field
+is empty.
+
+<TimePicker aria-label="Basic time" defaultValue="08:30" />
+
+<TimePicker aria-label="Empty time" />
+
+## Sizes
+
+<TimePicker size="xs" aria-label="Extra small" defaultValue="08:30" />
+
+<TimePicker size="sm" aria-label="Small" defaultValue="08:30" />
+
+<TimePicker size="md" aria-label="Medium" defaultValue="08:30" />
+
+<TimePicker size="lg" aria-label="Large" defaultValue="08:30" />
+
+The four tiers share the family row heights (24/32/40/48); the panel
+geometry stays constant.
+
+## Value formats
+
+`valueFormat` renders the field text with the standard clock-pattern
+tokens: `H`/`HH`, `h`/`hh` and `m`/`mm` — single letters skip the
+zero pad, doubled letters pad to two digits, and every other character
+is a literal separator. The internal value and the change payload
+stay canonical `HH:mm` regardless of the format.
+
+<TimePicker aria-label="Zero-padded 24-hour" defaultValue="08:30" />
+
+<TimePicker aria-label="Single-digit hour" valueFormat="H:mm" defaultValue="08:30" />
+
+<TimePicker aria-label="Twelve-hour clock" valueFormat="h:mm" defaultValue="13:30" />
+
+<TimePicker aria-label="Dotted separators" valueFormat="H.mm" defaultValue="08:30" />
+
+Hours stay the factual clock hour — there is no meridiem token in the
+pattern vocabulary; the display format never leaks into the value.
+
+## Bounds
+
+`min`/`max` accept strings or `Date`s (read at local wall-clock time)
+and are editor mechanics, not a validation layer: an option is
+disabled when the word picking it would produce falls out of bounds —
+the hour compares its merge with the committed minute and vice versa,
+so a pick can never commit an out-of-range word. A typed
+out-of-range value holds silently until blur rolls it back. Times
+have no honest "nearest legal value", so rollback — not clamping — is
+the mechanism.
+
+<TimePicker aria-label="Working hours" min="09:00" max="18:00" defaultValue="13:30" />
+
+## Palette
+
+The palette family colors the selection semantics only: the
+committed option fills the family solid. The field shell and the
+off-state panel fabric stay neutral.
+
+<TimePicker aria-label="Primary palette" defaultValue="08:30" palette="primary" />
+
+<TimePicker aria-label="Info palette" defaultValue="08:30" palette="info" />
+
+## Clearable
+
+`clearable` follows the Select interaction: with a committed value,
+hovering or focusing the field swaps the trailing clock glyph for the
+✕ clear control — clicking it commits `null` through the change
+payload and returns focus to the field.
+
+<TimePicker aria-label="Clearable" clearable defaultValue="08:30" />
+
+## States
+
+<TimePicker aria-label="Invalid" invalid defaultValue="08:30" />
+
+<TimePicker aria-label="Disabled" disabled defaultValue="08:30" />
+
+<TimePicker aria-label="Read only" readOnly defaultValue="08:30" />
+
+## Keyboard
+
+- **Field**: ArrowDown / Enter opens the panel; Escape closes it.
+- **Column**: ↑/↓ walk the cursor one option — the window slides by
+  one to follow it at the visible edges; PageUp/PageDown ride the
+  7-option scroll step; Home/End land the column bounds (00 / 23, 00 /
+  59); ←/→ swap columns; Enter/Space pick the focused option and
+  commit.
+
+## API
+
+| Prop           | Type                                                                 | Default     | Notes                                                               |
+| -------------- | -------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------- |
+| `value`        | `string \| null`                                                     | —           | Canonical `HH:mm`; controlled when set.                             |
+| `defaultValue` | `string \| null`                                                     | `null`      | Uncontrolled seed.                                                  |
+| `valueFormat`  | `string`                                                             | `'HH:mm'`   | Display pattern; also the placeholder.                              |
+| `min` / `max`  | `string \| Date`                                                     | —           | Time bounds at local wall-clock time; out-of-range options disable. |
+| `palette`      | `'primary' \| 'gray' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'primary'` | Colors the selected option only.                                    |
+| `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'`                                       | `'md'`      | Family row heights (24/32/40/48).                                   |
+| `clearable`    | `boolean`                                                            | `false`     | Select-style trailing ✕ control.                                    |
+| `invalid`      | `boolean`                                                            | `false`     | Red border/ring + `aria-invalid`.                                   |
+| `open`         | `boolean`                                                            | —           | Controlled panel visibility; `defaultOpen` seeds it.                |
+| `onChange`     | `(payload: { event; value }) => void`                                | —           | `value` is the canonical `HH:mm` string or `null`.                  |
+| `onOpenChange` | `(open: boolean) => void`                                            | —           | Fires when the panel opens/closes.                                  |

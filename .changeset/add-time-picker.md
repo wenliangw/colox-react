@@ -28,6 +28,6 @@ Column keyboard: ↑/↓ single steps (the window slides at the edges),
 PgUp/PgDn ride the 7-option step, Home/End land the column bounds,
 ←/→ swap columns, Enter/Space select, Escape closes; the field opens
 the panel on ArrowDown/Enter. Per-subpath entry `@colox/react/time-picker`,
-preview stories, the wiki component map and module doc updated in
-lockstep. Adds IconClock (stroke clock face with the 4:30 hands pose)
+preview stories, a docs page, the wiki component map and module doc
+updated in lockstep. Adds IconClock (stroke clock face with the 4:30 hands pose)
 to `@colox/icons` — used as the decorative trailing glyph.
