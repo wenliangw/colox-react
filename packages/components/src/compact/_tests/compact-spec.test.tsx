@@ -52,18 +52,25 @@ describe('Compact seam contract', () => {
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-red-muted)');
   });
 
-  it('divides the unit with one frame and subtle inner dividers', () => {
+  it('divides the unit with one frame and floating short dividers', () => {
     expect(seam).toContain('.colox-compact--divide {');
     // One frame around the unit…
     expect(seam).toContain('border: 1px solid var(--colox-color-border-muted);');
     expect(seam).toContain('border-radius: var(--colox-radius-lg);');
-    // …thin dividers on the boundaries (no overlapping pulls)…
+    // …no overlapping pulls…
     expect(seam).toContain('margin-inline-start: 0;');
-    expect(seam).toContain('border-inline-start: 1px solid var(--colox-color-border-subtle);');
+    // …a short floating bar halves the segment height instead of a
+    // full-height border that would weld into the frame (and would be
+    // zeroed by the members' border strip)…
+    expect(seam).toContain('> * + *::before {');
+    expect(seam).toContain('inset-block: 25%;');
+    expect(seam).toContain('inset-inline-start: 0;');
+    expect(seam).toContain('background-color: var(--colox-color-border-subtle);');
+    expect(seam).not.toContain('border-inline-start: 1px solid');
     // …members drop their own borders…
     expect(seam).toContain('border: 0;');
-    // …and an invalid member reddens the frame and the dividers together.
-    expect(seam).toContain('border-inline-start-color: var(--colox-color-red-solid);');
+    // …and an invalid member reddens the frame and the bars together.
+    expect(seam).toContain('background-color: var(--colox-color-red-solid);');
   });
 
   it('keeps the focused input family border at the resting token, never a second layer', () => {

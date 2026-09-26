@@ -159,22 +159,35 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
 }
 
 // The divide gesture (`<Compact className="colox-compact--divide">`):
-// one unit frame, thin inner dividers. The members drop their own
+// one unit frame, thin floating dividers. The members drop their own
 // borders and the unit draws a single outline; every member after the
-// first carries one divider on its start edge. The steppings read as
-// partitions of one control instead of glued boxes whose borders band
-// over each other. States retarget to the unit: invalid reddens the
-// frame and the dividers together, while the focus ring and the
-// open-panel ring still paint outside the frame (no overflow clipping —
-// clipping would swallow the ring).
+// first carries one short divider bar on its start edge. The bar is a
+// pseudo-element, not a border: a border runs the full box height and
+// welds into the frame at both ends, and (worse) the members' border
+// strip zeroes any side border on them — so the divider must be a
+// floating bar, inset from the outline. States retarget to the unit:
+// invalid reddens the frame and the dividers together, while the focus
+// ring and the open-panel ring still paint outside the frame (no
+// overflow clipping — clipping would swallow the ring).
 .colox-compact--divide {
   border: 1px solid var(--colox-color-border-muted);
   border-radius: var(--colox-radius-lg);
 
-  // No pulling overlaps — the divider sits on the boundary itself.
+  // No pulling overlaps — the divider sits on the boundary itself. The
+  // short bar rides the member's own relative box (all first-level
+  // members are already position: relative) and floats clear of the
+  // frame: inset-block 25% shrinks it to half the segment height.
   > * + * {
     margin-inline-start: 0;
-    border-inline-start: 1px solid var(--colox-color-border-subtle);
+  }
+
+  > * + *::before {
+    content: '';
+    position: absolute;
+    inset-block: 25%;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    background-color: var(--colox-color-border-subtle);
   }
 
   // The members' own borders are redundant inside the frame (0,3,0
@@ -188,8 +201,8 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   &:has(> [class*='--invalid']) {
     border-color: var(--colox-color-red-solid);
 
-    > * + * {
-      border-inline-start-color: var(--colox-color-red-solid);
+    > * + *::before {
+      background-color: var(--colox-color-red-solid);
     }
   }
 }
