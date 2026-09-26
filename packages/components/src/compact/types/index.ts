@@ -9,8 +9,11 @@ export type CompactSize = 'xs' | 'sm' | 'md' | 'lg';
 
 /**
  * The unit-wide palette word, inherited by the members that carry one
- * (Button / Switch / Slider / DatePicker / TimePicker). Members
- * without a palette word simply ignore it.
+ * (Button / Switch / Slider / DatePicker / TimePicker) — and, when
+ * declared, also the unit's own voice: the root carries a
+ * `colox-compact--palette-*` class that re-tints the focus ring, the
+ * divide frame and the dividers (see styles/base.scss). Members
+ * without a palette word simply ignore the inheritance branch.
  */
 export type CompactPalette = 'primary' | 'gray' | 'info' | 'error' | 'warning' | 'success';
 
@@ -27,6 +30,6 @@ export type CompactPalette = 'primary' | 'gray' | 'info' | 'error' | 'warning' |
 export interface CompactProps extends HTMLAttributes<HTMLDivElement> {
   /** The unit-wide size default — members without their own `size` take it. */
   size?: CompactSize;
-  /** The unit-wide palette default — members with a palette follow it. */
+  /** The unit-wide palette default — members with a palette follow it, and the unit's own face (ring / divide frame / dividers) follows it too. */
   palette?: CompactPalette;
 }

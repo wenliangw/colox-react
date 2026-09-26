@@ -29,6 +29,14 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   display: inline-flex;
   align-items: stretch;
 
+  // The unit's own palette channel. The focus ring, the divide frame
+  // and the dividers read these; without a palette word they resolve
+  // to today's brand ring and neutral frame. Members keep their own
+  // palette words — this channel speaks only for the unit's face.
+  --colox-compact-palette-ring: var(--colox-color-brand-muted);
+  --colox-compact-palette-border: var(--colox-color-border-muted);
+  --colox-compact-palette-divider: var(--colox-color-border-subtle);
+
   // Focus belongs to the unit — but only for the input family: when the
   // focus sits inside one of those members, one ring traces the whole
   // seam (the ring the member would have drawn is the halo a segment
@@ -45,7 +53,7 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   &:focus-within:has(> :is(#{$compact-input-family}):focus-within),
   &:has(> [class*='--open']) {
     border-radius: var(--colox-radius-lg);
-    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+    box-shadow: 0 0 0 2px var(--colox-compact-palette-ring);
   }
 
   // …unless the unit holds an invalid member — then any engagement
@@ -158,6 +166,50 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   }
 }
 
+// The unit's palette word re-tints its own state visuals. The six
+// classes ride the same wiring as Switch/Slider — the class declares
+// the vars, the paint rules read them (and the div-bars inherit the
+// divider var from the root). Only the unit's face follows: members
+// keep their own palette words, and invalid still outranks everything
+// because the red rules write their colors literally, not through
+// this channel. `primary` merely restates the defaults — kept for
+// symmetry with the word's other carriers.
+.colox-compact--palette-primary {
+  --colox-compact-palette-ring: var(--colox-color-brand-muted);
+  --colox-compact-palette-border: var(--colox-color-brand-solid);
+  --colox-compact-palette-divider: var(--colox-color-brand-muted);
+}
+
+.colox-compact--palette-gray {
+  --colox-compact-palette-ring: var(--colox-color-gray-muted);
+  --colox-compact-palette-border: var(--colox-color-gray-solid);
+  --colox-compact-palette-divider: var(--colox-color-gray-muted);
+}
+
+.colox-compact--palette-info {
+  --colox-compact-palette-ring: var(--colox-color-blue-muted);
+  --colox-compact-palette-border: var(--colox-color-blue-solid);
+  --colox-compact-palette-divider: var(--colox-color-blue-muted);
+}
+
+.colox-compact--palette-error {
+  --colox-compact-palette-ring: var(--colox-color-red-muted);
+  --colox-compact-palette-border: var(--colox-color-red-solid);
+  --colox-compact-palette-divider: var(--colox-color-red-muted);
+}
+
+.colox-compact--palette-warning {
+  --colox-compact-palette-ring: var(--colox-color-orange-muted);
+  --colox-compact-palette-border: var(--colox-color-orange-solid);
+  --colox-compact-palette-divider: var(--colox-color-orange-muted);
+}
+
+.colox-compact--palette-success {
+  --colox-compact-palette-ring: var(--colox-color-green-muted);
+  --colox-compact-palette-border: var(--colox-color-green-solid);
+  --colox-compact-palette-divider: var(--colox-color-green-muted);
+}
+
 // The divide gesture (`<Compact className="colox-compact--divide">`):
 // one unit frame, thin floating dividers. The members drop their own
 // borders and the unit draws a single outline; every member after the
@@ -170,7 +222,7 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
 // ring and the open-panel ring still paint outside the frame (no
 // overflow clipping — clipping would swallow the ring).
 .colox-compact--divide {
-  border: 1px solid var(--colox-color-border-muted);
+  border: 1px solid var(--colox-compact-palette-border);
   border-radius: var(--colox-radius-lg);
 
   // No pulling overlaps — the divider sits on the boundary itself. The
@@ -187,7 +239,7 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
     inset-block: 25%;
     inset-inline-start: 0;
     inline-size: 1px;
-    background-color: var(--colox-color-border-subtle);
+    background-color: var(--colox-compact-palette-divider);
   }
 
   // The members' own borders are redundant inside the frame (0,3,0

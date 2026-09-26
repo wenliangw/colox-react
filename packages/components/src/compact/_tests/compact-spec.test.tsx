@@ -41,10 +41,24 @@ describe('Compact seam contract', () => {
     // ring, the unit does not pretend to be a text control for it.
     expect(seam).toContain('&:focus-within:has(> :is(#{$compact-input-family}):focus-within),');
     expect(seam).toContain("&:has(> [class*='--open'])");
-    expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-brand-muted)');
+    expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-compact-palette-ring)');
     // Member rings stay silent — scoped to the same family.
     expect(seam).toContain(':is(#{$compact-input-family}):focus-within:not(:disabled)');
     expect(seam).toContain('box-shadow: none;');
+  });
+
+  it('channels the unit palette word into the ring, frame and dividers', () => {
+    // Absent a palette word the channel resolves to today's look.
+    expect(seam).toContain('--colox-compact-palette-ring: var(--colox-color-brand-muted);');
+    expect(seam).toContain('--colox-compact-palette-border: var(--colox-color-border-muted);');
+    expect(seam).toContain('--colox-compact-palette-divider: var(--colox-color-border-subtle);');
+    // The six word classes ride the Switch/Slider wiring.
+    for (const family of ['primary', 'gray', 'info', 'error', 'warning', 'success']) {
+      expect(seam).toContain(`.colox-compact--palette-${family} {`);
+    }
+    expect(seam).toContain('--colox-compact-palette-ring: var(--colox-color-blue-muted);');
+    expect(seam).toContain('--colox-compact-palette-border: var(--colox-color-orange-solid);');
+    expect(seam).toContain('--colox-compact-palette-divider: var(--colox-color-green-muted);');
   });
 
   it('turns the ring red on any engagement inside an invalid unit', () => {
@@ -54,8 +68,8 @@ describe('Compact seam contract', () => {
 
   it('divides the unit with one frame and floating short dividers', () => {
     expect(seam).toContain('.colox-compact--divide {');
-    // One frame around the unit…
-    expect(seam).toContain('border: 1px solid var(--colox-color-border-muted);');
+    // One frame around the unit — colored through the palette channel…
+    expect(seam).toContain('border: 1px solid var(--colox-compact-palette-border);');
     expect(seam).toContain('border-radius: var(--colox-radius-lg);');
     // …no overlapping pulls…
     expect(seam).toContain('margin-inline-start: 0;');
@@ -65,7 +79,7 @@ describe('Compact seam contract', () => {
     expect(seam).toContain('> * + *::before {');
     expect(seam).toContain('inset-block: 25%;');
     expect(seam).toContain('inset-inline-start: 0;');
-    expect(seam).toContain('background-color: var(--colox-color-border-subtle);');
+    expect(seam).toContain('background-color: var(--colox-compact-palette-divider);');
     expect(seam).not.toContain('border-inline-start: 1px solid');
     // …members drop their own borders…
     expect(seam).toContain('border: 0;');

@@ -92,6 +92,15 @@ describe('Compact', () => {
     expect(screen.getByRole('button')).toHaveClass('colox-button--error');
   });
 
+  it('paints the unit palette word as a state class on the seam root', () => {
+    const { container } = render(
+      <Compact palette="success">
+        <Input aria-label="word" />
+      </Compact>,
+    );
+    expect(container.firstElementChild).toHaveClass('colox-compact--palette-success');
+  });
+
   it('keeps the divide modifier on the seam root', () => {
     const { container } = render(
       <Compact className="colox-compact--divide">

@@ -18,7 +18,11 @@ export const Compact = forwardRef<HTMLDivElement, CompactProps>((props, ref) => 
 
   return (
     <CompactContext.Provider value={contextValue}>
-      <div ref={ref} className={clsx('colox-compact', className)} {...rest}>
+      <div
+        ref={ref}
+        className={clsx('colox-compact', palette && `colox-compact--palette-${palette}`, className)}
+        {...rest}
+      >
         {children}
       </div>
     </CompactContext.Provider>
