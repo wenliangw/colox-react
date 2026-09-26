@@ -99,12 +99,27 @@ const DatePickerRoot = forwardRef<DatePickerRef, DatePickerProps>((props, ref) =
   // guards the same way).
   const handleShellClick = (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target;
-    if (!(target instanceof HTMLElement) || target.closest('button') !== null) {
+    if (!(target instanceof Element) || target.closest('button') !== null) {
       return;
     }
     if (openable && !editor.open) {
       editor.openPanel();
     }
+  };
+
+  const handleShellMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    if (!openable) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('button, input') !== null) {
+      return;
+    }
+    // The shell itself cannot take focus: an unprevented mousedown would
+    // blur the active element and paint an empty focus window before the
+    // click opens the panel — inside a Compact the unit ring would
+    // flicker off. Keep the focus parked for the click.
+    event.preventDefault();
   };
 
   return (
@@ -116,11 +131,13 @@ const DatePickerRoot = forwardRef<DatePickerRef, DatePickerProps>((props, ref) =
           'colox-date-picker--invalid': invalid,
           'colox-date-picker--disabled': disabled,
           'colox-date-picker--clearable': showClear,
+          'colox-date-picker--open': editor.open,
         },
         className,
       )}
       style={style}
       onClick={handleShellClick}
+      onMouseDown={handleShellMouseDown}
     >
       <InputControl
         ref={inputRef}

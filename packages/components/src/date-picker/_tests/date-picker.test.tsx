@@ -664,3 +664,23 @@ describe('level drilling', () => {
     expect(screen.getByRole('button', { name: '2026年' })).toBeInTheDocument();
   });
 });
+
+describe('date-picker shell pointer continuity', () => {
+  it('parks the focus through a shell press and signals the open state on the root', () => {
+    render(<DatePicker />);
+    const icon = document.querySelector('.colox-date-picker__icon') as HTMLElement;
+    // Same contract as the Select: an unprevented press on the (unfocusable)
+    // shell would blur the active element before the click opens the panel —
+    // inside a Compact the unit ring would flicker off.
+    expect(fireEvent.mouseDown(icon)).toBe(false);
+    // The control keeps its native press behaviour.
+    expect(fireEvent.mouseDown(input())).toBe(true);
+
+    fireEvent.click(icon);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    // The open state rides the root class — Compact keys the ring on
+    // `--open` because the panel's focus lives in the portal, beyond
+    // :focus-within.
+    expect(shell()).toHaveClass('colox-date-picker--open');
+  });
+});
