@@ -103,7 +103,7 @@ export const Overview: Story = {
         </div>
       </Section>
 
-      <Section title="Divide — one frame, thin inner dividers">
+      <Section title="Divide — one frame, short floating dividers">
         <div style={track}>
           <Compact className="colox-compact--divide" style={{ width: 360 }}>
             <Input aria-label="divide segment 1" placeholder="seg 1" />
@@ -115,7 +115,8 @@ export const Overview: Story = {
           style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
         >
           <code>colox-compact--divide</code>: members drop their own borders, the unit draws one
-          frame, and a subtle line partitions each boundary — glued boxes become one control.
+          frame, and each boundary carries a short floating bar that stays clear of the outline —
+          glued boxes become one control.
         </div>
       </Section>
 

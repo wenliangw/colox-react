@@ -129,9 +129,10 @@ A `Select` prefix still owns its value — the seam is purely visual:
   palette word simply ignore it.
 - `colox-compact--divide` is the divider gesture: the members drop their
   own borders, the unit draws one frame (`--colox-color-border-muted`),
-  and each boundary after the first carries a thin divider
-  (`--colox-color-border-subtle`). An invalid member reddens the frame
-  and the dividers together. Plain members + addons still seam with the
+  and each boundary after the first carries a short floating bar
+  (a pseudo-element, `inset-block: 25%`, `--colox-color-border-subtle`)
+  that never touches the frame. An invalid member reddens the frame
+  and the bars together. Plain members + addons still seam with the
   classic overlapping borders when the modifier is absent.
 - Elevation and press-scale belong to standalone buttons: a member's
   shadow or active scale stays quiet inside the seam.
