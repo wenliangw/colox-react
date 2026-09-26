@@ -738,3 +738,19 @@ describe('TimePicker', () => {
     expect(selectedOption('second')).toHaveTextContent('45');
   });
 });
+
+describe('time-picker shell pointer continuity', () => {
+  it('parks the focus through a shell press and signals the open state on the root', () => {
+    render(<TimePicker aria-label="time" />);
+    const shellEl = screen.getByRole('combobox').closest('.colox-time-picker') as HTMLElement;
+    const icon = document.querySelector('.colox-time-picker__icon') as HTMLElement;
+    // Same contract as the Select and the DatePicker: the unfocusable shell
+    // must not blur the active element before the click opens the panel.
+    expect(fireEvent.mouseDown(icon)).toBe(false);
+    expect(fireEvent.mouseDown(screen.getByRole('combobox'))).toBe(true);
+
+    fireEvent.click(icon);
+    expect(screen.getAllByRole('option').length).toBeGreaterThan(0);
+    expect(shellEl).toHaveClass('colox-time-picker--open');
+  });
+});
