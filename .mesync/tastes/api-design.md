@@ -243,3 +243,12 @@
 - **cdk 只收纯函数、两消费者成核、公开面 curated**：date 数学整体抬入 cdk（DatePicker 改吃它）因为两个消费者（TimePicker + showTime）成立；日期/时间方法同居 cdk/date 一个入口；公开面只放用户逐项拍的能力词（dateFormat/dateParts/dateDiff/add×7/today/dateStartOf/dateEndOf/dateTimestamp/DATEID/secondsTo*），网格 builder 这类内部构造器不发——公开路径随将来 cdk 独立包迁移。
 
 来源：TimePicker + DateTime 集成设计定案四轮对齐（用户拍板值契约串出口 + 公开工具面、min/max 双收、不引日期库；用户指令「cdk 保持 @colox/react/cdk/date 公开路径，因为 cdk 后面会独立一个 package」）；批 1 评审后用户改拍公开面形态（「为什么都加 Iso——签名设计问题」→ 链式值对象 + `.iso()` 即时词 + format 独立可用三决）。
+
+## TimePicker 面板交互与架构边界（批 2 落地）
+
+- **选择即提交（面板点选一体）**：点时间项 = 合并词提交 + 关面板，date-only「点格即提交」同族；Enter/Space 同路径——picker 面板不是草稿台，选完就走，没有第二动词。
+- **面板规格数字级直给（用户逐项定，不自行拍板）**：纯数字循环列、每列可视 8 项、箭头钮步进 7 项、列无滚动条、选中项驻可视槽第 4 格（上 3 下 4）、空值按打开瞬间系统时/分锚窗——iOS 滚轮式交互的用户直给数字是契约，实现照单全收。
+- **cdk 边界纪律（行为核不进 cdk）**：picker 编辑器状态机是家族编排（绑壳与事件面）非能力内核、时间列是视觉构件——headless 能力内核与纯函数进 cdk，组件编排状态机与视觉构件不进（两消费者也不进）；破环最小解 = 时间侧零引用日期侧，批 3 showTime 经单向内部引用取时间列视觉件。
+- **诚实禁选 = 选项合并有效性**：选项 enablement 按「此刻点选会铸出的合并词」判定（时项 vs 已提交分、分项 vs 已提交时），出界即禁——任何一次点选都铸不出界词，时间域无 clamp（手输越界照旧 blur 回滚）。
+
+来源：TimePicker 批 2 交付（用户架构裁决「放 cdk 收益不大且污染设计初衷」+ 五默认「无异议」转定案 + 组件落地 37 单测）。

@@ -29,6 +29,11 @@ Colox 第一方基础图标包，`packages/icons/`。**图标库选择**：既�
 
 chevron-right（族基准，纯折线 V：`M9 6 L15 12 L9 18`，45° 臂 + round join 收小圆尖——圆弧拼接会破坏切线连续性、放大显形，决策见「chevron 几何 zoom-proof 校正」）/down（rotate 90）/left（rotate 180）/up（rotate 270）、x（45° 双交线）、check（两段 45° 圆肘）、plus（轴正交）、eye（透镜 rx8 ry7 + 瞳孔 r3）、eye-off（派生 + 45° 斜线）、search（r7 镜 + 45° 柄埋入笔画）。
 
+## 后续追加
+
+- **calendar**（DatePicker 批，批次一扩为十一枚）：边框 + 顶栏规则线 + 绑定桩，join-round 成角、整数网格、[2,22] 光学内容框——spec lint 门禁照常过。
+- **clock**（TimePicker 批 2，十二枚）：`<circle cx 12 cy 12 r 9>` 表盘 + 指针折线 `M12 6 V12 L16 14`（4:30 位姿，读「时钟」而非靶/眼），inline 字面 glyph（search/grip 先例，无 geometry 文件）；spec lint ICONS/BOUNDS 表注册照常。
+
 ## 新增图标流程（按需追加时的执行步骤）
 
 1. **同源先判**：状态对/方向族先查 `src/icons/geometry/` 有无可派生底图（chevron、eye 系）——有则复用几何 + transform/组合，不画第二张脸（规范 6）

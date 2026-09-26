@@ -117,4 +117,4 @@ date-picker/
 - 补交互（标题点击层级钻取 日 → 月 → 年、选中上级格逐级回落、跳大跨度日期）：见 resonance 决策「DatePicker 面板层级钻取」。
 - 七轮评审修正（antd 三刀：标题分节可点（年直钻年格）+ 双档 chevron（日格 ±月/±年、月格 ±年/±十年、年格仅双 ±十年）+ 标题语义色 hover）：见 resonance 决策「DatePicker 面板 chrome 对齐 antd 三刀」。
 - 关联 icon 交付：`@colox/icons` 批次一扩为十一枚（IconCalendar：边框 + 顶栏规则线 + 绑定桩，join-round 成角、整数网格、[2,22] 光学内容框——spec lint 门禁照常过）。
-- TimePicker + DateTime 集成定案（十二轴全拍板：自绘列滚选 / HH:mm / showTime 右侧并排扩宽 / footer 确定提交 / canonical 串 / min·max 双收 / 零依赖 / cdk 整体抬 + 公开面）：见 resonance 决策「TimePicker + DateTime 集成设计定案」（1f182d75，supersedes b858b053）。批 1 落地 = cdk/date 抬升 + `@colox/react/cdk/date` 公开面（本页目录结构/门禁已随改）；批 2 = IconClock + TimePicker 组件；批 3 = DatePicker showTime。
+- TimePicker + DateTime 集成定案（十二轴全拍板：自绘列滚选 / HH:mm / showTime 右侧并排扩宽 / footer 确定提交 / canonical 串 / min·max 双收 / 零依赖 / cdk 整体抬 + 公开面）：见 resonance 决策「TimePicker + DateTime 集成设计定案」（1f182d75，supersedes b858b053）。批 1 落地 = cdk/date 抬升 + `@colox/react/cdk/date` 公开面（本页目录结构/门禁已随改）；批 2 = IconClock + TimePicker 组件（已交付，见 [modules/time-picker.md](time-picker.md)，出口 `@colox/react/time-picker`，事件面第 13 叶）；批 3 = DatePicker showTime。
