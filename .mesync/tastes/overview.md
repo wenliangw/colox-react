@@ -7,4 +7,5 @@
 - [config](config.md)：配置取向（契约文件即项目契约、`outDir` 显式、`tokens` 一律真实路径、`runtime` 目录语义——文件名归 builder）。
 - [packaging](packaging.md)：打包与构建取向（官方做法优先、preserveModules 文件级树摇产物）。
 - [delivery](delivery.md)：交付节奏（组件逐个交付、小步可评审，不批量并行汇报）。
+- [collaboration](collaboration.md)：协作品味（用户思路是输入不是指令——意图照办、词面独立判断）。
 - [ai-doctrine](ai-doctrine.md)：AI 心法数据包设计取向（doctrine bundle：SKILL.md 配方 + references 按需读、版本纪律）。

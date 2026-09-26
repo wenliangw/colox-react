@@ -19,11 +19,14 @@ time-picker/
 ├── hooks/
 │   └── use-time-picker.ts   # 状态机单源：draft 门禁/提交/blur 回滚/open/pending 词/三列值 + 键盘
 ├── utils/
-│   └── format.ts            # 本家时间偏门：常量(HOUR_COUNT 24/MINUTE_COUNT 60/SECOND_COUNT 60/
-│                            #   COLUMN_VISIBLE 8/COLUMN_STEP 7/COLUMN_FOCUS_SLOT 3/
-│                            #   列几何 COLUMN_OPTION_HEIGHT 28+COLUMN_OPTION_GAP 2=COLUMN_OPTION_STRIDE 30/
-│                            #   TIME_DEFAULT_FORMAT) + parseTimeText(wordOfParts)/draft 门/timePartsOf/
+│   └── format.ts            # 本家时间偏门纯函数：parseTimeText(wordOfParts)/draft 门/timePartsOf/
 │                            #   formatTimeValue/canonicalBoundOf（吃 cdk/date 公开面）
+├── constants/
+│   ├── time.ts              # 时间域：TIME_DEFAULT_FORMAT('HH:mm:ss') + HOUR_COUNT 24/MINUTE_COUNT 60/SECOND_COUNT 60
+│   └── column.ts            # 滚轮几何与运动：COLUMN_VISIBLE 8/COLUMN_STEP 7/COLUMN_FOCUS_SLOT 3/
+│                            #   OPTION_HEIGHT 28+GAP 2=STRIDE 30/RANGE_LEAD 10+RANGE_TRAIL 12/LAP_COUNT 3/
+│                            #   SLOT_OFFSET_PX 90/WHEEL 50px+3 行/SCROLLING_QUIET_MS 100/GLIDE_MS 240
+│                            #   （TS 数字 = SCSS 字面镜像，同注释锁步；未来滚轮消费者同源复用）
 ├── controls/
 │   ├── panel.tsx            # 面板（时列+分列+秒列 + 底部确认钮（confirmText，默认「确定」），role=dialog + columns/footer 结构）
 │   ├── time-column.tsx      # 单列滚轮：上下步进钮 + 原生自由滚动可视窗（三圈循环轨道 + 圈跳同帧追窗 +
@@ -31,11 +34,11 @@ time-picker/
 │                            #   选中骑值 + 跨缝直写滑行 wrap 折帧/chevron throttle 门锁+置灰）
 │   └── clear-button.tsx     # clearable 尾部 X 钮（IconButton base + 站点定位类，Select 同款）
 ├── _tests/
-│   ├── time-picker.test.tsx # 37 个：外壳/提交载荷/宽松语法/草稿与模糊回滚/面板锚定/三列/chevron 原生 smooth 滚动/
-│                            #   链式重定向/循环/点选预览+确认提交/确认文案定制/丢弃回滚/禁选/confirm 禁用/clear/键盘/滚轮自由
+│   ├── time-picker.test.tsx # 38 个：外壳/提交载荷/宽松语法/草稿与模糊回滚/面板锚定/三列/chevron 直写滑行/
+│                            #   链式 throttle 门锁+置灰/循环/点选预览+确认提交/确认文案定制/丢弃回滚/禁选/confirm 禁用/clear/键盘/滚轮自由
 │                            #   滚动不动选中/点击归位滑行/圈跳同帧追窗/快滚越圈界窗口同步/滚动期 pointer-events 抑制/
 │                            #   三列选中洗底骑值/空值打开预选系统钟+Confirm 提交/预选越界 confirm 禁用/
-│                            #   上下 chevron 跨缝保方向直写滑行/滑窗 throttle 拦截重复点击+置灰/motion 门控免闸
+│                            #   上下 chevron 跨缝保方向直写滑行/滑窗 throttle 拦截重复点击+步进钮置灰/motion 门控免闸免灰/每帧写入恒在带内
 │   └── format-utils.test.ts # 19 个：parseTimeText（pattern+宽松）/wordOfParts/draft 门/canonicalBoundOf/
 │                            #   formatTimeValue/列常量
 ├── types/{component,utils,hooks,controls,index}.ts
