@@ -24,7 +24,7 @@ matchWidth=false）。
 `.colox-popup.colox-tooltip__panel` 压过 positioned 恢复）+ 单一
 `colox-tooltip__content` 内容盒（cva 三轴：variant dark/light、size sm/md/lg、
 arrow 布尔——dark=bg-inverse 反色画布、light=bg-default+1px border-muted 描边、
-base=md 档 font-sm 14px + padding 1-5/3 + radius-md 6px，max-width 280px
+base=md 档 font-sm 14px + padding 2/4 + radius-md 6px，max-width 280px
 字面量、逐轴 `.scss` + `@use` 聚合）。
 
 ## 架构扩展（cdk 微增长两处，picker 族零变化）
@@ -62,10 +62,10 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 
 ## 视觉层（按 placement 贴边）
 
-- **箭头**：6px 方块 `rotate: 45deg`（独立 rotate 属性；旋转后四角正对四轴，
-  一个旋转态通吃四向），按 `data-placement` 前缀选择器挂边（top→bottom:-3px
+- **箭头**：8px 方块 `rotate: 45deg`（独立 rotate 属性；旋转后四角正对四轴，
+  一个旋转态通吃四向），按 `data-placement` 前缀选择器挂边（top→bottom:-4px
   水平居中，left:50% + translate:-50%）；light 下发向两外缘同色描边接续
-  面板 border（右下/左上/右上/左下随向）。
+  面板 border（右下/左上/右上/左下随向）。gap 随箭头开关：开 8 / 关 6。
 - **向箭头侧定向阴影**：同属性选择器驱动，`color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent)`
   定向落影 ×（top→+y、bottom→-y、left→+x、right→-x）+ token base
   `--colox-shadow-md` 双层。

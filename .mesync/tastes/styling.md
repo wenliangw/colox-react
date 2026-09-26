@@ -39,3 +39,4 @@
 - **进场 = fade + scale**（0.92→1 过渡，token 驱动、时长 fast）：动画与 placement 无关（Popup 已占 opacity+位移轨道，Tooltip 只补 scale 口感；分方向进场需要解析后 placement 的 JS 状态注入、先渲染后翻面会闪错向，不值）；遵守 motion 轴（reduced 直显）；**退场暂无**（Popup 无退出通道，与 Popover 一起补）。
 - **阴影方向跟箭头走**：定位解析出的真实 placement 写 `data-placement` 数据属性（`useFloatingPosition` 微扩展，additive、picker 族零变化），content 按 `[data-placement^="bottom"]` 等属性选择器把阴影向箭头所在侧偏移——箭头在哪边、阴影就向哪边落；值取 shadow token 不写死；arrow 贴边与阴影方向同一属性驱动（flip 之后方向自动正确）。
 - arrow = CSS 旋转方块贴边（装饰零 floating-ui arrow 中间件），随 variant 同染，light 变体的描边接缝用同色补齐。
+- **提示层呼吸感**（视觉松一轮，用户反馈「太紧凑、箭头小」）：hint 是短文案浮层、密度以「读一遍就走」为准——14px 字下 padding 8/16（梯子各档同步上移一档：sm 6/12、md 8/16、lg 10/20，错位原则保持）；箭头随面板比例走（6px 在 280px 面板上显弱，改 8px 方块）；gap 随箭头开关（有箭头 8 / 无箭头 6，箭头尖不埋进 trigger）。数字直觉（设计桌上估的 6/12 密度）被用户目视一轮纠回——提示层密度是发车前需要真实目视的轴。
