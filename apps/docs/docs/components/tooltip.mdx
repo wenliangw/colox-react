@@ -62,19 +62,23 @@ existing `aria-describedby` words survive.
 ## Surfaces
 
 `variant="dark"` (default) is the inverse canvas; `variant="light"` rides the
-default surface — **borderless like dark**, both surfaces are **frosted**: a
-translucent fill over a backdrop blur keeps the page readable through the
-panel, and the arrow carries the same fill and blur, so it reads as the bubble
-surface sticking out. `size` shifts one ladder step from the base tier — `sm` /
-`md` / `lg`. The decorative arrow pins to the **resolved** placement (after
-flipping), so it never lies about the side the panel landed on; it also stays
-aimed at the trigger when a boundary collision displaces the panel
-(flip/shift), clamped so it never leaves the panel.
+default surface. Both are **borderless** and both are **frosted**: a translucent
+fill over a backdrop blur keeps the page readable through the panel. The arrow
+sits **entirely outside** the bubble box and inherits the same fill and blur, so
+it is the bubble surface sticking out — the two composite identically instead of
+the arrow blurring the panel's own fill into itself. The panel gets its depth
+from a single `box-shadow` token on the bubble box — just one cast, no extra
+layer — which makes the borderless white glass read on a white page; the arrow
+paints above it. `size` shifts one ladder step from
+the base tier — `sm` / `md` / `lg`. The decorative arrow pins to the
+**resolved** placement (after flipping), so it never lies about the side the
+panel landed on; it also stays aimed at the trigger when a boundary collision
+displaces the panel (flip/shift), clamped so it never leaves the panel.
 
 <Tooltip content="The inverse canvas.">
   <Button>Dark</Button>
 </Tooltip>
-<Tooltip content="The default surface, border and seam." variant="light">
+<Tooltip content="The default surface, frosted and borderless." variant="light">
   <Button>Light</Button>
 </Tooltip>
 <Tooltip content="Small tier." size="sm">

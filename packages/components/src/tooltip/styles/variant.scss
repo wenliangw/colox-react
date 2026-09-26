@@ -1,8 +1,7 @@
-// The light canvas rides the default surface, frosted like the base:
-// the white passes at reduced alpha so the page shimmers through the
-// blur. No border and no shadow — the two canvases share one
-// borderless, shadowless geometry; the frosted fill and the blur
-// alone carry the edge definition.
+// The light canvas rides the default surface, frosted: the white passes
+// at reduced alpha so the page shimmers through the blur. Borderless;
+// its depth comes from the single token cast on the content box
+// (base.scss), with the arrow painted above it.
 .colox-tooltip__content--light {
   background: color-mix(in srgb, var(--colox-color-bg-default) 78%, transparent);
   color: var(--colox-color-text-default);

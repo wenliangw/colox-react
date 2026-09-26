@@ -97,10 +97,12 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   visibility (`delay` as `{ in, out }`, timers always cancel their
   opposite, focus instant), `closeOnScroll` as the explicit opt-out of
   the default follow, dark/light surfaces with sm/md/lg tiers — both
-  frosted (translucent fill + backdrop blur, borderless, shadowless) —
-  and the arrow pinned to the resolved placement (`data-placement`
-  from the cdk popup, post-flip) while staying aimed at the trigger
-  under boundary collision. Upgrade side: the
+  frosted (translucent fill + backdrop blur, borderless, a single
+  `box-shadow` token on the bubble) — and the arrow, sitting outside
+  the bubble so it shares that surface exactly, pinned to the resolved
+  placement (`data-placement` from the cdk popup, post-flip) while
+  staying aimed at the trigger under boundary collision. Upgrade side:
+  the
   cdk `useFloatingPosition`/`Popup` gained the optional
   `fallbackPlacements` chain — pickers unchanged.
 - `Popover`, `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.

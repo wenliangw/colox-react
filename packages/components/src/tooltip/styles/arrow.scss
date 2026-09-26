@@ -1,77 +1,86 @@
-// The arrow is an 8px square rotated 45deg: after the rotation its far
-// corners sit on the four axes, so one rotation state serves every
-// direction — only the edge it hugs differs. The resolved placement
-// word on the panel root (data-placement from cdk useFloatingPosition,
-// post-flip) selects the edge AND the clip: each direction keeps only
-// its protruding half of the diamond, cut along the diagonal — the
-// frosted fill is translucent, so the tucked half would composite a
-// darker double-alpha patch under the panel edge. Along the panel edge
-// the arrow CENTER pins to the reference center: the cdk hook measures
-// the reference center against the floating edge after flip/shift and
-// exposes it as --colox-floating-arrow-offset, clamped (spacing-3) so
-// the square never leaves the panel — the arrow keeps aiming at the
-// trigger however the panel is displaced at boundaries. The fill and
-// the blur follow the bubble exactly: `background: inherit` carries
-// the panel's translucent color-mix, and the backdrop blur reads the
-// same CSS variable the content box declares (--colox-tooltip-blur) —
-// the arrow is just the bubble's surface sticking out, both canvases
-// share one borderless geometry. No shadow of any kind: a shadow
-// painted under a translucent fill bleeds through it and tints the
-// light arrow gray — the frosted fill and the blur alone carry the
-// edge definition.
-.colox-tooltip__content--arrow {
-  &::before {
-    content: '';
-    position: absolute;
-    width: var(--colox-spacing-2);
-    height: var(--colox-spacing-2);
-    background: inherit;
-    rotate: 45deg;
-    -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
-    backdrop-filter: blur(var(--colox-tooltip-blur));
-  }
+// The arrow: a plain triangle pinned to one edge of the bubble, sitting
+// ENTIRELY OUTSIDE the bubble's border box (top: 100% / bottom: 100%,
+// never a negative offset that straddles the edge).
+//
+// The geometry is the load-bearing part, not a style choice. The arrow
+// carries the bubble's own surface — `background: inherit` plus the same
+// `--colox-tooltip-blur` — and a backdrop-filter only samples the
+// backdrop inside its own border box. An arrow that straddles the edge
+// therefore blurs the bubble's own translucent fill into itself and
+// comes out a step darker/lighter than the bubble (measured: bubble
+// rgb(66,66,66) vs arrow rgb(62,62,62) — a visible hard-edged step).
+// Kept fully outside, the arrow's backdrop is just the page, exactly
+// like the bubble's, so the two canvases composite identically: the
+// arrow reads as the bubble's surface sticking out, with no seam.
+//
+// The triangle is sized in tokens (base spacing-3, depth spacing-1-5 —
+// the old 8px rotated square's half-diamond was 11.31 x 5.66). Along
+// the edge its CENTER pins to the reference center: the cdk hook
+// measures the reference center against the floating edge after
+// flip/shift and exposes it as --colox-floating-arrow-offset, clamped
+// (spacing-3) so the triangle never leaves the bubble — the arrow keeps
+// aiming at the trigger however the panel is displaced at boundaries.
+// It paints above the bubble's own cast (z-index above the shadow the
+// content box carries in base.scss): the arrow is a positioned child, so
+// the box-shadow never paints over it — the few units the shadow bleeds
+// through the translucent fill are the simple layout's accepted cost.
+.colox-tooltip__content--arrow::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  background: inherit;
+  -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
+  backdrop-filter: blur(var(--colox-tooltip-blur));
 }
 
 .colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content--arrow::before {
-  bottom: calc(var(--colox-spacing-2) / -2);
+  top: 100%;
   left: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
+  width: var(--colox-spacing-3);
+  height: var(--colox-spacing-1-5);
   translate: -50% 0;
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
 .colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content--arrow::before {
-  top: calc(var(--colox-spacing-2) / -2);
+  bottom: 100%;
   left: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
+  width: var(--colox-spacing-3);
+  height: var(--colox-spacing-1-5);
   translate: -50% 0;
-  clip-path: polygon(0 0, 100% 0, 0 100%);
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
 }
 
 .colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content--arrow::before {
-  right: calc(var(--colox-spacing-2) / -2);
+  left: 100%;
   top: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
+  width: var(--colox-spacing-1-5);
+  height: var(--colox-spacing-3);
   translate: 0 -50%;
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, 0 100%, 100% 50%);
 }
 
 .colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content--arrow::before {
-  left: calc(var(--colox-spacing-2) / -2);
+  right: 100%;
   top: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
+  width: var(--colox-spacing-1-5);
+  height: var(--colox-spacing-3);
   translate: 0 -50%;
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
 }
