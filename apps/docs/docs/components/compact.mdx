@@ -126,14 +126,19 @@ A `Select` prefix still owns its value — the seam is purely visual:
   member's own `size`/`palette` always wins; a Form-level `size` injected
   into the control also beats the Compact default. No cloning is
   involved — members stay the author's own elements. Members without a
-  palette word simply ignore it.
+  palette word simply ignore it. The declared `palette` also speaks for
+  the unit itself: the focus ring, the divide frame and the dividers
+  read the unit's palette channel (brand ring, neutral frame and subtle
+  bars when no word is declared — the resting look you see by default).
 - `colox-compact--divide` is the divider gesture: the members drop their
-  own borders, the unit draws one frame (`--colox-color-border-muted`),
-  and each boundary after the first carries a short floating bar
-  (a pseudo-element, `inset-block: 25%`, `--colox-color-border-subtle`)
-  that never touches the frame. An invalid member reddens the frame
-  and the bars together. Plain members + addons still seam with the
-  classic overlapping borders when the modifier is absent.
+  own borders, the unit draws one frame (`--colox-compact-palette-border`,
+  neutral by default), and each boundary after the first carries a short
+  floating bar (a pseudo-element, `inset-block: 25%`,
+  `--colox-compact-palette-divider`) that never touches the frame. An
+  invalid member reddens the frame and the bars together — invalid
+  writes its color literally, it wins over any palette. Plain members +
+  addons still seam with the classic overlapping borders when the
+  modifier is absent.
 - Elevation and press-scale belong to standalone buttons: a member's
   shadow or active scale stays quiet inside the seam.
 - Logical properties throughout: the seam is RTL-safe.

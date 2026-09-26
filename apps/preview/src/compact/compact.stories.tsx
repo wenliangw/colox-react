@@ -110,13 +110,19 @@ export const Overview: Story = {
             <Input aria-label="divide segment 2" placeholder="seg 2" />
             <Input aria-label="divide segment 3" placeholder="seg 3" />
           </Compact>
+          <Compact className="colox-compact--divide" palette="info" style={{ width: 360 }}>
+            <Input aria-label="info segment 1" placeholder="seg 1" />
+            <Input aria-label="info segment 2" placeholder="seg 2" />
+            <Input aria-label="info segment 3" placeholder="seg 3" />
+          </Compact>
         </div>
         <div
           style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
         >
           <code>colox-compact--divide</code>: members drop their own borders, the unit draws one
           frame, and each boundary carries a short floating bar that stays clear of the outline —
-          glued boxes become one control.
+          glued boxes become one control. A <code>palette</code> word (the second row declares{' '}
+          <code>info</code>) re-tints the frame, the bars and the focus ring as one unit voice.
         </div>
       </Section>
 
