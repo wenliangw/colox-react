@@ -19,21 +19,22 @@ Every member keeps its own value, state and `{ event, value }` payload.
 ## Segments
 
 Several inputs joined as one unit — each still holds its own value, so in a
-form each segment rides its own `Form.Field`:
+form each segment rides its own `Form.Field`. Sized, the members split the
+width evenly; left bare, the group hugs their contents:
 
-<Compact style={{ width: 260 }}>
-  <Input aria-label="segment 1" />
-  <Input aria-label="segment 2" />
-  <Input aria-label="segment 3" />
-  <Input aria-label="segment 4" />
+<Compact style={{ width: 320 }}>
+  <Input aria-label="segment 1" placeholder="seg 1" />
+  <Input aria-label="segment 2" placeholder="seg 2" />
+  <Input aria-label="segment 3" placeholder="seg 3" />
+  <Input aria-label="segment 4" placeholder="seg 4" />
 </Compact>
 
 ```mdx
-<Compact style={{ width: 260 }}>
-  <Input />
-  <Input />
-  <Input />
-  <Input />
+<Compact style={{ width: 320 }}>
+  <Input placeholder="seg 1" />
+  <Input placeholder="seg 2" />
+  <Input placeholder="seg 3" />
+  <Input placeholder="seg 4" />
 </Compact>
 ```
 
@@ -98,10 +99,13 @@ A `Select` prefix still owns its value — the seam is purely visual:
 
 - Members sit flush: a `-1px` pull collapses two 1px borders into one line
   (the pull stays in lock-step with the members' border width).
+- Width: the input family splits the group — sized, they share it evenly;
+  left bare, the group hugs their contents.
 - Radii live only at the two ends (`--colox-radius-lg`, the members' own
   radius token). The seam owns the member shapes: inner corners are
   squared, a member's own `rounded` form squares inside a group, and a
-  lone child keeps its shape untouched.
+  lone child keeps its shape untouched. Shape-keeping members (Switch,
+  Slider) are exempt — their design rounds them, the seam doesn't.
 - Focus belongs to the unit: whichever member holds the focus, one ring
   traces the whole seam (`:focus-within` on the group, the end-corner
   radius). Inside the group a member draws no second layer — its own
@@ -109,8 +113,12 @@ A `Select` prefix still owns its value — the seam is purely visual:
   (invalid members keep their red border). Button variants keep their
   own palette borders: the Compact layer never reaches into variant
   colours.
-- An invalid member owns the junction with its red border (it rises above
-  the next sibling, ring-free); focusing it turns the unit ring red too.
+- An invalid member invalidates the unit: the whole outline reddens
+  (input family + addons; buttons keep their palette), and any focus
+  inside the unit rings it red — Compact reads as one control, never as
+  loose members.
+- Elevation and press-scale belong to standalone buttons: a member's
+  shadow or active scale stays quiet inside the seam.
 - Logical properties throughout: the seam is RTL-safe.
 
 ## Props

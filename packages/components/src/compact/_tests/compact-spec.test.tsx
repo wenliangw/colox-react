@@ -5,9 +5,12 @@ import { describe, expect, it } from 'vitest';
 // The seam contract, linted at the source level: the rules below encode
 // the lessons the compact layer learned the hard way — (1) member shapes
 // must be overridden at 0,3,0 so stylesheet order cannot re-round them,
-// and (2) focus is the unit's business: the group rings as a whole while
-// a member ring — or the input family's focus border change — inside the
-// group can only draw a second layer over or under the ring.
+// (2) focus is the unit's business: the group rings as a whole while a
+// member ring — or the input family's focus border change — inside the
+// group can only draw a second layer over or under the ring, (3) an
+// invalid member invalidates the whole unit — the outline reddens and any
+// focus inside rings red, and (4) width, elevation and press-scale
+// belong to the whole unit.
 const seam = readFileSync(resolve(process.cwd(), 'src/compact/styles/base.scss'), 'utf8');
 
 describe('Compact seam contract', () => {
@@ -27,6 +30,12 @@ describe('Compact seam contract', () => {
     }
   });
 
+  it('exempts shape-keeping members from the corner rules', () => {
+    expect(seam).toContain('$compact-shape-keepers');
+    expect(seam).toContain('.colox-switch');
+    expect(seam).toContain('.colox-slider');
+  });
+
   it('rings the whole unit on focus — member rings stay silent', () => {
     expect(seam).toContain('&:focus-within {');
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-brand-muted)');
@@ -34,14 +43,9 @@ describe('Compact seam contract', () => {
     expect(seam).toContain('box-shadow: none;');
   });
 
-  it('turns the unit ring red when the focused member is invalid', () => {
-    expect(seam).toContain("&:has(> [aria-invalid='true']:focus-within)");
+  it('turns the unit ring red whenever focus sits inside an invalid unit', () => {
+    expect(seam).toContain("&:focus-within:has(> [aria-invalid='true'])");
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-red-muted)');
-  });
-
-  it('lets an invalid member rise with its red border, ring-free', () => {
-    expect(seam).toContain("&[aria-invalid='true']");
-    expect(seam).toContain('z-index: 1');
   });
 
   it('keeps the focused input family border at the resting token, never a second layer', () => {
@@ -58,5 +62,31 @@ describe('Compact seam contract', () => {
     }
     expect(seam).toContain(':focus-within:not([aria-invalid');
     expect(seam).toContain('border-color: var(--colox-color-border-muted);');
+  });
+
+  it('invalidates the whole unit — outline reddens, no per-segment surgery', () => {
+    expect(seam).toContain("&:has(> [aria-invalid='true'])");
+    expect(seam).toContain('.colox-compact__addon');
+    expect(seam).toContain('border-color: var(--colox-color-red-solid);');
+    expect(seam).toContain("[class*='--disabled']");
+    expect(seam).not.toContain('border-inline-color: transparent');
+    expect(seam).not.toContain('z-index');
+  });
+
+  it('shares the group width with the input family', () => {
+    expect(seam).toContain('$compact-input-family');
+    expect(seam).toContain('flex: 1 1 auto');
+    expect(seam).toContain('min-width: 0');
+  });
+
+  it('quiets button elevation and press-scale inside the seam', () => {
+    for (const tier of [
+      'colox-button--shadow-sm',
+      'colox-button--shadow-md',
+      'colox-button--shadow-lg',
+    ]) {
+      expect(seam).toContain(tier);
+    }
+    expect(seam).toContain('transform: none');
   });
 });

@@ -21,11 +21,11 @@ export default meta;
 type Story = StoryObj<typeof Compact>;
 
 const Code = () => (
-  <Compact style={{ width: 280 }}>
-    <Input aria-label="segment 1" />
-    <Input aria-label="segment 2" />
-    <Input aria-label="segment 3" />
-    <Input aria-label="segment 4" />
+  <Compact>
+    <Input aria-label="segment 1" placeholder="seg 1" />
+    <Input aria-label="segment 2" placeholder="seg 2" />
+    <Input aria-label="segment 3" placeholder="seg 3" />
+    <Input aria-label="segment 4" placeholder="seg 4" />
   </Compact>
 );
 
@@ -37,7 +37,8 @@ export const Overview: Story = {
           <Code />
         </div>
         <div style={{ color: 'var(--colox-color-text-muted)' }}>
-          Four inputs, four values: the group halves the borders, keeps radii only at the two ends.
+          Four inputs, four values: the group hugs its contents (no width). Give it a width and the
+          inputs split it evenly.
         </div>
       </Section>
 
@@ -83,7 +84,7 @@ export const Overview: Story = {
         </div>
       </Section>
 
-      <Section title="States — the member in a state paints the seam">
+      <Section title="States — one invalid member, one invalid unit">
         <div style={track}>
           <Compact>
             <Input
@@ -98,9 +99,8 @@ export const Overview: Story = {
         <div
           style={{ color: 'var(--colox-color-text-muted)', marginTop: 'var(--colox-spacing-2)' }}
         >
-          The invalid member rises above the junction — its red border reaches the seam. Focus rings
-          the whole unit from outside (try tabbing between members); a member draws no second layer
-          — its own ring and the input family's focus border change stay quiet inside the group.
+          An invalid member invalidates the unit: the whole outline reddens, and any focus inside
+          rings red — Compact reads as one control, never as loose members.
         </div>
       </Section>
     </div>
