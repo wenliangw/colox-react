@@ -23,11 +23,12 @@ matchWidth=false）。
 **pointer-events:none 恒开**——提示层不交互、指针穿透回 trigger；组合选择器
 `.colox-popup.colox-tooltip__panel` 压过 positioned 恢复）+ 单一
 `colox-tooltip__content` 内容盒（cva 三轴：variant dark/light、size sm/md/lg、
-arrow 布尔——dark=bg-inverse 反色画布、light=bg-default+1px border-muted 描边、
-base=md 档 font-sm 14px + padding 2/4 + radius-md 6px，max-width 280px
-字面量、逐轴 `.scss` + `@use` 聚合）。
+arrow 布尔——**两变体同走玻璃面**：dark=bg-inverse 以 color-mix 82% + backdrop
+`blur(8px)`、light=bg-default 以 78% 白——**两变体同一条无边框几何**，底色都穿
+color-mix 半透明让页面从面板后透出；base=md 档 font-sm 14px + padding 2/4 +
+radius-md 6px，max-width 280px 字面量、逐轴 `.scss` + `@use` 聚合）。
 
-## 架构扩展（cdk 微增长两处，picker 族零变化）
+## 架构扩展（cdk 微增长三处，picker 族零变化）
 
 1. `useFloatingPosition`/`Popup` 加可选 `fallbackPlacements`（undefined 走
    既有 picker 预设 `['top-start','bottom-end','top-end']`，行为不变）；
@@ -35,6 +36,11 @@ base=md 档 font-sm 14px + padding 2/4 + radius-md 6px，max-width 280px
    对侧 → 对侧-start → 对侧-end）。
 2. 解析后把**真实 placement 写成 `data-placement` 数据属性**（computePosition
    结果的 placement 词，flip 后自动正确；additive，picker 族忽略）。
+3. 解析后把**参考中心相对面板边界的偏移写成 `--colox-floating-arrow-offset`
+   内联变量**（getBoundingClientRect 参考中心 − floating x/y，按 placement
+   横/纵轴取值）：消费方把装饰指针（Tooltip 箭头）的中心钉在该值上，
+   **flip/shift 如何搬面板，指针都瞄准 trigger**（值随 autoUpdate 每帧刷新，
+   滚动跟随同步瞄准）；additive，picker 族忽略。
 
 ## 可见性状态机（use-tooltip.ts）
 
@@ -63,12 +69,22 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 ## 视觉层（按 placement 贴边）
 
 - **箭头**：8px 方块 `rotate: 45deg`（独立 rotate 属性；旋转后四角正对四轴，
-  一个旋转态通吃四向），按 `data-placement` 前缀选择器挂边（top→bottom:-4px
-  水平居中，left:50% + translate:-50%）；light 下发向两外缘同色描边接续
-  面板 border（右下/左上/右上/左下随向）。gap 随箭头开关：开 8 / 关 6。
-- **向箭头侧定向阴影**：同属性选择器驱动，`color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent)`
+  一个旋转态通吃四向；**clip-path 沿对角线裁掉藏进面板的半边**——玻璃填充是
+  半透明的，被面板盖住的那半边会叠出更深的双重 alpha 斑块，裁剪后可见形
+  恰好=菱形凸出半边正三角形）。挂边按 `data-placement` 前缀（top→bottom:-4px），
+  **沿面板边的中心钉在 `--colox-floating-arrow-offset`**（cdk 每帧刷新，
+  `clamp(spacing-3, var, 100% - spacing-3)` 防出界）——面板被 flip/shift
+  搬移时箭头仍瞄准 trigger；translate -50% 居中。gap 随箭头开关：开 8 / 关 6。
+- **箭头颜色/模糊跟随气泡**：`background: inherit` 直取内容盒的 color-mix
+  填充、backdrop blur 读同一个 CSS 变量 `--colox-tooltip-blur`（8px，
+  内容盒声明）——箭头=气泡表面伸出的部分，任何 variant 调整自动同源。
+  **两变体同一条 8px 无边框几何**（light 用 border 会内缩填充致两变体
+  观感不一致，用户否掉——磨砂填充 + drop-shadow 自身即边缘定义）、同一条
+  `filter: drop-shadow(0 2px 4px color-mix(gray-900 20%))` 软投影
+  （light 在白底上靠它出生）。
+- **向箭头侧定向阴影**：内容盒属性选择器驱动，`color-mix(in srgb, var(--colox-palette-gray-900) 12%, transparent)`
   定向落影 ×（top→+y、bottom→-y、left→+x、right→-x）+ token base
-  `--colox-shadow-md` 双层。
+  `--colox-shadow-md` 双层，穿在半透明盒子下依旧成立。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。

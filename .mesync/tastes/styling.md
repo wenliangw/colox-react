@@ -35,8 +35,10 @@
 
 ## 提示层表面：明暗双面 + 进场动画 + 箭头向阴影（Tooltip 对齐定案）
 
-- **明暗双面**：dark（默认）= 深底浅字（inverse 面族 token）；light = `bg-default` 白底 + `border-muted` 描边 + 阴影——白底浮层在亮背景页必须描边才出生（浅底 chip「边缘定义」教义的浮层版）。
+- **明暗双面**：dark（默认）= 深底浅字（inverse 面族 token）；light = `bg-default` 白底 + 阴影。**tooltip light 用户拍板去 border、与 dark 同一条无边框几何**——磨砂填充（见「玻璃面」条目）+ drop-shadow 自身即边缘定义，「白底浮层必须描边才出生」的教义对半透明磨砂浮层不适用（白板实底才需要描边）。
+- arrow = CSS 旋转方块贴边（装饰零 floating-ui arrow 中间件），随 variant 同染；**箭头颜色与模糊跟随气泡同源**——`background: inherit` 取气泡 color-mix、blur 半径共享 `--colox-tooltip-blur` CSS 变量，variant 调整自动传导（用户要求「箭头颜色跟随气泡的背景颜色以及模糊」）；几何两变体全同（border 会内缩 border-box 填充致变体观感尺寸不一致——用户报过，最终以去 border 收敛）。
 - **进场 = fade + scale**（0.92→1 过渡，token 驱动、时长 fast）：动画与 placement 无关（Popup 已占 opacity+位移轨道，Tooltip 只补 scale 口感；分方向进场需要解析后 placement 的 JS 状态注入、先渲染后翻面会闪错向，不值）；遵守 motion 轴（reduced 直显）；**退场暂无**（Popup 无退出通道，与 Popover 一起补）。
 - **阴影方向跟箭头走**：定位解析出的真实 placement 写 `data-placement` 数据属性（`useFloatingPosition` 微扩展，additive、picker 族零变化），content 按 `[data-placement^="bottom"]` 等属性选择器把阴影向箭头所在侧偏移——箭头在哪边、阴影就向哪边落；值取 shadow token 不写死；arrow 贴边与阴影方向同一属性驱动（flip 之后方向自动正确）。
-- arrow = CSS 旋转方块贴边（装饰零 floating-ui arrow 中间件），随 variant 同染，light 变体的描边接缝用同色补齐。
+- **玻璃面优先于实底**（Tooltip 打磨轮）：浮层底色穿 color-mix 半透明（dark 82% / light 78%）+ `backdrop-filter: blur(8px)`——浮层盖在页面上但页面从后面透出，不是一块实板；半透明面板下**凸出的装饰体必须裁剪到不藏进自身体内的半边**（旋转方块的隐形半边会与面板底色双重叠加出深色斑块）；light 曾尝试 box-shadow 圆环接缝，随用户拍板去 border 一并撤下。
+- **装饰指针恒瞄准触发物**（Boundary-collision 反馈轮）：边界碰撞（flip/shift）怎么搬面板，箭头这类定位式装饰的中心都应钉在触发物的参考中心——cdk 在算位置时把「参考中心相对面板边界的偏移」写成 `--colox-floating-arrow-offset` 内联变量（每帧随 autoUpdate 刷新），消费方 `clamp()` 到面板内沿；「箭头在面板上居中」是常态下的巧合而非定义，不能硬写 50%。
 - **提示层呼吸感**（视觉松一轮，用户反馈「太紧凑、箭头小」）：hint 是短文案浮层、密度以「读一遍就走」为准——14px 字下 padding 8/16（梯子各档同步上移一档：sm 6/12、md 8/16、lg 10/20，错位原则保持）；箭头随面板比例走（6px 在 280px 面板上显弱，改 8px 方块）；gap 随箭头开关（有箭头 8 / 无箭头 6，箭头尖不埋进 trigger）。数字直觉（设计桌上估的 6/12 密度）被用户目视一轮纠回——提示层密度是发车前需要真实目视的轴。
