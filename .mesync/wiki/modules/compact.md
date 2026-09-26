@@ -35,6 +35,7 @@
 - **没有** gap/align/direction/block 词——有这些需求 = 布局问题,交给 Stack。
 - **不聚合值**、不产 ARIA 语义——每组件的语义仍由成员自身(`aria-invalid`、payload)承担,Compact 只读视觉。
 - 不接管校验/表单:join 组里每成员独立 `Form.Field`。
+- **variant 不家族化、第三继承词延后**(用户拍板「等场景再加」):variant 是动作件语言(Button 5 词 ⊂ IconButton 7 词,差额 plain/muted 是纯图标件的正当差异),家族级扩展不做;作为第三词技术上 ~10 行,等「整组动作件统一变体」的真实场景出现再启用。
 
 ## 测试与验收
 
