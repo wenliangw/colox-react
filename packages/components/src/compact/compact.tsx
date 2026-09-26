@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from 'react';
 import clsx from 'clsx';
-import { CompactContext } from '@colox/cdk/compact-context';
+import { CompactContext } from './compact-context';
 import type { CompactProps } from './types';
 
 import './styles/index.scss';

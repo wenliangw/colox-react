@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { IconCalendar } from '@colox/icons';
 import { InputControl } from '@colox/cdk/input-control';
 import { Popup, useDismissible } from '@colox/cdk/floating';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import { DatePickerClearButton } from './controls/clear-button';
 import { DatePickerPanel } from './controls/panel';
 import { useDatePicker } from './hooks/use-date-picker';

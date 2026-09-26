@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { IconChevronDown } from '@colox/icons';
 import { useDismissible } from '@colox/cdk/floating';
 import { filterComboboxOptions, useComboboxKeyboard } from '@colox/cdk/combobox';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import { SelectClearButton } from './children/clear-button';
 import { SelectControl } from './children/control';
 import { FormSelectValues } from './children/form-values';

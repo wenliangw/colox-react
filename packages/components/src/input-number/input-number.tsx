@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import clsx from 'clsx';
 import { InputControl } from '@colox/cdk/input-control';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import { Stepper } from './controls/stepper';
 import { useInputNumber } from './hooks/use-input-number';
 import type { InputNumberProps, InputNumberRef } from './types';

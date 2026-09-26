@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
+import { useCompactContext } from '../compact/compact-context';
 import type { ButtonProps, ButtonRef } from './types';
 import { buttonVariants } from './variants';
-import { useCompactContext } from '@colox/cdk/compact-context';
 
 import './styles/index.scss';
 

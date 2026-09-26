@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react';
 import clsx from 'clsx';
 import { IconClock } from '@colox/icons';
 import { InputControl } from '@colox/cdk/input-control';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import { Popup, useDismissible } from '@colox/cdk/floating';
 import { TimePickerClearButton } from './controls/clear-button';
 import { TimePickerPanel } from './controls/panel';

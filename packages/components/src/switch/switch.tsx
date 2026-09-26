@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
 import type { SwitchProps, SwitchRef } from './types';
 import { switchVariants } from './variants';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 
 import './styles/index.scss';
 

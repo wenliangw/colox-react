@@ -7,7 +7,7 @@ import { resolveInputSlots } from './utils/resolve-input-slots';
 import { ClearButton } from './controls/clear-button';
 import { VisibilityToggle } from './controls/visibility-toggle';
 import { InputControl } from '@colox/cdk/input-control';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import { inputVariants } from './variants';
 
 import './styles/index.scss';

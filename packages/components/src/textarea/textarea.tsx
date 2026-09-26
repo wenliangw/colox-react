@@ -11,7 +11,7 @@ import { resolveTextareaSlots } from './utils/resolve-textarea-slots';
 import { TextareaClearButton } from './controls/clear-button';
 import { TextareaResizeHandle } from './controls/resize-handle';
 import { textareaVariants } from './variants';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 
 import './styles/index.scss';
 

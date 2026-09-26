@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import clsx from 'clsx';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 import type { RadioProps, RadioRef } from './types';
 import { RadioGroup } from './children/group';
 import { useRadioGroupContext } from './hooks/use-radio-group-context';

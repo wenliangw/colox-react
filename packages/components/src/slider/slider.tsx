@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import type { SliderProps, SliderRef } from './types';
 import { resolveSliderMarks } from './utils/resolve-slider-marks';
 import { sliderVariants } from './variants';
-import { useCompactContext } from '@colox/cdk/compact-context';
+import { useCompactContext } from '../compact/compact-context';
 
 import './styles/index.scss';
 
