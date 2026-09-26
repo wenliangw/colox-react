@@ -62,11 +62,15 @@ existing `aria-describedby` words survive.
 ## Surfaces
 
 `variant="dark"` (default) is the inverse canvas; `variant="light"` rides the
-default surface with a border, and its arrow continues the border seam in the
-same color. `size` shifts one ladder step from the base tier — `sm` / `md` /
-`lg`. The decorative arrow and the directional shadow pin to the **resolved**
-placement (after flipping), so decorations never lie about the side the panel
-landed on.
+default surface — **borderless like dark**, both surfaces are **frosted**: a
+translucent fill over a backdrop blur keeps the page readable through the
+panel, and the arrow carries the same fill and blur, so it reads as the bubble
+surface sticking out. `size` shifts one ladder step from the base tier — `sm` /
+`md` / `lg`. The decorative arrow and the directional shadow pin to the
+**resolved** placement (after flipping), so decorations never lie about the
+side the panel landed on; the arrow also stays aimed at the trigger when a
+boundary collision displaces the panel (flip/shift), clamped so it never
+leaves the panel.
 
 <Tooltip content="The inverse canvas.">
   <Button>Dark</Button>

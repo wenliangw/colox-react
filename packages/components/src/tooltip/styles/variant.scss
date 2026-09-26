@@ -1,8 +1,9 @@
-// The light canvas rides the default surface. On light backgrounds it
-// needs the border to read as a floating layer at all; the arrow seam
-// (arrow.scss) continues the same border color through the square.
+// The light canvas rides the default surface, frosted like the base:
+// the white passes at reduced alpha so the page shimmers through the
+// blur. No border — the two canvases share one borderless geometry;
+// the frosted fill and the drop-shadow carry the edge definition
+// instead.
 .colox-tooltip__content--light {
-  border: 1px solid var(--colox-color-border-muted);
-  background: var(--colox-color-bg-default);
+  background: color-mix(in srgb, var(--colox-color-bg-default) 78%, transparent);
   color: var(--colox-color-text-default);
 }

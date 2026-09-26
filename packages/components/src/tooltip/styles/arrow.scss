@@ -2,10 +2,21 @@
 // corners sit on the four axes, so one rotation state serves every
 // direction — only the edge it hugs differs. The resolved placement
 // word on the panel root (data-placement from cdk useFloatingPosition,
-// post-flip) selects the edge: arrows and shadows never lie about the
-// side the panel actually landed on. The square overpaints the panel
-// edge under it; on the light canvas its two outward edges carry the
-// panel border color and complete the seam.
+// post-flip) selects the edge AND the clip: each direction keeps only
+// its protruding half of the diamond, cut along the diagonal — the
+// frosted fill is translucent, so the tucked half would composite a
+// darker double-alpha patch under the panel edge. Along the panel edge
+// the arrow CENTER pins to the reference center: the cdk hook measures
+// the reference center against the floating edge after flip/shift and
+// exposes it as --colox-floating-arrow-offset, clamped (spacing-3) so
+// the square never leaves the panel — the arrow keeps aiming at the
+// trigger however the panel is displaced at boundaries. The fill and
+// the blur follow the bubble exactly: `background: inherit` carries
+// the panel's translucent color-mix, and the backdrop blur reads the
+// same CSS variable the content box declares (--colox-tooltip-blur) —
+// the arrow is just the bubble's surface sticking out, both canvases
+// share one borderless geometry. A soft drop-shadow lifts the
+// triangle off the page on both canvases.
 .colox-tooltip__content--arrow {
   &::before {
     content: '';
@@ -14,56 +25,54 @@
     height: var(--colox-spacing-2);
     background: inherit;
     rotate: 45deg;
+    -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
+    backdrop-filter: blur(var(--colox-tooltip-blur));
+    filter: drop-shadow(
+      0 2px 4px color-mix(in srgb, var(--colox-palette-gray-900) 20%, transparent)
+    );
   }
 }
 
 .colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content--arrow::before {
   bottom: calc(var(--colox-spacing-2) / -2);
-  left: 50%;
+  left: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
   translate: -50% 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
 
 .colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content--arrow::before {
   top: calc(var(--colox-spacing-2) / -2);
-  left: 50%;
+  left: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
   translate: -50% 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 
 .colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content--arrow::before {
   right: calc(var(--colox-spacing-2) / -2);
-  top: 50%;
+  top: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
   translate: 0 -50%;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
 }
 
 .colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content--arrow::before {
   left: calc(var(--colox-spacing-2) / -2);
-  top: 50%;
+  top: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
   translate: 0 -50%;
-}
-
-// Light seam: the two edges leaving for the trigger continue the panel
-// border (per resolved direction — the corner pointing out decides the
-// pair).
-.colox-tooltip__panel[data-placement^='top']
-  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
-  border-right: 1px solid var(--colox-color-border-muted);
-  border-bottom: 1px solid var(--colox-color-border-muted);
-}
-
-.colox-tooltip__panel[data-placement^='bottom']
-  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
-  border-top: 1px solid var(--colox-color-border-muted);
-  border-left: 1px solid var(--colox-color-border-muted);
-}
-
-.colox-tooltip__panel[data-placement^='left']
-  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
-  border-top: 1px solid var(--colox-color-border-muted);
-  border-right: 1px solid var(--colox-color-border-muted);
-}
-
-.colox-tooltip__panel[data-placement^='right']
-  .colox-tooltip__content--light.colox-tooltip__content--arrow::before {
-  border-bottom: 1px solid var(--colox-color-border-muted);
-  border-left: 1px solid var(--colox-color-border-muted);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
 }

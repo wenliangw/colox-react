@@ -71,6 +71,22 @@ export function useFloatingPosition({
         // the side the panel actually landed on (additive, pickers
         // ignore it).
         floating.setAttribute('data-placement', resolvedPlacement);
+        // The reference center expressed against the floating edge on
+        // the cross axis: a decorative pointer (the tooltip arrow) can
+        // pin itself to the trigger instead of drifting with the
+        // flip/shift moves. Additive — consumers that don't read it
+        // are untouched.
+        const referenceRect = reference.getBoundingClientRect();
+        const horizontal =
+          resolvedPlacement.startsWith('top') || resolvedPlacement.startsWith('bottom');
+        const referenceCenter = horizontal
+          ? referenceRect.left + referenceRect.width / 2
+          : referenceRect.top + referenceRect.height / 2;
+        const floatingEdge = horizontal ? x : y;
+        floating.style.setProperty(
+          '--colox-floating-arrow-offset',
+          `${referenceCenter - floatingEdge}px`,
+        );
         setPositioned(true);
       });
     };
