@@ -1,0 +1,42 @@
+// Palette color families — the six Button families mapped onto the
+// private time-picker palette variables (the class declares the
+// vars, the paint rules read them). The selected option fills the
+// family solid and the focus ring rides the muted pair; the field
+// shell and the off-state panel fabric stay neutral on purpose.
+// Base.scss holds the brand fallbacks so the paint survives even
+// without a palette class.
+.colox-time-picker--primary {
+  --colox-time-picker-palette-solid: var(--colox-color-brand-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-brand-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+.colox-time-picker--gray {
+  --colox-time-picker-palette-solid: var(--colox-color-gray-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-gray-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-gray-inverse);
+}
+
+.colox-time-picker--info {
+  --colox-time-picker-palette-solid: var(--colox-color-blue-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-blue-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-blue-inverse);
+}
+
+.colox-time-picker--error {
+  --colox-time-picker-palette-solid: var(--colox-color-red-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-red-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-red-inverse);
+}
+
+.colox-time-picker--warning {
+  --colox-time-picker-palette-solid: var(--colox-color-orange-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-orange-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-orange-inverse);
+}
+
+.colox-time-picker--success {
+  --colox-time-picker-palette-solid: var(--colox-color-green-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-green-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-green-inverse);
+}

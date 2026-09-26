@@ -1,0 +1,201 @@
+// The field shell inherits the Input contract and the panel paints
+// with the existing fabric tokens (bg-overlay, border-muted,
+// radius-md, shadow-md) — the selection semantics ride the private
+// palette vars (brand fallbacks keep the paint alive without a
+// palette class; the family mappings live in palette.scss).
+
+.colox-time-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  width: 100%;
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+  font-family: var(--colox-font-sans);
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-default);
+  background-color: var(--colox-color-bg-default);
+  cursor: text;
+  transition:
+    border-color var(--colox-motion-duration-normal) var(--colox-motion-easing-out),
+    box-shadow var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+
+  // The shell owns the appearance contract: the ring stays lit while
+  // focus sits anywhere inside.
+  &:focus-within {
+    border-color: var(--colox-color-brand-solid);
+    box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
+  }
+
+  &--invalid {
+    border-color: var(--colox-color-red-solid);
+
+    &:focus-within {
+      border-color: var(--colox-color-red-solid);
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--colox-color-text-disabled);
+    background-color: var(--colox-color-bg-disabled);
+    border-color: var(--colox-color-border-disabled);
+  }
+}
+
+.colox-time-picker__control {
+  box-sizing: border-box;
+}
+
+.colox-time-picker__trailing {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+// The decorative clock glyph — the IconBase pointer-inert stance
+// keeps the whole shell clickable through it.
+.colox-time-picker__icon {
+  color: var(--colox-color-text-muted);
+}
+
+// Private palette variables: the panel's selection semantics read
+// these — the selected option fills the family solid, the focus ring
+// rides the muted pair (Switch/Slider discipline: only the active
+// state paints). The popup root is a PORTAL — it escapes the shell's
+// DOM tree, so the variables must live on the popup itself (the
+// shell is not an ancestor of the panel). The palette family classes
+// are likewise re-applied on the popup root (see time-picker.tsx),
+// so the palette.scss mappings hit both.
+.colox-time-picker__popup {
+  --colox-time-picker-palette-solid: var(--colox-color-brand-solid);
+  --colox-time-picker-palette-muted: var(--colox-color-brand-muted);
+  --colox-time-picker-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+// Clearable swap-reveal (Select interaction): the ✕ control sits in
+// the clock-glyph slot, hidden until the shell is hovered or focused.
+// Reset, hit shape, focus ring and the muted variant ride the shared
+// IconButton base; this file only places and reveals.
+.colox-time-picker--clearable {
+  .colox-time-picker__clear {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-within {
+    .colox-time-picker__clear {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .colox-time-picker__icon {
+      opacity: 0;
+    }
+  }
+}
+
+.colox-time-picker__clear {
+  // The transition COMPOSES the IconButton base hook (color feedback
+  // keeps its animated ride) and appends the fast opacity leg for the
+  // swap reveal — overriding the shorthand would kill the base's
+  // members (Select's clear rides the same composition).
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    var(--colox-icon-button-transition),
+    opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+// The panel: two columns side by side on the overlay fabric. The
+// width is intrinsic — 2 × 48px columns + a 8px gap + 2 × 12px
+// padding — it never stretches into the host's width.
+.colox-time-picker__panel {
+  display: flex;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-1-5);
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-md);
+  background-color: var(--colox-color-bg-overlay);
+  box-shadow: var(--colox-shadow-md);
+  color: var(--colox-color-text-default);
+}
+
+.colox-time-picker__column {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// Family muted-button idiom for the step chevrons: color-only
+// feedback, no background wash — the same nav treatment the calendar
+// header rides.
+.colox-time-picker__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: var(--colox-spacing-1);
+  border-radius: var(--colox-radius-sm);
+  background-color: transparent;
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--colox-color-text-default);
+  }
+}
+
+// The 8-option window: a plain flex stack, no scrollbar — the
+// chevrons are the scroll, the cyclic wrap happens at render.
+.colox-time-picker__listbox {
+  display: flex;
+  flex-direction: column;
+}
+
+.colox-time-picker__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 28px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--colox-radius-sm);
+  background-color: transparent;
+  font-size: var(--colox-font-size-sm);
+  color: var(--colox-color-text-default);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: var(--colox-color-gray-wash-hover);
+  }
+
+  // The selected option fills the palette solid — the pick-and-commit
+  // semantics' one active-paint mark.
+  &--selected {
+    background-color: var(--colox-time-picker-palette-solid);
+    color: var(--colox-time-picker-palette-inverse);
+
+    &:hover:not(:disabled) {
+      background-color: var(--colox-time-picker-palette-solid);
+    }
+  }
+
+  &--disabled {
+    color: var(--colox-color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 1.5px var(--colox-time-picker-palette-solid),
+      0 0 0 2px var(--colox-time-picker-palette-muted);
+  }
+}

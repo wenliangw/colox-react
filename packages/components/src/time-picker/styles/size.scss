@@ -1,0 +1,43 @@
+.colox-time-picker--xs {
+  height: var(--colox-size-6);
+  padding-inline: var(--colox-spacing-2);
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+
+  .colox-time-picker__icon {
+    font-size: var(--colox-font-size-xs);
+  }
+}
+
+.colox-time-picker--sm {
+  height: var(--colox-size-8);
+  padding-inline: var(--colox-spacing-3);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+
+  .colox-time-picker__icon {
+    font-size: var(--colox-font-size-sm);
+  }
+}
+
+.colox-time-picker--md {
+  height: var(--colox-size-10);
+  padding-inline: var(--colox-spacing-4);
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+
+  .colox-time-picker__icon {
+    font-size: var(--colox-font-size-md);
+  }
+}
+
+.colox-time-picker--lg {
+  height: var(--colox-size-12);
+  padding-inline: var(--colox-spacing-6);
+  font-size: var(--colox-font-size-lg);
+  line-height: var(--colox-line-height-lg);
+
+  .colox-time-picker__icon {
+    font-size: var(--colox-font-size-lg);
+  }
+}

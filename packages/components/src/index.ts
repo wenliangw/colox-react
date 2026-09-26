@@ -18,3 +18,4 @@ export * from './slider';
 export * from './stack';
 export * from './switch';
 export * from './textarea';
+export * from './time-picker';
