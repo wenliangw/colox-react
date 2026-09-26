@@ -88,4 +88,4 @@ time-picker/
 
 ## Form 兼容
 
-家族载荷同形（value prop 分层同名、`{event,value}` 载荷 value = 组件下一值），Form.Field 无注册表即收。
+家族载荷同形（value prop 分层同名、`{event,value}` 载荷 value = 组件下一值），Form.Field 无注册表即收：注入 `value`/`name`/`id`/`invalid`/`aria-*`（id 经 `...rest` 落在真实 input 上，label htmlFor/错误描述线/失败聚焦对线正确）。**空词挂档 `null`**（form `resolve-empty-value` 按组件身份取域内空值词：时间域与 DatePicker 同档 `null` 而非 text 词 `''`）+ form 集成用例锁定（`form-field.test.tsx`：初始 null 词 + 手输 canonical 载荷 + 提交词）。

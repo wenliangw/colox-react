@@ -48,7 +48,7 @@ form/
 ### 布尔域判据与空值词（组件身份识别）
 
 - **布尔叶子 = Checkbox / Switch / Radio（单件）**：它们注入 `checked`；`Checkbox`/`Radio` 的 `value` 是字符串表单 token/组键、`Switch` 的 `value` 是原生字符串透传——注入 `value` 会写错词。**组不是布尔件**。
-- **空值词按域**（`resolve-empty-value`）：布尔 `false`、`Checkbox.Group` `[]`、`InputNumber`/`DatePicker` `null`、`Slider` `min ?? 0`、`Select` 走 mode（multi `[]`、否则 `''`）、文本族（Input/Textarea/Radio.Group/AutoComplete/未知件兜底）`''`。**存在的理由**：控件必须从首帧起就被受控注入（否则「非受控 → 受控」切换会触发 React 警告），且 store 要有值才能参与校验；两处用同一个 seed：渲染期算 `current`（`store 值 ?? defaultValue/defaultChecked ?? 空值词`）、挂载 effect 把 seed 写进 store（校验/提交即可见，无需一次编辑）。
+- **空值词按域**（`resolve-empty-value`）：布尔 `false`、`Checkbox.Group` `[]`、`InputNumber`/`DatePicker`/`TimePicker` `null`、`Slider` `min ?? 0`、`Select` 走 mode（multi `[]`、否则 `''`）、文本族（Input/Textarea/Radio.Group/AutoComplete/未知件兜底）`''`。**存在的理由**：控件必须从首帧起就被受控注入（否则「非受控 → 受控」切换会触发 React 警告），且 store 要有值才能参与校验；两处用同一个 seed：渲染期算 `current`（`store 值 ?? defaultValue/defaultChecked ?? 空值词`）、挂载 effect 把 seed 写进 store（校验/提交即可见，无需一次编辑）。
 
 ### 校验模型
 
@@ -68,7 +68,7 @@ form/
 
 ## 调用关系
 
-- 依赖：`../stack`（骨架）、`../checkbox`/`../radio`/`../switch`/`../input`/`../textarea`/`../input-number`/`../date-picker`/`../select`/`../slider`/`../autocomplete`（**仅身份识别与空值词**，不渲染它们；均为 value import，故 form 入口会带上这些模块——树摇按组件切入口在消费方层面成立）、`@colox/theme`（`sizeKeys`/`SpacingKey`）、`clsx`、`class-variance-authority`。
+- 依赖：`../stack`（骨架）、`../checkbox`/`../radio`/`../switch`/`../input`/`../textarea`/`../input-number`/`../date-picker`/`../select`/`../slider`/`../autocomplete`/`../time-picker`（**仅身份识别与空值词**，不渲染它们；均为 value import，故 form 入口会带上这些模块——树摇按组件切入口在消费方层面成立）、`@colox/theme`（`sizeKeys`/`SpacingKey`）、`clsx`、`class-variance-authority`。
 - 被依赖：`@colox/react` barrel、preview 应用 stories、docs 官网。
 
 ## 对外接口
