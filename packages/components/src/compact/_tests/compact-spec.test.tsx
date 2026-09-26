@@ -36,17 +36,34 @@ describe('Compact seam contract', () => {
     expect(seam).toContain('.colox-slider');
   });
 
-  it('rings the whole unit on focus or an open member panel — member rings stay silent', () => {
-    expect(seam).toContain('&:focus-within,');
+  it('rings the whole unit when an input-family member is focused or its panel is open', () => {
+    // The ring hugs the input family — a focused Button keeps its own
+    // ring, the unit does not pretend to be a text control for it.
+    expect(seam).toContain('&:focus-within:has(> :is(#{$compact-input-family}):focus-within),');
     expect(seam).toContain("&:has(> [class*='--open'])");
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-brand-muted)');
-    expect(seam).toContain('&:focus-within:not(:disabled)');
+    // Member rings stay silent — scoped to the same family.
+    expect(seam).toContain(':is(#{$compact-input-family}):focus-within:not(:disabled)');
     expect(seam).toContain('box-shadow: none;');
   });
 
-  it('turns the unit ring red whenever focus sits inside an invalid unit', () => {
-    expect(seam).toContain("&:focus-within:has(> [class*='--invalid'])");
+  it('turns the ring red on any engagement inside an invalid unit', () => {
+    expect(seam).toContain("&:has(> [class*='--invalid']) {");
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-red-muted)');
+  });
+
+  it('divides the unit with one frame and subtle inner dividers', () => {
+    expect(seam).toContain('.colox-compact--divide {');
+    // One frame around the unit…
+    expect(seam).toContain('border: 1px solid var(--colox-color-border-muted);');
+    expect(seam).toContain('border-radius: var(--colox-radius-lg);');
+    // …thin dividers on the boundaries (no overlapping pulls)…
+    expect(seam).toContain('margin-inline-start: 0;');
+    expect(seam).toContain('border-inline-start: 1px solid var(--colox-color-border-subtle);');
+    // …members drop their own borders…
+    expect(seam).toContain('border: 0;');
+    // …and an invalid member reddens the frame and the dividers together.
+    expect(seam).toContain('border-inline-start-color: var(--colox-color-red-solid);');
   });
 
   it('keeps the focused input family border at the resting token, never a second layer', () => {

@@ -29,29 +29,38 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   display: inline-flex;
   align-items: stretch;
 
-  // Focus belongs to the unit: whichever member holds the focus, one
-  // ring traces the whole seam. The radius mirrors the end corners, so
-  // the ring hugs the same outline the group paints.
+  // Focus belongs to the unit — but only for the input family: when the
+  // focus sits inside one of those members, one ring traces the whole
+  // seam (the ring the member would have drawn is the halo a segment
+  // cannot own without painting across its neighbours). Other members
+  // — buttons chiefly — keep their own focused affordance; the unit
+  // does not pretend to be a text control for them. The radius mirrors
+  // the end corners, so the ring hugs the same outline the group
+  // paints.
   //
   // A member's open panel counts as engaged too — its focus can live
   // inside the portaled panel, where :focus-within cannot see it, so the
   // ring also hugs the `--open` class the family roots carry (the Select
   // has always shipped it; DatePicker/TimePicker join it).
-  &:focus-within,
+  &:focus-within:has(> :is(#{$compact-input-family}):focus-within),
   &:has(> [class*='--open']) {
     border-radius: var(--colox-radius-lg);
     box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
   }
 
-  // …unless the unit holds an invalid member — then any focus inside
-  // (whichever member) rings the whole seam red. Browsers without :has()
-  // degrade to the brand ring; the red outline below still marks it.
+  // …unless the unit holds an invalid member — then any engagement
+  // (focus inside a family member, or an open panel) rings the whole
+  // seam red. Browsers without :has() degrade to no ring; the red
+  // outline below still marks it.
   //
   // The invalid signal is keyed on the `--invalid` CLASS: the family puts
   // aria-invalid on the inner control, not the shell root, so an
   // attribute check on the direct child never fires (half-red frame bug).
-  &:focus-within:has(> [class*='--invalid']) {
-    box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+  &:has(> [class*='--invalid']) {
+    &:focus-within:has(> :is(#{$compact-input-family}):focus-within),
+    &:has(> [class*='--open']) {
+      box-shadow: 0 0 0 2px var(--colox-color-red-muted);
+    }
   }
 
   // Members stack their own borders: every sibling pulls back over the
@@ -74,11 +83,14 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
     }
 
     // Member rings stay quiet inside the group — the unit ring above
-    // replaces them, so nothing ever draws over a neighbour. The
-    // :not(:disabled) pseudo is the specificity carrier (0,3,0 beats the
-    // members' own 0,2,0 focus ring whatever the stylesheet order); a
-    // disabled member cannot focus, so the predicate is inert.
-    &:focus-within:not(:disabled) {
+    // replaces them, so nothing ever draws over a neighbour. Scoped to
+    // the input family: a focused Button keeps its own ring (the unit
+    // does not ring for it), and the checkbox/radio inner controls keep
+    // theirs. The :not(:disabled) pseudo is the specificity carrier
+    // (0,4,0 beats the members' own 0,2,0 focus ring whatever the
+    // stylesheet order); a disabled member cannot focus, so the
+    // predicate is inert.
+    &:is(#{$compact-input-family}):focus-within:not(:disabled) {
       box-shadow: none;
     }
 
@@ -143,6 +155,42 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
     border-end-end-radius: var(--colox-radius-lg);
     border-start-start-radius: 0;
     border-end-start-radius: 0;
+  }
+}
+
+// The divide gesture (`<Compact className="colox-compact--divide">`):
+// one unit frame, thin inner dividers. The members drop their own
+// borders and the unit draws a single outline; every member after the
+// first carries one divider on its start edge. The steppings read as
+// partitions of one control instead of glued boxes whose borders band
+// over each other. States retarget to the unit: invalid reddens the
+// frame and the dividers together, while the focus ring and the
+// open-panel ring still paint outside the frame (no overflow clipping —
+// clipping would swallow the ring).
+.colox-compact--divide {
+  border: 1px solid var(--colox-color-border-muted);
+  border-radius: var(--colox-radius-lg);
+
+  // No pulling overlaps — the divider sits on the boundary itself.
+  > * + * {
+    margin-inline-start: 0;
+    border-inline-start: 1px solid var(--colox-color-border-subtle);
+  }
+
+  // The members' own borders are redundant inside the frame (0,3,0
+  // beats their base 0,1,0 and their invalid 0,2,0 whatever the order).
+  > *:is(#{$compact-input-family}, .colox-compact__addon) {
+    border: 0;
+  }
+
+  // An invalid member invalidates the frame, not a segment: the outline
+  // and every divider redden together.
+  &:has(> [class*='--invalid']) {
+    border-color: var(--colox-color-red-solid);
+
+    > * + * {
+      border-inline-start-color: var(--colox-color-red-solid);
+    }
   }
 }
 
