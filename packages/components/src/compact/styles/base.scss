@@ -32,7 +32,13 @@ $compact-shape-keepers: '.colox-switch', '.colox-slider';
   // Focus belongs to the unit: whichever member holds the focus, one
   // ring traces the whole seam. The radius mirrors the end corners, so
   // the ring hugs the same outline the group paints.
-  &:focus-within {
+  //
+  // A member's open panel counts as engaged too — its focus can live
+  // inside the portaled panel, where :focus-within cannot see it, so the
+  // ring also hugs the `--open` class the family roots carry (the Select
+  // has always shipped it; DatePicker/TimePicker join it).
+  &:focus-within,
+  &:has(> [class*='--open']) {
     border-radius: var(--colox-radius-lg);
     box-shadow: 0 0 0 2px var(--colox-color-brand-muted);
   }

@@ -36,8 +36,9 @@ describe('Compact seam contract', () => {
     expect(seam).toContain('.colox-slider');
   });
 
-  it('rings the whole unit on focus — member rings stay silent', () => {
-    expect(seam).toContain('&:focus-within {');
+  it('rings the whole unit on focus or an open member panel — member rings stay silent', () => {
+    expect(seam).toContain('&:focus-within,');
+    expect(seam).toContain("&:has(> [class*='--open'])");
     expect(seam).toContain('box-shadow: 0 0 0 2px var(--colox-color-brand-muted)');
     expect(seam).toContain('&:focus-within:not(:disabled)');
     expect(seam).toContain('box-shadow: none;');
