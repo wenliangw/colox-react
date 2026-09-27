@@ -1,0 +1,77 @@
+// The message container: the box the consumer mounts (`<MessageViewport
+// scope="…">`). `fixed` pins it to the screen (the root container);
+// `absolute` pins it to the nearest positioned ancestor (a scoped
+// container inside a panel). The container itself never intercepts the
+// pointer — each slot's cards re-enable it — and it floats above page
+// content on the overlay tier.
+.colox-message-viewport {
+  z-index: var(--colox-z-overlay, 1100);
+  pointer-events: none;
+}
+
+.colox-message-viewport--fixed {
+  position: fixed;
+  inset: 0;
+}
+
+.colox-message-viewport--absolute {
+  position: absolute;
+  inset: 0;
+}
+
+// One slot: a flex column pinned to one of the six positions (top/bottom
+// × left/center/right). Top slots grow downward from the container's top
+// edge, bottom slots grow upward; the horizontal alignment follows the
+// slot word. Cards re-enable pointer events inside.
+.colox-message-viewport__slot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-2);
+  max-width: 100%;
+}
+
+.colox-message-viewport__slot--top-left {
+  top: var(--colox-spacing-6);
+  left: var(--colox-spacing-6);
+  align-items: flex-start;
+}
+
+.colox-message-viewport__slot--top-center {
+  top: var(--colox-spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.colox-message-viewport__slot--top-right {
+  top: var(--colox-spacing-6);
+  right: var(--colox-spacing-6);
+  align-items: flex-end;
+}
+
+.colox-message-viewport__slot--bottom-left {
+  bottom: var(--colox-spacing-6);
+  left: var(--colox-spacing-6);
+  align-items: flex-start;
+  flex-direction: column-reverse;
+}
+
+.colox-message-viewport__slot--bottom-center {
+  bottom: var(--colox-spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  flex-direction: column-reverse;
+}
+
+.colox-message-viewport__slot--bottom-right {
+  bottom: var(--colox-spacing-6);
+  right: var(--colox-spacing-6);
+  align-items: flex-end;
+  flex-direction: column-reverse;
+}
+
+.colox-message-viewport .colox-message {
+  pointer-events: auto;
+}

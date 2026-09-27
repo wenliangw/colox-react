@@ -1,41 +1,46 @@
-import type { ToastEntry, ToastId, ToastOptions } from './types';
+import { createId } from '@colox/cdk/utils/id';
+import type { MessageEntry, MessageId, MessageOptions, MessageVariant } from './types';
 
-/**
- * The default auto-dismiss window (ms). Overridable per toast via
- * `duration`; 0 = sticky.
- */
+/** The default auto-dismiss window (ms). Overridable per message. */
 export const DEFAULT_DURATION = 3000;
 
 /**
- * The exit window (ms): after a dismiss the toast stays mounted for
+ * The exit window (ms): after a dismiss the message stays mounted for
  * this long while the CSS plays the out-animation, then the store
  * removes it. The runtime mirror of `--colox-motion-duration-normal`;
  * the CSS duration must stay in lockstep.
  */
-export const TOAST_EXIT = 200;
+export const DEFAULT_EXIT = 200;
 
-/** A fresh unique id (monotonic per session, safe for React keys). */
-let nextId = 0;
-const nextToastId = (): ToastId => `colox-toast-${++nextId}`;
+/** The add shape: the generic options plus the face the entry belongs to. */
+export interface MessageAddOptions extends MessageOptions {
+  variant: MessageVariant;
+}
 
 /**
- * The module-level toast store: the single source of truth behind the
- * imperative API. A toast lives here from `toast(...)` until its exit
- * window ends — the store owns every timer (the auto-dismiss
- * countdown, the pause/resume bookkeeping, the exit window) and every
- * mutation, so the components are pure renders of `getSnapshot()`.
+ * One message queue — the single source of truth behind one scope
+ * container. A message lives here from `add(...)` until its exit window
+ * ends; the store owns every timer (the auto-dismiss countdown, the
+ * pause/resume bookkeeping, the exit window) and every mutation, so the
+ * viewport is a pure render of `getSnapshot()`.
+ *
+ * The store is variant-agnostic: entries carry their own `variant`, so
+ * one scope container can hold toast and notify entries side by side —
+ * the consumer faces route them in and the viewport renders each by its
+ * variant's renderer.
  *
  * Entries are immutable and the snapshot reference only changes on a
- * real mutation — the `useSyncExternalStore` contract for the
- * Viewport.
+ * real mutation — the `useSyncExternalStore` contract for the viewport.
  */
-class ToastStore {
-  private entries: ToastEntry[] = [];
+export class MessageStore {
+  private entries: MessageEntry[] = [];
   private listeners = new Set<() => void>();
   /** id → the auto-dismiss timer handle (present while counting down). */
-  private timers = new Map<ToastId, ReturnType<typeof setTimeout>>();
+  private timers = new Map<MessageId, ReturnType<typeof setTimeout>>();
   /** id → ms left on the countdown (updated on pause). */
-  private remaining = new Map<ToastId, number>();
+  private remaining = new Map<MessageId, number>();
+  /** id → the countdown start timestamp (pause bookkeeping). */
+  private startedAt = new Map<MessageId, number>();
 
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
@@ -44,7 +49,7 @@ class ToastStore {
     };
   };
 
-  getSnapshot = (): readonly ToastEntry[] => this.entries;
+  getSnapshot = (): readonly MessageEntry[] => this.entries;
 
   private emit(): void {
     for (const listener of this.listeners) {
@@ -52,10 +57,10 @@ class ToastStore {
     }
   }
 
-  /** Adds a toast and starts its auto-dismiss countdown. */
-  add(options: ToastOptions): ToastId {
-    const id = nextToastId();
-    const entry: ToastEntry = {
+  /** Adds a message and starts its auto-dismiss countdown. */
+  add(options: MessageAddOptions): MessageId {
+    const id = createId(`colox-${options.variant}`);
+    const entry: MessageEntry = {
       ...options,
       id,
       type: options.type ?? 'info',
@@ -71,20 +76,21 @@ class ToastStore {
   }
 
   /**
-   * Replaces the toast carrying `key` (or the id, when `key` matches
+   * Replaces the message carrying `key` (or the id, when `key` matches
    * none) with a patched copy. Duration changes restart the countdown;
-   * a patch from an exiting toast keeps it exiting.
+   * a patch from an exiting message keeps it exiting.
    */
-  update(key: string, patch: ToastOptions): void {
+  update(key: string, patch: MessageOptions): void {
     const index = this.entries.findIndex((entry) => entry.key === key || entry.id === key);
     if (index === -1) {
       return;
     }
     const current = this.entries[index];
-    const next: ToastEntry = {
+    const next: MessageEntry = {
       ...current,
       ...patch,
       id: current.id,
+      variant: current.variant,
       type: patch.type ?? current.type,
       status: current.status,
     };
@@ -99,8 +105,8 @@ class ToastStore {
     this.emit();
   }
 
-  /** Dismisses one toast (by id or key) into its exit window. */
-  dismiss(key: ToastId | string): void {
+  /** Dismisses one message (by id or key) into its exit window. */
+  dismiss(key: MessageId | string): void {
     const entry = this.entries.find((item) => item.id === key || item.key === key);
     if (!entry || entry.status === 'exiting') {
       return;
@@ -110,7 +116,7 @@ class ToastStore {
     this.transitionToExiting(entry.id);
   }
 
-  /** Dismisses every toast into its exit window. */
+  /** Dismisses every message into its exit window. */
   dismissAll(): void {
     for (const entry of this.entries) {
       if (entry.status === 'shown') {
@@ -126,7 +132,7 @@ class ToastStore {
   }
 
   /** Pauses the countdown (hover): remembers the ms left. */
-  pause(id: ToastId): void {
+  pause(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
@@ -143,7 +149,7 @@ class ToastStore {
   }
 
   /** Resumes the countdown from the remaining ms (hover leaves). */
-  resume(id: ToastId): void {
+  resume(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
@@ -156,16 +162,13 @@ class ToastStore {
     this.startCountdown(id, left);
   }
 
-  /** The id → countdown start timestamp map (pause bookkeeping). */
-  private startedAt = new Map<ToastId, number>();
-
-  private startCountdown(id: ToastId, ms: number): void {
+  private startCountdown(id: MessageId, ms: number): void {
     this.startedAt.set(id, Date.now());
     const timer = setTimeout(() => this.dismiss(id), ms);
     this.timers.set(id, timer);
   }
 
-  private clearCountdown(id: ToastId): void {
+  private clearCountdown(id: MessageId): void {
     const timer = this.timers.get(id);
     if (timer !== undefined) {
       clearTimeout(timer);
@@ -173,8 +176,8 @@ class ToastStore {
     }
   }
 
-  /** Moves one shown toast to exiting and schedules its removal. */
-  private transitionToExiting(id: ToastId): void {
+  /** Moves one shown message to exiting and schedules its removal. */
+  private transitionToExiting(id: MessageId): void {
     const index = this.entries.findIndex((entry) => entry.id === id);
     if (index === -1) {
       return;
@@ -185,18 +188,20 @@ class ToastStore {
     this.scheduleRemovals();
   }
 
-  /** Removes every exiting toast once the exit window ends. */
+  /** Removes every exiting message once the exit window ends. */
   private scheduleRemovals(): void {
     const exiting = this.entries.filter((entry) => entry.status === 'exiting');
     for (const entry of exiting) {
       const timer = setTimeout(() => {
         this.entries = this.entries.filter((item) => item.id !== entry.id);
         this.emit();
-      }, TOAST_EXIT);
+      }, DEFAULT_EXIT);
       this.timers.set(entry.id, timer);
     }
   }
 }
 
-/** The app-wide singleton the imperative API and the Viewport share. */
-export const toastStore = new ToastStore();
+/** Creates one message store. */
+export function createMessageStore(): MessageStore {
+  return new MessageStore();
+}

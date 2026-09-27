@@ -1,0 +1,40 @@
+// The shared message item shell: every message entry — whatever its
+// face (toast/notify) — rides these base classes. `colox-message`
+// names the shell; the tone class tints the semantic icon via the
+// design-language text tokens; `--exiting` plays the out-animation
+// (the store keeps the entry mounted through the exit window).
+//
+// The surface itself (card vs pill, shadow, radius) is the FACE's job —
+// the face item supplies its own class (colox-toast / colox-notify) on
+// top of the shell.
+.colox-message {
+  // Enter animation set per-face below (animation.scss).
+  animation-fill-mode: both;
+}
+
+.colox-message--exiting {
+  animation-play-state: running;
+}
+
+// The tone icon color: the tone's semantic text token — the design
+// language owns the tone→color mapping, the component only reads it.
+// Faces reuse this via `colox-message--tone-*` on their item.
+.colox-message--info .colox-message__icon,
+.colox-message--tone-info .colox-message__icon {
+  color: var(--colox-color-text-info);
+}
+
+.colox-message--success .colox-message__icon,
+.colox-message--tone-success .colox-message__icon {
+  color: var(--colox-color-text-success);
+}
+
+.colox-message--warning .colox-message__icon,
+.colox-message--tone-warning .colox-message__icon {
+  color: var(--colox-color-text-warning);
+}
+
+.colox-message--error .colox-message__icon,
+.colox-message--tone-error .colox-message__icon {
+  color: var(--colox-color-text-error);
+}

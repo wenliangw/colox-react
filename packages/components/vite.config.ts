@@ -25,6 +25,7 @@ const entries = {
   grid: resolve(import.meta.dirname, 'src/grid/index.ts'),
   positioner: resolve(import.meta.dirname, 'src/positioner/index.ts'),
   'icon-button': resolve(import.meta.dirname, 'src/icon-button/index.ts'),
+  notify: resolve(import.meta.dirname, 'src/notify/index.ts'),
   select: resolve(import.meta.dirname, 'src/select/index.ts'),
   slider: resolve(import.meta.dirname, 'src/slider/index.ts'),
   switch: resolve(import.meta.dirname, 'src/switch/index.ts'),

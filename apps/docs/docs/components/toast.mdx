@@ -2,81 +2,88 @@
 sidebar_position: 19
 ---
 
-import { Button, Stack, Toast, toast } from '@colox/react';
+import { Button, MessageViewport, Stack, Toast } from '@colox/react';
 import '@colox/react/style.css';
 import CodeBlock from '@theme/CodeBlock';
 
 # Toast
 
-The transient notification stack — the **M4 overlay family closer**.
-Unlike the Modal/Drawer (whose content lives in the tree), a toast's
-content comes from an **imperative call** at any code position; the
-`<Toast.Provider>` host is what must live in the tree.
+The **lightweight hint face** of the message system — the antd-message
+tier. A slim single-line pill (`bg-default`, the Popover surface) with
+a palette tone icon, the body words and a close button. No title, no
+action — those are the Notify tier's job.
 
-<CodeBlock className="colox-import" language="tsx">{`import { Toast, toast } from '@colox/react';
+The message system is two pieces: one **container** per scope (a
+`<MessageViewport>` you mount), and the **imperative faces** that route
+into it (`Toast.…` / `Notify.…`). Both faces share one scope table, so
+a single container holds toast and notify entries side by side.
+
+<CodeBlock
+  className="colox-import"
+  language="tsx"
+>{`import { MessageViewport, Toast } from '@colox/react';
 import '@colox/react/style.css';`}</CodeBlock>
 
-## Host
+## Container
 
-The host is two pieces:
-
-- `<Toast.Provider>` — wraps the app; the host that must be in the tree
-  (the store is module-level, so the provider is a pass-through today —
-  the future home of provider configuration).
-- `<Toast.Viewport position="top-right">` — the stack slot the toasts
-  mount in; `position` picks one of the six slots (top/bottom ×
-  left/center/right). The consumer's className/style shape the slot.
+Mount one `<MessageViewport>` per container. The default `scope`
+(`'root'`) is the screen-wide container every unscoped call routes into
+— `positioning="fixed"` pins it to the viewport:
 
 ```tsx
-<Toast.Provider>
-  <Toast.Viewport position="top-right" />
-</Toast.Provider>
+<MessageViewport />
+```
+
+A scoped container (`scope="panel"`, `positioning="absolute"`) pins
+itself inside a `position: relative` parent — a panel, a card, a
+drawer. Messages sent with `{ scope: 'panel' }` land inside that box:
+
+```tsx
+<div style={{ position: 'relative', height: 240 }}>
+  <MessageViewport scope="panel" positioning="absolute" />
+</div>;
+
+Toast.info('Inside the panel.', { scope: 'panel' });
 ```
 
 ## The imperative API
 
-`toast()` is a global function — call it from anywhere (a click handler,
-a fetch callback, a store). One component, **two payload tiers**:
+`Toast.…` is a global namespace — call it from anywhere (a click
+handler, a fetch callback, a store action). Tone shortcuts:
 
 ```tsx
-toast('Saved'); // lightweight single-line
-toast({ title: 'Saved', content: 'The file is on disk.' }); // titled
+Toast.info('Saved.');
+Toast.success('All good.');
+Toast.warning('Heads up.');
+Toast.error('Something went wrong.');
 ```
 
-The return value is the toast's id — hand it to `toast.dismiss(id)`.
-Tone shortcuts: `toast.info` / `toast.success` / `toast.warning` /
-`toast.error`.
+The return value is the message's id — hand it to `Toast.dismiss(id)`.
+`Toast.custom(anyNode)` renders arbitrary React content as-is (a
+progress bar, a live status). Options: `scope`, `position` (default
+`top-center`), `duration`, `key`.
 
 ## Lifecycle
 
 - **Duration**: auto-dismiss after 3s by default; `duration: 0` is
-  sticky (only the close button or an action dismisses). Hovering a
-  toast pauses its countdown.
+  sticky (only the close button dismisses). Hovering a toast pauses its
+  countdown.
 - **Close**: the corner close button (IconButton muted), or
-  `toast.dismiss(id)` / `toast.dismiss()` (all).
-- **Update**: `toast.update(key, patch)` mutates a live toast in place —
+  `Toast.dismiss(id)` / `Toast.dismiss()` (all in the scope).
+- **Update**: `Toast.update(key, patch)` mutates a live toast in place —
   progress, retries. Give the toast a `key` to target it.
-- **Exit**: each toast plays its own exit animation (a fade + slide on
-  the shared motion tier) before the store removes it.
-
-## Action
-
-One `action: { label, onClick }` slot — undo/retry semantics. Clicking
-the action runs `onClick` and then dismisses the toast (a confirmation
-is done when it's acted on). Multiple actions are a dialog's job, not a
-toast's.
-
-```tsx
-toast({
-  content: 'Item deleted.',
-  action: { label: 'Undo', onClick: () => restore() },
-});
-```
+- **Exit**: each toast plays its own exit animation before the store
+  removes it.
 
 ## Surface
 
-Opaque `bg-default` cards (the Popover surface — translucency is the
+Opaque `bg-default` pills (the Popover surface — translucency is the
 hover-hint Tooltip recipe, and a toast never hovers) with a union
 drop-shadow, radius-lg, no border. The palette tone drives the semantic
 icon (info/success/warning/error) tinted by the design-language text
 tokens. `role="status"` (polite) announces each toast.
+
+## Next
+
+Prefer a titled card with content and an action? See
+[Notify](/docs/components/notify) — the same container, the other face.

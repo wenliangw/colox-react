@@ -1,0 +1,78 @@
+// ——— toast enter/exit ——————————————————————————————————————————
+// The toast surfaces with a fade + upward slide (the antd-message
+// cue): a fresh mount plays it once, `--exiting` plays the reverse
+// with `forwards` holding the hidden end state until removal. The
+// motion tokens gate reduced motion centrally, so no local media
+// query belongs here.
+
+@keyframes colox-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes colox-toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.colox-toast {
+  animation: colox-toast-enter var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}
+
+.colox-toast.colox-message--exiting {
+  animation: colox-toast-exit var(--colox-motion-duration-normal) var(--colox-motion-easing-in)
+    forwards;
+}
+
+// ——— notify enter/exit —————————————————————————————————————————
+// The notify card slides in from the container edge — a top slot
+// slides down from the top edge, a bottom slot slides up from the
+// bottom edge (the direction follows the slot word via the
+// `data-slot` side set by the viewport).
+
+@keyframes colox-notify-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes colox-notify-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.colox-notify {
+  animation: colox-notify-enter var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}
+
+.colox-notify.colox-message--exiting {
+  animation: colox-notify-exit var(--colox-motion-duration-normal) var(--colox-motion-easing-in)
+    forwards;
+}

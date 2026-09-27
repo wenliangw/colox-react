@@ -1,0 +1,102 @@
+---
+sidebar_position: 20
+---
+
+import { Button, MessageViewport, Notify, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Notify
+
+The **titled card face** of the message system — the antd-notification
+tier. An opaque `bg-default` card holding the palette tone icon, a
+**title** + content, a single **action** (subtle Button, auto-closes
+the card on click) and the close button. The heavier sibling of
+[Toast](/docs/components/toast) — where Toast is a single-line hint,
+Notify is a proper notification.
+
+Notify shares the message system's container with Toast: one
+`<MessageViewport>` per scope holds both faces' entries side by side,
+each in its own slot (Notify defaults to `top-right`, Toast to
+`top-center`).
+
+<CodeBlock
+  className="colox-import"
+  language="tsx"
+>{`import { MessageViewport, Notify } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Container
+
+The same `<MessageViewport>` Toast uses — the container does not care
+which face the entry came from:
+
+```tsx
+<MessageViewport />
+```
+
+Calls without a `scope` route into `'root'` (the screen-wide fixed
+container). A scoped container routes calls that name it:
+
+```tsx
+<div style={{ position: 'relative', height: 240 }}>
+  <MessageViewport scope="panel" positioning="absolute" />
+</div>;
+
+Notify.info({ title: 'Panel', content: 'Scoped.' }, { scope: 'panel' });
+```
+
+## The imperative API
+
+`Notify.…` is a global namespace — callable from any code position.
+The payload carries the card's own shape: `title`, `content`, `type`,
+`action`, `duration`, `key`.
+
+```tsx
+Notify.info({
+  title: 'Saved',
+  content: 'The file is on disk.',
+});
+```
+
+Tone shortcuts: `Notify.info` / `Notify.success` / `Notify.warning` /
+`Notify.error`. `Notify.custom(anyNode)` renders arbitrary content as
+the card body. Options: `scope`, `position` (default `top-right`).
+
+## Action
+
+One `action: { label, onClick }` slot — undo/retry semantics. Clicking
+the action runs `onClick` and then dismisses the card (a confirmation
+is done when it's acted on). Multiple actions are a dialog's job, not a
+notification's.
+
+```tsx
+Notify.error({
+  title: 'Upload failed',
+  content: 'The file is larger than 10 MB.',
+  action: { label: 'Retry', onClick: () => upload() },
+});
+```
+
+## Lifecycle
+
+- **Duration**: auto-dismiss after 3s by default; `duration: 0` is
+  sticky. Hovering pauses the countdown.
+- **Close**: the corner close button, `Notify.dismiss(id)` /
+  `Notify.dismiss()` (all in the scope).
+- **Update**: `Notify.update(key, patch)` mutates a live card in place.
+- **Exit**: per-item exit animation before the store removes it.
+
+## Positions
+
+The six slots are relative to the **container's own box** — for the
+root container that is the screen (top/bottom × left/center/right); for
+a scoped container, the box it is pinned inside. Pass `position` to
+override the face default per call.
+
+## Surface
+
+Opaque `bg-default` card (the Popover surface recipe) with a union
+drop-shadow, radius-lg, no border. The palette tone drives the semantic
+icon tinted by the design-language text tokens. `role="status"`
+(polite) announces each card.

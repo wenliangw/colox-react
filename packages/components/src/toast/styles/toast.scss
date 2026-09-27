@@ -1,0 +1,45 @@
+// The toast pill: the lightweight single-line hint surface. An OPAQUE
+// bg-default pill (the Popover recipe — a toast carries information,
+// readable-first; the translucent hover-hint recipe is the Tooltip's,
+// and a toast never hovers), NO border (the shadow defines the edge),
+// depth = ONE union drop-shadow at the master alpha. Horizontal row:
+// [tone icon] [content] [close]. `role="status"` + `aria-live`
+// announce it politely (the shell owns those).
+.colox-toast {
+  --colox-toast-shadow-color: rgba(25, 25, 25, 0.1);
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-3);
+  max-width: 384px;
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+  background: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+  border-radius: var(--colox-radius-lg);
+  filter: drop-shadow(0 8px 24px var(--colox-toast-shadow-color));
+}
+
+// The tone icon: fixed size, tinted by the tone's semantic text token
+// (shell.scss owns the tone→color mapping via `colox-message--tone-*`).
+.colox-toast__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--colox-color-text-info);
+}
+
+// The body words: the toast is one line — it wraps inside the cap.
+.colox-toast__content {
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}
+
+// The corner close: the shared IconButton muted base — this site class
+// only widens the hit area around the 16px icon.
+.colox-toast__close {
+  flex: none;
+  padding: var(--colox-spacing-1);
+}

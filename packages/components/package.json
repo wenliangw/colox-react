@@ -100,6 +100,11 @@
       "import": "./dist/es/modal.js",
       "require": "./dist/cjs/modal.cjs"
     },
+    "./notify": {
+      "types": "./dist/types/notify/index.d.ts",
+      "import": "./dist/es/notify.js",
+      "require": "./dist/cjs/notify.cjs"
+    },
     "./popover": {
       "types": "./dist/types/popover/index.d.ts",
       "import": "./dist/es/popover.js",

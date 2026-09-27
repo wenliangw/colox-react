@@ -1,69 +1,41 @@
 import clsx from 'clsx';
-import { IconError, IconInfo, IconSuccess, IconWarning, IconX } from '@colox/icons';
-import { Button } from '../button';
+import { IconX } from '@colox/icons';
 import { IconButton } from '../icon-button';
-import { toastStore } from './store';
-import type { ToastEntry, ToastTone } from './types';
+import { MessageItemShell, TONE_ICONS } from '../cdk/message';
+import type { MessageRendererProps } from '../cdk/message';
 
-/** The palette tone → its semantic icon. */
-const TONE_ICONS: Record<ToastTone, typeof IconInfo> = {
-  info: IconInfo,
-  success: IconSuccess,
-  warning: IconWarning,
-  error: IconError,
-};
+import './styles/toast.scss';
 
 /**
- * One toast card: the opaque surface (bg-default — the Popover
- * recipe; a toast never hovers, so the translucent hover-hint recipe
- * does not apply) holding the tone icon, the title/content, the
- * optional action and the close button. The status class drives the
- * animation: a fresh mount plays the entrance, `exiting` plays the
- * out-animation (the store removes the entry once the window ends).
- * Hovering pauses the auto-dismiss countdown.
+ * The toast face's item: the lightweight single-line hint — the
+ * antd-message tier. A slim opaque pill (bg-default — the Popover
+ * surface; a toast never hovers, so the translucent hover-hint recipe
+ * does not apply) holding the tone icon, the body words and a close
+ * button. No title, no action — those are the notify tier's job.
+ *
+ * The shared shell owns the role announcement, the exiting flag and
+ * the hover pause/resume of the auto-dismiss countdown.
  */
-export function ToastItem({ entry }: { entry: ToastEntry }) {
+export function ToastItem({ entry, store }: MessageRendererProps) {
   const ToneIcon = TONE_ICONS[entry.type];
-  const isTitled = entry.title !== undefined;
 
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className={clsx('colox-toast', `colox-toast--tone-${entry.type}`, {
-        'colox-toast--titled': isTitled,
-        'colox-toast--exiting': entry.status === 'exiting',
-      })}
-      onMouseEnter={() => toastStore.pause(entry.id)}
-      onMouseLeave={() => toastStore.resume(entry.id)}
+    <MessageItemShell
+      entry={entry}
+      store={store}
+      className={clsx('colox-toast', `colox-toast--tone-${entry.type}`)}
     >
       <ToneIcon className="colox-toast__icon" aria-hidden="true" />
-      <div className="colox-toast__body">
-        {isTitled && <div className="colox-toast__title">{entry.title}</div>}
-        {entry.content !== undefined && <div className="colox-toast__content">{entry.content}</div>}
-      </div>
-      {entry.action && (
-        <Button
-          variant="subtle"
-          className="colox-toast__action"
-          onClick={() => {
-            entry.action?.onClick();
-            // the action is a confirmation — the toast's job is done
-            toastStore.dismiss(entry.id);
-          }}
-        >
-          {entry.action.label}
-        </Button>
-      )}
+      <div className="colox-toast__content">{entry.content}</div>
       <IconButton
         size="4"
         variant="muted"
         className="colox-toast__close"
         aria-label="Close"
-        onClick={() => toastStore.dismiss(entry.id)}
+        onClick={() => store.dismiss(entry.id)}
       >
         <IconX aria-hidden="true" />
       </IconButton>
-    </div>
+    </MessageItemShell>
   );
 }

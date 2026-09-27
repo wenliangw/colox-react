@@ -14,6 +14,7 @@ export * from './icon-button';
 export * from './input';
 export * from './input-number';
 export * from './modal';
+export * from './notify';
 export * from './positioner';
 export * from './popover';
 export * from './radio';
@@ -25,3 +26,8 @@ export * from './textarea';
 export * from './time-picker';
 export * from './toast';
 export * from './tooltip';
+
+// The message container the consumer mounts; the message base layer
+// itself (store/factory) stays internal behind the faces.
+export { MessageViewport } from './cdk/message';
+export type { MessagePosition, MessageTone, MessageViewportProps } from './cdk/message';
