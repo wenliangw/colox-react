@@ -36,7 +36,7 @@
 ## 提示层表面：明暗双面 + 进场动画 + 玻璃面（Tooltip 对齐定案）
 
 - **明暗双面**：dark（默认）= 深底浅字（inverse 面族 token）；light = `bg-default` 白底——**borderless、与 dark 同一条几何**（用户拍板去 border）；阴影走「本体盒单条 token 投影」——见「玻璃面」条目（「白底浮层必须描边才出生」的教义对半透明磨砂浮层不适用：白板实底才需要描边，磨砂白底靠一条阴影出生）。
-- arrow = 纯三角**整个落在气泡盒外**（不旋转、不骑边，clip-path 按四向各画一个三角形），随 variant 同染；**箭头颜色与模糊跟随气泡同源**——`background: inherit` 取气泡 color-mix、blur 半径共享 `--colox-tooltip-blur`，variant 调整自动传导（用户要求「箭头颜色跟随气泡的背景颜色以及模糊」）；**凸出主机的装饰绝不骑边**：backdrop-filter 只采样自身盒内，骑边装饰会把气泡自己的半透明填充 blur 进自己（实测气泡 66 vs 箭头 62 的硬台阶），全落盒外则装饰背景=页面、与主机同构。两变体同一条无边框几何（border 内缩填充致变体观感尺寸不一致——用户报过，最终以去 border 收敛）。
+- arrow = **border 三角**（零尺寸盒 + 单侧着色 6px 边框 + 两侧透明边框，角分线天然成三角——**兼容性优先于 clip-path**，用户点名「border 的兼容性更好」）**整个落在气泡盒外**（不旋转、不骑边），随 variant 同染；**箭头填充跟随气泡同源**——共享自定义属性 `--colox-tooltip-fill`（content 声明/variant 覆写）一处换两色（用户要求「箭头颜色跟随气泡」的心法的当代实现；blur 随 border 画框的透镜限制退场——Chromium 对纯边框绘制不投 backdrop 透镜，实测红蓝分野：普通盒混色、border 三角不混；均匀底两者逐像素一致，纹理底箭头更锐，是兼容性优先的公开代价）；**凸出主机的装饰绝不骑边**：backdrop-filter 只采样自身盒内，骑边装饰会把气泡自己的半透明填充 blur 进自己（实测气泡 66 vs 箭头 62 的硬台阶），全落盒外则装饰背景=页面、与主机同构。两变体同一条无边框几何（border 内缩填充致变体观感尺寸不一致——用户报过，最终以去 border 收敛）。
 - **进场 = fade + scale**（0.92→1 过渡，token 驱动、时长 fast）：动画与 placement 无关（Popup 已占 opacity+位移轨道，Tooltip 只补 scale 口感；分方向进场需要解析后 placement 的 JS 状态注入、先渲染后翻面会闪错向，不值）；遵守 motion 轴（reduced 直显）；**退场暂无**（Popup 无退出通道，与 Popover 一起补）。
 - **阴影方向跟箭头走（机制保留、视觉语义撤）**：定位解析出的真实 placement 写 `data-placement` 数据属性——该机制保留（箭头贴边/瞄准仍读它），但「向箭头侧定向阴影」的视觉语义撤下（定向落影恰铺在箭头散布区，放大透光）。
 - **玻璃面优先于实底**（Tooltip 打磨轮）：浮层底色穿 color-mix 半透明（dark 82% / light 78%）+ `backdrop-filter: blur(8px)`——浮层盖在页面上但页面从后面透出，不是一块实板；装饰体保持在主机盒外（见上）。

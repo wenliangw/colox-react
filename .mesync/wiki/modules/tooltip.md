@@ -68,18 +68,22 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 
 ## 视觉层（按 placement 贴边）
 
-- **箭头**：纯三角，**整个落在气泡盒外**（top/bottom/left/right: 100%，
-  绝不骑边负偏移）；token 尺寸：底 spacing-3=12px、深 spacing-1-5=6px，
-  **不旋转**，clip-path 按四向各自画三角形。骑边旋转方块被判死刑：
-  backdrop-filter 只采样自身盒内，骑边会把气泡自己的半透明填充 blur 进
-  自己（实测气泡 66 vs 箭头 62 的硬台阶）；全在盒外则箭头背景=页面，与
-  气泡同构同源。沿边的中心仍钉 `--colox-floating-arrow-offset`（clamp
-  防出界、面板被 flip/shift 搬移后箭头仍瞄准 trigger），translate -50%
-  居中；gap 随箭头开关：开 8 / 关 6。
-- **箭头颜色/模糊跟随气泡**：`background: inherit` 直取内容盒的 color-mix
-  填充、backdrop blur 读同一 CSS 变量 `--colox-tooltip-blur`（8px）——
-  箭头=气泡表面伸出的部分，variant 调整自动同源。**两变体同一条无边框
-  几何**（light 的 border 被用户否掉以来从未回潮）。
+- **箭头**：border 三角，**整个落在气泡盒外**（top/bottom/left/right: 100%，
+  绝不骑边负偏移）；零尺寸盒 + 单侧着色 6px 边框 + 两侧透明边框，角分线
+  天然画出底 spacing-3=12px、深 spacing-1-5=6px 的三角，**无 clip-path、
+  无旋转**（border 三角全引擎支持——用户点名以兼容性为准）。骑边旋转方块
+  被判死刑：backdrop-filter 只采样自身盒内，骑边会把气泡自己的半透明填充
+  blur 进自己（实测气泡 66 vs 箭头 62 的硬台阶）；全在盒外则箭头背景=页
+  面，与气泡同构同源。沿边的中心仍钉 `--colox-floating-arrow-offset`
+  （clamp 防出界、面板被 flip/shift 搬移后箭头仍瞄准 trigger），translate
+  -50% 居中；gap 随箭头开关：开 8 / 关 6。
+- **箭头填充跟随气泡**：填充色经由共享自定义属性 `--colox-tooltip-fill`
+  （content 声明、variant 覆写）传给着色边框——箭头=气泡表面伸出的部分，
+  variant 调整一处换两色。**border 画框在 Chromium 无 backdrop 透镜**
+  （红蓝分野实测：普通盒混色、border 三角不混）——箭头自身不带 blur；
+  均匀底（提示层的常态归宿）与气泡逐像素一致，纹理底上箭头透出页面比
+  气泡锐利，为兼容性优先的公开代价。**两变体同一条无边框几何**（light
+  的 border 被用户否掉以来从未回潮）。
 - **阴影（本轮定案：一条 token box-shadow 挂本体盒，机制全撤）**：内容盒
   自带 `box-shadow: var(--colox-shadow-md)`，箭头 `z-index: 1` 盖在阴影
   之上——无投影层、无遮罩挖孔、无 6px 让位带。半透明窗仍让阴影渗出几
