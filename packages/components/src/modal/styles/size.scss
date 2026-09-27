@@ -1,0 +1,15 @@
+// The width tiers bind to the design language's large_size tokens
+// (WIDTH_HEIGHT scope) — semantic sm/md/lg, real token values: 112
+// (448px) / 160 (640px) / 192 (768px). The `width` prop overrides
+// inline and beats the tier.
+.colox-modal__panel--size-sm {
+  width: var(--colox-size-112);
+}
+
+.colox-modal__panel--size-md {
+  width: var(--colox-size-160);
+}
+
+.colox-modal__panel--size-lg {
+  width: var(--colox-size-192);
+}

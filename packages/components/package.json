@@ -90,6 +90,11 @@
       "import": "./dist/es/positioner.js",
       "require": "./dist/cjs/positioner.cjs"
     },
+    "./modal": {
+      "types": "./dist/types/modal/index.d.ts",
+      "import": "./dist/es/modal.js",
+      "require": "./dist/cjs/modal.cjs"
+    },
     "./popover": {
       "types": "./dist/types/popover/index.d.ts",
       "import": "./dist/es/popover.js",

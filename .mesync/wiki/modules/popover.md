@@ -67,27 +67,31 @@ font-sm/line-height-md、`word-break: break-word`）、标题行
   manual 下静音——受控面板不把键盘诀交给库。`closeOnScroll`（默认
   false）= 显式退出，默认跟随 autoUpdate。
 
-## 焦点机（同一 hook 内，独立效果节）
+## 焦点机（共享 cdk `useTrap`，Modal 批提权）
 
-- **开焦预约 = pending ref + 面板 ref 回调执行**：click 开时 effect 仅写
-  预约位；面板门户节点**晚一拍**才挂（Popup presence 是被动 effect
-  tick），被动 effect 此刻读 ref 必空——ref 回调 `setPanelRef`
-  （经 Popup 的 useImperativeHandle 转发，节点一挂即叫）执行预约：
-  `getFocusableElements(node)[0] ?? node`。退出窗口内重开（同一节点不重叫
-  回调）由预约 effect 直接补焦。hover/manual 永不抢焦（指针交互不偷键盘）。
-- **Tab 圈（全程显式步进 + preventDefault，不依赖浏览器默认 Tab）**：
-  面板持焦时 Tab/Shift+Tab 在 harvest 内 (%) 循环回卷；harvest 空 =
-  面板自身收容；焦点在面板内但不在 harvest（奇异）＝拉回首项。**trigger
-  上的前向 Tab 溜进面板**（门户挂 document 末尾、自然 Tab 序够不着，
-  首项步进；Shift+Tab 从 trigger 属页面自己的事）。harvest 判定 =
-  `getComputedStyle` 的 display/visibility（浏览器语义：display:none 元素
-  focus() 是 no-op，故选器+计算样式正是「浏览器真实拒绝聚焦」的属性集；
-  不用 getBoundingClientRect——jsdom 恒 0×0 会令纯文本面板误吞）。
-- **关窗回收**：Escape handler 面板内部焦点先回 trigger（dismissible 随后
-  关）；其余关闭（外点/滚动/失窗）在仍持焦且焦点尚在面板内时回焦点给
-  trigger——**真实浏览器中外点关时焦点已随 pointerdown 落到被点元素**
-  （浏览器 default），回收 effect 判 activeElement 已在面板外自然跳过 =
-  外点不偷焦点；jsdom 不模拟 pointerdown 移焦，此承诺探针验证。
+Popover 的焦点能力在 Modal 批从 hook 内局部逻辑**提权为共享
+`cdk/hooks/useTrap`**（行为等价，50 条 Popover 测试原样通过验证；
+Modal 是严格模式的首个消费者）：
+
+- **软圈（soft，有 triggerRef）**：Tab 在面板 harvest 内 (%) 循环回卷、
+  harvest 空 = 面板自身收容；**trigger 上的前向 Tab 溜进面板**（门户挂
+  document 末尾、自然 Tab 序够不着；Shift+Tab 从 trigger 属页面自己的
+  事）；Escape 面板内焦点先回 trigger（useDismissible 随后关）；关窗时
+  面板仍持焦则回焦点给 trigger。
+- **开焦按通道**：`initialFocus: visibleOn === 'click' ? 'first' :
+'none'`——**只有 click 通道抢焦**（首个可聚焦/否则面板自身
+  tabindex=-1）；hover/manual 永不抢焦（指针交互不偷键盘）。首焦仍走
+  pending ref + ref 回调执行（门户节点晚一拍挂）；退出窗口内重开（同一
+  节点）由预约 effect 直接补焦。
+- **harvest 判定**（`cdk/utils/focusables.ts`，从 popover-local 提权）：
+  `getComputedStyle` 的 display/visibility（浏览器语义：display:none
+  元素 focus() 是 no-op，故选器+计算样式正是「浏览器真实拒绝聚焦」的
+  属性集；不用 getBoundingClientRect——jsdom 恒 0×0 会令纯文本面板误吞）。
+- **外点不偷焦点**：useTrap 的 focus 在场追踪（focusin/focusout）之外，
+  加**外落 pointerdown 解除回收旗**——外点关时用户的焦点已随点击自然
+  落位（真实浏览器 pointerdown 已把 activeElement 移到被点元素；jsdom
+  不模拟移焦，pointerdown 解除旗正是为它补齐同一承诺），回收 effect 判
+  旗已解自然跳过；hover 面板也不会因回收焦点触发 trigger onFocus 重开。
 
 ## 注入面（零容器的代价摊平）
 
@@ -175,7 +179,6 @@ popover/
 │   └── behavior.ts           # POPOVER_DELAY {in:300,out:100}（out=指针桥）+ POPOVER_EXIT 100（motion-fast 镜像）
 ├── utils/
 │   ├── leaves.ts             # 编译走查：双通道裁决/硬错误/宿主抽取（trigger/title/content 三部分）
-│   ├── focusables.ts         # 键盘聚焦 harvest（FOCUSABLE_SELECTOR + getComputedStyle display/visibility 过滤）
 │   ├── resolve-fallback-placements.ts # placement → 对侧优先翻转链
 │   ├── resolve-gap.ts        # 箭头开关 → gap 裁决
 │   ├── resolve-has-content.ts # 双通道内容在场裁决（机器 hasContent 门 + ARIA 面）

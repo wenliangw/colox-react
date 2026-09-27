@@ -1,0 +1,39 @@
+// The entrance: fade + soft scale-in (the Popover recipe — the panel
+// mounts on the overlay presence tick, so the enter plays on mount).
+// The exit rides the overlay exit channel: the Overlay keeps the layer
+// mounted with the `--exiting` class for MODAL_EXIT (100ms) and this
+// fade-out plays across it; `forwards` holds the invisible end state
+// until the unmount lands. The motion tokens gate reduced motion
+// centrally, so no local media query belongs here.
+@keyframes colox-modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes colox-modal-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.colox-modal__panel {
+  animation: colox-modal-enter var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+// The exiting class rides the OVERLAY root (the cdk Overlay carrier
+// owns the exit window) — the panel's fade-out keys off its parent.
+.colox-modal.colox-overlay--exiting .colox-modal__panel {
+  animation: colox-modal-exit var(--colox-motion-duration-fast) var(--colox-motion-easing-out)
+    forwards;
+}

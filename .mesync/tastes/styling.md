@@ -14,6 +14,9 @@
 ## 滚动条是平台 chrome 的补充件：贴边、token 上色、双引擎一致化
 
 - **贴边不贴 padding**：滚动容器（裸控件）自己持有 inline padding，滚动条渲染在元素边框内侧、自然贴死外壳边缘——若 padding 挂在外层壳上，Windows 预留式 gutter 会插在 padding 内侧「飘着」（用户实测断言「视觉上很丑」）。结构顺序 = `边框 | 滚动条 | padding | 内容`。
+- **滚动条与 padding 同元素 = 右侧 padding 被吃**（Modal Content 实测，用户报告「滚动条占用了右侧 padding 的空间」）：`overflow-y: auto` 与 `padding-right` 同元素时，经典滚动条渲染在边框内侧、吃掉 padding 盒的一部分（Windows 预留式 gutter 约 15px），右侧 24px 视觉被挤窄、左右不对称——正解是滚动条走自己的 gutter（边框 | 滚动条 | padding | 内容），不占 padding。
+- **占位用 `scrollbar-gutter: stable both-edges` 一行轻量解**（Modal Content 落地，用户拍板「先轻量解决滚动条占位的问题吧」）：滚动容器需要水平 padding 时（Modal 24px，区别于 Textarea 的水平零 padding 裸控件配方），`stable` 给滚动条预留 gutter 槽位（边框 | 滚动条 | padding | 内容）、内容不跳动；`both-edges` 补对称（单侧 stable 左侧无 gutter、内容偏左）。零 DOM 结构变化、不碰滚动条样式。
+- **滚动场景统一收进 ScrollView**（用户规划，ROADMAP M8）：滚动条样式（双引擎配方）、滚动加载/动态加载（触底加载、无限滚动）收 ScrollView 一个家——占位已用 scrollbar-gutter 轻量解决（Modal 已做），样式与加载机制等 ScrollView 统一做，不给单个滚动容器各写滚动条样式补丁。
 - **平台一致 = 双引擎 CSS**：`scrollbar-width: thin` + `scrollbar-color`（Chrome 121+/Firefox 的标准属性）+ `::-webkit-scrollbar-*` 伪元素族（Safari 及老 Chrome 只认它）——Windows 原生粗灰 gutter 与 macOS overlay 统一成同一枚「细圆条」；Firefox 只能到「thin + 两色」这一级，像素级一致不承诺，跨平台观感一致承诺。
 - **颜色全走 token**：thumb = `--colox-color-border-muted`、track 透明、圆角 token 全圆；不用平台自己的滚动条美学，也不写死色值。
 - 滚动条只在「内容真的超出」时出现（growth 世界 overflowY hidden 无闪动、封顶世界才 auto）；溢出控制与手动调高（drag handle）的世界互斥（用户裁决：设了 maxRows 就不给 handle）。
@@ -54,3 +57,12 @@
 - **面板宽度 = 内容固有**（无 size 轴，DatePicker 先例）：作者 JSX 决定宽度，固定档不匹配内容固有原则；上限归消费方 CSS 逃生舱。
 
 来源：Popover 设计对齐五轴定案（实底卡片/焦点全案/指针桥/退场三件/内容固有宽）；Tooltip 表面轮的用户裁决延伸。
+
+## 模态对话框表面：实底面板 + 尺寸档取 token + 滚动归属内容体（Modal 定案）
+
+- **面板表面 = Popover 实底卡片同款配方**：opaque `--colox-color-bg-default`（dark 自动翻）+ 无边框 + `radius-lg` + panel 级 union drop-shadow（Tooltip 标定单轮，颜色 = 设计语言阴影主值 alpha 0.10）——**遮罩之上的深色面，实底卡片是长文/交互面的统一答案**（提示层半透明专约不延伸）。阴影方向中性（无箭头 → 无 placement 依赖，drop-shadow(0 8px 24px) 常驻）。
+- **尺寸档 = 语义对齐 + 真实 token 档（用户拍板「取值从 Design Tokens 中取，不要自己造数值」）**：Modal 的 `size` 轴 = 宽，sm/md/lg → `--colox-size-112`(448px)/`--colox-size-160`(640px)/`--colox-size-192`(768px)（large_size WIDTH_HEIGHT scope 真实档）——**延续「键表由 theme 发射、组件只消费」家族纪律，组件永不自造数值**（与 Popover「内容固有宽」不冲突：Modal 是对话框，宽度档是设计语言给的语义轴；逃生舱 `width` prop 数字=px）。Tooltip 的 sm/md/lg 档同属此纪律（语义档 + token 档位）。
+- **滚动归属内容体（用户否定「整面板滚动」后拍板）**：对话框三段的**中间段（Content）是唯一滚动区**——Title/Footer 是常驻 chrome（flex column 下 `flex: none` 钉死），Content `flex: 1 1 auto` + `min-height: 0` + `overflow-y: auto`。教训：**长内容对话框的标题栏与操作栏永远在折内**（操作栏消失在滚动里 = 用户必须滚回顶部才能点按钮，主流 dialog 均为 header/footer 固定、body 滚动）；flex 机器要件 = 常驻件须显式 `flex: none`（默认 flex-shrink:1 会被压扁）+ 滚动件须 `min-height: 0`（flex 子项默认 min-height:auto 会按内容撑开、溢出泄漏到面板而非内部滚动）。
+- **遮罩 = 设计语言黑阶梯真实档**：`--colox-palette-black-500`（rgba(0,0,0,0.5)）——阶梯 0/50/100/.../900 步进、无自造透明度；无 blur（family 已整体移除 blur）。
+
+来源：Modal 设计对齐轮（决策 654abd7c：size 档取 token/纯组合式/共享能力进 cdk）+ 滚动归属修正（决策 cfec8a68：用户报告「Title 和 Footer 应该是固定的，应该是 Content 根据内容 Scroll」）。

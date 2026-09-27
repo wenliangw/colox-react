@@ -1,6 +1,7 @@
-import { forwardRef, useEffect, useState, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
+import { usePresence } from '../../hooks/use-presence';
 import { useFloatingPosition } from '../hooks/use-floating-position';
 import type { PopupProps } from '../types';
 
@@ -36,35 +37,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   const panelRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(ref, () => panelRef.current as HTMLDivElement);
 
-  // Popup escapes into document.body — evaluating that during render
-  // crashes SSR (document is undefined) and desyncs hydration, so
-  // `presence` (false server-side and until the first client tick)
-  // gates the portal. The open/exit clock rides the same state: open
-  // mounts the panel; an open->false edge with an exit window keeps
-  // it for that long and unmounts at the end, without one re-opens
-  // instantly.
-  const [presence, setPresence] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      setPresence(true);
-      return undefined;
-    }
-    if (exitDuration === 0) {
-      setPresence(false);
-      return undefined;
-    }
-    const timer = window.setTimeout(() => setPresence(false), exitDuration);
-    return () => window.clearTimeout(timer);
-  }, [open, exitDuration]);
-
   // The panel time on screen, exit-aware: `open` mounts it, an exit
   // window keeps it alive after the close edge, and a zero window
   // unmounts in the SAME commit as the close (an instant-unmount
   // consumer never sees an extra painted frame). SSR stays safe:
   // `presence` is false server-side, so nothing portals or positions.
-  const show = presence && (exitDuration > 0 || open);
-  const exiting = show && !open;
+  const { show, exiting } = usePresence({ open, exitDuration });
 
   const { positioned } = useFloatingPosition({
     referenceRef,

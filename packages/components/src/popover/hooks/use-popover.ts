@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDismissible } from '@colox/cdk/floating';
+import { useTrap } from '@colox/cdk/hooks';
 import { POPOVER_DELAY } from '../constants/behavior';
 import type {
   PopoverBridgeHandlers,
@@ -7,7 +8,6 @@ import type {
   UsePopoverParams,
   UsePopoverResult,
 } from '../types';
-import { getFocusableElements } from '../utils/focusables';
 
 /**
  * The popover surface machine — visibility AND focus, one hook: the
@@ -72,13 +72,6 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
   // (window blur / document hidden); any real pointer or keyboard
   // input re-arms the channel.
   const restoredFocusRef = useRef(false);
-
-  // The open-focus appointment: the click channel opens the panel
-  // with the keyboard focus inside. The portal node arrives one tick
-  // after the open edge — the effect only writes the intent, the
-  // panel's ref callback (setPanelRef) performs the focus once the
-  // node actually exists.
-  const pendingFocusRef = useRef(false);
 
   const clearOpenTimer = useCallback(() => {
     if (openTimerRef.current !== null) {
@@ -153,103 +146,28 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
     return triggerRef.current === active || (panelRef.current?.contains(active) ?? false);
   }, []);
 
-  // Focus: appointment (click open), perform-on-attach, trap, return.
-  useEffect(() => {
-    if (visible && visibleOn === 'click') {
-      pendingFocusRef.current = true;
-      // A re-open inside the exit window keeps the SAME panel node
-      // mounted — the ref callback won't re-fire, focus directly.
-      if (panelRef.current) {
-        pendingFocusRef.current = false;
-        (getFocusableElements(panelRef.current)[0] ?? panelRef.current).focus();
-      }
-      return;
-    }
-    if (!visible) {
-      pendingFocusRef.current = false;
-    }
-  }, [visible, visibleOn]);
-
-  const setPanelRef = useCallback((node: HTMLDivElement | null) => {
-    panelRef.current = node;
-    if (node && pendingFocusRef.current) {
-      pendingFocusRef.current = false;
-      (getFocusableElements(node)[0] ?? node).focus();
+  // The dialog focus machine (shared cdk hook): the soft cycle — the
+  // forward Tab from the trigger slides into the panel, the panel's own
+  // Tab wraps, Escape inside hands the focus back to the trigger
+  // (useDismissible performs the actual close), and a close that leaves
+  // the focus orphaned inside the panel returns it to the trigger.
+  const handleEscape = useCallback(() => {
+    if (panelRef.current?.contains(document.activeElement)) {
+      triggerRef.current?.focus();
     }
   }, []);
 
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const panel = panelRef.current;
-      if (!panel) {
-        return;
-      }
-      const active = document.activeElement;
-      const inside = active instanceof HTMLElement && panel.contains(active);
-
-      if (event.key === 'Escape') {
-        if (inside) {
-          triggerRef.current?.focus();
-        }
-        return;
-      }
-      if (event.key !== 'Tab') {
-        return;
-      }
-
-      const focusables = getFocusableElements(panel);
-      if (!inside) {
-        // Slides the keyboard into the panel: the portal mounts at the
-        // document end, so a trigger Tab would otherwise walk past it.
-        // Forward only — a Shift+Tab from the trigger stays the page's
-        // business.
-        if (active === triggerRef.current && !event.shiftKey) {
-          event.preventDefault();
-          (focusables[0] ?? panel).focus();
-        }
-        return;
-      }
-      // The panel holds the focus: the cycle steps EXPLICITLY (no
-      // browser-default Tab), so the wrap works identically in every
-      // engine and the keystroke never escapes.
-      event.preventDefault();
-      if (focusables.length === 0) {
-        panel.focus();
-        return;
-      }
-      const lastIndex = focusables.length - 1;
-      const current = focusables.indexOf(active as HTMLElement);
-      const nextIndex =
-        current === -1
-          ? event.shiftKey
-            ? lastIndex
-            : 0
-          : (current + (event.shiftKey ? -1 : 1) + focusables.length) % focusables.length;
-      focusables[nextIndex].focus();
-    };
-    document.addEventListener('keydown', handleKeyDown, true);
-    return () => document.removeEventListener('keydown', handleKeyDown, true);
-  }, [visible]);
-
-  // The close edge: a panel that held the keyboard focus hands it back
-  // to the trigger (an outside-click close already moved the focus —
-  // this only recovers the orphaned cases like scroll and window loss).
-  useEffect(() => {
-    if (visible) {
-      return;
-    }
-    const panel = panelRef.current;
-    if (
-      panel &&
-      document.activeElement instanceof HTMLElement &&
-      panel.contains(document.activeElement)
-    ) {
-      triggerRef.current?.focus();
-    }
-  }, [visible]);
+  const { setRootRef: setPanelRef } = useTrap({
+    rootRef: panelRef,
+    enabled: visible,
+    triggerRef,
+    // Only the click channel steals the keyboard: a hover/manual open
+    // must never move the focus (pointer interaction stays off the
+    // keyboard; manual keeps the focus where the user left it).
+    initialFocus: visibleOn === 'click' ? 'first' : 'none',
+    restoreFocus: triggerRef,
+    onEscape: handleEscape,
+  });
 
   const delayIn = delay.in ?? POPOVER_DELAY.IN;
   const delayOut = delay.out ?? POPOVER_DELAY.OUT;

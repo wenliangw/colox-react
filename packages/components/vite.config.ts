@@ -15,6 +15,7 @@ const entries = {
   compact: resolve(import.meta.dirname, 'src/compact/index.ts'),
   input: resolve(import.meta.dirname, 'src/input/index.ts'),
   'input-number': resolve(import.meta.dirname, 'src/input-number/index.ts'),
+  modal: resolve(import.meta.dirname, 'src/modal/index.ts'),
   'date-picker': resolve(import.meta.dirname, 'src/date-picker/index.ts'),
   form: resolve(import.meta.dirname, 'src/form/index.ts'),
   radio: resolve(import.meta.dirname, 'src/radio/index.ts'),

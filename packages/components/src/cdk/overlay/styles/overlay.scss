@@ -1,0 +1,32 @@
+// The headless full-screen overlay layer: fixed full-bleed, layered
+// above the popup family. No positioning math — centering or anchoring
+// is the consumer's class on this same element.
+//
+// Mount lifecycle: enter is a CSS animation (it runs once on mount —
+// an overlay has no "positioned" edge to flip a transition), exit is a
+// transition driven by the `--exiting` class inside the exit window.
+// Timing comes from the motion tokens (reduced-motion zeroes them).
+.colox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--colox-z-overlay, 1100);
+  margin: 0;
+  opacity: 0;
+  animation: colox-overlay-enter var(--colox-motion-duration-fast) var(--colox-motion-easing-out)
+    forwards;
+
+  &--exiting {
+    animation: none;
+    opacity: 0;
+    transition: opacity var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+  }
+}
+
+@keyframes colox-overlay-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

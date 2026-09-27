@@ -12,6 +12,7 @@ export * from './grid';
 export * from './icon-button';
 export * from './input';
 export * from './input-number';
+export * from './modal';
 export * from './positioner';
 export * from './popover';
 export * from './radio';

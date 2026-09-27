@@ -129,7 +129,22 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   the same rotated diamond arrow recipe, content-owned width (no size
   axis), entrance fade+scale / exit fade on the shared cdk exit
   channel.
-- `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.
+- `Modal` — the modal dialog — **shipped**: the first consumer of the cdk
+  `overlay` family (the full-screen carrier + dim backdrop, pure CSS flex
+  centering — no floating math, a dialog has no reference to anchor to),
+  purely composed (`<Modal visible>` + `Modal.Title` / `Modal.Content` /
+  `Modal.Footer`; plain children are a compile error), always controlled
+  (no defaultVisible — the corner close, Escape and a mask click all speak
+  through `onVisibleChange(false)`), the strict focus trap (Tab never
+  escapes, aria-modal, initial focus lands on the first focusable or the
+  panel, closing restores the prior focus), the body scroll lock, size
+  tiers bound to the design-language width tokens (sm/md/lg → 448/640/768px)
+  plus a `width` escape hatch, the opaque `bg-default` card surface
+  (borderless, radius-lg, union drop-shadow) and the fade+scale / fade
+  entrance-exit pair on the shared cdk exit channel. The `Content` is the
+  only scrolling region (title/footer stay fixed) — its scrollbar-padding
+  interplay is tracked under M8 `ScrollView`.
+- `Drawer`, `Toast`/`Notification` — planned.
 
 ### M5 — Display and feedback (planned)
 
@@ -148,9 +163,18 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
 
 ### M8 — Scroll and geometry (planned)
 
-- `ScrollView` — the scroll container, including the sticky ownership decision
-  (a scroll relationship, not an absolute one; `ScrollView.Sticky` is the leading
-  candidate).
+- `ScrollView` — the scroll container, the one home for every scroll scenario:
+  the container itself (including the sticky ownership decision — a scroll
+  relationship, not an absolute one; `ScrollView.Sticky` is the leading
+  candidate), the scrollbar chrome (the double-engine recipe — `scrollbar-width`
+  - `scrollbar-color` / `::-webkit-scrollbar-*` — token-pinned, unified across
+    engines), and the loading extensions: scroll loading / dynamic loading (load
+    more on reach, infinite scroll). **Driver**: the Modal `Content` scrollbar
+    currently eats the right padding (a classic gutter renders inside the padding
+    box — right side visually narrower than left). The ScrollView owns the fix
+    (the scroll container owns its inline padding — `边框 | 滚动条 | padding | 内容` —
+    the Textarea 定案 recipe); Modal content keeps its padding until ScrollView
+    lands and adopts it.
 - `Affix`, `Splitter` — on demand.
 
 ### M9 — Combobox kernel consumers (planned)

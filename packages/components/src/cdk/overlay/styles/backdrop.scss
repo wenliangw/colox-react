@@ -1,0 +1,9 @@
+// The overlay mask: full-bleed dim behind the modal surface. The tone
+// is the design language's real black step 500 (rgba(0,0,0,0.5)) — no
+// invented transparency. No backdrop blur: the family removed blur
+// from its surfaces (the frost cost outweights the look).
+.colox-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--colox-palette-black-500);
+}

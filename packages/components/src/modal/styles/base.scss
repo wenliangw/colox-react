@@ -1,0 +1,89 @@
+// The overlay root the Modal rides (the cdk Overlay carrier): the
+// consumer class supplies the centering — pure CSS flex, no floating
+// math (a dialog has no reference element to measure against).
+// The backdrop is absolutely positioned, so the panel is the only
+// flex item and lands dead center.
+.colox-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// The modal panel: an OPAQUE surface (the interactive long-form card
+// needs full contrast — the Popover route, not the tooltip glass) on
+// the bg-default token, radius-lg, NO border (the shadow defines the
+// edge, AntD route). Depth = ONE union drop-shadow at the master
+// shadow alpha — the panel floats over the dim backdrop; the cast
+// direction is neutral (an overlay has no trigger to lean toward).
+// The shadow color copies the design language's master shadow value
+// (rgba(25,25,25,0.10)) into a private variable — no invented
+// compensation numbers (the Tooltip/Popover calibration).
+.colox-modal__panel {
+  --colox-modal-shadow-color: rgba(25, 25, 25, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2 * var(--colox-spacing-6));
+  background: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+  border-radius: var(--colox-radius-lg);
+  filter: drop-shadow(0 8px 24px var(--colox-modal-shadow-color));
+}
+
+// The title row: the header above the body. FIXED — the panel is a
+// flex column, the header never scrolls away (only the body does).
+.colox-modal__title {
+  flex: none;
+  padding: var(--colox-spacing-5) var(--colox-spacing-6) var(--colox-spacing-2);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-md);
+  font-weight: 600;
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+}
+
+// The body: normal words and controls, wraps freely. The ONLY scrolling
+// region of the panel — it flexes to fill the leftover height above the
+// footer and scrolls internally (min-height: 0 lets the flex item
+// shrink below its content, so the overflow is contained, not leaked).
+// The horizontal padding lives on the same element as the overflow, so a
+// classic scrollbar would eat the right padding box — scrollbar-gutter
+// reserves its own slot outside the padding (the 边框 | 滚动条 | padding |
+// 内容 Textarea 定案 structure); `both-edges` keeps the two sides
+// symmetric and the text centered whether or not the bar shows.
+.colox-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  padding: var(--colox-spacing-2) var(--colox-spacing-6) var(--colox-spacing-5);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}
+
+// The footer row: the action rail, aligned to the end. FIXED — sits
+// above the fold at the panel's bottom edge, never scrolls.
+.colox-modal__footer {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-4) var(--colox-spacing-6);
+}
+
+// The corner close button: floats over the panel's top-right, above
+// the title text. The reset, hit shape, focus ring, hover/active
+// feedback and the muted icon tone all ride the shared IconButton
+// base — this site class only places the button and widens the hit
+// area around the 16px icon (spacing-2 padding on each side = the
+// size-8 footprint the corner affordance used to hand-roll).
+.colox-modal__close {
+  position: absolute;
+  top: var(--colox-spacing-3);
+  right: var(--colox-spacing-3);
+  padding: var(--colox-spacing-2);
+}

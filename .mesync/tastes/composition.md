@@ -46,6 +46,17 @@ dot-part 只在两种情形成立（ColoxTheme 演进给出的判据，Input 消
 
 其余一律收进根 props——**插槽/内置控件属于「属性少、形态简单」类**：Input 的 leading/trailing/clearable/allowTogglePassword 若做成 `<Input.Slot side="leading">` / `<Input.Clear>` 属于把简单属性人肉拆成树，违背「属性少收根 props」判据（用户对 ColoxTheme 的原话：「属性比较多时非常影响开发时的代码体验以及 props 无法合理的进行分类」——反向即：属性少时 dot 形式是过度设计）。生态对照：antd/MUI/Mantine 走 props 营；Radix/Ark 走 dot 营；Colox 是 styled lib，走 props 营。
 
+## dot 判据第三实例：内容型组件走纯组合式（Modal 对齐轮确立）
+
+「内容必须在树中」判据的**纯组合式形态**（Modal 定稿）：内容型组件三段结构明确时，**无 props 形态**——`<Modal visible>` + `Modal.Title`/`Modal.Content`/`Modal.Footer` dot-part，全部内容住在挂载点。要点：
+
+- **无 props 形态是「内容型」的专属**：Modal 无 trigger（无 reference），props 形态的「参数面膨胀」问题（title/content/body/footer 全塞 props）直接撞「属性多时 dot 形式更合理」反向判据；且浮层族双通道（props + composed 并存）对无 trigger 的组件无意义——**浮层族双通道硬错误机制只服务有 trigger 的组件**（Tooltip/Popover），内容型组件直接纯组合式，无需双通道裁决。
+- **无 defaultVisible**：恒受控（visible/onVisibleChange 词族）。浮层族纪律延伸——Tooltip/Popover 均无此词，Modal 恒受控，不因「内容型」而给默认显隐。
+- **普通子元素 = 编译期硬错误**：纯组合式下根不渲染任何非 part 子元素——与 Select.Option 声明叶同模式（`utils/leaves.ts` 走查，重复 part 同样硬错误）。
+- **非叶子 part（Title/Content/Footer）是声明槽**（渲染 null、children 被根抽取），与 AutoComplete 的结构件同构——DOM 无声明碎片。
+
+来源：Modal 设计对齐轮（决策 654abd7c）——「内容型组件走纯组合式 dot-part（内容必须在树中判据），props 形态参数面膨胀时不硬套双通道」。
+
 ## dot-part 语义化表达（AutoComplete 定稿确立）
 
 - **槽命名对区域语义负责**：组合式组件的非叶子 slot 用区域语义词命名——宿主锚定槽两个词各司其职：**交互浮层家族 = `Trigger`**（交互触点词——槽的职分是受理 hover/focus 交互，不是提供参照；Tooltip 定稿、用户原词、Radix 同词、将来 Popover 沿用）、**combobox 家族 = `Target`**（定位参照词，与 cdk floating 的 target/reference 一致，AutoComplete 定稿；cdk 弹层件里 reference/trigger 两词本就并存）、集合声明区域 = `Suggestions`（复数=区域容器）、叶子 = 家族同名同义词（`Option`：value+text+disabled+children 契约直用 Select 词，不造新词）。

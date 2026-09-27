@@ -1,0 +1,85 @@
+---
+sidebar_position: 17
+---
+
+import { Button, Modal, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Modal
+
+The modal dialog — a centered panel over a dim backdrop, the first
+**full-screen overlay** consumer on the cdk `overlay` (the anchored
+Tooltip/Popover/picker family rides the cdk `popup`; the Modal/Drawer family
+rides the `overlay`). Positioning is **pure CSS** — the overlay centers the
+panel with flex, zero floating math (there is no reference element, no
+collision, no arrow).
+
+<CodeBlock className="colox-import" language="tsx">{`import { Modal } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Composition
+
+Modal is **purely composed** — there is no props form, and no `defaultVisible`
+(the surface family discipline: a dialog is always controlled). One root with
+three parts:
+
+- `<Modal.Title>` — the heading, wired to the panel via `aria-labelledby`.
+- `<Modal.Content>` — the body; the **only scrolling region** — when the
+  content outgrows the viewport the body scrolls internally while the
+  title and footer stay fixed (the panel caps at the viewport minus the
+  gutter).
+- `<Modal.Footer>` — the action row.
+
+Plain children (anything that is not one of the three parts) are a
+**compile-time error**, and so is a duplicated part.
+
+```tsx
+const [visible, setVisible] = useState(false);
+
+<Modal visible={visible} onVisibleChange={setVisible}>
+  <Modal.Title>Edit profile</Modal.Title>
+  <Modal.Content>
+    <span>Your settings live here.</span>
+  </Modal.Content>
+  <Modal.Footer>
+    <Button variant="subtle" onClick={() => setVisible(false)}>
+      Cancel
+    </Button>
+    <Button onClick={() => setVisible(false)}>Save</Button>
+  </Modal.Footer>
+</Modal>;
+```
+
+The `visible` word is the only gate: opening is a prop change, closing is
+`onVisibleChange(false)` — from the corner close button (default on), from
+Escape, or from a backdrop click (`closeOnMaskClick`, default true).
+
+## Size
+
+`size` picks the width tier — **semantic tiers on the design-language width
+tokens** (never invented numbers): `sm` → `--colox-size-112` (448px), `md`
+(default) → `--colox-size-160` (640px), `lg` → `--colox-size-192` (768px).
+The `width` prop is the escape hatch for an explicit width (a number is px,
+a string is any CSS length).
+
+## Focus
+
+The strict trap (the shared cdk `useTrap`): the keyboard is confined to the
+panel — Tab wraps within it, nothing escapes. `aria-modal` marks the dialog,
+`initialFocus` chooses the landing spot (`'first'` default — the first
+focusable element, or the panel itself when the body has none; `'container'`
+— the panel). Closing hands the focus back to whatever held it before
+opening.
+
+## Backdrop
+
+The dim layer is `--colox-palette-black-500` (the design-language black
+step, rgba(0,0,0,0.5)) — **no backdrop blur**. `showMask={false}` drops it.
+The backdrop lives in `cdk/overlay`, shared with the coming Drawer.
+
+## Motion
+
+The entrance is a fade+scale, the exit a fade — both held by the motion
+tokens, the exit riding the overlay's exit window (the panel stays mounted
+for the fade, then unmounts). Opening locks the body scroll.
