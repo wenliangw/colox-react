@@ -11,7 +11,7 @@ const meta: Meta<typeof Popover> = {
     docs: {
       description: {
         component:
-          "The interactive floating card on the cdk popup — the Tooltip's interactive sibling: a non-modal dialog panel that holds real controls (buttons, forms, lists), not a click-through hint. Zero container: the trigger is cloned in place, the panel mounts from a portal. Two channels: the props form (`title`/`content` plus a single trigger child — falsy content never opens) and the composed `Popover.Trigger` + `Popover.Title` + `Popover.Content` form; giving a word in both channels is a compile error. click (default) toggles instantly and focuses the panel — the Tab cycle stays inside, Escape closes and returns the focus to the trigger; hover rides delay in/out (300/100 — the out-delay is the pointer bridge into the panel) with an instant focus leg and never steals focus; manual is the controlled `visible` word. The surface is an OPAQUE card — `bg-default` (dark-mode-aware) + a union drop-shadow cast at the Tooltip's calibration (the card plus the protruding arrow half silhouette together; the offset follows the arrow direction, the color is the design-language master shadow alpha — a heavier cast parks its dark mass on the panel edge and reads as a seam between the white arrow and the white card) + `radius-lg`, borderless, NO backdrop blur — an interactive reading surface needs full contrast and the hint layer's translucency stays a Tooltip concern. The arrow is the same rotated diamond recipe (no clip-path anywhere, only the protruding tip corner rounded). Width = the content's own — no size axis; an upper bound is the consumer's CSS escape hatch. The entrance is a fade+scale, the exit a fade — both held by the motion tokens.",
+          "The interactive floating card on the cdk popup — the Tooltip's interactive sibling: a non-modal dialog panel that holds real controls (buttons, forms, lists), not a click-through hint. Zero container: the trigger is cloned in place, the panel mounts from a portal. Two channels: the props form (`title`/`content` plus a single trigger child — falsy content never opens) and the composed `Popover.Trigger` + `Popover.Title` + `Popover.Content` form; giving a word in both channels is a compile error. click (default) toggles instantly and focuses the panel — the Tab cycle stays inside, Escape closes and returns the focus to the trigger; hover rides delay in/out (300/100 — the out-delay is the pointer bridge into the panel) with an instant focus leg and never steals focus; manual is the controlled `visible` word. `closeOnOutsideClick` (default true) dismisses on outside pointerdown — set it false to pin the panel open against outside clicks (Escape and the lost window still dismiss, the trigger toggle stays live). The surface is an OPAQUE card — `bg-default` (dark-mode-aware) + a union drop-shadow cast at the Tooltip's calibration (the card plus the protruding arrow half silhouette together; the offset follows the arrow direction, the color is the design-language master shadow alpha — a heavier cast parks its dark mass on the panel edge and reads as a seam between the white arrow and the white card) + `radius-lg`, borderless, NO backdrop blur — an interactive reading surface needs full contrast and the hint layer's translucency stays a Tooltip concern. The arrow is the same rotated diamond recipe (no clip-path anywhere, only the protruding tip corner rounded). Width = the content's own — no size axis; an upper bound is the consumer's CSS escape hatch. The entrance is a fade+scale, the exit a fade — both held by the motion tokens.",
       },
     },
   },
@@ -59,6 +59,13 @@ export const Overview: Story = {
             </Popover>
             <Popover title="Scroll" content="Closes on any scroll." closeOnScroll>
               <Button>closeOnScroll</Button>
+            </Popover>
+            <Popover
+              title="Pinned panel"
+              content="closeOnOutsideClick={false} — outside clicks keep this open; Escape still closes it."
+              closeOnOutsideClick={false}
+            >
+              <Button>{'closeOnOutsideClick={false}'}</Button>
             </Popover>
           </Stack>
         </Section>

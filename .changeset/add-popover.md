@@ -15,7 +15,10 @@ channels: click (default) toggles instantly and focuses the panel
 focus to the trigger, an outside close never steals it), hover rides
 `{ in: 300, out: 100 }` where the out-delay doubles as the pointer
 bridge into the interactive panel and never steals focus, manual is
-the controlled word. The surface is an opaque `bg-default` card
+the controlled word. `closeOnOutsideClick` (default true) dismisses
+on an outside pointerdown — set it false to keep the panel open
+against outside clicks (Escape and the lost window still dismiss).
+The surface is an opaque `bg-default` card
 (borderless, radius-lg) with a union drop-shadow cast at the
 Tooltip's calibration whose direction follows the arrow, the rotated
 diamond arrow recipe without clip-path, and content-owned width (no

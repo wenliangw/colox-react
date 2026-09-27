@@ -61,6 +61,26 @@ the popover's, `className` concatenates.
 </Popover>
 ```
 
+## Dismissal
+
+By default a pointerdown landing outside the trigger and the panel closes
+it — the focus lands where the user clicked and is never stolen back.
+`closeOnOutsideClick={false}` pins the panel open against outside clicks
+(filter panels, compare views, panels accepting drops): **Escape and the
+lost window still dismiss** (they are not clicks) and the trigger toggle
+stays live. `closeOnScroll` closes on any scroll instead of following the
+reference.
+
+```tsx
+<Popover
+  title="Pinned"
+  content="Outside clicks keep this open — Escape still closes it."
+  closeOnOutsideClick={false}
+>
+  <Button>Open me</Button>
+</Popover>
+```
+
 ## When to use
 
 - Rich interactive cards anchored to a trigger — filters, quick forms, menus.
