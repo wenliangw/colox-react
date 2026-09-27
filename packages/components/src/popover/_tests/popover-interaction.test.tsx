@@ -278,7 +278,7 @@ describe('Popover interaction channels', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('manual channel: visible drives, no surfaces, no auto close, no echo', () => {
+  it('manual channel: visible drives, no surfaces, no auto close, Escape stays silent', () => {
     useDelayFakeTimers();
     const onVisibleChange = vi.fn();
     render(
@@ -297,6 +297,42 @@ describe('Popover interaction channels', () => {
     fireEvent.keyDown(document.body, { key: 'Escape' });
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(onVisibleChange).not.toHaveBeenCalled();
+  });
+
+  it('manual channel: the opt-in close channels echo onVisibleChange(false)', () => {
+    useDelayFakeTimers();
+    const onVisibleChange = vi.fn();
+    const manual = (extra: Record<string, unknown> = {}) => (
+      <Popover visibleOn="manual" visible onVisibleChange={onVisibleChange} {...extra}>
+        <Popover.Trigger>
+          <button type="button">m</button>
+        </Popover.Trigger>
+        <Popover.Content>controlled body</Popover.Content>
+      </Popover>
+    );
+    const { rerender } = render(manual());
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // the outside click echoes — the controlled panel stays up, the
+    // owner follows the echo
+    fireEvent.pointerDown(document.body);
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // closeOnOutsideClick=false silences the outside channel
+    onVisibleChange.mockClear();
+    rerender(manual({ closeOnOutsideClick: false }));
+    fireEvent.pointerDown(document.body);
+    expect(onVisibleChange).not.toHaveBeenCalled();
+
+    // closeOnScroll echoes too
+    onVisibleChange.mockClear();
+    rerender(manual({ closeOnScroll: true }));
+    act(() => {
+      window.dispatchEvent(new Event('scroll'));
+    });
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('manual channel: a rendered visible=false never mounts and the controlled open mounts already-on', () => {

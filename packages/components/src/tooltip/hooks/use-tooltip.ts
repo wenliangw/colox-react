@@ -14,8 +14,13 @@ import type { TooltipTriggerHandlers, UseTooltipParams, UseTooltipResult } from 
  *   non-gesture (any real pointer/keyboard input re-arms it);
  * - click: an instant toggle, no timers — Escape/outside/blur-close
  *   come from cdk useDismissible below;
- * - manual: the `visible` prop verbatim — no surfaces, no auto close,
- *   no echo (onVisibleChange only speaks the hover/click transitions).
+ * - manual: the `visible` prop verbatim — no surfaces, no auto close
+ *   (the close channels never flip the controlled state). The OPT-IN
+ *   channels speak instead of closing: the outside click (per
+ *   `closeOnOutsideClick`) and the scroll (per `closeOnScroll`) echo
+ *   `onVisibleChange(false)` so the controlled owner follows — those
+ *   special moments are the library's business, not the consumer's.
+ *   Escape and the window loss keep their manual silence.
  *
  * useDismissible scopes the outside-pointerdown escape to the trigger
  * or panel, Escape to the panel/trigger and window focus loss.
@@ -24,7 +29,14 @@ import type { TooltipTriggerHandlers, UseTooltipParams, UseTooltipResult } from 
  * follows through the autoUpdate stream instead).
  */
 export function useTooltip(params: UseTooltipParams): UseTooltipResult {
-  const { visibleOn, visible: visibleProp, delay, closeOnScroll, onVisibleChange } = params;
+  const {
+    visibleOn,
+    visible: visibleProp,
+    delay,
+    closeOnScroll,
+    closeOnOutsideClick,
+    onVisibleChange,
+  } = params;
 
   const [innerVisible, setInnerVisible] = useState(false);
   const visible = visibleOn === 'manual' ? Boolean(visibleProp) : innerVisible;
@@ -151,21 +163,44 @@ export function useTooltip(params: UseTooltipParams): UseTooltipResult {
     setVisible,
   ]);
 
+  // The close channels split by their manual contract: the OPT-IN
+  // moments (the outside click per closeOnOutsideClick, the scroll
+  // per closeOnScroll) are the special dismissals the library handles
+  // for the user — under manual they echo onVisibleChange(false)
+  // instead of closing, and the controlled owner follows. Escape and
+  // the window loss keep their old manual silence: a controlled panel
+  // does not hand its keyboard fate to the library.
+  const closeViaOptIn = useCallback(() => {
+    if (visibleOn === 'manual') {
+      onVisibleChange?.(false);
+      return;
+    }
+    setVisible(false);
+  }, [visibleOn, onVisibleChange, setVisible]);
+
+  const closeViaEnvironment = useCallback(() => {
+    if (visibleOn !== 'manual') {
+      setVisible(false);
+    }
+  }, [visibleOn, setVisible]);
+
   useDismissible({
     open: visible,
     triggerRef,
     panelRef,
-    onDismiss: () => setVisible(false),
+    closeOnOutsideClick,
+    onDismiss: closeViaEnvironment,
+    onDismissOutsideClick: closeViaOptIn,
   });
 
   useEffect(() => {
-    if (!closeOnScroll || visibleOn === 'manual' || !visible) {
+    if (!closeOnScroll || !visible) {
       return;
     }
-    const onScroll = () => setVisible(false);
+    const onScroll = () => closeViaOptIn();
     window.addEventListener('scroll', onScroll, true);
     return () => window.removeEventListener('scroll', onScroll, true);
-  }, [closeOnScroll, visibleOn, visible, setVisible]);
+  }, [closeOnScroll, visible, closeViaOptIn]);
 
   // The lost window stops the hover channel cold: both pending timers
   // die (nothing may fire while the tab is hidden) and the restore

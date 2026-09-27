@@ -17,6 +17,8 @@ export interface UseTooltipParams {
   visible?: boolean;
   delay: TooltipDelay;
   closeOnScroll: boolean;
+  /** Outside-pointerdown dismissal (defaults true at the component edge). */
+  closeOnOutsideClick: boolean;
   onVisibleChange?: (visible: boolean) => void;
 }
 

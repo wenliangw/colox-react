@@ -15,6 +15,13 @@ export interface UseDismissibleOptions {
   closeOnOutsideClick?: boolean;
   /** Closes the popup: outside pointerdown, Escape or window focus loss. */
   onDismiss: () => void;
+  /**
+   * The outside-click channel's own callback (falls back to
+   * `onDismiss` when absent). The caller splits the channels when one
+   * of them must behave differently — the manual mode echoes only the
+   * outside click and keeps Escape/window silent, for example.
+   */
+  onDismissOutsideClick?: () => void;
 }
 
 export interface UseFloatingPositionOptions {

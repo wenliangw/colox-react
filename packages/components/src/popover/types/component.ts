@@ -50,18 +50,28 @@ export interface PopoverProps extends Omit<HTMLAttributes<HTMLElement>, 'title' 
   placement?: Placement;
   /** The hover-channel delay pair; partial objects merge into the defaults. */
   delay?: PopoverDelay;
-  /** Close on any scroll while open (false = follow the reference). @default false */
+  /**
+   * Close on any scroll while open (false = follow the reference).
+   * Under `manual` the close lands as `onVisibleChange(false)` — the
+   * controlled owner follows. @default false
+   */
   closeOnScroll?: boolean;
   /**
    * Close on a pointerdown landing outside the trigger and the panel
    * (default true). When false the panel ignores outside clicks —
    * Escape and the lost window keep dismissing, the trigger toggle
-   * stays live. @default true
+   * stays live. Under `manual` the close lands as
+   * `onVisibleChange(false)` rather than a state flip. @default true
    */
   closeOnOutsideClick?: boolean;
   /** The trigger element (the composed parts in composed mode). */
   children?: ReactNode;
-  /** Fires whenever the visibility changes (toggle, hover or dismiss). */
+  /**
+   * Fires whenever the visibility changes (toggle, hover or dismiss);
+   * under `manual` it also fires `false` when an opt-in close channel
+   * lands (an outside click per `closeOnOutsideClick`, a scroll per
+   * `closeOnScroll`) — the controlled owner follows.
+   */
   onVisibleChange?: (visible: boolean) => void;
 }
 

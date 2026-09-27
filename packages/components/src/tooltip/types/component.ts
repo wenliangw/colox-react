@@ -45,13 +45,30 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLElement>, 'content
   palette?: TooltipPalette;
   /** The hover-channel delay pair; partial objects merge into the defaults. */
   delay?: TooltipDelay;
-  /** Close on any scroll while open (false = follow the reference). @default false */
+  /**
+   * Close on any scroll while open (false = follow the reference).
+   * Under `manual` the close lands as `onVisibleChange(false)` — the
+   * controlled owner follows. @default false
+   */
   closeOnScroll?: boolean;
+  /**
+   * Close on a pointerdown landing outside the trigger and the panel
+   * (default true). When false the hint ignores outside clicks —
+   * Escape and the lost window keep dismissing, they are not clicks.
+   * Under `manual` the close lands as `onVisibleChange(false)` rather
+   * than a state flip. @default true
+   */
+  closeOnOutsideClick?: boolean;
   /** The content typography/padding tier (the hint offset ladder). @default 'md' */
   size?: TooltipSize;
   /** The trigger element (the composed parts in composed mode). */
   children?: ReactNode;
-  /** Fires whenever the visibility changes (auto policy or click). */
+  /**
+   * Fires whenever the visibility changes (auto policy or click);
+   * under `manual` it also fires `false` when an opt-in close channel
+   * lands (an outside click per `closeOnOutsideClick`, a scroll per
+   * `closeOnScroll`) — the controlled owner follows.
+   */
   onVisibleChange?: (visible: boolean) => void;
 }
 

@@ -24,6 +24,7 @@ export function useDismissible({
   panelRef,
   closeOnOutsideClick = true,
   onDismiss,
+  onDismissOutsideClick,
 }: UseDismissibleOptions): void {
   useEffect(() => {
     if (!open) {
@@ -38,7 +39,7 @@ export function useDismissible({
       if (triggerRef.current?.contains(target) || panelRef.current?.contains(target)) {
         return;
       }
-      onDismiss();
+      (onDismissOutsideClick ?? onDismiss)();
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -63,5 +64,5 @@ export function useDismissible({
       document.removeEventListener('keydown', handleKeyDown, true);
       window.removeEventListener('blur', handleWindowBlur);
     };
-  }, [open, closeOnOutsideClick, onDismiss, triggerRef, panelRef]);
+  }, [open, closeOnOutsideClick, onDismiss, onDismissOutsideClick, triggerRef, panelRef]);
 }

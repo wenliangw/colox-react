@@ -34,6 +34,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
     palette = 'gray',
     delay,
     closeOnScroll = false,
+    closeOnOutsideClick = true,
     size = 'md',
     children,
     className,
@@ -57,6 +58,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
     visible,
     delay: delay ?? {},
     closeOnScroll,
+    closeOnOutsideClick,
     onVisibleChange,
   });
 

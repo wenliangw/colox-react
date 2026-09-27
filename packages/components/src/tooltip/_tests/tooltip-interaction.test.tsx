@@ -227,7 +227,7 @@ describe('Tooltip interaction channels', () => {
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
-  it('manual channel: visible drives, no surfaces, no auto close, no echo', () => {
+  it('manual channel: visible drives, no surfaces, no auto close, Escape stays silent', () => {
     useDelayFakeTimers();
     const onVisibleChange = vi.fn();
     const { rerender } = render(
@@ -249,6 +249,59 @@ describe('Tooltip interaction channels', () => {
         <button type="button">m</button>
       </Tooltip>,
     );
+    settleExit();
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('manual channel: the opt-in close channels echo onVisibleChange(false)', () => {
+    useDelayFakeTimers();
+    const onVisibleChange = vi.fn();
+    const manual = (extra: Record<string, unknown> = {}) => (
+      <Tooltip
+        content="hint"
+        visibleOn="manual"
+        visible
+        onVisibleChange={onVisibleChange}
+        {...extra}
+      >
+        <button type="button">m</button>
+      </Tooltip>
+    );
+    const { rerender } = render(manual());
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+
+    // the outside click echoes — the controlled panel stays up, the
+    // owner follows the echo
+    fireEvent.pointerDown(document.body);
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+
+    // closeOnOutsideClick=false silences the outside channel
+    onVisibleChange.mockClear();
+    rerender(manual({ closeOnOutsideClick: false }));
+    fireEvent.pointerDown(document.body);
+    expect(onVisibleChange).not.toHaveBeenCalled();
+
+    // closeOnScroll echoes too
+    onVisibleChange.mockClear();
+    rerender(manual({ closeOnScroll: true }));
+    act(() => {
+      window.dispatchEvent(new Event('scroll'));
+    });
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
+
+  it('closeOnOutsideClick=false keeps the hint open on an outside pointerdown', () => {
+    useDelayFakeTimers();
+    const trigger = renderTooltip({ visibleOn: 'click', closeOnOutsideClick: false });
+    fireEvent.click(trigger);
+    const panel = screen.getByRole('tooltip');
+    expect(panel).toBeInTheDocument();
+    fireEvent.pointerDown(document.body);
+    expect(screen.getByRole('tooltip')).toBe(panel);
+    // Escape keeps dismissing (not an outside click)
+    fireEvent.keyDown(document.body, { key: 'Escape' });
     settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
