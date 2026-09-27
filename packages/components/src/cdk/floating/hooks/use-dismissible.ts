@@ -8,6 +8,10 @@ import type { UseDismissibleOptions } from '../types';
  * losing focus. Containment checks span the trigger tree and the
  * portal tree, so clicks inside either never dismiss.
  *
+ * The outside-click channel is opt-out (`closeOnOutsideClick:
+ * false`); Escape and the window loss are NOT clicks and keep
+ * dismissing — a panel must always have a keyboard way out.
+ *
  * The window channel is not redundant with an element-level blur:
  * when the page runs inside an iframe (a preview host, an embedded
  * widget) or the browser window loses focus, the focused element
@@ -18,6 +22,7 @@ export function useDismissible({
   open,
   triggerRef,
   panelRef,
+  closeOnOutsideClick = true,
   onDismiss,
 }: UseDismissibleOptions): void {
   useEffect(() => {
@@ -46,13 +51,17 @@ export function useDismissible({
       onDismiss();
     };
 
-    document.addEventListener('pointerdown', handlePointerDown, true);
+    if (closeOnOutsideClick) {
+      document.addEventListener('pointerdown', handlePointerDown, true);
+    }
     document.addEventListener('keydown', handleKeyDown, true);
     window.addEventListener('blur', handleWindowBlur);
     return () => {
-      document.removeEventListener('pointerdown', handlePointerDown, true);
+      if (closeOnOutsideClick) {
+        document.removeEventListener('pointerdown', handlePointerDown, true);
+      }
       document.removeEventListener('keydown', handleKeyDown, true);
       window.removeEventListener('blur', handleWindowBlur);
     };
-  }, [open, onDismiss, triggerRef, panelRef]);
+  }, [open, closeOnOutsideClick, onDismiss, triggerRef, panelRef]);
 }

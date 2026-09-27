@@ -7,6 +7,12 @@ export interface UseDismissibleOptions {
   triggerRef: RefObject<HTMLElement | null>;
   /** The portal-mounted panel. */
   panelRef: RefObject<HTMLElement | null>;
+  /**
+   * Dismiss on an outside pointerdown (default true). When false the
+   * popup ignores outside clicks — Escape and the lost window keep
+   * dismissing, they are not clicks. @default true
+   */
+  closeOnOutsideClick?: boolean;
   /** Closes the popup: outside pointerdown, Escape or window focus loss. */
   onDismiss: () => void;
 }

@@ -38,6 +38,7 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
     placement = 'bottom-start',
     delay,
     closeOnScroll = false,
+    closeOnOutsideClick = true,
     children,
     className,
     style,
@@ -70,6 +71,7 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
     visible,
     delay: delay ?? {},
     closeOnScroll,
+    closeOnOutsideClick,
     onVisibleChange,
     hasContent,
   });

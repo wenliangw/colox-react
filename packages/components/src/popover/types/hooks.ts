@@ -23,6 +23,8 @@ export interface UsePopoverParams {
   visible?: boolean;
   delay: PopoverDelay;
   closeOnScroll: boolean;
+  /** Outside-pointerdown dismissal (defaults true at the component edge). */
+  closeOnOutsideClick: boolean;
   onVisibleChange?: (visible: boolean) => void;
   /**
    * The compiled content word: a popover without content must never

@@ -30,6 +30,9 @@ import { getFocusableElements } from '../utils/focusables';
  *   cycle stays in it, Escape closes and returns the focus to the
  *   trigger before the unmount, an outside close never steals back
  *   the focus the user just placed elsewhere.
+ *   `closeOnOutsideClick=false` keeps the panel open against outside
+ *   clicks — Escape and the lost window still dismiss (they are not
+ *   clicks), and the trigger toggle stays live.
  * - manual: the `visible` prop verbatim — no surfaces, no auto close,
  *   no echo (onVisibleChange only speaks the hover/click transitions).
  *
@@ -44,6 +47,7 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
     visible: visibleProp,
     delay,
     closeOnScroll,
+    closeOnOutsideClick,
     onVisibleChange,
     hasContent,
   } = params;
@@ -325,6 +329,7 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
     open: visible,
     triggerRef,
     panelRef,
+    closeOnOutsideClick,
     onDismiss: () => setVisible(false),
   });
 

@@ -47,6 +47,42 @@ describe('Popover interaction channels', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('closeOnOutsideClick=false ignores the outside pointerdown, Escape still closes', () => {
+    useDelayFakeTimers();
+    const trigger = renderPopover({ closeOnOutsideClick: false });
+    fireEvent.click(trigger);
+    const panel = screen.getByRole('dialog');
+    expect(panel).toBeInTheDocument();
+
+    fireEvent.pointerDown(document.body);
+    expect(screen.getByRole('dialog')).toBe(panel);
+
+    // the trigger toggle stays live under the opt-out
+    fireEvent.click(trigger);
+    settleExit();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    // Escape remains the keyboard way out
+    fireEvent.click(trigger);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    settleExit();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('hover: closeOnOutsideClick=false keeps the panel open on outside pointerdown', () => {
+    useDelayFakeTimers();
+    const trigger = renderPopover({ visibleOn: 'hover', closeOnOutsideClick: false });
+    fireEvent.pointerEnter(trigger);
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+    const panel = screen.getByRole('dialog');
+    expect(panel).toBeInTheDocument();
+    fireEvent.pointerDown(document.body);
+    expect(screen.getByRole('dialog')).toBe(panel);
+  });
+
   it('plays the exit window: exiting class for POPOVER_EXIT, then unmount', () => {
     useDelayFakeTimers();
     const trigger = renderPopover();
