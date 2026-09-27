@@ -62,22 +62,21 @@ existing `aria-describedby` words survive.
 ## Surfaces
 
 `palette` picks the design-language surface family — `gray` (default),
-`primary`, `info`, `error`, `warning`, `success`. Every surface is
-**borderless** and **frosted**: a translucent fill at the 0.9 alpha tier
-(the pure-black translucency rung `--colox-palette-black-900` for the neutral
-default, the family solid mixed at 90% for the colors) over a backdrop blur
-keeps the page readable through the panel. The arrow is a **rotated frosted
-diamond half buried behind the bubble** — no clip-path, a rounded tip
-(radius `xs`) — on the same fill; it reads as the bubble surface sticking out
-and carries the same backdrop lens (the arrow frosts the page exactly like the
-bubble). The depth comes from **drop-shadow** casts (the ant-design approach):
-a filter silhouettes the painted shape instead of a box-shadow layer. The
-translucent fill dilutes the cast, so the shadow alpha is compensated; each
-surface carries its own matched cast, because a filtered ancestor would break
-the frost (a vivid backcloth boundary — the bubble lost its lens the one time
-the cast moved onto the panel). `size` shifts one ladder step from
-the base tier — `sm` / `md` / `lg` — and sizes the arrow too (`sm` drops the
-diamond one step). The decorative arrow pins to the
+`primary`, `info`, `error`, `warning`, `success`, `white`. Every surface is
+**borderless** and **translucent** at the 0.9 alpha tier (the pure-black
+translucency rung `--colox-palette-black-900` for the neutral default, the
+family solid mixed at 90% for the colors, the white-900 rung with dark ink
+for `white`) — the page stays readable through the panel, with **no backdrop
+blur** (the frost machinery earned more problems than the look). The arrow is
+a **rotated translucent diamond half buried behind the bubble** — no
+clip-path, and only the protruding tip corner rounded (radius `xs`; the base
+corners stay sharp) — on the same fill; it reads as the bubble surface
+sticking out. The depth comes from **drop-shadow** casts (the ant-design
+approach): a filter silhouettes the painted shape instead of a box-shadow
+layer. The translucent fill dilutes the cast, so the shadow alpha is
+compensated; each surface carries its own matched cast. `size` shifts one
+ladder step from the base tier — `sm` / `md` / `lg` — and sizes the arrow too
+(`sm` drops the diamond one step). The decorative arrow pins to the
 **resolved** placement (after flipping), so it never lies about the side the
 panel landed on; it also stays aimed at the trigger when a boundary collision
 displaces the panel (flip/shift), clamped so it never leaves the panel.
@@ -90,6 +89,9 @@ displaces the panel (flip/shift), clamped so it never leaves the panel.
 </Tooltip>
 <Tooltip content="Info blue." palette="info">
   <Button>Info</Button>
+</Tooltip>
+<Tooltip content="The light inverse — the white-900 tier." palette="white">
+  <Button>White</Button>
 </Tooltip>
 <Tooltip content="Small tier." size="sm">
   <Button>sm</Button>
@@ -119,18 +121,18 @@ default follows the trigger through the popup's auto-update stream instead.
 
 ## Props
 
-| Prop            | Type                                                                 | Default      |
-| --------------- | -------------------------------------------------------------------- | ------------ |
-| content         | `ReactNode`                                                          | —            |
-| visibleOn       | `'hover' \| 'click' \| 'manual'`                                     | `'hover'`    |
-| visible         | `boolean`                                                            | —            |
-| showArrow       | `boolean`                                                            | `true`       |
-| placement       | `Placement`                                                          | `'top'`      |
-| palette         | `'gray' \| 'primary' \| 'info' \| 'error' \| 'warning' \| 'success'` | `'gray'`     |
-| delay           | `{ in?, out? }`                                                      | `{ 300, 0 }` |
-| closeOnScroll   | `boolean`                                                            | `false`      |
-| size            | `'sm' \| 'md' \| 'lg'`                                               | `'md'`       |
-| onVisibleChange | `(visible: boolean) => void`                                         | —            |
+| Prop            | Type                                                                            | Default      |
+| --------------- | ------------------------------------------------------------------------------- | ------------ |
+| content         | `ReactNode`                                                                     | —            |
+| visibleOn       | `'hover' \| 'click' \| 'manual'`                                                | `'hover'`    |
+| visible         | `boolean`                                                                       | —            |
+| showArrow       | `boolean`                                                                       | `true`       |
+| placement       | `Placement`                                                                     | `'top'`      |
+| palette         | `'gray' \| 'primary' \| 'info' \| 'error' \| 'warning' \| 'success' \| 'white'` | `'gray'`     |
+| delay           | `{ in?, out? }`                                                                 | `{ 300, 0 }` |
+| closeOnScroll   | `boolean`                                                                       | `false`      |
+| size            | `'sm' \| 'md' \| 'lg'`                                                          | `'md'`       |
+| onVisibleChange | `(visible: boolean) => void`                                                    | —            |
 
 ## Boundaries
 

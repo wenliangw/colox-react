@@ -13,10 +13,11 @@ error. hover+focus (delay as `{ in, out }`), click and manual
 the default autoUpdate follow. The surface is a design-language
 `palette` — gray (the neutral default, the black-900 translucency
 rung) plus primary/info/error/warning/success (family solids mixed at
-the matching 0.9 alpha), all frosted (translucent fill + backdrop
-blur, borderless, drop-shadow casts). The arrow is a rotated frosted
-diamond half buried behind the bubble — a rounded tip, no clip-path —
-and it pins to the resolved placement the cdk popup publishes as
+the matching 0.9 alpha) and white (the white-900 rung with dark ink),
+all translucent and borderless with no backdrop blur, carrying
+drop-shadow casts. The arrow is a rotated translucent diamond half
+buried behind the bubble — its protruding tip corner only rounded, no
+clip-path — and it pins to the resolved placement the cdk popup publishes as
 `data-placement`, staying aimed at the trigger under boundary
 flip/shift. sm/md/lg tiers, the sm tier sizing the arrow one ladder
 step down.

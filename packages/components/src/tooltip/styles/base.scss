@@ -2,39 +2,36 @@
 // carrier (positioning and the enter transition come from cdk Popup),
 // the content box paints the tooltip body. Panel pointer-events stay
 // none for life — a hint is not interactive, the pointer slides
-// through it to the trigger. The fill is frosted: the surface color
-// rides partial alpha and a backdrop blur turns it glassy instead of a
-// flat plate, so a hint floats above a page that stays readable
-// through it. The neutral default (the classless `gray`) is the
-// design language's own 0.9 translucency rung — `--colox-palette-black-900`
-// (#000000E5), no ad-hoc color-mix; every palette family rides the
-// same 0.9 tier (palette.scss, mixed on their own solid).
+// through it to the trigger. The surface is translucent: the fill
+// rides the 0.9 alpha tier and the page stays readable through the
+// plate, without any backdrop blur (the frost machinery earned more
+// problems — the backdrop-root laws around every filter — than the
+// frosted look earned; removed by the user's call). The neutral
+// default (the classless `gray`) is the design language's own 0.9
+// translucency rung — `--colox-palette-black-900` (#000000E5), no
+// ad-hoc color-mix; every palette family rides the same 0.9 tier
+// (palette.scss, mixed on their own solid — or the white ladder rung
+// for the white family).
 //
-// Depth rule (measured, not assumed): a drop-shadow filter must NEVER
-// sit above a frosted surface — a filtered ancestor forms a backdrop
-// root and the descendant's backdrop-filter stops sampling the page
-// (the bubble itself lost its lens the moment the cast moved onto the
-// panel). Each glass surface therefore carries its OWN matched cast:
-// the content's filter silhouettes the bubble, the arrow's own filter
-// (arrow.scss) silhouettes its rotated diamond — two identical
-// drop-shadows expressing the ant-design-style union silhouette per
-// surface. drop-shadow cannot express the token's -1px spread, and
-// the translucent fill dilutes the cast (the filter shadows the
+// Depth: each surface carries its OWN matched cast — the content's
+// drop-shadow silhouettes the bubble, the arrow's own (arrow.scss)
+// silhouettes its rotated diamond, two identical drop-shadows
+// expressing the ant-design-style union silhouette per surface.
+// drop-shadow cannot express the token's -1px spread, and the
+// translucent fill dilutes the cast (the filter shadows the
 // silhouette alpha), so the alpha is compensated (0.13 × 0.9 fill ≈
 // the token's 0.10 look-through).
 //
-// The panel OWNS the frosted-surface custom properties
-// (--colox-tooltip-fill / --colox-tooltip-blur) on a single-class
+// The panel OWNS the surface custom properties
+// (--colox-tooltip-fill / --colox-tooltip-text) on a single-class
 // rule — the palette overrides win through heavier compound
 // selectors, and both children — the content AND its arrow sibling —
-// resolve them against the panel: the single source, and the lens
-// boundary fix (a child backdrop-filter of a filtered ancestor cannot
-// sample the page; the panel stays free of filters so both children
-// lens directly off the page). The base tier is `md` (the size axis
-// shifts one ladder step in either direction).
+// resolve them against the panel: the single source that turns one
+// palette word into the fill and the ink. The base tier is `md` (the
+// size axis shifts one ladder step in either direction).
 .colox-tooltip__panel {
-  --colox-tooltip-blur: 8px;
   --colox-tooltip-fill: var(--colox-palette-black-900);
+  --colox-tooltip-text: var(--colox-color-text-inverse);
 }
 
 .colox-popup.colox-tooltip__panel {
@@ -52,8 +49,6 @@
   white-space: normal;
   word-break: break-word;
   background: var(--colox-tooltip-fill);
-  color: var(--colox-color-text-inverse);
+  color: var(--colox-tooltip-text);
   filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
-  -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
-  backdrop-filter: blur(var(--colox-tooltip-blur));
 }

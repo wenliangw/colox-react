@@ -1,21 +1,21 @@
-// The decorative arrow: a rotated frosted diamond, half buried behind
-// the bubble. The arrow span renders BEFORE the content (panel.tsx),
-// so the content box paints over the diamond's inner half — only the
-// outer triangle shows, and NO clip-path exists anywhere. That
-// matters: a clipped element's own drop-shadow is clipped away with
-// it (measured: no cast at all), and a mask variant casts the full
-// rectangle instead. The diamond paints only its outer half — a
-// diagonal hard-stop gradient (the inner half is transparent, so
-// nothing stacks behind the 90% glass above; measured identical to
-// the plain plate on a striped page) — and rounds its corners with
-// the radius-xs token, softening the tip without any invalid
-// geometry.
+// The decorative arrow: a rotated translucent diamond, half buried
+// behind the bubble. The arrow span renders BEFORE the content
+// (panel.tsx), so the content box paints over the diamond's inner
+// half — only the outer triangle shows, and NO clip-path exists
+// anywhere. That matters: a clipped element's own drop-shadow is
+// clipped away with it (measured: no cast at all), and a mask variant
+// casts the full rectangle instead. The diamond paints only its outer
+// half — a diagonal hard-stop gradient (the inner half is
+// transparent, so nothing stacks behind the 90% glass above; measured
+// identical to the plain plate on a striped page). Only the
+// PROTRUDING tip corner is rounded (the radius-xs token on the filled
+// BR corner — the base corners stay sharp; the rotation carries the
+// local recipe to all four placements), softening the apex without
+// rounding the seam corners against the bubble.
 //
-// The arrow still pairs filter + backdrop-filter on itself (the
-// ancestor-filter lens law from the bubble): its own matched
-// drop-shadow expresses the triange silhouette of THIS surface, and
-// its lens samples the page directly. The bubble's cast, painted
-// after, falls over the whole union — the two casts read as one,
+// The arrow carries its own matched drop-shadow — the filter
+// silhouettes the painted diamond and the bubble's cast falls over
+// the whole union afterwards, two casts reading as one,
 // ant-design style.
 //
 // The size axis shifts the diamond one ladder step via the local
@@ -28,10 +28,8 @@
   width: calc(var(--colox-tooltip-arrow-depth) * 1.41421);
   height: calc(var(--colox-tooltip-arrow-depth) * 1.41421);
   background: linear-gradient(135deg, transparent 50%, var(--colox-tooltip-fill) 50%);
-  border-radius: var(--colox-radius-xs);
+  border-radius: 0 0 var(--colox-radius-xs) 0;
   filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
-  -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
-  backdrop-filter: blur(var(--colox-tooltip-blur));
 }
 
 .colox-tooltip__arrow--size-sm {
@@ -46,8 +44,8 @@
 // Individual transforms apply translate-before-rotate, so the
 // translate centers the box on the edge and the rotation then spins
 // the wedge around that center; rotate(±45/±135) sends the filled
-// corner outward. The gradient rides the rotation: one local recipe
-// serves all four placements.
+// corner outward. The gradient and the single-corner radius ride the
+// rotation: one local recipe serves all four placements.
 [data-placement^='top'] .colox-tooltip__arrow {
   top: 100%;
   left: clamp(

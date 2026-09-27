@@ -11,7 +11,7 @@ const meta: Meta<typeof Tooltip> = {
     docs: {
       description: {
         component:
-          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain. The surface is the design-language palette — the six families (gray/primary/info/error/warning/success, gray default), every one frosted at the 0.9 alpha tier (the pure-black translucency rung for the neutral, the family solid mixed at 90% for the colors) plus a backdrop blur, borderless. The arrow is a rotated frosted diamond, half buried behind the bubble — no clip-path anywhere — with a rounded tip (radius-xs) and the same lens; its own drop-shadow cast plus the bubble cast read as one ant-design-style union silhouette (alpha compensated for the translucent dilution). The sm tier sizes the arrow one ladder step down. The diamond pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
+          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain. The surface is the design-language palette — seven families (gray/primary/info/error/warning/success/white, gray default), every one translucent at the 0.9 alpha tier (the pure-black ladder rung for the neutral, the family solid mixed at 90% for the colors, the white-900 rung with dark ink for white) and borderless, with no backdrop blur — the frost machinery earned more problems than the look. The arrow is a rotated translucent diamond, half buried behind the bubble — no clip-path anywhere — with only the protruding tip corner rounded (radius-xs; the base corners stay sharp); its own drop-shadow cast plus the bubble cast read as one ant-design-style union silhouette (alpha compensated for the translucent dilution). The sm tier sizes the arrow one ladder step down. The diamond pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
       },
     },
   },
@@ -63,6 +63,9 @@ export const Overview: Story = {
             </Tooltip>
             <Tooltip content="Success green." palette="success">
               <Button>Success</Button>
+            </Tooltip>
+            <Tooltip content="The light inverse — the white-900 tier, dark ink." palette="white">
+              <Button>White</Button>
             </Tooltip>
           </Stack>
         </Section>

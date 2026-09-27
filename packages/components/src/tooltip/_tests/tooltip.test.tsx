@@ -84,6 +84,19 @@ describe('Tooltip', () => {
     expect(content).toHaveClass('colox-tooltip__content--arrow');
   });
 
+  it('maps the white palette onto the panel and the content classes', () => {
+    render(
+      <Tooltip content="hint" palette="white" showArrow>
+        <button type="button">w</button>
+      </Tooltip>,
+    );
+    fireEvent.focus(screen.getByRole('button', { name: 'w' }));
+    const panel = screen.getByRole('tooltip');
+    expect(panel).toHaveClass('colox-tooltip__panel--white');
+    const content = panel.lastElementChild as HTMLElement;
+    expect(content).toHaveClass('colox-tooltip__content--white');
+  });
+
   it('sizes the arrow with the sm tier', () => {
     render(
       <Tooltip content="hint" size="sm" showArrow>
