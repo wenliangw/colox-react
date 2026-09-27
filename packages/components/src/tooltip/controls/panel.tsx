@@ -41,7 +41,7 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       gap={gap}
       matchWidth={false}
       fallbackPlacements={fallbackPlacements}
-      className="colox-tooltip__panel"
+      className={clsx('colox-tooltip__panel', variant === 'light' && 'colox-tooltip__panel--light')}
     >
       <div
         className={clsx(tooltipVariants({ variant, size, arrow: showArrow }), contentClassName)}
@@ -49,6 +49,7 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       >
         {children}
       </div>
+      {showArrow ? <span aria-hidden="true" className="colox-tooltip__arrow" /> : null}
     </Popup>
   ),
 );

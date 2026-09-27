@@ -64,14 +64,15 @@ existing `aria-describedby` words survive.
 `variant="dark"` (default) is the inverse canvas; `variant="light"` rides the
 default surface. Both are **borderless** and both are **frosted**: a translucent
 fill over a backdrop blur keeps the page readable through the panel. The arrow
-sits **entirely outside** the bubble box and is a **css border triangle** — no
-clip-path, for universal engine support. It shares the bubble's fill through the
-same custom property, so it reads as the bubble surface sticking out; on
-textured backdrops the arrow keeps the page sharp where the bubble frosts it
-(border paint carries no backdrop lens in Chromium). The panel gets its depth
-from a single `box-shadow` token on the bubble box — just one cast, no extra
-layer — which makes the borderless white glass read on a white page; the arrow
-paints above it. `size` shifts one ladder step from
+sits **entirely outside** the bubble box, as a **clip-path triangle** on the
+same fill — it reads as the bubble surface sticking out and carries the same
+backdrop lens (the arrow frosts the page exactly like the bubble). The panel
+gets its depth from a **drop-shadow** cast (the ant-design approach): a filter
+silhouettes the painted shape instead of a box-shadow layer. The translucent
+fill dilutes the cast, so the shadow alpha is compensated; each surface carries
+its own matched cast, because a filtered ancestor would break the frost (a
+vivid backcloth boundary — the bubble lost its lens the one time the cast
+moved onto the panel). `size` shifts one ladder step from
 the base tier — `sm` / `md` / `lg`. The decorative arrow pins to the
 **resolved** placement (after flipping), so it never lies about the side the
 panel landed on; it also stays aimed at the trigger when a boundary collision

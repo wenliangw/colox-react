@@ -5,19 +5,41 @@
 // through it to the trigger. The fill is frosted: the surface color
 // rides color-mix at partial alpha and a backdrop blur turns it glassy
 // instead of a flat plate — a hint floats above a page that stays
-// readable through it. The bubble carries the single token cast
-// (--colox-shadow-md) directly on its own box — one box-shadow, no
-// extra layer — and the arrow paints above it, so any shadow bleed is
-// limited to the few units the translucent fill lets through. The base
-// tier is `md` (the size axis shifts one ladder step in either
-// direction).
+// readable through it.
+//
+// Depth rule (measured, not assumed): a drop-shadow filter must NEVER
+// sit above a frosted surface — a filtered ancestor forms a backdrop
+// root and the descendant's backdrop-filter stops sampling the page
+// (the bubble itself lost its lens the moment the cast moved onto the
+// panel). Each glass surface therefore carries its OWN matched cast:
+// the content's filter silhouettes the bubble, the arrow's own filter
+// (arrow.scss) silhouettes the clipped triangle — two identical
+// drop-shadows expressing the ant-design-style union silhouette per
+// surface. drop-shadow cannot express the token's -1px spread, and
+// the translucent fill dilutes the cast (the filter shadows the
+// silhouette alpha: 0.78 light / 0.82 dark), so the alpha is
+// compensated (0.13 × fill ≈ the token's 0.10 look-through).
+//
+// The panel OWNS the frosted-surface custom properties
+// (--colox-tooltip-fill / --colox-tooltip-blur) on a single-class rule
+// so the variant overrides (also single class) can win on cascade
+// order instead of fighting a compound selector. Both children — the
+// content AND its arrow sibling — resolve them against the panel:
+// the single source, and the lens boundary fix (a child
+// backdrop-filter of a backdrop-filtered ancestor cannot sample the
+// page; the panel stays free of filters so both children lens
+// directly off the page). The base tier is `md` (the size axis shifts
+// one ladder step in either direction).
+.colox-tooltip__panel {
+  --colox-tooltip-blur: 8px;
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-bg-inverse) 82%, transparent);
+}
+
 .colox-popup.colox-tooltip__panel {
   pointer-events: none;
 }
 
 .colox-tooltip__content {
-  --colox-tooltip-blur: 8px;
-  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-bg-inverse) 82%, transparent);
   position: relative;
   max-width: 280px;
   padding: var(--colox-spacing-2) var(--colox-spacing-4);
@@ -29,7 +51,7 @@
   word-break: break-word;
   background: var(--colox-tooltip-fill);
   color: var(--colox-color-text-inverse);
-  box-shadow: var(--colox-shadow-md);
+  filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
   -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
   backdrop-filter: blur(var(--colox-tooltip-blur));
 }

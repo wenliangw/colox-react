@@ -11,7 +11,7 @@ const meta: Meta<typeof Tooltip> = {
     docs: {
       description: {
         component:
-          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain; dark is the inverse canvas, light rides the default surface — both frosted (translucent fill + backdrop blur, borderless). The arrow is a css border triangle (no clip-path) sitting entirely outside the bubble, sharing its fill; the cast is a single token box-shadow on the bubble box. It pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
+          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain; dark is the inverse canvas, light rides the default surface — both frosted (translucent fill + backdrop blur, borderless). The arrow is a clip-path triangle sitting entirely outside the bubble, on the same fill and the same backdrop lens; the depth is a drop-shadow cast silhouetting each surface (the ant-design approach, alpha compensated for the translucent dilution). It pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
       },
     },
   },
@@ -49,11 +49,7 @@ export const Overview: Story = {
             <Tooltip content="The inverse canvas.">
               <Button>Dark</Button>
             </Tooltip>
-            <Tooltip
-              visibleOn="click"
-              content="The default surface, frosted and borderless."
-              variant="light"
-            >
+            <Tooltip content="The default surface, frosted and borderless." variant="light">
               <Button>Light</Button>
             </Tooltip>
           </Stack>
@@ -103,6 +99,7 @@ export const Overview: Story = {
             content="Controlled open — visible drives, no surfaces, no auto close."
             visibleOn="manual"
             visible
+            variant="light"
           >
             <Button>Manual</Button>
           </Tooltip>

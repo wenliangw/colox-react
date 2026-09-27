@@ -1,11 +1,12 @@
 // The light canvas rides the default surface, frosted: the white passes
-// at reduced alpha so the page shimmers through the blur. Borderless;
-// its depth comes from the single token cast on the content box
-// (base.scss), with the arrow painted above it. --colox-tooltip-fill is
-// the single source the bubble background and the arrow's border color
-// both drink from, so a variant swap recolors both in one place.
-.colox-tooltip__content--light {
+// at reduced alpha so the page shimmers through the blur. Borderless.
+// The fill override lives on the PANEL (--colox-tooltip-fill is read by
+// the content AND its arrow sibling — the panel is their single
+// source, see base.scss); the text color lands on the content.
+.colox-tooltip__panel--light {
   --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-bg-default) 78%, transparent);
-  background: var(--colox-tooltip-fill);
+}
+
+.colox-tooltip__content--light {
   color: var(--colox-color-text-default);
 }
