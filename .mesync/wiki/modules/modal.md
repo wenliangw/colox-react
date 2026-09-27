@@ -81,5 +81,4 @@ src/modal/
 - **初始焦点永远不落 close 按钮**（DOM 末尾的绝对定位 chrome）。
 - **焦点归还**：关闭时若无先前焦点元素则落 body（浏览器 default）。
 - **欠账**：嵌套 Modal / 可拖拽 / 可调整大小 / 命令式 confirm 无真实消费
-  方不做；Drawer 到来时复用 cdk/overlay（遮罩/滚动锁/载体）+ useTrap
-  （软模式带 triggerRef）。
+  方不做；Drawer 已作为 cdk/overlay 第二消费者交付（见 modules/drawer.md）。

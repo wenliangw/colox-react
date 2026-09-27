@@ -84,7 +84,7 @@ The validation and field layer the form controls deliberately left out:
   itself, with the three cyclic rolling columns, the confirm commit and
   the throttle-gated direct-write glide.
 
-### M4 — Overlay family (next)
+### M4 — Overlay family (done — Tooltip/Popover/Modal/Drawer shipped)
 
 The cdk `floating` layer already provides positioning, portal and dismissal; this
 milestone adds the semantics on top (focus management, scroll locking, ARIA):
@@ -144,7 +144,23 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   entrance-exit pair on the shared cdk exit channel. The `Content` is the
   only scrolling region (title/footer stay fixed) — its scrollbar-padding
   interplay is tracked under M8 `ScrollView`.
-- `Drawer`, `Toast`/`Notification` — planned.
+- `Drawer` — the edge-anchored sliding panel — **shipped**: the second
+  consumer of the cdk `overlay` family (Modal's sibling — same
+  full-screen carrier, dim backdrop, strict trap and scroll lock; the
+  only difference is the anchored edge: Modal centers, Drawer slides
+  in from an edge). Purely composed `<Drawer visible>` + `Drawer.Title`
+  / `Drawer.Content` / `Drawer.Footer` (plain children are a compile
+  error), controlled only (no defaultVisible). The `direction` axis
+  (left/right/top/bottom, default right) names the sliding edge —
+  `placement` stays a floating-family word (it means "placed relative
+  to a trigger"; a drawer has none). `size` = the content space: it
+  sizes the panel width for left/right and the panel height for
+  top/bottom (sm/md/lg → the 320/384/448px design-language tokens,
+  symmetric across directions) with `width`/`height` escape hatches.
+  Close via the corner button (`showClose` default true), Escape and
+  the backdrop click; directional slide entrance/exit (translate from
+  the anchored edge) on the shared cdk exit channel.
+- `Toast`/`Notification` — planned.
 
 ### M5 — Display and feedback (planned)
 

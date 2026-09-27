@@ -1,0 +1,20 @@
+// The main-axis dimension per size tier. The SAME tier value serves as
+// the width for the vertical panels (left/right) and the height for
+// the horizontal ones (top/bottom) — the direction axis decides which
+// by pinning the cross axis to full-bleed (see direction.scss, loaded
+// after this file so its `width: auto` / `height: auto` override wins
+// the cascade).
+.colox-drawer__panel--size-sm {
+  width: var(--colox-size-80);
+  height: var(--colox-size-80);
+}
+
+.colox-drawer__panel--size-md {
+  width: var(--colox-size-96);
+  height: var(--colox-size-96);
+}
+
+.colox-drawer__panel--size-lg {
+  width: var(--colox-size-112);
+  height: var(--colox-size-112);
+}

@@ -1,0 +1,41 @@
+// Edge anchoring: each direction parks the panel flush against its
+// sliding edge. The cross axis is pinned to full-bleed by the two
+// insets (`top: 0; bottom: 0` for the vertical panels, `left: 0;
+// right: 0` for the horizontal ones) — the size tier supplies the
+// MAIN-axis dimension (see size.scss), and these classes override the
+// cross axis back to `auto` so the pinned insets decide it, not the
+// tier. The free edges carry the radius, the anchored edge stays
+// square — the panel reads as sliding out of the screen edge, not
+// floating in front of it.
+
+.colox-drawer__panel--direction-left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  border-radius: 0 var(--colox-radius-lg) var(--colox-radius-lg) 0;
+}
+
+.colox-drawer__panel--direction-right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: auto;
+  border-radius: var(--colox-radius-lg) 0 0 var(--colox-radius-lg);
+}
+
+.colox-drawer__panel--direction-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  border-radius: 0 0 var(--colox-radius-lg) var(--colox-radius-lg);
+}
+
+.colox-drawer__panel--direction-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  border-radius: var(--colox-radius-lg) var(--colox-radius-lg) 0 0;
+}

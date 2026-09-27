@@ -1,0 +1,86 @@
+// The overlay root the Drawer rides (the cdk Overlay carrier): unlike
+// the Modal's centered flex, the panel anchors itself to an edge
+// (absolute against the fixed overlay) — no centering class belongs
+// here. The backdrop is absolutely positioned and fills, so the panel
+// is the only edge-parked surface.
+.colox-drawer {
+  // No flex: the panel pulls itself to the sliding edge via absolute
+  // positioning in direction.scss.
+}
+
+// The drawer panel: an OPAQUE surface (the interactive long-form
+// surface needs full contrast — the Modal route) on the bg-default
+// token, NO border (the shadow defines the edge). Depth = ONE union
+// drop-shadow at the master shadow alpha — the panel floats over the
+// dim backdrop; the cast leans toward the free edge (the anchored
+// edge sits flush against the screen).
+// The shadow color copies the design language's master shadow value
+// (rgba(25,25,25,0.10)) into a private variable — no invented
+// compensation numbers (the Tooltip/Popover/Modal calibration).
+.colox-drawer__panel {
+  --colox-drawer-shadow-color: rgba(25, 25, 25, 0.1);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+  filter: drop-shadow(0 8px 24px var(--colox-drawer-shadow-color));
+}
+
+// The title row: the header above the body. FIXED — the panel is a
+// flex column, the header never scrolls away (only the body does).
+.colox-drawer__title {
+  flex: none;
+  padding: var(--colox-spacing-5) var(--colox-spacing-6) var(--colox-spacing-2);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-md);
+  font-weight: 600;
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+}
+
+// The body: normal words and controls, wraps freely. The ONLY scrolling
+// region of the panel — it flexes to fill the leftover space above the
+// footer and scrolls internally (min-height: 0 lets the flex item
+// shrink below its content, so the overflow is contained, not leaked).
+// The inline padding lives on the same element as the overflow, so a
+// classic scrollbar would eat the padding box — scrollbar-gutter
+// reserves its own slot outside the padding (the 边框 | 滚动条 | padding |
+// 内容 Textarea 定案 structure); `both-edges` keeps the two sides
+// symmetric whether or not the bar shows.
+.colox-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  padding: var(--colox-spacing-2) var(--colox-spacing-6) var(--colox-spacing-5);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}
+
+// The footer row: the action rail, aligned to the end. FIXED — sits
+// above the fold at the panel's free edge, never scrolls.
+.colox-drawer__footer {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--colox-spacing-2);
+  padding: var(--colox-spacing-4) var(--colox-spacing-6);
+}
+
+// The corner close button: floats over the panel's top edge, away from
+// the anchored side (right corner for left/right panels, right edge for
+// top/bottom ones — the title reads before the X). The reset, hit
+// shape, focus ring, hover/active feedback and the muted icon tone all
+// ride the shared IconButton base — this site class only places the
+// button and widens the hit area around the 16px icon.
+.colox-drawer__close {
+  position: absolute;
+  top: var(--colox-spacing-3);
+  right: var(--colox-spacing-3);
+  padding: var(--colox-spacing-2);
+}

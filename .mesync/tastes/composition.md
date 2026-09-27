@@ -57,6 +57,8 @@ dot-part 只在两种情形成立（ColoxTheme 演进给出的判据，Input 消
 
 来源：Modal 设计对齐轮（决策 654abd7c）——「内容型组件走纯组合式 dot-part（内容必须在树中判据），props 形态参数面膨胀时不硬套双通道」。
 
+**第四实例确认（Drawer 定稿，决策 f2ae5613）**：Drawer 与 Modal 同族（cdk/overlay 全屏覆盖层），完整继承纯组合式形态——`<Drawer visible>` + `Drawer.Title`/`Drawer.Content`/`Drawer.Footer`，普通子元素/重复部分编译期硬错误、无 defaultVisible 恒受控、声明槽渲染 null。至此「内容型三段结构走纯组合式」已两例落地（Modal + Drawer），成为 overlay 家族的固定形态；差异只在机制轴（Modal 居中 / Drawer 贴边、锚定词 direction 非 placement），不改变组合形态。
+
 ## dot-part 语义化表达（AutoComplete 定稿确立）
 
 - **槽命名对区域语义负责**：组合式组件的非叶子 slot 用区域语义词命名——宿主锚定槽两个词各司其职：**交互浮层家族 = `Trigger`**（交互触点词——槽的职分是受理 hover/focus 交互，不是提供参照；Tooltip 定稿、用户原词、Radix 同词、将来 Popover 沿用）、**combobox 家族 = `Target`**（定位参照词，与 cdk floating 的 target/reference 一致，AutoComplete 定稿；cdk 弹层件里 reference/trigger 两词本就并存）、集合声明区域 = `Suggestions`（复数=区域容器）、叶子 = 家族同名同义词（`Option`：value+text+disabled+children 契约直用 Select 词，不造新词）。

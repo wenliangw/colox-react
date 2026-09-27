@@ -1,0 +1,131 @@
+// The entrance: a directional slide from the anchored edge — the panel
+// mounts on the overlay presence tick, so the enter plays on mount.
+// Each direction translates in from its own screen edge (100% of the
+// panel's own main axis). The exit rides the overlay exit channel: the
+// Overlay keeps the layer mounted with the `--exiting` class for
+// DRAWER_EXIT (100ms) and this slide-out plays across it; `forwards`
+// holds the hidden end state until the unmount lands. The motion
+// tokens gate reduced motion centrally, so no local media query
+// belongs here.
+
+@keyframes colox-drawer-enter-left {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes colox-drawer-enter-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes colox-drawer-enter-top {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes colox-drawer-enter-bottom {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes colox-drawer-exit-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes colox-drawer-exit-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes colox-drawer-exit-top {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes colox-drawer-exit-bottom {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.colox-drawer__panel--direction-left {
+  animation: colox-drawer-enter-left var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-out);
+}
+
+.colox-drawer__panel--direction-right {
+  animation: colox-drawer-enter-right var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-out);
+}
+
+.colox-drawer__panel--direction-top {
+  animation: colox-drawer-enter-top var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-out);
+}
+
+.colox-drawer__panel--direction-bottom {
+  animation: colox-drawer-enter-bottom var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-out);
+}
+
+// The exiting class rides the OVERLAY root (the cdk Overlay carrier
+// owns the exit window) — the panel's slide-out keys off its parent.
+.colox-drawer.colox-overlay--exiting .colox-drawer__panel--direction-left {
+  animation: colox-drawer-exit-left var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-in) forwards;
+}
+
+.colox-drawer.colox-overlay--exiting .colox-drawer__panel--direction-right {
+  animation: colox-drawer-exit-right var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-in) forwards;
+}
+
+.colox-drawer.colox-overlay--exiting .colox-drawer__panel--direction-top {
+  animation: colox-drawer-exit-top var(--colox-motion-duration-normal) var(--colox-motion-easing-in)
+    forwards;
+}
+
+.colox-drawer.colox-overlay--exiting .colox-drawer__panel--direction-bottom {
+  animation: colox-drawer-exit-bottom var(--colox-motion-duration-normal)
+    var(--colox-motion-easing-in) forwards;
+}

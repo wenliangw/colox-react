@@ -1,0 +1,98 @@
+---
+sidebar_position: 18
+---
+
+import { Button, Drawer, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Drawer
+
+The drawer — an **edge-anchored sliding panel**, the second consumer of the
+cdk `overlay` family (Modal's sibling: the same full-screen carrier, dim
+backdrop, strict focus trap and scroll lock). The only difference is the
+anchored edge — Modal centers, Drawer slides in from an edge.
+
+<CodeBlock className="colox-import" language="tsx">{`import { Drawer } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Composition
+
+Drawer is **purely composed** — the same three-part shape as Modal, no props
+form, no `defaultVisible` (a dialog is always controlled). One root with
+three parts:
+
+- `<Drawer.Title>` — the heading, wired to the panel via `aria-labelledby`.
+- `<Drawer.Content>` — the body; the **only scrolling region** — when the
+  content outgrows the panel the body scrolls internally while the title and
+  footer stay fixed.
+- `<Drawer.Footer>` — the action row.
+
+Plain children (anything that is not one of the three parts) are a
+**compile-time error**, and so is a duplicated part.
+
+```tsx
+const [visible, setVisible] = useState(false);
+
+<Drawer visible={visible} onVisibleChange={setVisible}>
+  <Drawer.Title>Edit profile</Drawer.Title>
+  <Drawer.Content>
+    <span>Your settings live here.</span>
+  </Drawer.Content>
+  <Drawer.Footer>
+    <Button variant="subtle" onClick={() => setVisible(false)}>
+      Cancel
+    </Button>
+    <Button onClick={() => setVisible(false)}>Save</Button>
+  </Drawer.Footer>
+</Drawer>;
+```
+
+The `visible` word is the only gate: opening is a prop change, closing is
+`onVisibleChange(false)` — from the corner close button (default on), from
+Escape, or from a backdrop click (`closeOnMaskClick`, default true).
+
+## Direction
+
+`direction` names the edge the panel slides from: `'left' | 'right' |
+'top' | 'bottom'`, default `'right'`. `left`/`right` anchor a **vertical**
+panel flush to the screen edge; `top`/`bottom` anchor a **horizontal**
+strip. The word is `direction`, not `placement` — placement means "placed
+relative to a trigger" (the floating family), and a drawer has no trigger;
+the drawer's word expresses which edge it slides out of.
+
+## Size
+
+`size` is the **content space** — the panel's main-axis dimension, decided
+by the direction: it sizes the **width** for `left`/`right` panels and the
+**height** for `top`/`bottom` ones. The tiers are semantic, on the
+design-language WIDTH_HEIGHT tokens (never invented numbers): `sm` →
+`--colox-size-80` (320px), `md` (default) → `--colox-size-96` (384px),
+`lg` → `--colox-size-112` (448px) — the same tier value serves both axes,
+so a `sm` left panel is 320px wide and a `sm` top panel is 320px tall.
+
+The escape hatches follow the direction too: `width` overrides the tier for
+`left`/`right` panels, `height` for `top`/`bottom` ones (a number is px, a
+string is any CSS length).
+
+## Focus
+
+The strict trap (the shared cdk `useTrap`): the keyboard is confined to the
+panel — Tab wraps within it, nothing escapes. `aria-modal` marks the dialog,
+`initialFocus` chooses the landing spot (`'first'` default — the first
+focusable element, or the panel itself when the body has none; `'container'`
+— the panel). Closing hands the focus back to whatever held it before
+opening.
+
+## Backdrop
+
+The dim layer is `--colox-palette-black-500` (the design-language black
+step, rgba(0,0,0,0.5)) — **no backdrop blur**. `showMask={false}` drops it.
+The backdrop lives in `cdk/overlay`, shared with Modal.
+
+## Motion
+
+The entrance slides the panel in from its anchored edge; the exit slides it
+back out — both held by the motion tokens (the normal tier, a full-panel
+translation), the exit riding the overlay's exit window (the panel stays
+mounted for the slide, then unmounts). Opening locks the body scroll.
