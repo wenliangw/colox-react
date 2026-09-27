@@ -49,7 +49,10 @@ radius-md 6px，max-width 280px 字面量、逐轴 `.scss` + `@use` 聚合）。
     开/关计时器**永远互销**——快速进出永不重开、回焦清掉挂起的延迟关。
     **click** = 无计时器即时 toggle（Escape/外点/失窗关）。**manual** =
     `visible` prop 直排——零注入面、零自动开合、`onVisibleChange` 纯无声
-    （它只回音 hover/click 跃迁）。
+    （它只回音 hover/click 跃迁）。manual 面板**初始即开也照常定位**：
+    Popup 给定位 hook 的 open 门带 mounted 翻转（`open && mounted`），
+    portal 就位获得 false→true 边——无此边则首帧 effect 早退后定位
+    永不重算、面板困在 0,0 + opacity 0（首版被用户报「没有生效」）。
 - 关闭渠道统一走 `useDismissible`（面板+trigger 双包含豁免）；
   `closeOnScroll`（默认 false）= **显式退出**窗口 capture scroll 即关，
   默认跟随 autoUpdate 既有机制零成本。
