@@ -53,8 +53,8 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
     delay,
     closeOnScroll,
     closeOnOutsideClick,
-    onVisibleChange,
     hasContent,
+    onVisibleChange,
   } = params;
 
   const [innerVisible, setInnerVisible] = useState(false);
@@ -107,7 +107,7 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
       }
       setInnerVisible(next);
     },
-    [visibleOn, visible, onVisibleChange, hasContent],
+    [visibleOn, visible, hasContent, onVisibleChange],
   );
 
   const open = useCallback(
@@ -328,7 +328,7 @@ export function usePopover(params: UsePopoverParams): UsePopoverResult {
         close(delayOut);
       },
     };
-  }, [visibleOn, focusInside, clearCloseTimer, close, delayOut]);
+  }, [visibleOn, delayOut, focusInside, clearCloseTimer, close]);
 
   // The close channels split by their manual contract: the OPT-IN
   // moments (the outside click per closeOnOutsideClick, the scroll

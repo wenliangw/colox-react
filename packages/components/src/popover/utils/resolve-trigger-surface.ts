@@ -32,7 +32,7 @@ function chainHandlers<E extends SyntheticEvent>(
 export function resolvePopoverTriggerSurface(
   params: ResolvePopoverTriggerSurfaceParams,
 ): Record<string, unknown> {
-  const { trigger, setTriggerRef, panelId, visible, handlers, className, style, rest } = params;
+  const { trigger, panelId, visible, className, style, rest, setTriggerRef, handlers } = params;
   const own = trigger.props as Record<string, unknown>;
 
   // The spread already picked the surviving author surface (trigger

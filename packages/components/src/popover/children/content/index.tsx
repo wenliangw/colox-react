@@ -14,12 +14,12 @@ export const PopoverContent = ({ children, className, style }: PopoverContentPro
     visible,
     panelId,
     triggerRef,
-    setPanelRef,
     title,
     placement,
     gap,
     fallbackPlacements,
     showArrow,
+    setPanelRef,
     bridgeHandlers,
   } = usePopoverContext();
 
@@ -34,9 +34,9 @@ export const PopoverContent = ({ children, className, style }: PopoverContentPro
       fallbackPlacements={fallbackPlacements}
       showArrow={showArrow}
       title={title}
-      bridgeHandlers={bridgeHandlers}
       contentClassName={className}
       contentStyle={style}
+      bridgeHandlers={bridgeHandlers}
     >
       {children}
     </PopoverPanel>

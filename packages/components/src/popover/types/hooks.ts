@@ -25,13 +25,13 @@ export interface UsePopoverParams {
   closeOnScroll: boolean;
   /** Outside-pointerdown dismissal (defaults true at the component edge). */
   closeOnOutsideClick: boolean;
-  onVisibleChange?: (visible: boolean) => void;
   /**
    * The compiled content word: a popover without content must never
    * open — the machine no-ops the open edge (no state flip, no echo)
    * so the aria surface never claims a panel that cannot mount.
    */
   hasContent: boolean;
+  onVisibleChange?: (visible: boolean) => void;
 }
 
 export interface UsePopoverResult {

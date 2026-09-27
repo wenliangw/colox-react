@@ -16,16 +16,16 @@ export interface CompiledTooltipLeaves {
 export interface ResolveTooltipTriggerSurfaceParams {
   /** The compiled trigger element — its own words stay below the injection. */
   trigger: ReactElement;
-  /** The merged ref callback (the trigger's DOM node). */
-  setTriggerRef: (node: HTMLElement | null) => void;
   /** The final describedby wording: the author's words plus the panel id. */
   describedBy?: string;
-  /** The mode-built interaction surfaces (empty for manual). */
-  handlers: TooltipTriggerHandlers;
   /** The root className, concatenated with the trigger's own. */
   className?: string;
   /** The root style, spread under the trigger's own keys. */
   style?: CSSProperties;
   /** The remaining root props — the trigger's own words win. */
   rest: Record<string, unknown>;
+  /** The merged ref callback (the trigger's DOM node). */
+  setTriggerRef: (node: HTMLElement | null) => void;
+  /** The mode-built interaction surfaces (empty for manual). */
+  handlers: TooltipTriggerHandlers;
 }

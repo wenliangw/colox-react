@@ -117,12 +117,12 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
     compiled.trigger,
     resolveTooltipTriggerSurface({
       trigger: compiled.trigger,
-      setTriggerRef,
       describedBy: hasContent ? contentId : undefined,
-      handlers,
       className,
       style,
       rest,
+      setTriggerRef,
+      handlers,
     }),
   );
 

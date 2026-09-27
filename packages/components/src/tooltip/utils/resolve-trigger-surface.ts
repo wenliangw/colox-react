@@ -31,7 +31,7 @@ function chainHandlers<E extends SyntheticEvent>(
 export function resolveTooltipTriggerSurface(
   params: ResolveTooltipTriggerSurfaceParams,
 ): Record<string, unknown> {
-  const { trigger, setTriggerRef, describedBy, handlers, className, style, rest } = params;
+  const { trigger, describedBy, className, style, rest, setTriggerRef, handlers } = params;
   const own = trigger.props as Record<string, unknown>;
 
   // The spread already picked the surviving author surface (trigger

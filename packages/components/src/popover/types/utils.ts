@@ -18,18 +18,18 @@ export interface CompiledPopoverLeaves {
 export interface ResolvePopoverTriggerSurfaceParams {
   /** The compiled trigger element — its own words stay below the injection. */
   trigger: ReactElement;
-  /** The merged ref callback (the trigger's DOM node). */
-  setTriggerRef: (node: HTMLElement | null) => void;
   /** The panel id: joins the author's aria-controls while open. */
   panelId: string;
   /** The live visibility — drives aria-expanded and the aria-controls presence. */
   visible: boolean;
-  /** The mode-built interaction surfaces (empty for manual). */
-  handlers: PopoverTriggerHandlers;
   /** The root className, concatenated with the trigger's own. */
   className?: string;
   /** The root style, spread under the trigger's own keys. */
   style?: CSSProperties;
   /** The remaining root props — the trigger's own words win. */
   rest: Record<string, unknown>;
+  /** The merged ref callback (the trigger's DOM node). */
+  setTriggerRef: (node: HTMLElement | null) => void;
+  /** The mode-built interaction surfaces (empty for manual). */
+  handlers: PopoverTriggerHandlers;
 }

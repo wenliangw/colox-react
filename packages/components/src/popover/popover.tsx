@@ -73,8 +73,8 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
     delay: delay ?? {},
     closeOnScroll,
     closeOnOutsideClick,
-    onVisibleChange,
     hasContent,
+    onVisibleChange,
   });
 
   const compiledTitle = useMemo<PopoverTitleResolved | undefined>(() => {
@@ -115,12 +115,12 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
       panelId,
       triggerRef,
       panelRef,
-      setPanelRef,
       title: compiledTitle,
       placement,
       gap: resolvePopoverGap(showArrow),
       fallbackPlacements,
       showArrow,
+      setPanelRef,
       bridgeHandlers,
     }),
     [
@@ -128,11 +128,11 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
       panelId,
       triggerRef,
       panelRef,
-      setPanelRef,
       compiledTitle,
       placement,
       showArrow,
       fallbackPlacements,
+      setPanelRef,
       bridgeHandlers,
     ],
   );
@@ -145,13 +145,13 @@ const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
     compiled.trigger,
     resolvePopoverTriggerSurface({
       trigger: compiled.trigger,
-      setTriggerRef,
       panelId,
       visible: open && hasContent,
-      handlers,
       className,
       style,
       rest: rest as Record<string, unknown>,
+      setTriggerRef,
+      handlers,
     }),
   );
 

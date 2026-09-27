@@ -15,10 +15,10 @@ export interface PopoverPanelProps {
   showArrow: boolean;
   /** The resolved header (undefined = no header row). */
   title?: PopoverTitleResolved;
-  /** The hover region's panel half (the pointer bridge handers). */
-  bridgeHandlers: PopoverBridgeHandlers;
   /** The content-box escape hatch (the composed Content part's words). */
   contentClassName?: string;
   contentStyle?: CSSProperties;
   children: ReactNode;
+  /** The hover region's panel half (the pointer bridge handlers). */
+  bridgeHandlers: PopoverBridgeHandlers;
 }

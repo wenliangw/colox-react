@@ -20,14 +20,14 @@ export interface PopoverContextValue {
   triggerRef: RefObject<HTMLElement | null>;
   /** The portal panel root (dismiss containment and the focus trap scope). */
   panelRef: RefObject<HTMLDivElement | null>;
-  /** The panel ref callback: assigns the node and performs the appointed open-focus. */
-  setPanelRef: (node: HTMLDivElement | null) => void;
   /** the resolved title (header) — undefined when no title was given. */
   title: PopoverTitleResolved | undefined;
   placement: Placement;
   gap: number;
   fallbackPlacements: Placement[];
   showArrow: boolean;
+  /** The panel ref callback: assigns the node and performs the appointed open-focus. */
+  setPanelRef: (node: HTMLDivElement | null) => void;
   /** The hover region's panel half (the bridge over the trigger-to-panel crossing). */
   bridgeHandlers: PopoverBridgeHandlers;
 }

@@ -13,12 +13,12 @@ export const defaultPopoverContextValue: PopoverContextValue = {
   panelId: '',
   triggerRef: { current: null },
   panelRef: { current: null },
-  setPanelRef: () => {},
   title: undefined,
   placement: 'bottom-start',
   gap: POPOVER_GAP.WITH_ARROW,
   fallbackPlacements: ['top'],
   showArrow: true,
+  setPanelRef: () => {},
   bridgeHandlers: {},
 };
 

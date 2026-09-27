@@ -30,10 +30,10 @@ export const PopoverPanel = forwardRef<HTMLDivElement, PopoverPanelProps>(
       fallbackPlacements,
       showArrow,
       title,
-      bridgeHandlers,
       contentClassName,
       contentStyle,
       children,
+      bridgeHandlers,
     },
     ref,
   ) => {
