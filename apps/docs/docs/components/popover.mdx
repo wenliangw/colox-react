@@ -71,6 +71,11 @@ lost window still dismiss** (they are not clicks) and the trigger toggle
 stays live. `closeOnScroll` closes on any scroll instead of following the
 reference.
 
+Under the `manual` channel neither channel closes (the controlled `visible`
+rules) — both **echo `onVisibleChange(false)`** instead, so the controller
+follows without hand-rolling scroll or document-pointerdown listeners.
+Escape and the window loss stay silent under `manual`.
+
 ```tsx
 <Popover
   title="Pinned"

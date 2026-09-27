@@ -106,12 +106,19 @@ export const Overview: Story = {
             <Tooltip content="Closes on any scroll." closeOnScroll>
               <Button>closeOnScroll</Button>
             </Tooltip>
+            <Tooltip
+              content="closeOnOutsideClick={false} — outside clicks keep this open; Escape still closes it."
+              closeOnOutsideClick={false}
+              visibleOn="click"
+            >
+              <Button>{'closeOnOutsideClick={false}'}</Button>
+            </Tooltip>
           </Stack>
         </Section>
 
         <Section title="Manual channel">
           <Tooltip
-            content="Controlled open — visible drives, no surfaces, no auto close."
+            content="Controlled open — visible drives; the outside-click scroll channels echo through onVisibleChange."
             visibleOn="manual"
             visible
             palette="primary"

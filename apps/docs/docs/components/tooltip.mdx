@@ -114,28 +114,34 @@ displaces the panel (flip/shift), clamped so it never leaves the panel.
 - `"click"`: an instant toggle; Escape, outside pointerdown or window blur
   close it.
 - `"manual"`: the controlled word — `visible` drives the panel; interactions
-  never auto-open or auto-close, and `onVisibleChange` stays silent (it only
-  speaks the hover/click transitions).
+  never auto-open or auto-close. The special close moments stay the library's
+  business: an outside click (per `closeOnOutsideClick`) and a scroll (per
+  `closeOnScroll`) echo `onVisibleChange(false)` so the controlled owner can
+  follow. Escape and the window loss keep their manual silence.
 
 `closeOnScroll` closes on any scroll while open — an explicit opt-out; the
 default follows the trigger through the popup's auto-update stream instead.
+`closeOnOutsideClick` (default `true`) dismisses on an outside pointerdown —
+set it `false` to keep the hint open against outside clicks (Escape and the
+lost window still dismiss, they are not clicks).
 `delay` merges partial objects into the defaults (`{ out: 200 }` keeps the
 300ms open delay).
 
 ## Props
 
-| Prop            | Type                                                                            | Default      |
-| --------------- | ------------------------------------------------------------------------------- | ------------ |
-| content         | `ReactNode`                                                                     | —            |
-| visibleOn       | `'hover' \| 'click' \| 'manual'`                                                | `'hover'`    |
-| visible         | `boolean`                                                                       | —            |
-| showArrow       | `boolean`                                                                       | `true`       |
-| placement       | `Placement`                                                                     | `'top'`      |
-| palette         | `'gray' \| 'primary' \| 'info' \| 'error' \| 'warning' \| 'success' \| 'white'` | `'gray'`     |
-| delay           | `{ in?, out? }`                                                                 | `{ 300, 0 }` |
-| closeOnScroll   | `boolean`                                                                       | `false`      |
-| size            | `'sm' \| 'md' \| 'lg'`                                                          | `'md'`       |
-| onVisibleChange | `(visible: boolean) => void`                                                    | —            |
+| Prop                | Type                                                                            | Default      |
+| ------------------- | ------------------------------------------------------------------------------- | ------------ |
+| content             | `ReactNode`                                                                     | —            |
+| visibleOn           | `'hover' \| 'click' \| 'manual'`                                                | `'hover'`    |
+| visible             | `boolean`                                                                       | —            |
+| showArrow           | `boolean`                                                                       | `true`       |
+| placement           | `Placement`                                                                     | `'top'`      |
+| palette             | `'gray' \| 'primary' \| 'info' \| 'error' \| 'warning' \| 'success' \| 'white'` | `'gray'`     |
+| delay               | `{ in?, out? }`                                                                 | `{ 300, 0 }` |
+| closeOnScroll       | `boolean`                                                                       | `false`      |
+| closeOnOutsideClick | `boolean`                                                                       | `true`       |
+| size                | `'sm' \| 'md' \| 'lg'`                                                          | `'md'`       |
+| onVisibleChange     | `(visible: boolean) => void`                                                    | —            |
 
 ## Boundaries
 

@@ -100,7 +100,7 @@ export const Overview: Story = {
         <Section title="Manual channel">
           <Popover
             title="Manual"
-            content="Controlled open — visible drives, no surfaces."
+            content="Controlled open — visible drives; the outside-click/scroll channels echo through onVisibleChange."
             visibleOn="manual"
             visible
           >
