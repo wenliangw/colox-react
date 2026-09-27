@@ -11,15 +11,15 @@ import type { PopoverContentProps } from '../../types';
  */
 export const PopoverContent = ({ children, className, style }: PopoverContentProps) => {
   const {
-    setPanelRef,
     visible,
     panelId,
     triggerRef,
+    setPanelRef,
+    title,
     placement,
     gap,
     fallbackPlacements,
     showArrow,
-    title,
     bridgeHandlers,
   } = usePopoverContext();
 

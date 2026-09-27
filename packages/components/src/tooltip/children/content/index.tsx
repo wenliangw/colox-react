@@ -10,10 +10,10 @@ import type { TooltipContentProps } from '../../types';
  */
 export const TooltipContent = ({ children, className, style }: TooltipContentProps) => {
   const {
-    panelRef,
     visible,
     contentId,
     triggerRef,
+    panelRef,
     placement,
     gap,
     fallbackPlacements,
