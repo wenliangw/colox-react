@@ -317,6 +317,7 @@ describe('Popover interaction channels', () => {
     // owner follows the echo
     fireEvent.pointerDown(document.body);
     expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    settleExit();
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     // closeOnOutsideClick=false silences the outside channel
@@ -324,6 +325,8 @@ describe('Popover interaction channels', () => {
     rerender(manual({ closeOnOutsideClick: false }));
     fireEvent.pointerDown(document.body);
     expect(onVisibleChange).not.toHaveBeenCalled();
+    settleExit();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     // closeOnScroll echoes too
     onVisibleChange.mockClear();
@@ -332,6 +335,7 @@ describe('Popover interaction channels', () => {
       window.dispatchEvent(new Event('scroll'));
     });
     expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    settleExit();
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 

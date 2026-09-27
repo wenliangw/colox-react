@@ -274,6 +274,7 @@ describe('Tooltip interaction channels', () => {
     // owner follows the echo
     fireEvent.pointerDown(document.body);
     expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    settleExit();
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
 
     // closeOnOutsideClick=false silences the outside channel
@@ -281,6 +282,8 @@ describe('Tooltip interaction channels', () => {
     rerender(manual({ closeOnOutsideClick: false }));
     fireEvent.pointerDown(document.body);
     expect(onVisibleChange).not.toHaveBeenCalled();
+    settleExit();
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
 
     // closeOnScroll echoes too
     onVisibleChange.mockClear();
@@ -289,6 +292,7 @@ describe('Tooltip interaction channels', () => {
       window.dispatchEvent(new Event('scroll'));
     });
     expect(onVisibleChange).toHaveBeenLastCalledWith(false);
+    settleExit();
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
 
@@ -299,6 +303,7 @@ describe('Tooltip interaction channels', () => {
     const panel = screen.getByRole('tooltip');
     expect(panel).toBeInTheDocument();
     fireEvent.pointerDown(document.body);
+    settleExit();
     expect(screen.getByRole('tooltip')).toBe(panel);
     // Escape keeps dismissing (not an outside click)
     fireEvent.keyDown(document.body, { key: 'Escape' });

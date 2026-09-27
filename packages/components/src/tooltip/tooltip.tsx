@@ -22,7 +22,8 @@ import './styles/index.scss';
  * the composed `<Tooltip.Trigger>` + `<Tooltip.Content>` channels;
  * giving both is a compile error, an empty content renders nothing.
  * hover rides delay.in/out (focus instant), click toggles instantly,
- * manual is the controlled `visible` word.
+ * manual is the controlled `visible` word whose opt-in close channels
+ * echo `onVisibleChange(false)` instead of closing.
  */
 const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
   const {

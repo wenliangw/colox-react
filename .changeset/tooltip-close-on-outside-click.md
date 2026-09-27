@@ -1,5 +1,6 @@
 ---
 '@colox/react': minor
+'@colox/wiki': minor
 ---
 
 Add Tooltip `closeOnOutsideClick` (default `true`): set it `false` to

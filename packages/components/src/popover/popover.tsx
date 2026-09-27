@@ -26,7 +26,8 @@ import './styles/index.scss';
  * empty content renders nothing. click toggles instantly and focuses
  * the panel, hover rides the delay pair (the out-delay doubles as the
  * pointer bridge into the panel) and never steals focus, manual is
- * the controlled `visible` word.
+ * the controlled `visible` word whose opt-in close channels echo
+ * `onVisibleChange(false)` instead of closing.
  */
 const PopoverRoot = forwardRef<PopoverRef, PopoverProps>((props, ref) => {
   const {
