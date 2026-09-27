@@ -100,27 +100,34 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
   祖先下自投影）多过毛玻璃收益——半透明本色 + 投影已够提示层的
   出生感。因此历史透镜律（下方条目）不再约束本组件；其教训
   （clip/mask 对自身投影的破坏）独立于 blur，仍然有效并保留于
-  corrections。
+  corrections。**blur 退场同时解禁 panel 级滤镜**——panel 不再有
+  透镜子孙，投影可以放心挂到最外层（见阴影条目）。
 - **箭头填充跟随气泡**：填充色经由共享自定义属性 `--colox-tooltip-fill`
   （panel 声明、palette 在 panel 级覆写——复合选择器防 cascade 打架）
   传给菱形渐变；文字走 `--colox-tooltip-text`（panel 同源声明、
   white 族翻 deep）——箭头=气泡表面伸出的部分，palette 调整一处换
   两色。
-- **阴影（drop-shadow 投影，AntD 式）**：每个面自带一条
-  `filter: drop-shadow(0 4px 6px rgba(25,25,25,0.13))`——content 剪影
-  气泡、arrow 剪影菱形外半，两段同参投影拼成联体剪影（blur 移除后
-  无需再忌滤镜祖先，但「每面自投影」的形态保留——联合剪影不能靠
-  祖先级单一滤镜表达）。
-  alpha 补偿 0.13：drop-shadow 对剪影 alpha 施影，半透明填充把投影
-  稀释（0.13×0.9 ≈ token 0.10 的视觉深度——0.9 档后补偿比旧
-  0.82 更贴 token）；token 的 -1px spread 无法表达（drop-shadow 无
-  spread 参数），为公开代价。演化线：零阴影终态（light 白底隐身被报）
+- **阴影（panel 级单条 drop-shadow，方向随箭头，用户点名落最外层）**：
+  投影挂在最外层 panel 根（blur 已撤、无透镜子孙，panel 级滤镜合法）——
+  一条 `filter` 一次剪影整个联体：气泡 + 可见菱形外半（埋藏半透明
+  零贡献），AntD 式联体一次成型，content/arrow 皆零滤镜。**偏移随
+  箭头方向**（读 panel 自己的 `data-placement` 前词）：top→`(0,4)`、
+  bottom→`(0,-4)`、left→`(4,0)`、right→`(-4,0)`，blur 6px 恒定——
+  阴影坐在箭头侧的缝隙，面板仿佛朝触发物倾斜。**颜色 = 设计语言
+  自己的阴影主值** `rgba(25,25,25,0.10)`（`--colox-shadow-sm/md/lg`
+  三档共用的主层 alpha，来自 theme-builder 的 shadow token 源；发射集
+  里无裸色 token、box-shadow 简写无法喂 filter，故把 token 的主色值
+  原样抄进 `--colox-tooltip-shadow-color`）——0.13 补偿 hack 退役
+  （透明度下的真实深度 0.10×0.9，比 token 浅一步是物理诚实）。
+  token 的 -1px spread 无法表达（drop-shadow 无 spread 参数），为公开
+  代价。演化线：零阴影终态（light 白底隐身被报）
   → 定向投射层 + 箭头侧 6px 让位带（白边被报「白色背景层」）→ 遮罩
   挖孔（用户否掉 mask/复杂度）→ 一条 token box-shadow 挂本体盒
   （用户拍板简单优先）→ border 三角轮（兼容性优先）→ drop-shadow +
   clip-path 回归（用户看 AntD 点名）→ 菱形化：实测裁剪箭头
   自投影被裁空（union 只余气泡半），菱形把 AntD 联体剪影兑现 +
-  palette/0.9 档并入 → blur 移除 + white 族 + 尖角单圆（本轮）。
+  palette/0.9 档并入 → blur 移除 + white 族 + 尖角单圆 → **panel 级
+  union 剪影 + 方向随箭头 + 设计语言 0.10 色值（本轮）**。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
