@@ -71,30 +71,39 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 
 ## 视觉层（按 placement 贴边）
 
-- **箭头**：border 三角，**整个落在气泡盒外**（top/bottom/left/right: 100%，
-  绝不骑边负偏移）；零尺寸盒 + 单侧着色 6px 边框 + 两侧透明边框，角分线
-  天然画出底 spacing-3=12px、深 spacing-1-5=6px 的三角，**无 clip-path、
-  无旋转**（border 三角全引擎支持——用户点名以兼容性为准）。骑边旋转方块
+- **箭头**：clip-path 三角，**整个落在气泡盒外**（top/bottom/left/right: 100%，
+  绝不骑边负偏移）；12x6（竖 6x12）真实盒 painted with 气泡同源填充 + 裁剪成
+  三角（用户看 AntD 后点名换回 clip-path——见决策链）。骑边旋转方块
   被判死刑：backdrop-filter 只采样自身盒内，骑边会把气泡自己的半透明填充
   blur 进自己（实测气泡 66 vs 箭头 62 的硬台阶）；全在盒外则箭头背景=页
   面，与气泡同构同源。沿边的中心仍钉 `--colox-floating-arrow-offset`
   （clamp 防出界、面板被 flip/shift 搬移后箭头仍瞄准 trigger），translate
   -50% 居中；gap 随箭头开关：开 8 / 关 6。
+- **箭头是 panel 的真实兄弟子元素，不是 content 的伪元素**（本轮结构
+  定案）：backdrop 透镜的生死由 DOM 位置决定——任何带 filter/backdrop-
+  filter 的祖先都构成 backdrop root，子孙的 backdrop-filter 被圈进祖先
+  画布、采样落空。实测红蓝分野：content 伪元素形态箭头 B=20 死值（host
+  自己的 backdrop-filter 即根）+ 投影挂上 panel 后连气泡也 B=20 死值
+  （滤镜祖先同罪）→ 箭头挂 panel 之下、panel 保持素净（仅变量 +
+  pointer-events），两者直接采页面。
 - **箭头填充跟随气泡**：填充色经由共享自定义属性 `--colox-tooltip-fill`
-  （content 声明、variant 覆写）传给着色边框——箭头=气泡表面伸出的部分，
-  variant 调整一处换两色。**border 画框在 Chromium 无 backdrop 透镜**
-  （红蓝分野实测：普通盒混色、border 三角不混）——箭头自身不带 blur；
-  均匀底（提示层的常态归宿）与气泡逐像素一致，纹理底上箭头透出页面比
-  气泡锐利，为兼容性优先的公开代价。**两变体同一条无边框几何**（light
-  的 border 被用户否掉以来从未回潮）。
-- **阴影（本轮定案：一条 token box-shadow 挂本体盒，机制全撤）**：内容盒
-  自带 `box-shadow: var(--colox-shadow-md)`，箭头 `z-index: 1` 盖在阴影
-  之上——无投影层、无遮罩挖孔、无 6px 让位带。半透明窗仍让阴影渗出几
-  unit（实测 dark delta 0-1、light delta 5）——这是用户拍板「简单需求」
-  的代价。演化线：零阴影终态（light 白底隐身被报）→ 定向投射层 + 箭头侧
-  6px 让位带（白边被报「白色背景层」）→ 遮罩挖孔（用户否掉 mask/复杂度）
-  → 最简（用户指定 box-shadow + z-index 提层思路；z-index 实测不消除透光
-  但用户仍拍板简单优先）。
+  （panel 声明、variant 在 panel 级覆写——单类特异性防 cascade 打架）传给
+  裁剪盒——箭头=气泡表面伸出的部分，variant 调整一处换两色。**clip-path
+  三角带透镜**（红蓝分野实测：箭 B=31 / 气泡 B=33 同值混色），bg+blur
+  双声明与气泡逐字同款。
+- **阴影（本轮定案：drop-shadow 投影，AntD 式）**：每个玻璃面自带一条
+  `filter: drop-shadow(0 4px 6px rgba(25,25,25,0.13))`——content 剪影
+  气泡、arrow 剪影三角，两段同参投影拼成联体剪影（祖先级单一滤镜与霜纹
+  互斥：滤镜倒挂着会打破所有子孙的透镜，实测气泡当场失焦）。alpha 补偿
+  0.13：drop-shadow 对剪影 alpha 施影，半透明填充把投影稀释（0.13×
+  0.78/0.82 ≈ token 0.10 的视觉深度）；token 的 -1px spread 无法表达
+  （drop-shadow 无 spread 参数），为公开代价。实测残差：dark delta 0-4、
+  light delta 1-2、shadow@2px 240/6px 247（白页）。演化线：零阴影终态
+  （light 白底隐身被报）→ 定向投射层 + 箭头侧 6px 让位带（白边被报
+  「白色背景层」）→ 遮罩挖孔（用户否掉 mask/复杂度）→ 一条 token
+  box-shadow 挂本体盒（用户拍板简单优先）→ border 三角轮（兼容性优先）
+  → 本轮 drop-shadow + clip-path 回归（用户看 AntD 点名，能力优先于
+  兼容成本）。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
@@ -119,7 +128,7 @@ tooltip/
 │   ├── resolve-trigger-surface.ts     # 零容器注入面装配（合并/串联/describedby/ref）
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
 ├── variants/                 # cva 三轴：variant.ts / size.ts / arrow.ts + index.ts
-├── styles/                   # base/variant/size/arrow/animation + index.scss @use 聚合；阴影=base.scss 内容盒上一条 token box-shadow（无独立投影文件）
+├── styles/                   # base/variant/size/arrow/animation + index.scss @use 聚合；阴影=base.scss（内容盒）+arrow.scss（箭头）各一条同参 drop-shadow（无独立投影文件）
 └── _tests/                   # 30 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序
 ```
 
