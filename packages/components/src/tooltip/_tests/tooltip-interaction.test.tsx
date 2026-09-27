@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Tooltip } from '..';
+import { TOOLTIP_EXIT } from '../constants/behavior';
 
 const renderTooltip = (props: ComponentProps<typeof Tooltip> = {}) => {
   render(
@@ -12,11 +13,22 @@ const renderTooltip = (props: ComponentProps<typeof Tooltip> = {}) => {
   return screen.getByRole('button', { name: 'host' });
 };
 
-/** The delay pair is the only timer need — advanceTimersByTime drives it. */
+/** The delay pair and the exit window are the only timer needs. */
 const useDelayFakeTimers = () =>
   vi.useFakeTimers({
     toFake: ['setTimeout', 'clearTimeout'],
   });
+
+/**
+ * Advances past the cdk exit window: a closed panel stays mounted with
+ * the exiting class for TOOLTIP_EXIT so the fade-out can play — the
+ * unmount lands after that window.
+ */
+const settleExit = () => {
+  act(() => {
+    vi.advanceTimersByTime(TOOLTIP_EXIT);
+  });
+};
 
 describe('Tooltip interaction channels', () => {
   afterEach(() => {
@@ -37,7 +49,40 @@ describe('Tooltip interaction channels', () => {
     });
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     fireEvent.pointerLeave(trigger);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('plays the exit window on close: exiting class for TOOLTIP_EXIT, then unmount', () => {
+    useDelayFakeTimers();
+    const trigger = renderTooltip();
+    fireEvent.focus(trigger);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    fireEvent.blur(trigger);
+    expect(screen.getByRole('tooltip')).toHaveClass('colox-popup--exiting');
+    act(() => {
+      vi.advanceTimersByTime(TOOLTIP_EXIT - 1);
+    });
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('re-opening inside the exit window keeps the one panel and drops the exiting class', () => {
+    useDelayFakeTimers();
+    const trigger = renderTooltip({ visibleOn: 'click' });
+    fireEvent.click(trigger);
+    const panel = screen.getByRole('tooltip');
+    fireEvent.click(trigger);
+    expect(panel).toHaveClass('colox-popup--exiting');
+    fireEvent.click(trigger);
+    expect(panel).not.toHaveClass('colox-popup--exiting');
+    act(() => {
+      vi.advanceTimersByTime(TOOLTIP_EXIT + 50);
+    });
+    expect(screen.getByRole('tooltip')).toBe(panel);
   });
 
   it('cancels a pending open on quick leave (the timer pair never fights)', () => {
@@ -69,14 +114,18 @@ describe('Tooltip interaction channels', () => {
     act(() => {
       vi.advanceTimersByTime(200);
     });
+    expect(screen.getByRole('tooltip')).toHaveClass('colox-popup--exiting');
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('opens on focus instantly and closes on blur (hover channel)', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip();
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     fireEvent.blur(trigger);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
@@ -94,14 +143,15 @@ describe('Tooltip interaction channels', () => {
   });
 
   it('swallows the focus the browser replants after a tab switch (stays closed on return)', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip();
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
-    // tab away: the focused element blurs (the panel closes)
+    // tab away: the focused element blurs (the panel closes, the exit window starts)
     fireEvent.blur(trigger);
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     // tab back: the browser replants focus — not a user gesture
     fireEvent.focus(trigger);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     // any real input re-arms the focus leg (the swallow is one-shot)
     fireEvent.pointerDown(document.body);
@@ -110,6 +160,7 @@ describe('Tooltip interaction channels', () => {
   });
 
   it('stays closed when only the window blurs and the browser restores the focus', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip();
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
@@ -117,8 +168,8 @@ describe('Tooltip interaction channels', () => {
     act(() => {
       window.dispatchEvent(new Event('blur'));
     });
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     fireEvent.focus(trigger);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     fireEvent.keyDown(document.body);
     fireEvent.focus(trigger);
@@ -139,37 +190,45 @@ describe('Tooltip interaction channels', () => {
   });
 
   it('toggles instantly on click and closes on outside pointerdown', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip({ visibleOn: 'click' });
     fireEvent.click(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     fireEvent.click(trigger);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
     fireEvent.click(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     fireEvent.pointerDown(document.body);
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('closes on Escape (hover channel)', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip();
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     fireEvent.keyDown(document.body, { key: 'Escape' });
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('closes when the window loses focus', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip();
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     act(() => {
       window.dispatchEvent(new Event('blur'));
     });
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('manual channel: visible drives, no surfaces, no auto close, no echo', () => {
+    useDelayFakeTimers();
     const onVisibleChange = vi.fn();
     const { rerender } = render(
       <Tooltip content="hint" visibleOn="manual" visible onVisibleChange={onVisibleChange}>
@@ -190,6 +249,7 @@ describe('Tooltip interaction channels', () => {
         <button type="button">m</button>
       </Tooltip>,
     );
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
@@ -225,12 +285,14 @@ describe('Tooltip interaction channels', () => {
   });
 
   it('closeOnScroll closes on any scroll (window capture), the default follows instead', () => {
+    useDelayFakeTimers();
     const trigger = renderTooltip({ closeOnScroll: true });
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
     act(() => {
       window.dispatchEvent(new Event('scroll'));
     });
+    settleExit();
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 

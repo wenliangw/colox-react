@@ -96,17 +96,35 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   is a compile error, an empty content renders nothing), hover/click/manual
   visibility (`delay` as `{ in, out }`, timers always cancel their
   opposite, focus instant), `closeOnScroll` as the explicit opt-out of
-  the default follow, dark/light surfaces with sm/md/lg tiers — both
-  frosted (translucent fill + backdrop blur, borderless, a single
-  `box-shadow` token on the bubble) — and the arrow, a css border
-  triangle sitting outside the bubble so it shares that fill exactly,
-  pinned to the resolved
+  the default follow, palette surfaces (gray/primary/info/error/warning/
+  success/white, every one translucent at the design-language 0.9 alpha
+  tier, borderless, no backdrop blur) with sm/md/lg tiers, a rotated
+  diamond arrow half-buried under the bubble (no clip-path), one union
+  drop-shadow cast on the panel (bubble + diamond silhouette together,
+  offset following the arrow direction), pinned to the resolved
   placement (`data-placement` from the cdk popup, post-flip) while
-  staying aimed at the trigger under boundary collision. Upgrade side:
-  the
-  cdk `useFloatingPosition`/`Popup` gained the optional
-  `fallbackPlacements` chain — pickers unchanged.
-- `Popover`, `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.
+  staying aimed at the trigger under boundary collision, and now the
+  exit channel too (the cdk Popup `exitDuration` window — a fade-out
+  plays on close). Upgrade side: the cdk
+  `useFloatingPosition`/`Popup` gained the optional
+  `fallbackPlacements` chain and the additive `exitDuration` exit
+  channel (default 0 = the old instant unmount) — pickers unchanged.
+- `Popover` — the interactive floating card (the Tooltip's interactive
+  sibling, a non-modal dialog) — **shipped**: zero container (trigger
+  cloned in place), two channels (the `title`/`content` prop form and
+  the composed `Popover.Trigger` + `Popover.Title` + `Popover.Content`
+  form; giving a word in both is a compile error, an empty content
+  never opens), click/hover/manual visibility — click (default)
+  toggles instantly and focuses the panel (Tab/Shift+Tab cycle
+  trapped, Escape closes and returns the focus to the trigger, an
+  outside close never steals it), hover rides `{ in: 300, out: 100 }`
+  where the out-delay IS the pointer bridge into the panel and never
+  steals focus, manual is the controlled word — an opaque
+  `bg-default` card (borderless, radius-lg) with the shadow-lg tier as
+  a union drop-shadow (direction follows the arrow), the same rotated
+  diamond arrow recipe, content-owned width (no size axis), entrance
+  fade+scale / exit fade on the shared cdk exit channel.
+- `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.
 
 ### M5 — Display and feedback (planned)
 

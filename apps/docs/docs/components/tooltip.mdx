@@ -144,8 +144,10 @@ default follows the trigger through the popup's auto-update stream instead.
 - **Disabled native controls swallow pointer events.** No enter event ever
   reaches a `disabled` button, so no tooltip opens — wrap it in a container
   (an Anchor works) when a disabled trigger still needs an explanation.
-- **Entrance only.** The panel animates in (fade + scale, driven by the motion
-  tokens); there is no exit channel yet.
+- **Animated in and out.** The panel enters with a fade + scale and exits
+  with a fade (both driven by the motion tokens); the exit window keeps the
+  panel mounted for `--colox-motion-duration-fast` (100ms) so the fade-out
+  plays, then unmounts.
 - **No `defaultVisible`.** The hover/click channels are presentation-only —
   first-show behavior needs no initial word, and the manual channel is
   controlled.

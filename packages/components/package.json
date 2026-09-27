@@ -90,6 +90,11 @@
       "import": "./dist/es/positioner.js",
       "require": "./dist/cjs/positioner.cjs"
     },
+    "./popover": {
+      "types": "./dist/types/popover/index.d.ts",
+      "import": "./dist/es/popover.js",
+      "require": "./dist/cjs/popover.cjs"
+    },
     "./radio": {
       "types": "./dist/types/radio/index.d.ts",
       "import": "./dist/es/radio.js",

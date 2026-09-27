@@ -1,8 +1,12 @@
-// The entrance only (Popup has no exit channel — mount is the show):
-// fade + a soft scale-in, placement-agnostic so nothing stateside
-// needs to track the resolved direction. The motion tokens gate
-// reduced motion centrally (the theme zeroes the durations), so no
-// local media query belongs here.
+// The entrance: fade + a soft scale-in, placement-agnostic so nothing
+// stateside needs to track the resolved direction. The exit rides the
+// cdk exit channel: the Popup keeps the panel mounted with the
+// `--exiting` class for TOOLTIP_EXIT (100ms, the runtime mirror of
+// --colox-motion-duration-fast) and the fade-out plays across the
+// panel root — the whole silhouette (bubble + arrow + union shadow)
+// fades as one; `forwards` holds the invisible end state until the
+// unmount lands. The motion tokens gate reduced motion centrally (the
+// theme zeroes the durations), so no local media query belongs here.
 @keyframes colox-tooltip-enter {
   from {
     opacity: 0;
@@ -15,6 +19,21 @@
   }
 }
 
+@keyframes colox-tooltip-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 .colox-tooltip__content {
   animation: colox-tooltip-enter var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+.colox-tooltip__panel.colox-popup--exiting {
+  animation: colox-tooltip-exit var(--colox-motion-duration-fast) var(--colox-motion-easing-out)
+    forwards;
 }

@@ -1,0 +1,39 @@
+// The entrance: fade + a soft scale-in, placement-agnostic so nothing
+// stateside needs to track the resolved direction. The panel mounts
+// on the cdk Popup's presence tick — the enter plays on that mount.
+// The exit rides the cdk exit channel: the Popup keeps the panel
+// mounted with the `--exiting` class for POPOVER_EXIT (100ms, the
+// runtime mirror of --colox-motion-duration-fast) and this fade-out
+// plays across it; `forwards` holds the invisible end state until the
+// unmount lands. The motion tokens gate reduced motion centrally (the
+// theme zeroes the durations), so no local media query belongs here.
+@keyframes colox-popover-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes colox-popover-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.colox-popover__panel {
+  animation: colox-popover-enter var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+.colox-popover__panel.colox-popup--exiting {
+  animation: colox-popover-exit var(--colox-motion-duration-fast) var(--colox-motion-easing-out)
+    forwards;
+}

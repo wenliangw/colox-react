@@ -1,0 +1,68 @@
+// The interactive card surface: OPAQUE (unlike the tooltip's 0.9
+// glass — a reading surface with real inputs needs full contrast, and
+// dark mode flips the fill automatically with the bg-default token).
+// NO border: the shadow defines the edge (the AntD route — a border
+// would force an arrow-to-border seam problem we don't want).
+//
+// The depth is ONE union filter on the panel root — two drop-shadow
+// casts (the lg token tier collapsed: drop-shadow has no spread, the
+// outer/lower pair keeps the tier's two-rung feel), the offsets
+// rotating with the arrow side below. The primary color is the
+// design language's master shadow alpha — rgba(25, 25, 25, 0.10)
+// copied from --colox-shadow-* (no bare shadow-color token ships).
+// The collapsed cast also silhouettes the protruding arrow half in
+// the same pass (clip-path never enters: masks and clips fight the
+// filter or project the whole box).
+.colox-popover__panel {
+  --colox-popover-fill: var(--colox-color-bg-default);
+  background: var(--colox-popover-fill);
+  color: var(--colox-color-text-default);
+  border-radius: var(--colox-radius-lg);
+  filter: drop-shadow(0 10px 14px rgba(25, 25, 25, 0.1))
+    drop-shadow(0 4px 5px rgba(25, 25, 25, 0.06));
+}
+
+// The directional casts: the arrow points at the trigger and the
+// shadow seats on that same side, so the panel reads as leaning
+// toward it. The offset rotates with the placement word (corners ride
+// their prefix), mirroring the tooltip recipe.
+.colox-popover__panel[data-placement^='bottom'] {
+  filter: drop-shadow(0 -10px 14px rgba(25, 25, 25, 0.1))
+    drop-shadow(0 -4px 5px rgba(25, 25, 25, 0.06));
+}
+
+.colox-popover__panel[data-placement^='left'] {
+  filter: drop-shadow(10px 0 14px rgba(25, 25, 25, 0.1))
+    drop-shadow(4px 0 5px rgba(25, 25, 25, 0.06));
+}
+
+.colox-popover__panel[data-placement^='right'] {
+  filter: drop-shadow(-10px 0 14px rgba(25, 25, 25, 0.1))
+    drop-shadow(-4px 0 5px rgba(25, 25, 25, 0.06));
+}
+
+// The title row: the resolved header above the content box. The
+// content box holds the lower padding, so a bare title's bottom text
+// rests a full step above the card edge.
+.colox-popover__title {
+  padding: var(--colox-spacing-3) var(--colox-spacing-4) 0;
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  font-weight: 600;
+  line-height: var(--colox-line-height-sm);
+  color: var(--colox-color-text-default);
+}
+
+// The content box: normal body words, wraps (unlike a hint, a card
+// holds long-form text and controls). Width = the content's own —
+// no size axis (the DatePicker precedent); an upper bound is the
+// consumer's CSS escape hatch.
+.colox-popover__content {
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}

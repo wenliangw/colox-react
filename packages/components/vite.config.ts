@@ -29,6 +29,7 @@ const entries = {
   textarea: resolve(import.meta.dirname, 'src/textarea/index.ts'),
   'time-picker': resolve(import.meta.dirname, 'src/time-picker/index.ts'),
   tooltip: resolve(import.meta.dirname, 'src/tooltip/index.ts'),
+  popover: resolve(import.meta.dirname, 'src/popover/index.ts'),
   // The public date/time toolbelt: @colox/react/cdk/date. The entry
   // sits under cdk/ so the subpath stays put when cdk promotes to its
   // own package.

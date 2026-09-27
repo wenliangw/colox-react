@@ -1,0 +1,157 @@
+---
+sidebar_position: 16
+---
+
+import { Button, Input, Popover, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Popover
+
+The interactive floating card on the cdk popup — the **Tooltip's interactive
+sibling**. Where the Tooltip is a click-through hint, the Popover holds real
+controls in a **non-modal dialog** panel (buttons, inputs, lists) that stays
+interactive under the pointer and the keyboard. Popover renders **no wrapper
+element** — it clones its trigger in place, exactly where the author wrote it,
+and mounts the panel out of a body portal.
+
+<CodeBlock className="colox-import" language="tsx">{`import { Popover } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Channels
+
+One name, two channels — and giving both is a compile-time error, never a
+priority:
+
+- **Props form**: a single trigger child plus the `title`/`content` props.
+  Falsy content (the empty string, `null`, `false`) renders no panel — an
+  empty-content popover never opens, clicks included (the aria surface says
+  `expanded=false` and stays honest).
+- **Composed form**: `<Popover.Trigger>` (exactly one; its single child — a
+  component or a bare element — becomes the trigger) plus at most one
+  `<Popover.Title>` (the panel header) and at most one `<Popover.Content>`
+  (the panel body) for custom DOM. `className`/`style` on the Title/Content
+  parts are the escape hatch and land on the header/the content box. Composed
+  mode without a Content part renders the plain trigger.
+
+Popover injects the interaction surfaces (events) plus the dialog wiring:
+
+- `aria-haspopup="dialog"` always,
+- a live `aria-expanded` and `aria-controls` (the panel id appended to an
+  existing author word) while open,
+- the panel is `role="dialog"` with `aria-labelledby` pointing at the title
+  row (only when a title exists).
+
+The trigger element keeps its own props — the author's `onClick` chains after
+the popover's, `className` concatenates.
+
+```tsx
+<Popover title="Account" content="The props form.">
+  <Button>Open me</Button>
+</Popover>
+
+<Popover>
+  <Popover.Trigger>
+    <Button>Custom body</Button>
+  </Popover.Trigger>
+  <Popover.Title>Account</Popover.Title>
+  <Popover.Content>
+    <Input placeholder="Type something" />
+  </Popover.Content>
+</Popover>
+```
+
+## When to use
+
+- Rich interactive cards anchored to a trigger — filters, quick forms, menus.
+- Any place a `Tooltip` would be wrong because the content must be clickable.
+- Custom bodies: the composed channel keeps the trigger and the panel DOM in
+  your hands, no wrapper in between.
+
+## Surface
+
+The surface is an **OPAQUE card** — unlike the Tooltip's translucent glass,
+an interactive reading surface needs full contrast:
+
+- `--colox-color-bg-default` fill — dark mode flips the card automatically;
+- **borderless**, `radius-lg` — the shadow defines the edge;
+- the depth is a **union drop-shadow cast on the panel itself** (the
+  ant-design approach, same recipe as the Tooltip): the card and the
+  protruding arrow half silhouette together in a single two-rung pass (the
+  `--colox-shadow-lg` tier collapsed — `drop-shadow` has no spread), the
+  offset follows the arrow direction, and the color is the design language's
+  own shadow value (rgba(25, 25, 25, 0.10) — the master alpha carried by the
+  `--colox-shadow-*` tokens);
+- **no backdrop blur** — the hint layer's frost stays a Tooltip concern;
+- the arrow is the same **rotated opaque diamond half buried behind the
+  card** — no clip-path, only the protruding tip corner rounded — on the
+  card fill, pinned to the **resolved** placement and aimed at the trigger
+  under boundary collisions;
+- **width = the content's own** — no size axis (the DatePicker precedent).
+  An upper bound is the consumer's CSS escape hatch.
+
+<Popover title="Account" content="The opaque card.">
+  <Button>Open</Button>
+</Popover>
+<Popover title="Other side" content="Below the trigger." placement="bottom">
+  <Button>Bottom</Button>
+</Popover>
+<Popover title="No arrow" content="The gap tightens." showArrow={false}>
+  <Button>Arrowless</Button>
+</Popover>
+
+## Behavior
+
+`visibleOn` picks the trigger channel:
+
+- `"click"` (default): an instant toggle. Opening **moves the keyboard focus
+  into the panel** (the first focusable element, or the panel itself when the
+  content holds none); while the focus lives inside, **Tab and Shift+Tab
+  cycle within the panel** (a non-modal dialog keeps its keystrokes);
+  **Escape closes and returns the focus to the trigger**; an outside
+  pointerdown closes and the focus follows the click naturally. A forward
+  **Tab on the trigger slides into the panel** (the portal mounts at the
+  document end, outside the natural tab order).
+- `"hover"`: pointer enter opens after `delay.in` (300ms) with an instant
+  focus leg — focusing opens immediately. The close rides `delay.out`
+  (100ms) — **the out-delay is the pointer bridge**: the panel is
+  interactive, so the pointer crossing from the trigger into the panel must
+  not drop it; entering the panel cancels the pending close. A trigger blur
+  whose focus landed **inside the panel** keeps it open (internal
+  navigation). **Hover never steals focus** — pointer interaction doesn't
+  rob the keyboard. The open and close timers always cancel each other.
+- `"manual"`: the controlled word — `visible` drives the panel; interactions
+  never auto-open or auto-close, and `onVisibleChange` stays silent (it only
+  speaks the hover/click transitions).
+
+`closeOnScroll` closes on any scroll while open — an explicit opt-out; the
+default follows the trigger through the popup's auto-update stream instead.
+`delay` merges partial objects into the defaults (`{ out: 200 }` keeps the
+300ms open delay).
+
+## Props
+
+| Prop            | Type                             | Default          |
+| --------------- | -------------------------------- | ---------------- |
+| title           | `ReactNode`                      | —                |
+| content         | `ReactNode`                      | —                |
+| visibleOn       | `'click' \| 'hover' \| 'manual'` | `'click'`        |
+| visible         | `boolean`                        | —                |
+| showArrow       | `boolean`                        | `true`           |
+| placement       | `Placement`                      | `'bottom-start'` |
+| delay           | `{ in?, out? }`                  | `{ 300, 100 }`   |
+| closeOnScroll   | `boolean`                        | `false`          |
+| onVisibleChange | `(visible: boolean) => void`     | —                |
+
+## Boundaries
+
+- **The trigger must accept a ref.** A component or host element without ref
+  support can't be referenced — no invisible span fallback is injected.
+- **The exit window.** On close the panel stays mounted for the fade-out
+  (`--colox-motion-duration-fast`, 100ms); a re-open inside that window
+  reuses the same panel node.
+- **Width is content-owned.** There is no size axis; an upper bound is the
+  consumer's CSS escape hatch.
+- **No `defaultVisible`.** The click/hover channels are presentation-only —
+  first-show behavior needs no initial word, and the manual channel is
+  controlled.

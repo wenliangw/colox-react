@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { Popup } from '@colox/cdk/floating';
+import { TOOLTIP_EXIT } from '../constants/behavior';
 import type { TooltipPanelProps } from '../types';
 import { tooltipVariants } from '../variants';
 
@@ -41,6 +42,7 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       gap={gap}
       matchWidth={false}
       fallbackPlacements={fallbackPlacements}
+      exitDuration={TOOLTIP_EXIT}
       className={clsx('colox-tooltip__panel', {
         [`colox-tooltip__panel--${palette}`]: palette !== 'gray',
       })}

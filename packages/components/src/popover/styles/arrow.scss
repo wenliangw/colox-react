@@ -1,0 +1,72 @@
+// The rotated diamond, half buried behind the card: the arrow renders
+// BEFORE the content (panel.tsx) so the card paint covers the inner
+// half — only the outer triangle shows, with NO clip-path anywhere
+// and NO filter of its own (the union cast lives on the panel,
+// base.scss). The outer-half paint is a diagonal hard-stop gradient
+// (the fill is the OPAQUE card surface — the transparent inner half
+// is fully hidden, no stacking over glass). Only the PROTRUDING tip
+// corner is rounded (radius-xs on the filled BR corner); the base
+// corners stay sharp, against the card. The box side = depth × √2
+// (spacing-2), the bounding square of the diamond.
+.colox-popover__arrow {
+  position: absolute;
+  --colox-popover-arrow-depth: var(--colox-spacing-2);
+  width: calc(var(--colox-popover-arrow-depth) * 1.41421);
+  height: calc(var(--colox-popover-arrow-depth) * 1.41421);
+  background: linear-gradient(135deg, transparent 50%, var(--colox-popover-fill) 50%);
+  border-radius: 0 0 var(--colox-radius-xs) 0;
+}
+
+// The pinned placements: the box center sits exactly on the card
+// edge, its cross coordinate follows the resolved arrow offset
+// (--colox-floating-arrow-offset, written by the cdk positioning
+// layer per frame) clamped inside the spacing-3 safe band — the apex
+// stays aimed at the trigger center through flips and shifts.
+// Individual transforms apply translate-before-rotate, so the
+// translate centers the box on the edge and the rotation then spins
+// the wedge around that center; rotate(±45/±135) sends the filled
+// corner outward. The gradient and the single-corner radius ride the
+// rotation: one local recipe serves all four placements.
+[data-placement^='top'] .colox-popover__arrow {
+  top: 100%;
+  left: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
+  translate: -50% -50%;
+  rotate: 45deg;
+}
+
+[data-placement^='bottom'] .colox-popover__arrow {
+  bottom: 100%;
+  left: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
+  translate: -50% 50%;
+  rotate: -135deg;
+}
+
+[data-placement^='left'] .colox-popover__arrow {
+  left: 100%;
+  top: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
+  translate: -50% -50%;
+  rotate: -45deg;
+}
+
+[data-placement^='right'] .colox-popover__arrow {
+  right: 100%;
+  top: clamp(
+    var(--colox-spacing-3),
+    var(--colox-floating-arrow-offset, 50%),
+    calc(100% - var(--colox-spacing-3))
+  );
+  translate: 50% -50%;
+  rotate: 135deg;
+}
