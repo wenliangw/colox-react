@@ -71,10 +71,13 @@ blur** (the frost machinery earned more problems than the look). The arrow is
 a **rotated translucent diamond half buried behind the bubble** — no
 clip-path, and only the protruding tip corner rounded (radius `xs`; the base
 corners stay sharp) — on the same fill; it reads as the bubble surface
-sticking out. The depth comes from **drop-shadow** casts (the ant-design
-approach): a filter silhouettes the painted shape instead of a box-shadow
-layer. The translucent fill dilutes the cast, so the shadow alpha is
-compensated; each surface carries its own matched cast. `size` shifts one
+sticking out. The depth comes from **one drop-shadow cast on the panel
+itself** (the ant-design approach): the outermost container carries the
+filter, so the bubble and the visible diamond half silhouette together in a
+single pass; the offset follows the arrow direction (the shadow seats on
+the gap side in all four orientations), and the color is the design
+language's own shadow value (rgba(25, 25, 25, 0.10) — the master alpha
+carried by the `--colox-shadow-*` tokens). `size` shifts one
 ladder step from the base tier — `sm` / `md` / `lg` — and sizes the arrow too
 (`sm` drops the diamond one step). The decorative arrow pins to the
 **resolved** placement (after flipping), so it never lies about the side the

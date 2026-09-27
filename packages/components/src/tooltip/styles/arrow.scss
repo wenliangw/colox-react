@@ -13,10 +13,10 @@
 // local recipe to all four placements), softening the apex without
 // rounding the seam corners against the bubble.
 //
-// The arrow carries its own matched drop-shadow — the filter
-// silhouettes the painted diamond and the bubble's cast falls over
-// the whole union afterwards, two casts reading as one,
-// ant-design style.
+// The depth now lives on the PANEL (base.scss): one union
+// drop-shadow silhouettes the bubble and the visible diamond half
+// together in a single ant-design-style pass — the arrow itself
+// carries NO filter at all.
 //
 // The size axis shifts the diamond one ladder step via the local
 // --colox-tooltip-arrow-depth (base md = spacing-1-5 / 6px; sm =
@@ -29,7 +29,6 @@
   height: calc(var(--colox-tooltip-arrow-depth) * 1.41421);
   background: linear-gradient(135deg, transparent 50%, var(--colox-tooltip-fill) 50%);
   border-radius: 0 0 var(--colox-radius-xs) 0;
-  filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
 }
 
 .colox-tooltip__arrow--size-sm {

@@ -13,29 +13,59 @@
 // (palette.scss, mixed on their own solid — or the white ladder rung
 // for the white family).
 //
-// Depth: each surface carries its OWN matched cast — the content's
-// drop-shadow silhouettes the bubble, the arrow's own (arrow.scss)
-// silhouettes its rotated diamond, two identical drop-shadows
-// expressing the ant-design-style union silhouette per surface.
+// Depth: ONE union cast on the outermost container — the panel. Now
+// that the backdrop blur is gone, no lens law forbids a filter on
+// the panel root, so the drop-shadow sits there and silhouettes the
+// whole union — the bubble plus the visible arrow half — in a single
+// ant-design-style pass. The offset follows the arrow direction
+// (data-placement, resolved by the cdk positioning layer): the cast
+// seats on the gap side of the panel in all four orientations. The
+// shadow color is the design language's own value — the master
+// shadow alpha rgba(25, 25, 25, 0.10), copied from the
+// --colox-shadow-* token values in the theme's shadow token source
+// (no bare shadow-color token exists in the emitted set, and
+// box-shadow shorthands cannot feed a drop-shadow filter).
 // drop-shadow cannot express the token's -1px spread, and the
 // translucent fill dilutes the cast (the filter shadows the
-// silhouette alpha), so the alpha is compensated (0.13 × 0.9 fill ≈
-// the token's 0.10 look-through).
+// silhouette alpha), so the rendered depth under the 0.9 fill is
+// one honest step below the token — no alpha compensation hack
+// anymore.
 //
 // The panel OWNS the surface custom properties
-// (--colox-tooltip-fill / --colox-tooltip-text) on a single-class
-// rule — the palette overrides win through heavier compound
-// selectors, and both children — the content AND its arrow sibling —
-// resolve them against the panel: the single source that turns one
+// (--colox-tooltip-fill / --colox-tooltip-text /
+// --colox-tooltip-shadow-color) on a single-class rule — the
+// palette overrides win through heavier compound selectors, and
+// both children — the content AND its arrow sibling — resolve the
+// paint words against the panel: the single source that turns one
 // palette word into the fill and the ink. The base tier is `md` (the
 // size axis shifts one ladder step in either direction).
 .colox-tooltip__panel {
   --colox-tooltip-fill: var(--colox-palette-black-900);
   --colox-tooltip-text: var(--colox-color-text-inverse);
+  --colox-tooltip-shadow-color: rgba(25, 25, 25, 0.1);
 }
 
 .colox-popup.colox-tooltip__panel {
   pointer-events: none;
+  filter: drop-shadow(0 4px 6px var(--colox-tooltip-shadow-color));
+}
+
+// The directional casts: the arrow points at the trigger and the
+// shadow seats on that same side, so the gap between the panel and
+// the trigger reads as the panel's own leaning. The offset rotates
+// with the placement word (top and bottom = the vertical seat, left
+// and right = the lateral seat); the corner placements ride their
+// prefix.
+.colox-tooltip__panel[data-placement^='bottom'] {
+  filter: drop-shadow(0 -4px 6px var(--colox-tooltip-shadow-color));
+}
+
+.colox-tooltip__panel[data-placement^='left'] {
+  filter: drop-shadow(4px 0 6px var(--colox-tooltip-shadow-color));
+}
+
+.colox-tooltip__panel[data-placement^='right'] {
+  filter: drop-shadow(-4px 0 6px var(--colox-tooltip-shadow-color));
 }
 
 .colox-tooltip__content {
@@ -50,5 +80,4 @@
   word-break: break-word;
   background: var(--colox-tooltip-fill);
   color: var(--colox-tooltip-text);
-  filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
 }
