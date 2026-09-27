@@ -139,7 +139,8 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
   union 剪影 + 方向随箭头 + 设计语言 0.10 色值（本轮）**。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
-  组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
+  组件零特判；进场 fade+scale、**退场 fade 随 Popover 同批补齐**（cdk Popup
+  退出通道 `exitDuration`，退出窗内挂 `colox-popup--exiting`）。
 
 ## 目录结构
 
@@ -177,5 +178,6 @@ tooltip/
   承载不注入隐形 span。**disabled 原生控件吞指针事件**——包一层 Anchor
   再解说明（文档记录）。
 - **无 `defaultVisible`**：hover/click 是纯展示通道无需首显词；manual 受控。
-- **只有进场动画**：退场通道随 Popover 补齐。
+- **进场 + 退场**：进场 fade+scale；退场 fade 走 cdk Popup 退出通道
+  `TOOLTIP_EXIT=100`（与 Popover 同批兑现）。
 - 嵌套 tooltip、组间共延迟：v1 不做（决策记录）。

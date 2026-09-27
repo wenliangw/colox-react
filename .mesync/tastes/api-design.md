@@ -184,16 +184,26 @@
 
 来源：Select tag 定制定案（决策 c7778102，caused_by 59aa4801 选项叶子化改判）。
 
-## 双通道 API：props 直给普案 + 声明树定制（Tooltip 定案）
+## 双通道 API：props 直给普案 + 声明树定制（Tooltip 定案，Popover 同模板落实）
 
 - 同一组件两形态并存：普通文字走 `content` prop 直给（`<Tooltip content="删除">`），定制 DOM 走组合树（`Tooltip.Trigger` + `Tooltip.Content`）。用户裁决：一般 tooltip 仅展示普通文字直接 props，确有定制 DOM 场景才组合式——双形态共存而非二选一。
 - 判别 = 子树走查（任一 part 在场即组合模式）；组合模式各 part 恰一、props 模式 children 恰一个 trigger 元素（**组件型/DOM 均可**——tooltip 注入面只有 aria 归因，cloneElement 对 DOM 同样成立；AutoComplete 报 DOM 宿主硬错误的起因是值词契约注入对裸 DOM 无意义，此处不适用）；`content` prop 与组合模式同给 = **编译期硬错误**（同语义双通道不设优先级，Select 模板双通道被否教训的延续——不是禁止双形态，是禁止无裁决地并存）；content 空值 = 不弹（等价关闭语义，条件提示通道）。
 - part 分工：Trigger = 声明叶（渲染 null，宿主由根抽走并注入 `aria-describedby`——作者已有值**合并保留**不覆盖）；Content = 内容载具（自有 DOM，`className`/`style` 逃生舱落在内容盒）。
 - 宿主槽词 = `Trigger`（用户原词，交互触点语义；与 AutoComplete 的 `Target` 定位参照词按家族分界——combobox 走 Target、交互浮层走 Trigger，词界见 composition 卷）。
-- `variant = 'dark' | 'light'`（默认 dark，用户要求两种形式）；`showArrow` 布尔默认开（装饰箭头，随 variant 染色；名字与「显示」语义对齐，定名轮把 `arrow` 改为 `showArrow`）；`size = 'sm' | 'md' | 'lg'` 三档阶梯（提示层字体比正文错一位）。
+- 表面词：`palette = 'gray' | 'primary' | 'info' | 'error' | 'warning' | 'success' | 'white'`（默认 gray；variant dark/light 已随表面轮废止——见 styling.md 提示层条目）；`showArrow` 布尔默认开（装饰箭头随面板染色；名字与「显示」语义对齐，定名轮把 `arrow` 改为 `showArrow`）；`size = 'sm' | 'md' | 'lg'` 三档阶梯（提示层字体比正文错一位）。
 - **延时对象**：`delay = { in?: number, out?: number }`（用户词面；部分对象与缺省 merge：in 300 / out 0；focus 通道恒零延迟即时开、`in` 只管 hover 通道）。
 - **closeOnScroll 布尔**：默认 `false` = 滚动时跟随（autoUpdate 既有机制零成本）；`true` = window 捕获滚动即关面板。滚动关闭是显式开关不是默认行为。
 - **可见性词族 `visible`/`visibleOn`**（定名轮用户把 `open` 改 `visible`、`onOpenChange` 改 `onVisibleChange`）：`visibleOn = 'hover' | 'click' | 'manual'`（默认 hover——hover+focus 双通道、focus 零延迟即时开；click 即时 toggle；manual=受控 `visible` 直排、交互不自动开合、`onVisibleChange` 在 manual 下纯无声）；**无 `defaultVisible`**（hover/click 是纯展示通道无需首显词、manual 受控，default 无消费方）；无 onChange（提示层无值字面）。
+
+### Popover：双通道模板的交互孪生，三类词随交互面升级（Popover 对齐定案）
+
+- **双通道 API 与 Tooltip 同模板**：props 形态 `title`/`content` + 单一 trigger 子元素；组合形态 `Popover.Trigger`（恰一）+ `Popover.Title`（至多一）+ `Popover.Content`（至多一）；同给编译期硬错误；title prop 与 Title part 同给亦硬错误。**content 空值 = 永不打开**（比 Tooltip 的「渲染 nothing」进一层：机器层 `setVisible(true)` 直接 no-op——状态不翻转、无回显、`aria-expanded` 恒 false 不撒谎）。
+- **`visibleOn` 三通道全给**（用户覆写我先只做 click+manual 的推荐）：click（默认）即时 toggle 且**开即焦点进面板**（非模态 dialog 的 WAI 模式本体）；hover 走 `{in:300, out:100}`——**out 延迟就是指针桥**：面板可交互（不穿透），指针跨缝隙进面板必须在 out 内送达；**不做隐藏桥元素**（Radix HoverCard 式——面板贴 trigger、缝隙 8px 下计时器桥已足（antd mouseLeaveDelay 同构），桥元素是额外 DOM 机制）；manual = 受控纯回声。`delay` 部分对象 `??` merge、无 `defaultVisible`、`visible`/`onVisibleChange` 词族与 Tooltip 同。
+- **指针交互不劫键盘焦点**：hover 开永不抢焦点（悬停不能偷走键盘焦点，与指针交互打架）；click 开才把焦点给面板；外点关焦点随点击自然落位、**不偷回 trigger**；Escape 关焦点归还 trigger——「焦点跟随手势来源」是浮层族的通则。
+- **面板宽度 = 内容固有**（DatePicker「面板宽度=内容固有」先例）：不设固定宽档（size 三档是 Tooltip 提示层的事），上限归消费方 CSS 逃生舱。
+- trigger 零容器克隆、`aria-haspopup/expanded/controls` 接线与作者词合并保留、Content 的 `className`/`style` 逃生舱——全部 Tooltip 模板直搬。
+
+来源：Popover 设计对齐五轴定案（决策 b11e9c04；其中「三通道全给」与「实底分道/指针桥」由用户拍板覆写或点名）。
 
 ## 布尔开关用真 input + checked 词形，不仿 button 路
 
