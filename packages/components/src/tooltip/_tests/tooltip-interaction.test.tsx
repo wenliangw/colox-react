@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Tooltip } from '..';
@@ -146,6 +146,24 @@ describe('Tooltip interaction channels', () => {
       </Tooltip>,
     );
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('positions a panel that mounts already open (manual: visible from the first render)', async () => {
+    render(
+      <Tooltip content="hint" visibleOn="manual" visible>
+        <button type="button">host</button>
+      </Tooltip>,
+    );
+    const panel = screen.getByRole('tooltip');
+    // the positioning stream must land even though `open` never flips:
+    // the popup arrives via the mounted gate and the pointing must
+    // run once the portal element exists.
+    await waitFor(() => {
+      expect(panel).toHaveAttribute('data-placement', 'top');
+      expect(panel.style.position).toBe('fixed');
+      expect(panel.style.left).not.toBe('');
+      expect(panel.style.top).not.toBe('');
+    });
   });
 
   it('echoes onVisibleChange across the hover transitions', () => {

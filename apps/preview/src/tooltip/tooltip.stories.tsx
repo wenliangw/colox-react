@@ -49,7 +49,11 @@ export const Overview: Story = {
             <Tooltip content="The inverse canvas.">
               <Button>Dark</Button>
             </Tooltip>
-            <Tooltip content="The default surface, frosted and borderless." variant="light">
+            <Tooltip
+              visibleOn="click"
+              content="The default surface, frosted and borderless."
+              variant="light"
+            >
               <Button>Light</Button>
             </Tooltip>
           </Stack>
@@ -92,6 +96,16 @@ export const Overview: Story = {
               <Button>closeOnScroll</Button>
             </Tooltip>
           </Stack>
+        </Section>
+
+        <Section title="Manual channel">
+          <Tooltip
+            content="Controlled open — visible drives, no surfaces, no auto close."
+            visibleOn="manual"
+            visible
+          >
+            <Button>Manual</Button>
+          </Tooltip>
         </Section>
       </Stack>
     </Container>

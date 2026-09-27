@@ -28,16 +28,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
 
   const panelRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(ref, () => panelRef.current as HTMLDivElement);
-  const { positioned } = useFloatingPosition({
-    referenceRef,
-    floatingRef: panelRef,
-    open,
-    fallbackPlacements,
-    placement,
-    gap,
-    padding,
-    matchWidth,
-  });
 
   // Popup escapes into document.body — evaluating that during render
   // crashes SSR (document is undefined) and desyncs hydration. Render
@@ -45,6 +35,26 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>((props, ref) => {
   // client-side and mounts the panel through this same branch.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const { positioned } = useFloatingPosition({
+    referenceRef,
+    floatingRef: panelRef,
+    // The pre-mount gate reuses `open`: handing it `open && mounted`
+    // gives the positioning hook a false->true edge when the portal
+    // element actually arrives, so a panel that mounts ALREADY open
+    // (a controlled tooltip: visible + visibleOn="manual") still runs
+    // the pointing stream once the floating element exists — without
+    // the edge, the first effect sees a null floating and never
+    // retries, leaving the panel invisible at 0,0 forever. SSR stays
+    // safe: `mounted` is false server-side, so nothing positions or
+    // portals during render.
+    open: open && mounted,
+    fallbackPlacements,
+    placement,
+    gap,
+    padding,
+    matchWidth,
+  });
 
   if (!mounted || !open) {
     return null;
