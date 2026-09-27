@@ -27,6 +27,8 @@
 19. **弹层「初始即开」必须验首帧定位**：`visible` + `visibleOn="manual"`（受控常开）这类面板挂载时 `open` 没有 false→true 翻转——若定位 effect 在 portal 元素存在前跑过一次且依赖全稳定（open 恒 true、refs 稳定），就再也不重跑，面板永远停在 0,0 + `opacity: 0`（基类无 positioned 类不可见），DOM 在但用户看到「没有生效」（Tooltip manual 通道首版被用户报出）。修复 = Popup 把给定位 hook 的 open 门带 mounted 翻转（`open: open && mounted`——portal 就位时产生 false→true 边，SSR 期恒 false 不变味）。自查：交付「受控/常开」形态的弹层前，必须有「首帧即可见」测试——jsdom 断言 data-placement/fixed/left-top 写出（waitFor），浏览器探针断言 load 时 positioned 类 + gap 对位 + 像素就是表面色。
 20. **backdrop 透镜的祖先必须素净——禁止把 filter 挂到带透镜子孙的祖先上**：任何带 `filter`（含 drop-shadow）/`backdrop-filter` 的祖先都构成 **backdrop root**，子孙元素的 `backdrop-filter` 采样被圈进祖先的画布、透镜失效（Tooltip 两连：① 箭头做成 content（自带 backdrop-filter）的伪元素 → 箭头 B=20 死值；② 投影 filter 挂 panel 根 → **连气泡也当场失焦** B=20，红蓝分野实测）。正确结构：**装饰元素 = 素净祖先（无 filter/无 backdrop-filter）的直接子元素**（Tooltip 箭头 = panel 的兄弟 span）+ 投影由**每个玻璃面自己带**（filter + backdrop-filter 同元素共处是活组合，x1 实测口径）；联体投影（AntD 式 union 剪影）在带霜纹的浮层上只能拆成「每面一条同参 drop-shadow」拼出，祖先级单一滤镜做不到。自查：给弹层/浮层加投影或做贴边装饰时，先问「这个元素的祖先链上有没有 filter/backdrop-filter」，有就把装饰挪出那棵子树；加完必须上红蓝分野探针测两个表面的 B 通道都混色，不只看均匀底上的颜色一致。
 
+21. **自投影几大杀手：clip-path/mask 都会废掉自己的 drop-shadow**：同元素 `clip-path` + `filter: drop-shadow` = 投影被整体裁空（裁剪在滤镜之后，把滤镜输出圈回裁剪区——实测零投影）；`mask` + `filter` = 投出**整盒矩形**（mask 遮不住滤镜看到的渲染，投影形状=盒）。唯一正解 = **元素无裁剪，画形靠画出来**：Tooltip 箭头换成旋转菱形（√2×深度方块旋转 ±45/135 + 对角线硬停渐变只涂外半 + 上半埋进气泡盒后，DOM 序 [装饰, 主机]）+ border-radius 圆角——三角形状、圆角、真三角投影、透镜四样一次拿全（上一轮「AntD union 剪影」的箭头半实际从未存在：clip+filter 组合早已是零投影，实测才现形）。自查：给装饰形加 drop-shadow 前先问「元素自己有没有 clip-path/mask/overflow clip」，有则投影形状必带病；形状类改动用红蓝/条纹探针逐点验证投影与透镜。
+
 ## 为什么
 
 Stack 首版交付时跳过 variants 层，被用户指出偏离惯例：惯例一致性、用户 fork 通道、类型单源在单轴组件上同样成立。
