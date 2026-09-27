@@ -13,7 +13,8 @@ error. hover+focus (delay as `{ in, out }`), click and manual
 the default autoUpdate follow. dark/light variants, sm/md/lg tiers —
 both surfaces frosted (translucent color-mix fill + backdrop blur,
 borderless, a single `box-shadow` token on the bubble),
-the arrow sitting outside the bubble so it shares the same surface, and
+the arrow (a css border triangle, no clip-path) sitting outside the
+bubble so it shares the same fill, and
 the decorative arrow pinning to the resolved placement the cdk popup
 now publishes as `data-placement`, staying aimed at the trigger under
 boundary flip/shift.

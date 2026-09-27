@@ -1,21 +1,33 @@
-// The arrow: a plain triangle pinned to one edge of the bubble, sitting
-// ENTIRELY OUTSIDE the bubble's border box (top: 100% / bottom: 100%,
-// never a negative offset that straddles the edge).
+// The arrow: a css border triangle pinned to one edge of the bubble,
+// sitting ENTIRELY OUTSIDE the bubble's border box (top: 100% /
+// bottom: 100% / left: 100% / right: 100% — never a negative offset
+// that straddles the edge).
 //
-// The geometry is the load-bearing part, not a style choice. The arrow
-// carries the bubble's own surface — `background: inherit` plus the same
-// `--colox-tooltip-blur` — and a backdrop-filter only samples the
-// backdrop inside its own border box. An arrow that straddles the edge
-// therefore blurs the bubble's own translucent fill into itself and
-// comes out a step darker/lighter than the bubble (measured: bubble
-// rgb(66,66,66) vs arrow rgb(62,62,62) — a visible hard-edged step).
-// Kept fully outside, the arrow's backdrop is just the page, exactly
-// like the bubble's, so the two canvases composite identically: the
-// arrow reads as the bubble's surface sticking out, with no seam.
+// The geometry is the load-bearing part, not a style choice. Kept fully
+// outside, the arrow's backdrop is just the page, exactly like the
+// bubble's — a straddling arrow would have blurred the bubble's own
+// translucent fill into itself (measured: bubble rgb(66,66,66) vs arrow
+// rgb(62,62,62), a visible hard-edged step), so outside-the-box is the
+// only placement where the two canvases can match.
 //
-// The triangle is sized in tokens (base spacing-3, depth spacing-1-5 —
-// the old 8px rotated square's half-diamond was 11.31 x 5.66). Along
-// the edge its CENTER pins to the reference center: the cdk hook
+// The triangle itself is drawn with borders, not clip-path (border
+// triangles are supported by every CSS engine): a zero-size box whose
+// one colored 6px border meets two 6px transparent side borders — the
+// corner diagonals fill exactly the base-12/depth-6 triangle (6x12
+// vertical), the same border box the token sizing defines, and adjacent
+// borders never overlap, so the translucent fill stays uniform.
+//
+// Known cost of the border form: Chromium does not apply a backdrop
+// filter through border-only paint (measured with a red/blue split
+// backdrop: a real box blurs the boundary, a border triangle does not),
+// so the arrow carries no blur of its own. On uniform backdrops — where
+// hints almost always live — the arrow and the bubble composite
+// identically (blur of a uniform page is the page); over textured or
+// busy pages the arrow keeps the page sharp where the bubble frosts it.
+// The fill still follows the bubble through --colox-tooltip-fill, so
+// any variant swap recolors both in one place.
+//
+// Along the edge its CENTER pins to the reference center: the cdk hook
 // measures the reference center against the floating edge after
 // flip/shift and exposes it as --colox-floating-arrow-offset, clamped
 // (spacing-3) so the triangle never leaves the bubble — the arrow keeps
@@ -28,11 +40,14 @@
   content: '';
   position: absolute;
   z-index: 1;
-  background: inherit;
-  -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
-  backdrop-filter: blur(var(--colox-tooltip-blur));
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
 }
 
+// top placement: panel above the trigger, arrow below the bubble
+// pointing DOWN — the colored top border's base fills the bubble edge.
 .colox-tooltip__panel[data-placement^='top'] .colox-tooltip__content--arrow::before {
   top: 100%;
   left: clamp(
@@ -40,12 +55,12 @@
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-3);
-  height: var(--colox-spacing-1-5);
+  border-width: var(--colox-spacing-1-5) var(--colox-spacing-1-5) 0;
+  border-top-color: var(--colox-tooltip-fill);
   translate: -50% 0;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
+// bottom placement: panel below the trigger, arrow above pointing UP.
 .colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__content--arrow::before {
   bottom: 100%;
   left: clamp(
@@ -53,12 +68,12 @@
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-3);
-  height: var(--colox-spacing-1-5);
+  border-width: 0 var(--colox-spacing-1-5) var(--colox-spacing-1-5);
+  border-bottom-color: var(--colox-tooltip-fill);
   translate: -50% 0;
-  clip-path: polygon(0 100%, 100% 100%, 50% 0);
 }
 
+// left placement: panel left of the trigger, arrow right pointing RIGHT.
 .colox-tooltip__panel[data-placement^='left'] .colox-tooltip__content--arrow::before {
   left: 100%;
   top: clamp(
@@ -66,12 +81,12 @@
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-1-5);
-  height: var(--colox-spacing-3);
+  border-width: var(--colox-spacing-1-5) 0 var(--colox-spacing-1-5) var(--colox-spacing-1-5);
+  border-left-color: var(--colox-tooltip-fill);
   translate: 0 -50%;
-  clip-path: polygon(0 0, 0 100%, 100% 50%);
 }
 
+// right placement: panel right of the trigger, arrow left pointing LEFT.
 .colox-tooltip__panel[data-placement^='right'] .colox-tooltip__content--arrow::before {
   right: 100%;
   top: clamp(
@@ -79,8 +94,7 @@
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-1-5);
-  height: var(--colox-spacing-3);
+  border-width: var(--colox-spacing-1-5) var(--colox-spacing-1-5) var(--colox-spacing-1-5) 0;
+  border-right-color: var(--colox-tooltip-fill);
   translate: 0 -50%;
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
 }

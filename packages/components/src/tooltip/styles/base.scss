@@ -17,6 +17,7 @@
 
 .colox-tooltip__content {
   --colox-tooltip-blur: 8px;
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-bg-inverse) 82%, transparent);
   position: relative;
   max-width: 280px;
   padding: var(--colox-spacing-2) var(--colox-spacing-4);
@@ -26,7 +27,7 @@
   line-height: var(--colox-line-height-sm);
   white-space: normal;
   word-break: break-word;
-  background: color-mix(in srgb, var(--colox-color-bg-inverse) 82%, transparent);
+  background: var(--colox-tooltip-fill);
   color: var(--colox-color-text-inverse);
   box-shadow: var(--colox-shadow-md);
   -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
