@@ -96,7 +96,9 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   is a compile error, an empty content renders nothing), hover/click/manual
   visibility (`delay` as `{ in, out }`, timers always cancel their
   opposite, focus instant), `closeOnScroll` as the explicit opt-out of
-  the default follow, palette surfaces (gray/primary/info/error/warning/
+  the default follow, `closeOnOutsideClick` (default true, the Popover
+  word) and — under `manual` — the opt-in close channels echoing
+  `onVisibleChange(false)` instead of closing, palette surfaces (gray/primary/info/error/warning/
   success/white, every one translucent at the design-language 0.9 alpha
   tier, borderless, no backdrop blur) with sm/md/lg tiers, a rotated
   diamond arrow half-buried under the bubble (no clip-path), one union
@@ -119,7 +121,9 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   trapped, Escape closes and returns the focus to the trigger, an
   outside close never steals it), hover rides `{ in: 300, out: 100 }`
   where the out-delay IS the pointer bridge into the panel and never
-  steals focus, manual is the controlled word — an opaque
+  steals focus, manual is the controlled word whose opt-in close
+  channels (`closeOnOutsideClick` default true, `closeOnScroll`) echo
+  `onVisibleChange(false)` — an opaque
   `bg-default` card (borderless, radius-lg) with a union drop-shadow
   cast at the Tooltip's calibration (direction follows the arrow),
   the same rotated diamond arrow recipe, content-owned width (no size
