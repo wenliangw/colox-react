@@ -93,6 +93,51 @@ describe('Tooltip interaction channels', () => {
     expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
 
+  it('swallows the focus the browser replants after a tab switch (stays closed on return)', () => {
+    const trigger = renderTooltip();
+    fireEvent.focus(trigger);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    // tab away: the focused element blurs (the panel closes)
+    fireEvent.blur(trigger);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    // tab back: the browser replants focus — not a user gesture
+    fireEvent.focus(trigger);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    // any real input re-arms the focus leg (the swallow is one-shot)
+    fireEvent.pointerDown(document.body);
+    fireEvent.focus(trigger);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
+
+  it('stays closed when only the window blurs and the browser restores the focus', () => {
+    const trigger = renderTooltip();
+    fireEvent.focus(trigger);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    // iframe/embed hosts: the element keeps focus, only the window blurs
+    act(() => {
+      window.dispatchEvent(new Event('blur'));
+    });
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    fireEvent.focus(trigger);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    fireEvent.keyDown(document.body);
+    fireEvent.focus(trigger);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
+
+  it('cancels a pending delayed open when the window loses focus', () => {
+    useDelayFakeTimers();
+    const trigger = renderTooltip();
+    fireEvent.pointerEnter(trigger);
+    act(() => {
+      window.dispatchEvent(new Event('blur'));
+    });
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
   it('toggles instantly on click and closes on outside pointerdown', () => {
     const trigger = renderTooltip({ visibleOn: 'click' });
     fireEvent.click(trigger);

@@ -8,7 +8,10 @@ import type { TooltipTriggerHandlers, UseTooltipParams, UseTooltipResult } from 
  *
  * - hover: pointerenter rides delay.in, focus is instant, pointerleave
  *   rides delay.out, blur is instant — the open/close timers always
- *   cancel each other so a fast enter/leave can never re-open;
+ *   cancel each other so a fast enter/leave can never re-open; a lost
+ *   window cancels both pending timers, and the focus the browser
+ *   replants when the window returns is swallowed once as a
+ *   non-gesture (any real pointer/keyboard input re-arms it);
  * - click: an instant toggle, no timers — Escape/outside/blur-close
  *   come from cdk useDismissible below;
  * - manual: the `visible` prop verbatim — no surfaces, no auto close,
@@ -31,6 +34,13 @@ export function useTooltip(params: UseTooltipParams): UseTooltipResult {
 
   const openTimerRef = useRef<number | null>(null);
   const closeTimerRef = useRef<number | null>(null);
+
+  // Swallows the focus the browser replants on the trigger after the
+  // window was lost (tab return): that refire is not a user gesture,
+  // and opening from it would stick — no pointer around, no blur to
+  // come. Element/window blur arms it; any real pointer or keyboard
+  // input re-arms the channel.
+  const restoredFocusRef = useRef(false);
 
   const clearOpenTimer = useCallback(() => {
     if (openTimerRef.current !== null) {
@@ -104,11 +114,16 @@ export function useTooltip(params: UseTooltipParams): UseTooltipResult {
           close(delayOut);
         },
         onFocus: () => {
+          if (restoredFocusRef.current) {
+            restoredFocusRef.current = false;
+            return;
+          }
           clearCloseTimer();
           clearOpenTimer();
           setVisible(true);
         },
         onBlur: () => {
+          restoredFocusRef.current = true;
           clearOpenTimer();
           setVisible(false);
         },
@@ -151,6 +166,41 @@ export function useTooltip(params: UseTooltipParams): UseTooltipResult {
     window.addEventListener('scroll', onScroll, true);
     return () => window.removeEventListener('scroll', onScroll, true);
   }, [closeOnScroll, visibleOn, visible, setVisible]);
+
+  // The lost window stops the hover channel cold: both pending timers
+  // die (nothing may fire while the tab is hidden) and the restore
+  // swallow arms — the browser replants focus on the previously
+  // focused trigger when the window returns, which must not re-open
+  // the panel. The disarm runs on any real input, capture-first, so
+  // a click or a Tab re-entering the trigger opens normally.
+  useEffect(() => {
+    if (visibleOn !== 'hover') {
+      return undefined;
+    }
+    const handleLostWindow = () => {
+      restoredFocusRef.current = true;
+      clearOpenTimer();
+      clearCloseTimer();
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        handleLostWindow();
+      }
+    };
+    const handleInput = () => {
+      restoredFocusRef.current = false;
+    };
+    window.addEventListener('blur', handleLostWindow);
+    document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('pointerdown', handleInput, true);
+    document.addEventListener('keydown', handleInput, true);
+    return () => {
+      window.removeEventListener('blur', handleLostWindow);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('pointerdown', handleInput, true);
+      document.removeEventListener('keydown', handleInput, true);
+    };
+  }, [visibleOn, clearOpenTimer, clearCloseTimer]);
 
   useEffect(
     () => () => {
