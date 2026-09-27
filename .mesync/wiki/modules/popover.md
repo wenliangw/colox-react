@@ -39,8 +39,11 @@ font-sm/line-height-md、`word-break: break-word`）、标题行
   **hover** = pointerenter 走 `delay.in`（300）+ focus 恒即时开，
   pointerleave 走 `delay.out`（**100——out 延迟就是指针桥**：面板可交互，
   指针过缝隙进面板不能掉；面板半区 `bridgeHandlers` 的 pointerenter
-  清挂起的关）；**manual** = `visible` prop 直排，零注入面、零自动开合、
-  `onVisibleChange` 纯无声（只回音 hover/click 跃迁）。
+  清挂起的关）；**manual** = `visible` prop 直排，零注入面、零自动开合；
+  **opt-in 关闭通道回音**——外点（`closeOnOutsideClick` 开，默认 true）
+  与滚动（`closeOnScroll` 开）不以状态翻面而是
+  `onVisibleChange(false)` 回音（受控主人跟随），**Escape 与失窗在
+  manual 下保持静音**（曾「纯无声」的约定收窄至常开通道）。
 - **hover 指针桥（对齐定案）**：不做隐藏桥元素（Radix HoverCard 式）——
   面板贴 trigger 街隙 8px、`delay.out=100` 计时器就是桥（antd
   mouseLeaveDelay 同构）；trigger pointerleave 开 100ms 关窗，panel
@@ -58,8 +61,11 @@ font-sm/line-height-md、`word-break: break-word`）、标题行
 - 关闭渠道统一走 `useDismissible`（外点 pointerdown/Escape/失窗三通道）；
   **`closeOnOutsideClick`（默认 true）只闸外点通道**——false = 外部点击
   不关面板（钉住面板：筛选盘、对比视图、收拖放的面板），**Escape 与失窗
-  不是点击、照常关**，trigger toggle 照常活；manual 通道 setVisible 早退
-  天然不受。`closeOnScroll`（默认 false）= 显式退出，默认跟随 autoUpdate。
+  不是点击、照常关**，trigger toggle 照常活。**通道按 manual 契约拆分**
+  （cdk additive 回调 `onDismissOutsideClick`，缺席回落到 onDismiss）：
+  opt-in 两通道（外点/滚动）manual 下回音、常开两通道（Escape/失窗）
+  manual 下静音——受控面板不把键盘诀交给库。`closeOnScroll`（默认
+  false）= 显式退出，默认跟随 autoUpdate。
 
 ## 焦点机（同一 hook 内，独立效果节）
 
@@ -177,7 +183,7 @@ popover/
 │   └── refs.ts               # assignPopoverRef（函数/对象 ref 分配）
 ├── variants/                 # cva 单轴：arrow.ts（真→ colox-popover__panel--arrow）+ index.ts
 ├── styles/                   # base/arrow/animation + index.scss @use 聚合；阴影=panel 级 union drop-shadow（base.scss，方向随 data-placement，Tooltip 标定单轮）
-└── _tests/                   # 49 例：静态面/编译硬错误/三通道/指针桥/失窗吞咽（element blur 不武装）/焦点机（预约/Tab 圈/Escape/回收/窗口期重开）/退场窗/closeOnOutsideClick 钉住/串联序/类映射
+└── _tests/                   # 50 例：静态面/编译硬错误/三通道/指针桥/失窗吞咽（element blur 不武装）/焦点机（预约/Tab 圈/Escape/回收/窗口期重开）/退场窗/closeOnOutsideClick 钉住/manual opt-in 回音/串联序/类映射
 ```
 
 ## 边界

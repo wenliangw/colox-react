@@ -63,14 +63,22 @@ color-mix 90% 同档，white = 白阶梯同档 `--colox-palette-white-900`
     回 trigger、Tab 巡行照常即刻开；纯程序化 focus() 紧跟 blur 会被吞
     一次（防卡死优先，公开代价）。
     **click** = 无计时器即时 toggle（Escape/外点/失窗关）。**manual** =
-    `visible` prop 直排——零注入面、零自动开合、`onVisibleChange` 纯无声
-    （它只回音 hover/click 跃迁）。manual 面板**初始即开也照常定位**：
+    `visible` prop 直排——零注入面、零自动开合；**opt-in 关闭通道回音**
+    （与 Popover 同约）：外点（`closeOnOutsideClick`，默认 true）与滚动
+    （`closeOnScroll` 开）回音 `onVisibleChange(false)` 由受控主人跟随，
+    Escape 与失窗在 manual 下保持静音（曾「纯无声」约定收窄至常开通道）。
+    manual 面板**初始即开也照常定位**：
     Popup 给定位 hook 的 open 门带 mounted 翻转（`open && mounted`），
     portal 就位获得 false→true 边——无此边则首帧 effect 早退后定位
     永不重算、面板困在 0,0 + opacity 0（首版被用户报「没有生效」）。
 - 关闭渠道统一走 `useDismissible`（面板+trigger 双包含豁免）；
+  **`closeOnOutsideClick`（默认 true）**与 Popover 同词同义：只闸外点
+  pointerdown 通道（false = 外点不关、Escape/失窗照关）。通道按 manual
+  契约拆分（cdk additive `onDismissOutsideClick` 回落 onDismiss）——
+  opt-in 通道 manual 下回音、常开通道 manual 下静音。
   `closeOnScroll`（默认 false）= **显式退出**窗口 capture scroll 即关，
   默认跟随 autoUpdate 既有机制零成本。
+- `delay { in?, out? }` 部分对象 merge 进默认（`{out:200}` 保 300 开）。
 - `delay { in?, out? }` 部分对象 merge 进默认（`{out:200}` 保 300 开）。
 
 ## 注入面（零容器的代价摊平）
@@ -169,7 +177,7 @@ tooltip/
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
 ├── variants/                 # cva 三轴：palette.ts（七族名→ content 类名）/ size.ts / arrow.ts + index.ts
 ├── styles/                   # base/palette/size/arrow/animation + index.scss @use 聚合；阴影=panel 级单条 union drop-shadow（base.scss，方向随 data-placement，颜色=设计语言主影 alpha）
-└── _tests/                   # 36 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序/类映射/字号/tab 往返
+└── _tests/                   # 38 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/opt-in 回音/closeOnOutsideClick/串联序/类映射/字号/tab 往返
 ```
 
 ## 边界
