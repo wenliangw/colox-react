@@ -109,8 +109,11 @@ passthrough；`className` 拼接、`style` 按 key 作者优先、作者事件�
   暗度、卡片第一行纯白——改 Tooltip 同标定（4px/6px/单轮 0.10）后
   同一剖面 ~4% 柔晕。Tooltip 的同一暗带藏进自己深色剪影所以无感，
   白卡片世界必须轻铸。
-- **箭头 = 旋转菱形零裁剪（Tooltip 配方原样复用）**：旋转 ±45/±135°
-  不透明方块（边 = 深度 × √2，深度 spacing-2 8px——卡片比提示层大一号），
+- **箭头 = Tooltip 旋转菱形结构样式照搬**（用户定调：箭头本身没有自己的逻辑，
+  照 Tooltip 实现）：旋转 ±45/±135°
+  不透明方块（边 = 深度 × √2，**深度与 Tooltip 同款 spacing-1-5**；
+  gap 恒 spacing-2 → 尖与 trigger 留 2px 呼吸不埋进去；无 size 轴 →
+  无 size-sm 修饰），
   **上半埋进卡片下**（DOM 序 [arrow, content]，panel 的实底背景盖住埋藏
   半——不透明填色下埋藏半完全隐形），对角线硬停渐变只涂外半，**只圆突出
   尖角**（`border-radius: 0 0 radius-xs 0`，基座两角直角）。填充 =
