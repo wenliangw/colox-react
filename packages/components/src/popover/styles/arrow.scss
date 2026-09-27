@@ -1,16 +1,19 @@
-// The rotated diamond, half buried behind the card: the arrow renders
-// BEFORE the content (panel.tsx) so the card paint covers the inner
-// half — only the outer triangle shows, with NO clip-path anywhere
-// and NO filter of its own (the union cast lives on the panel,
-// base.scss). The outer-half paint is a diagonal hard-stop gradient
-// (the fill is the OPAQUE card surface — the transparent inner half
-// is fully hidden, no stacking over glass). Only the PROTRUDING tip
-// corner is rounded (radius-xs on the filled BR corner); the base
-// corners stay sharp, against the card. The box side = depth × √2
-// (spacing-2), the bounding square of the diamond.
+// The Tooltip's rotated diamond — structure and styles reused as-is
+// (the arrow carries no logic of its own): it renders BEFORE the
+// content (panel.tsx) so the card paint covers the inner half — only
+// the outer triangle shows, with NO clip-path anywhere and NO filter
+// of its own (the union cast lives on the panel, base.scss). The
+// outer-half paint is a diagonal hard-stop gradient (the fill IS the
+// opaque card surface — the transparent inner half stacks nothing).
+// Only the PROTRUDING tip corner is rounded (radius-xs on the filled
+// BR corner); the base corners stay sharp, against the card. The box
+// side = depth × √2 at the Tooltip's spacing-1-5 depth — the gap is
+// spacing-2 either way, so the tip keeps the Tooltip's 2px breathing
+// and never buries into the trigger. No size axis here, so there is
+// no size-sm modifier.
 .colox-popover__arrow {
   position: absolute;
-  --colox-popover-arrow-depth: var(--colox-spacing-2);
+  --colox-popover-arrow-depth: var(--colox-spacing-1-5);
   width: calc(var(--colox-popover-arrow-depth) * 1.41421);
   height: calc(var(--colox-popover-arrow-depth) * 1.41421);
   background: linear-gradient(135deg, transparent 50%, var(--colox-popover-fill) 50%);
