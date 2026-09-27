@@ -95,14 +95,20 @@ passthrough；`className` 拼接、`style` 按 key 作者优先、作者事件�
   翻 gray-900）+ **无边框** + `--colox-radius-lg`（8px）——长文交互面
   需满对比度；边框会带来箭头-边框接缝难题（AntD 无边框先例）。文字随
   text-default。
-- **深度 = panel 级 union drop-shadow（lg 档折叠）**：
-  `drop-shadow(0 10px 14px rgba(25,25,25,0.10)) drop-shadow(0 4px 5px rgba(25,25,25,0.06))`
-  ——`--colox-shadow-lg` 双层折叠进 drop-shadow（无 spread 参数，
-  blur 略收保两档质感），主色 = 设计语言阴影主值 rgba(25,25,25,0.10)
-  （token 发射集无裸色条目，抄主色进组件；Tooltip 同源配方）。卡片+突起
+- **深度 = panel 级 union drop-shadow（Tooltip 标定单轮）**：
+  `drop-shadow(0 4px 6px rgba(25,25,25,0.10))`——主色 = 设计语言阴影
+  主值 rgba(25,25,25,0.10)（token 发射集无裸色条目，抄主色进组件私有
+  变量 `--colox-popover-shadow-color`；Tooltip 同源配方）。卡片+突起
   箭头半一次剪影，偏移随 `data-placement` 前词旋转（top→(0,+) / bottom→
   (0,−) / left→(+,0) / right→(−,0)）——阴影坐在箭头侧缝隙，面板朝
-  触发物倾斜（Tooltip 方向纪律延伸）。
+  触发物倾斜（Tooltip 方向纪律延伸）。**校准修正（用户报「箭头与内容
+  容器之间有缝」）**：首版 `--colox-shadow-lg` 双层折叠（±10px/14px +
+  ±4px/5px）把暗质（近边 alpha ≈0.16）堆在面板边缘整条像素带上，
+  白色箭头戳穿暗带、白色卡片被暗带包住底缘 = 一道可见的缝；像素探针
+  （箭头中心/离箭头 60px/无箭头面板三通道全宽剖面）实测边缘带 ~11%
+  暗度、卡片第一行纯白——改 Tooltip 同标定（4px/6px/单轮 0.10）后
+  同一剖面 ~4% 柔晕。Tooltip 的同一暗带藏进自己深色剪影所以无感，
+  白卡片世界必须轻铸。
 - **箭头 = 旋转菱形零裁剪（Tooltip 配方原样复用）**：旋转 ±45/±135°
   不透明方块（边 = 深度 × √2，深度 spacing-2 8px——卡片比提示层大一号），
   **上半埋进卡片下**（DOM 序 [arrow, content]，panel 的实底背景盖住埋藏
@@ -164,7 +170,7 @@ popover/
 │   ├── resolve-trigger-surface.ts     # 零容器注入面装配（合并/串联/haspopup/expanded/controls/ref）
 │   └── refs.ts               # assignPopoverRef（函数/对象 ref 分配）
 ├── variants/                 # cva 单轴：arrow.ts（真→ colox-popover__panel--arrow）+ index.ts
-├── styles/                   # base/arrow/animation + index.scss @use 聚合；阴影=panel 级 union drop-shadow（base.scss，方向随 data-placement，lg 档折叠）
+├── styles/                   # base/arrow/animation + index.scss @use 聚合；阴影=panel 级 union drop-shadow（base.scss，方向随 data-placement，Tooltip 标定单轮）
 └── _tests/                   # 47 例：静态面/编译硬错误/三通道/指针桥/失窗吞咽（element blur 不武装）/焦点机（预约/Tab 圈/Escape/回收/窗口期重开）/退场窗/串联序/类映射
 ```
 
