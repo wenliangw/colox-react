@@ -16,10 +16,10 @@ focus to the trigger, an outside close never steals it), hover rides
 `{ in: 300, out: 100 }` where the out-delay doubles as the pointer
 bridge into the interactive panel and never steals focus, manual is
 the controlled word. The surface is an opaque `bg-default` card
-(borderless, radius-lg) with the shadow-lg tier cast as a union
-drop-shadow whose direction follows the arrow, the rotated diamond
-arrow recipe without clip-path, and content-owned width (no size
-axis). Entrance fade+scale, exit fade.
+(borderless, radius-lg) with a union drop-shadow cast at the
+Tooltip's calibration whose direction follows the arrow, the rotated
+diamond arrow recipe without clip-path, and content-owned width (no
+size axis). Entrance fade+scale, exit fade.
 
 The cdk `Popup` gains an additive `exitDuration` window (default 0 =
 the old same-commit unmount, pickers unchanged): on close the panel

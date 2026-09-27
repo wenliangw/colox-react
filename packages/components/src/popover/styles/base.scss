@@ -4,22 +4,28 @@
 // NO border: the shadow defines the edge (the AntD route — a border
 // would force an arrow-to-border seam problem we don't want).
 //
-// The depth is ONE union filter on the panel root — two drop-shadow
-// casts (the lg token tier collapsed: drop-shadow has no spread, the
-// outer/lower pair keeps the tier's two-rung feel), the offsets
-// rotating with the arrow side below. The primary color is the
-// design language's master shadow alpha — rgba(25, 25, 25, 0.10)
-// copied from --colox-shadow-* (no bare shadow-color token ships).
-// The collapsed cast also silhouettes the protruding arrow half in
+// The depth is ONE union filter on the panel root — a single drop-
+// shadow cast at the Tooltip's calibration (4px offset, 6px blur,
+// the design language's master shadow alpha). Two facts pin the
+// recipe: (1) the cast also silhouettes the protruding arrow half in
 // the same pass (clip-path never enters: masks and clips fight the
-// filter or project the whole box).
+// filter or project the whole box); (2) a heavier cast parks its
+// darkest mass right on the panel edge — the WHITE arrow and the
+// WHITE card get split by a dark moat (the first two-rung attempt
+// measured an ~11% edge band in the pixel probe and the user
+// reported it as a seam between the arrow and the card; the
+// Tooltip's own cast hides the same band inside its dark silhouette,
+// and the single-rung calibration keeps the halo near ~4% — a soft
+// falloff, not a crack). The color is the design language's master
+// shadow alpha — rgba(25, 25, 25, 0.10) copied from --colox-shadow-*
+// (no bare shadow-color token ships).
 .colox-popover__panel {
   --colox-popover-fill: var(--colox-color-bg-default);
+  --colox-popover-shadow-color: rgba(25, 25, 25, 0.1);
   background: var(--colox-popover-fill);
   color: var(--colox-color-text-default);
   border-radius: var(--colox-radius-lg);
-  filter: drop-shadow(0 10px 14px rgba(25, 25, 25, 0.1))
-    drop-shadow(0 4px 5px rgba(25, 25, 25, 0.06));
+  filter: drop-shadow(0 4px 6px var(--colox-popover-shadow-color));
 }
 
 // The directional casts: the arrow points at the trigger and the
@@ -27,18 +33,15 @@
 // toward it. The offset rotates with the placement word (corners ride
 // their prefix), mirroring the tooltip recipe.
 .colox-popover__panel[data-placement^='bottom'] {
-  filter: drop-shadow(0 -10px 14px rgba(25, 25, 25, 0.1))
-    drop-shadow(0 -4px 5px rgba(25, 25, 25, 0.06));
+  filter: drop-shadow(0 -4px 6px var(--colox-popover-shadow-color));
 }
 
 .colox-popover__panel[data-placement^='left'] {
-  filter: drop-shadow(10px 0 14px rgba(25, 25, 25, 0.1))
-    drop-shadow(4px 0 5px rgba(25, 25, 25, 0.06));
+  filter: drop-shadow(4px 0 6px var(--colox-popover-shadow-color));
 }
 
 .colox-popover__panel[data-placement^='right'] {
-  filter: drop-shadow(-10px 0 14px rgba(25, 25, 25, 0.1))
-    drop-shadow(-4px 0 5px rgba(25, 25, 25, 0.06));
+  filter: drop-shadow(-4px 0 6px var(--colox-popover-shadow-color));
 }
 
 // The title row: the resolved header above the content box. The

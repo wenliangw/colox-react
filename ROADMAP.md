@@ -120,10 +120,11 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   outside close never steals it), hover rides `{ in: 300, out: 100 }`
   where the out-delay IS the pointer bridge into the panel and never
   steals focus, manual is the controlled word — an opaque
-  `bg-default` card (borderless, radius-lg) with the shadow-lg tier as
-  a union drop-shadow (direction follows the arrow), the same rotated
-  diamond arrow recipe, content-owned width (no size axis), entrance
-  fade+scale / exit fade on the shared cdk exit channel.
+  `bg-default` card (borderless, radius-lg) with a union drop-shadow
+  cast at the Tooltip's calibration (direction follows the arrow),
+  the same rotated diamond arrow recipe, content-owned width (no size
+  axis), entrance fade+scale / exit fade on the shared cdk exit
+  channel.
 - `Modal`/`Dialog`, `Drawer`, `Toast`/`Notification` — planned.
 
 ### M5 — Display and feedback (planned)

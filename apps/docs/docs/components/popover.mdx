@@ -77,10 +77,12 @@ an interactive reading surface needs full contrast:
 - **borderless**, `radius-lg` — the shadow defines the edge;
 - the depth is a **union drop-shadow cast on the panel itself** (the
   ant-design approach, same recipe as the Tooltip): the card and the
-  protruding arrow half silhouette together in a single two-rung pass (the
-  `--colox-shadow-lg` tier collapsed — `drop-shadow` has no spread), the
-  offset follows the arrow direction, and the color is the design language's
-  own shadow value (rgba(25, 25, 25, 0.10) — the master alpha carried by the
+  protruding arrow half silhouette together in one pass at the Tooltip's
+  calibration (4px offset, 6px blur) — a heavier cast parks its darkest
+  mass on the panel edge and reads as a seam between the white arrow and
+  the white card, so the hint layer's recipe wins — the offset follows
+  the arrow direction, and the color is the design language's own shadow
+  value (rgba(25, 25, 25, 0.10) — the master alpha carried by the
   `--colox-shadow-*` tokens);
 - **no backdrop blur** — the hint layer's frost stays a Tooltip concern;
 - the arrow is the same **rotated opaque diamond half buried behind the
