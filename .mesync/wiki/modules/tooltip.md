@@ -53,6 +53,15 @@ color-mix 90% 同档，white = 白阶梯同档 `--colox-palette-white-900`
 - `visibleOn` 三通道：**hover**（默认）= pointerenter 走 `delay.in`（300）
   - focus 恒即时开；pointerleave 走 `delay.out`（0）+ blur 恒即时关。
     开/关计时器**永远互销**——快速进出永不重开、回焦清掉挂起的延迟关。
+  - **tab 往返契约（bugfix）**：失窗（window blur / visibilitychange
+    hidden）取消一对挂起计时器（切走期间 timer 不在后台开火）+ 武装
+    一次性「焦点恢复吞咽」——浏览器切回时会把焦点种回之前聚焦的
+    trigger，那声 focus 不是用户手势，重开的面板没有指针可退、焦点
+    也不再迁移 = 卡死（真实报告：点击 → 切 tab → 切回一直展示）；
+    element blur 同样武装（真实浏览器切走先发 element blur）。任何
+    真实输入（document 捕获 pointerdown/keydown）解除武装——点击聚焦
+    回 trigger、Tab 巡行照常即刻开；纯程序化 focus() 紧跟 blur 会被吞
+    一次（防卡死优先，公开代价）。
     **click** = 无计时器即时 toggle（Escape/外点/失窗关）。**manual** =
     `visible` prop 直排——零注入面、零自动开合、`onVisibleChange` 纯无声
     （它只回音 hover/click 跃迁）。manual 面板**初始即开也照常定位**：
@@ -140,7 +149,7 @@ tooltip/
 ├── index.ts                  # 出口（Tooltip + useTooltipContext + 8 类型 + tooltipVariants）
 ├── context/index.ts          # TooltipContext + defaultTooltipContextValue（no-op 默认，isDefault 标记）
 ├── hooks/
-│   ├── use-tooltip.ts        # 可见性状态机单源（三通道/延迟计时器互销/dismiss/scroll 关）
+│   ├── use-tooltip.ts        # 可见性状态机单源（三通道/计时器互销/tab 往返吞咽/dismiss/scroll 关）
 │   └── use-tooltip-context.ts # 受保护出口（useColoxTheme 副本文案形态，无根挂载 warn 一次）
 ├── children/
 │   ├── trigger/index.tsx     # 声明槽（渲染 null；host 由 root 编译捕获再克隆）
@@ -159,7 +168,7 @@ tooltip/
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
 ├── variants/                 # cva 三轴：palette.ts（七族名→ content 类名）/ size.ts / arrow.ts + index.ts
 ├── styles/                   # base/palette/size/arrow/animation + index.scss @use 聚合；阴影=panel 级单条 union drop-shadow（base.scss，方向随 data-placement，颜色=设计语言主影 alpha）
-└── _tests/                   # 32 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序/类映射/字号
+└── _tests/                   # 36 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序/类映射/字号/tab 往返
 ```
 
 ## 边界

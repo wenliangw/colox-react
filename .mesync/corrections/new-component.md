@@ -29,6 +29,8 @@
 
 21. **自投影几大杀手：clip-path/mask 都会废掉自己的 drop-shadow**：同元素 `clip-path` + `filter: drop-shadow` = 投影被整体裁空（裁剪在滤镜之后，把滤镜输出圈回裁剪区——实测零投影）；`mask` + `filter` = 投出**整盒矩形**（mask 遮不住滤镜看到的渲染，投影形状=盒）。唯一正解 = **元素无裁剪，画形靠画出来**：Tooltip 箭头换成旋转菱形（√2×深度方块旋转 ±45/135 + 对角线硬停渐变只涂外半 + 上半埋进气泡盒后，DOM 序 [装饰, 主机]）+ border-radius 圆角——三角形状、圆角、真三角投影、透镜四样一次拿全（上一轮「AntD union 剪影」的箭头半实际从未存在：clip+filter 组合早已是零投影，实测才现形）。自查：给装饰形加 drop-shadow 前先问「元素自己有没有 clip-path/mask/overflow clip」，有则投影形状必带病；形状类改动用红蓝/条纹探针逐点验证投影与透镜。
 
+22. **「focus 即开」的通道必须过失窗回归测试**：浏览器 tab 切走再切回时会把焦点种回之前聚焦的元素（切走发 element blur、切回发恢复性 focus，headless bringToFront 不发这些事件——探针要用真实 blur/focus 事件对模拟）——若通道是「onFocus 即开面板」，那声恢复 focus 会重开面板且再无关掉它的路径（指针不在 trigger 附近、焦点停在原地 = 永久卡死；Tooltip 被用户报「点击后切 tab 再回来一直展示」）。修复 = 一次性「恢复吞咽」：element/window blur 与 visibilitychange hidden 武装、首个 trigger focus 吞掉、真实输入（document 捕获 pointerdown/keydown）解除武装；失窗同刻取消一对挂起的开/关计时器（后台 tab 里定时器照常开火）。自查：交付任何 focus 触发面板/浮层的组件前，跑 click → blur(元素) → focus(元素) 探针序列断言不复活，再用真实点击聚焦断言复活。
+
 ## 为什么
 
 Stack 首版交付时跳过 variants 层，被用户指出偏离惯例：惯例一致性、用户 fork 通道、类型单源在单轴组件上同样成立。
