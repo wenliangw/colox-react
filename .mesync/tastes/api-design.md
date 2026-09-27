@@ -200,6 +200,7 @@
 - **双通道 API 与 Tooltip 同模板**：props 形态 `title`/`content` + 单一 trigger 子元素；组合形态 `Popover.Trigger`（恰一）+ `Popover.Title`（至多一）+ `Popover.Content`（至多一）；同给编译期硬错误；title prop 与 Title part 同给亦硬错误。**content 空值 = 永不打开**（比 Tooltip 的「渲染 nothing」进一层：机器层 `setVisible(true)` 直接 no-op——状态不翻转、无回显、`aria-expanded` 恒 false 不撒谎）。
 - **`visibleOn` 三通道全给**（用户覆写我先只做 click+manual 的推荐）：click（默认）即时 toggle 且**开即焦点进面板**（非模态 dialog 的 WAI 模式本体）；hover 走 `{in:300, out:100}`——**out 延迟就是指针桥**：面板可交互（不穿透），指针跨缝隙进面板必须在 out 内送达；**不做隐藏桥元素**（Radix HoverCard 式——面板贴 trigger、缝隙 8px 下计时器桥已足（antd mouseLeaveDelay 同构），桥元素是额外 DOM 机制）；manual = 受控纯回声。`delay` 部分对象 `??` merge、无 `defaultVisible`、`visible`/`onVisibleChange` 词族与 Tooltip 同。
 - **指针交互不劫键盘焦点**：hover 开永不抢焦点（悬停不能偷走键盘焦点，与指针交互打架）；click 开才把焦点给面板；外点关焦点随点击自然落位、**不偷回 trigger**；Escape 关焦点归还 trigger——「焦点跟随手势来源」是浮层族的通则。
+- **`closeOnOutsideClick`（默认 true，用户点名新增）**：命名对齐既有 `closeOnScroll` 词族（close-on-<触发源>）；只闸「外部点击」这一条关闭通道——false = 外点不关（钉住面板：筛选盘/对比视图/拖放目标），**Escape 与失窗不是点击、照常关**，trigger toggle 照常活。两条纪律：**闸只逐条命中通道，不设总闸把面板变死**（Escape+失窗是键盘与窗口的出路）；**布尔能力 prop 默认值 = 现状行为**（默认 true 即现状外点关，与 cdk exitDuration 默认 0 = 现状同款 additive 纪律——opt-out/opt-in 以显式参数表达，零破坏新增）。
 - **面板宽度 = 内容固有**（DatePicker「面板宽度=内容固有」先例）：不设固定宽档（size 三档是 Tooltip 提示层的事），上限归消费方 CSS 逃生舱。
 - trigger 零容器克隆、`aria-haspopup/expanded/controls` 接线与作者词合并保留、Content 的 `className`/`style` 逃生舱——全部 Tooltip 模板直搬。
 

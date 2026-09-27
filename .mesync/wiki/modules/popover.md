@@ -55,8 +55,11 @@ font-sm/line-height-md、`word-break: break-word`）、标题行
   visibilitychange hidden）仍武装一次性吞咽 + 取消一对挂起计时器
   （Tooltip tab 往返纪律的同款）；真实输入（document 捕获 pointerdown/
   keydown）解除武装。
-- 关闭渠道统一走 `useDismissible`；`closeOnScroll`（默认 false）=
-  显式退出，默认跟随 autoUpdate。
+- 关闭渠道统一走 `useDismissible`（外点 pointerdown/Escape/失窗三通道）；
+  **`closeOnOutsideClick`（默认 true）只闸外点通道**——false = 外部点击
+  不关面板（钉住面板：筛选盘、对比视图、收拖放的面板），**Escape 与失窗
+  不是点击、照常关**，trigger toggle 照常活；manual 通道 setVisible 早退
+  天然不受。`closeOnScroll`（默认 false）= 显式退出，默认跟随 autoUpdate。
 
 ## 焦点机（同一 hook 内，独立效果节）
 
@@ -174,7 +177,7 @@ popover/
 │   └── refs.ts               # assignPopoverRef（函数/对象 ref 分配）
 ├── variants/                 # cva 单轴：arrow.ts（真→ colox-popover__panel--arrow）+ index.ts
 ├── styles/                   # base/arrow/animation + index.scss @use 聚合；阴影=panel 级 union drop-shadow（base.scss，方向随 data-placement，Tooltip 标定单轮）
-└── _tests/                   # 47 例：静态面/编译硬错误/三通道/指针桥/失窗吞咽（element blur 不武装）/焦点机（预约/Tab 圈/Escape/回收/窗口期重开）/退场窗/串联序/类映射
+└── _tests/                   # 49 例：静态面/编译硬错误/三通道/指针桥/失窗吞咽（element blur 不武装）/焦点机（预约/Tab 圈/Escape/回收/窗口期重开）/退场窗/closeOnOutsideClick 钉住/串联序/类映射
 ```
 
 ## 边界
