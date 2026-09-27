@@ -22,13 +22,17 @@ matchWidth=false）。
 面板 = `colox-tooltip__panel`（Popup root：`role="tooltip"`、id=useId、
 **pointer-events:none 恒开**——提示层不交互、指针穿透回 trigger；组合选择器
 `.colox-popup.colox-tooltip__panel` 压过 positioned 恢复）+ 单一
-`colox-tooltip__content` 内容盒（cva 三轴：palette 六族 gray/primary/info/
-error/warning/success、size sm/md/lg、arrow 布尔——**六族同走玻璃面**：
-gray（默认）= 设计语言 0.9 黑色透明度挡位 `--colox-palette-black-900`
-（#000000E5），五色族 = family solid 各以 color-mix 90% 同档 + backdrop
-`blur(8px)`——**六族同一条无边框几何**，底色都穿半透明让页面从面板后
-透出，文字统一 text-inverse 白色；base=md 档 font-sm 14px + padding 2/4 +
-radius-md 6px，max-width 280px 字面量、逐轴 `.scss` + `@use` 聚合）。
+`colox-tooltip__content` 内容盒（cva 三轴：palette 七族 gray/primary/info/
+error/warning/success/white、size sm/md/lg、arrow 布尔——**七族同走半透明
+面，无 blur**：gray（默认）= 设计语言 0.9 黑色透明度挡位
+`--colox-palette-black-900`（#000000E5），五色族 = family solid 各以
+color-mix 90% 同档，white = 白阶梯同档 `--colox-palette-white-900`
+
+- 文字翻深 text-default（其余六族 inverse 白）——**七族同一条无边框
+  几何**，底色都穿半透明让页面从面板后透出（backdrop blur 已移除——霜纹
+  机制带来的 backdrop-root 约束多过毛玻璃收益，用户拍板先撤）；
+  base=md 档 font-sm 14px + padding 2/4 + radius-md 6px，max-width 280px
+  字面量、逐轴 `.scss` + `@use` 聚合）。
 
 ## 架构扩展（cdk 微增长三处，picker 族零变化）
 
@@ -73,17 +77,16 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
 
 ## 视觉层（按 placement 贴边）
 
-- **箭头（本轮定案：旋转菱形，无裁剪）**：旋转 ±45/±135° 的冻结方块
+- **箭头（本轮定案：旋转菱形，无裁剪）**：旋转 ±45/±135° 的半透明方块
   （边 = 深度 × √2 ≈ 8.49px），**上半埋进气泡盒下**（DOM 序 [arrow,
   content]，content 后绘制盖住埋藏半）——可见形 = 下半个菱形 = 三角，
   **全程零 clip-path**。原因（实测）：裁剪元素自己的 drop-shadow 被
   裁剪本身整体切掉（clip+filter 同元素 = 零投影），mask 版投出整盒
   矩形——菱形以对角线硬停渐变只涂外半（埋藏半透明，背后 90% 玻璃上
-  无叠暗楔，条纹页实测与普通玻璃逐像素一致）+ 圆角走 radius-xs 2px
-  token（尖角柔化，不引入任何非法几何）。骑边旋转方块被判死刑
-  （backdrop-filter 只采样自身盒内，骑边会把气泡自己的半透明填充
-  blur 进自己——实测气泡 66 vs 箭头 62 的硬台阶）；现结构埋藏半
-  覆盖在气泡玻璃下、采页面，无骑边混色。沿边的中心仍钉
+  无叠暗楔，条纹页实测与普通玻璃逐像素一致）。**只圆突出的尖角**：
+  单角 `border-radius: 0 0 radius-xs 0`（只 BR=尖角 2px，基座两角保持
+  直角——用户点名「不是所有角都需要圆角」，旋转携带局部配方，
+  四 placement 同一条）。沿边的中心仍钉
   `--colox-floating-arrow-offset`（clamp 防出界、面板被 flip/shift
   搬移后箭头仍瞄准 trigger），translate ±50%/∓50% 把盒心放到泡边、
   旋转绕盒心翻出填充角——同一条局部渐变配方随旋转服务四 placement，
@@ -92,32 +95,32 @@ passthrough（root 宽口 props 合并进 trigger）；`className` 拼接、`sty
   **sm 档箭头小一号**：深度 spacing-1-5 6px → spacing-1 4px
   （`--colox-tooltip-arrow-depth`，arrow span 挂 `--size-sm` 类）。
   gap 随箭头开关：开 8 / 关 6。
-- **箭头是 panel 的真实兄弟子元素，不是 content 的伪元素**（结构
-  定案）：backdrop 透镜的生死由 DOM 位置决定——任何带 filter/backdrop-
-  filter 的祖先都构成 backdrop root，子孙的 backdrop-filter 被圈进祖先
-  画布、采样落空。实测红蓝分野：content 伪元素形态箭头 B=20 死值（host
-  自己的 backdrop-filter 即根）+ 投影挂上 panel 后连气泡也 B=20 死值
-  （滤镜祖先同罪）→ 箭头挂 panel 之下、panel 保持素净（仅变量 +
-  pointer-events），两者直接采页面。
+- **backdrop blur 已整体移除（用户拍板）**：霜纹机制换来的
+  backdrop-root 约束（任何带 filter 祖先圈死子孙透镜、装饰必须素净
+  祖先下自投影）多过毛玻璃收益——半透明本色 + 投影已够提示层的
+  出生感。因此历史透镜律（下方条目）不再约束本组件；其教训
+  （clip/mask 对自身投影的破坏）独立于 blur，仍然有效并保留于
+  corrections。
 - **箭头填充跟随气泡**：填充色经由共享自定义属性 `--colox-tooltip-fill`
   （panel 声明、palette 在 panel 级覆写——复合选择器防 cascade 打架）
-  传给菱形渐变——箭头=气泡表面伸出的部分，palette 调整一处换两色。
-  **菱形带透镜**（红蓝分野实测：箭 B=4 / 气泡 B=7 边界混色，0.9 档
-  透明度下 10% 透页即为全量信号），bg+blur 双声明与气泡逐字同款。
-- **阴影（drop-shadow 投影，AntD 式）**：每个玻璃面自带一条
+  传给菱形渐变；文字走 `--colox-tooltip-text`（panel 同源声明、
+  white 族翻 deep）——箭头=气泡表面伸出的部分，palette 调整一处换
+  两色。
+- **阴影（drop-shadow 投影，AntD 式）**：每个面自带一条
   `filter: drop-shadow(0 4px 6px rgba(25,25,25,0.13))`——content 剪影
-  气泡、arrow 剪影菱形外半，两段同参投影拼成联体剪影（祖先级单一滤镜
-  与霜纹互斥：滤镜倒挂着会打破所有子孙的透镜，实测气泡当场失焦）。
+  气泡、arrow 剪影菱形外半，两段同参投影拼成联体剪影（blur 移除后
+  无需再忌滤镜祖先，但「每面自投影」的形态保留——联合剪影不能靠
+  祖先级单一滤镜表达）。
   alpha 补偿 0.13：drop-shadow 对剪影 alpha 施影，半透明填充把投影
-  稀释（0.13×0.9 ≈ token 0.10 的视觉深度——本轮 0.9 档后补偿比旧
+  稀释（0.13×0.9 ≈ token 0.10 的视觉深度——0.9 档后补偿比旧
   0.82 更贴 token）；token 的 -1px spread 无法表达（drop-shadow 无
   spread 参数），为公开代价。演化线：零阴影终态（light 白底隐身被报）
   → 定向投射层 + 箭头侧 6px 让位带（白边被报「白色背景层」）→ 遮罩
   挖孔（用户否掉 mask/复杂度）→ 一条 token box-shadow 挂本体盒
   （用户拍板简单优先）→ border 三角轮（兼容性优先）→ drop-shadow +
-  clip-path 回归（用户看 AntD 点名）→ **本轮菱形化：实测裁剪箭头
-  自投影被裁空（union 只余气泡半），菱形把 AntD 联体剪影兑现** +
-  palette/0.9 档并入。
+  clip-path 回归（用户看 AntD 点名）→ 菱形化：实测裁剪箭头
+  自投影被裁空（union 只余气泡半），菱形把 AntD 联体剪影兑现 +
+  palette/0.9 档并入 → blur 移除 + white 族 + 尖角单圆（本轮）。
 - **进场动画**：mount 时 fade + scale(0.92→1)，timing 全由 motion token
   （fast/easing-out）持有——reduced-motion 由 theme 门控零时长自动急停，
   组件零特判；退场无（Popup 无退出通道），与 Popover 一起补。
