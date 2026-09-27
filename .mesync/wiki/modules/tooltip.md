@@ -146,13 +146,19 @@ tooltip/
 │   ├── trigger/index.tsx     # 声明槽（渲染 null；host 由 root 编译捕获再克隆）
 │   └── content/index.tsx     # 内容载具（读 context 自持面板 DOM，className/style 逃生舱落内容盒）
 ├── controls/panel.tsx        # 双形态共享面板单元（Popup 面板根 + cva 内容盒）
+├── types/                    # 按层分桶：component/children/context/controls/hooks/utils（utils 层=编译契约+注入面 Params）+ index 桶
+├── constants/
+│   ├── position.ts           # 浮动 gap 字面量对（8/6 = spacing-2/1-5 的运行时镜像，cdk 读 px）
+│   └── behavior.ts           # hover 通道延迟默认值（in 300 / out 0）
 ├── utils/
 │   ├── leaves.ts             # 编译走查：双通道裁决/硬错误/宿主抽取（Fragment+透传 wrapper 透明）
 │   ├── resolve-fallback-placements.ts # placement → 对侧优先翻转链
+│   ├── resolve-gap.ts        # 箭头开关 → gap 裁决（guard 消解三目）
+│   ├── resolve-has-content.ts # 双通道内容在场裁决（describedby 接线用）
 │   ├── resolve-trigger-surface.ts     # 零容器注入面装配（合并/串联/describedby/ref）
 │   └── refs.ts               # assignTooltipRef（函数/对象 ref 分配）
-├── variants/                 # cva 三轴：palette.ts（六族名→ content 类名）/ size.ts / arrow.ts + index.ts
-├── styles/                   # base/palette/size/arrow/animation + index.scss @use 聚合；阴影=base.scss（内容盒）+arrow.scss（箭头）各一条同参 drop-shadow（无独立投影文件）
+├── variants/                 # cva 三轴：palette.ts（七族名→ content 类名）/ size.ts / arrow.ts + index.ts
+├── styles/                   # base/palette/size/arrow/animation + index.scss @use 聚合；阴影=panel 级单条 union drop-shadow（base.scss，方向随 data-placement，颜色=设计语言主影 alpha）
 └── _tests/                   # 32 例：静态面/编译硬错误/三通道计时器/关闭面/手动通道/回音/串联序/类映射/字号
 ```
 
