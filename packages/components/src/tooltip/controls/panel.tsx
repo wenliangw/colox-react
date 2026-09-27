@@ -10,7 +10,7 @@ import { tooltipVariants } from '../variants';
  * through the tooltip's opposite-side chain) and writes the resolved
  * placement as `data-placement` — the arrow and the directional
  * shadow pin to that word. The inner content box paints the surfaces
- * (variant/size/arrow); the panel root stays click-through, a hint
+ * (palette/size/arrow); the panel root stays click-through, a hint
  * never blocks its trigger.
  */
 export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
@@ -23,7 +23,7 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       gap,
       fallbackPlacements,
       showArrow,
-      variant,
+      palette,
       size,
       contentClassName,
       contentStyle,
@@ -41,15 +41,26 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       gap={gap}
       matchWidth={false}
       fallbackPlacements={fallbackPlacements}
-      className={clsx('colox-tooltip__panel', variant === 'light' && 'colox-tooltip__panel--light')}
+      className={clsx(
+        'colox-tooltip__panel',
+        palette !== 'gray' && `colox-tooltip__panel--${palette}`,
+      )}
     >
+      {/* The arrow renders BEFORE the content: the rotated diamond buries
+          its inner half under the content box (painted after), so only
+          the outer triangle shows without any clip-path. */}
+      {showArrow ? (
+        <span
+          aria-hidden="true"
+          className={clsx('colox-tooltip__arrow', size === 'sm' && 'colox-tooltip__arrow--size-sm')}
+        />
+      ) : null}
       <div
-        className={clsx(tooltipVariants({ variant, size, arrow: showArrow }), contentClassName)}
+        className={clsx(tooltipVariants({ palette, size, arrow: showArrow }), contentClassName)}
         style={contentStyle}
       >
         {children}
       </div>
-      {showArrow ? <span aria-hidden="true" className="colox-tooltip__arrow" /> : null}
     </Popup>
   ),
 );

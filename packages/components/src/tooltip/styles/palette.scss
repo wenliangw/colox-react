@@ -1,0 +1,33 @@
+// The six surface families — the Button/DatePicker palette names
+// mapped onto the frosted tooltip canvas. The neutral default (gray)
+// IS the classless base: the pure-black translucency ladder rung
+// (--colox-palette-black-900, 90% black) declared in base.scss — the
+// design language's only alpha vocabulary for the hint surfaces, so
+// the page still shows through 10% under the blur instead of a solid
+// plate. Every family rides the same 0.9 alpha tier: the palette
+// colors have no alpha encoded rung of their own, so the colored
+// glass mixes the family solid at 90% — one honest recipe across the
+// axis. The fill override lands on the PANEL because --colox-tooltip-fill
+// is read by the content AND its arrow sibling (their single source);
+// the text stays white everywhere (every family inverse is white), so
+// the content-level palette classes the cva generates carry no paint
+// of their own — they mark the recipe for consumers.
+.colox-popup.colox-tooltip__panel--primary {
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-brand-solid) 90%, transparent);
+}
+
+.colox-popup.colox-tooltip__panel--info {
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-blue-solid) 90%, transparent);
+}
+
+.colox-popup.colox-tooltip__panel--error {
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-red-solid) 90%, transparent);
+}
+
+.colox-popup.colox-tooltip__panel--warning {
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-orange-solid) 90%, transparent);
+}
+
+.colox-popup.colox-tooltip__panel--success {
+  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-green-solid) 90%, transparent);
+}

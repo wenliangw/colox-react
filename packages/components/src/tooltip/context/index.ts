@@ -16,7 +16,7 @@ export const defaultTooltipContextValue: TooltipContextValue = {
   gap: 6,
   fallbackPlacements: ['bottom'],
   showArrow: true,
-  variant: 'dark',
+  palette: 'gray',
   size: 'md',
 };
 

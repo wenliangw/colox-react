@@ -29,7 +29,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
     visible,
     showArrow = true,
     placement = 'top',
-    variant = 'dark',
+    palette = 'gray',
     delay,
     closeOnScroll = false,
     size = 'md',
@@ -88,7 +88,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
       gap: showArrow ? 8 : 6,
       fallbackPlacements,
       showArrow,
-      variant,
+      palette,
       size,
     }),
     [
@@ -99,7 +99,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
       placement,
       showArrow,
       fallbackPlacements,
-      variant,
+      palette,
       size,
     ],
   );
@@ -136,7 +136,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
           gap={showArrow ? 8 : 6}
           fallbackPlacements={fallbackPlacements}
           showArrow={showArrow}
-          variant={variant}
+          palette={palette}
           size={size}
         >
           {content}

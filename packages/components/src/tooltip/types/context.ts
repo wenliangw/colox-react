@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type { Placement } from '@floating-ui/dom';
-import type { TooltipSize, TooltipVariant } from './component';
+import type { TooltipPalette, TooltipSize } from './component';
 
 /** The root surface the composed parts read through the protected outlet. */
 export interface TooltipContextValue {
@@ -17,6 +17,6 @@ export interface TooltipContextValue {
   gap: number;
   fallbackPlacements: Placement[];
   showArrow: boolean;
-  variant: TooltipVariant;
+  palette: TooltipPalette;
   size: TooltipSize;
 }

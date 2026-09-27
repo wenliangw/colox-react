@@ -3,9 +3,12 @@
 // the content box paints the tooltip body. Panel pointer-events stay
 // none for life — a hint is not interactive, the pointer slides
 // through it to the trigger. The fill is frosted: the surface color
-// rides color-mix at partial alpha and a backdrop blur turns it glassy
-// instead of a flat plate — a hint floats above a page that stays
-// readable through it.
+// rides partial alpha and a backdrop blur turns it glassy instead of a
+// flat plate, so a hint floats above a page that stays readable
+// through it. The neutral default (the classless `gray`) is the
+// design language's own 0.9 translucency rung — `--colox-palette-black-900`
+// (#000000E5), no ad-hoc color-mix; every palette family rides the
+// same 0.9 tier (palette.scss, mixed on their own solid).
 //
 // Depth rule (measured, not assumed): a drop-shadow filter must NEVER
 // sit above a frosted surface — a filtered ancestor forms a backdrop
@@ -13,26 +16,25 @@
 // (the bubble itself lost its lens the moment the cast moved onto the
 // panel). Each glass surface therefore carries its OWN matched cast:
 // the content's filter silhouettes the bubble, the arrow's own filter
-// (arrow.scss) silhouettes the clipped triangle — two identical
+// (arrow.scss) silhouettes its rotated diamond — two identical
 // drop-shadows expressing the ant-design-style union silhouette per
 // surface. drop-shadow cannot express the token's -1px spread, and
 // the translucent fill dilutes the cast (the filter shadows the
-// silhouette alpha: 0.78 light / 0.82 dark), so the alpha is
-// compensated (0.13 × fill ≈ the token's 0.10 look-through).
+// silhouette alpha), so the alpha is compensated (0.13 × 0.9 fill ≈
+// the token's 0.10 look-through).
 //
 // The panel OWNS the frosted-surface custom properties
-// (--colox-tooltip-fill / --colox-tooltip-blur) on a single-class rule
-// so the variant overrides (also single class) can win on cascade
-// order instead of fighting a compound selector. Both children — the
-// content AND its arrow sibling — resolve them against the panel:
-// the single source, and the lens boundary fix (a child
-// backdrop-filter of a backdrop-filtered ancestor cannot sample the
-// page; the panel stays free of filters so both children lens
-// directly off the page). The base tier is `md` (the size axis shifts
-// one ladder step in either direction).
+// (--colox-tooltip-fill / --colox-tooltip-blur) on a single-class
+// rule — the palette overrides win through heavier compound
+// selectors, and both children — the content AND its arrow sibling —
+// resolve them against the panel: the single source, and the lens
+// boundary fix (a child backdrop-filter of a filtered ancestor cannot
+// sample the page; the panel stays free of filters so both children
+// lens directly off the page). The base tier is `md` (the size axis
+// shifts one ladder step in either direction).
 .colox-tooltip__panel {
   --colox-tooltip-blur: 8px;
-  --colox-tooltip-fill: color-mix(in srgb, var(--colox-color-bg-inverse) 82%, transparent);
+  --colox-tooltip-fill: var(--colox-palette-black-900);
 }
 
 .colox-popup.colox-tooltip__panel {

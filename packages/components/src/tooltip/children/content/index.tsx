@@ -18,7 +18,7 @@ export const TooltipContent = ({ children, className, style }: TooltipContentPro
     gap,
     fallbackPlacements,
     showArrow,
-    variant,
+    palette,
     size,
   } = useTooltipContext();
 
@@ -32,7 +32,7 @@ export const TooltipContent = ({ children, className, style }: TooltipContentPro
       gap={gap}
       fallbackPlacements={fallbackPlacements}
       showArrow={showArrow}
-      variant={variant}
+      palette={palette}
       size={size}
       contentClassName={className}
       contentStyle={style}

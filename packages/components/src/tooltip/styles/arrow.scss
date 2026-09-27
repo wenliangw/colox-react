@@ -1,104 +1,93 @@
-// The arrow: a clip-path triangle pinned to one edge of the bubble,
-// sitting ENTIRELY OUTSIDE the bubble's border box (top: 100% /
-// bottom: 100% / left: 100% / right: 100% — never a negative offset
-// that straddles the edge).
+// The decorative arrow: a rotated frosted diamond, half buried behind
+// the bubble. The arrow span renders BEFORE the content (panel.tsx),
+// so the content box paints over the diamond's inner half — only the
+// outer triangle shows, and NO clip-path exists anywhere. That
+// matters: a clipped element's own drop-shadow is clipped away with
+// it (measured: no cast at all), and a mask variant casts the full
+// rectangle instead. The diamond paints only its outer half — a
+// diagonal hard-stop gradient (the inner half is transparent, so
+// nothing stacks behind the 90% glass above; measured identical to
+// the plain plate on a striped page) — and rounds its corners with
+// the radius-xs token, softening the tip without any invalid
+// geometry.
 //
-// The geometry is the load-bearing part, and so is the DOM position.
-// The arrow is a REAL CHILD of the panel — not a pseudo of the content:
-// the content's own backdrop-filter forms a backdrop root, and a
-// pseudo/slot inside it would sample nothing of the page (the arrow
-// hangs outside the content's painted area) and never lens — measured
-// on a red/blue split page: the bubble mixed (B 33), the pseudo stayed
-// sharp (B 20). The panel must also stay filter-free: a filtered
-// ancestor forms a backdrop root of its own and kills EVERY frosted
-// descendant's lens (the bubble itself went sharp the moment the cast
-// moved onto the panel). As a child of a bare panel, the arrow's
-// 12x6 box samples the page the same way the bubble does. Kept fully
-// outside, the arrow's backdrop is just the page — a straddling arrow
-// would have blurred the bubble's own translucent fill into itself
-// (measured: bubble rgb(66,66,66) vs arrow rgb(62,62,62)).
+// The arrow still pairs filter + backdrop-filter on itself (the
+// ancestor-filter lens law from the bubble): its own matched
+// drop-shadow expresses the triange silhouette of THIS surface, and
+// its lens samples the page directly. The bubble's cast, painted
+// after, falls over the whole union — the two casts read as one,
+// ant-design style.
 //
-// The triangle is a real 12x6 box (6x12 vertical) painted with
-// --colox-tooltip-fill and clipped — the same property the bubble's
-// background reads, both resolving against the panel, so a variant swap
-// recolors both in one place. clip-path came back at the user's
-// direction (the ant-design drop-shadow review): border triangles
-// cannot lens their backdrop in Chromium, the clipped box can.
-//
-// Along the edge its CENTER pins to the reference center: the cdk hook
-// measures the reference center against the floating edge after
-// flip/shift and exposes it as --colox-floating-arrow-offset, clamped
-// (spacing-3) so the triangle never leaves the bubble — the arrow keeps
-// aiming at the trigger however the panel is displaced at boundaries.
-//
-// Depth: each glass surface carries its own matched drop-shadow — the
-// ant-design union silhouette expressed per surface (an ancestor-level
-// filter is impossible next to the frost; see base.scss). The arrow's
-// own filter silhouettes the clipped triangle with the same parameters
-// as the bubble's, so the casts read as one. No z-index, no layering
-// dodge; the translucent fill dilutes the cast exactly as it does on
-// the bubble.
+// The size axis shifts the diamond one ladder step via the local
+// --colox-tooltip-arrow-depth (base md = spacing-1-5 / 6px; sm =
+// spacing-1 / 4px; the side derives as depth × √2 so the box IS the
+// diamond's bounding square).
 .colox-tooltip__arrow {
   position: absolute;
-  background: var(--colox-tooltip-fill);
+  --colox-tooltip-arrow-depth: var(--colox-spacing-1-5);
+  width: calc(var(--colox-tooltip-arrow-depth) * 1.41421);
+  height: calc(var(--colox-tooltip-arrow-depth) * 1.41421);
+  background: linear-gradient(135deg, transparent 50%, var(--colox-tooltip-fill) 50%);
+  border-radius: var(--colox-radius-xs);
   filter: drop-shadow(0px 4px 6px rgba(25, 25, 25, 0.13));
   -webkit-backdrop-filter: blur(var(--colox-tooltip-blur));
   backdrop-filter: blur(var(--colox-tooltip-blur));
 }
 
-// top placement: panel above the trigger, arrow below the bubble
-// pointing DOWN.
-.colox-tooltip__panel[data-placement^='top'] .colox-tooltip__arrow {
+.colox-tooltip__arrow--size-sm {
+  --colox-tooltip-arrow-depth: var(--colox-spacing-1);
+}
+
+// The pinned placements: the box center sits exactly on the bubble
+// edge, its cross coordinate follows the resolved arrow offset
+// (--colox-floating-arrow-offset, written by the cdk positioning
+// layer per frame) clamped inside the spacing-3 safe band — the
+// apex stays aimed at the trigger center through flips and shifts.
+// Individual transforms apply translate-before-rotate, so the
+// translate centers the box on the edge and the rotation then spins
+// the wedge around that center; rotate(±45/±135) sends the filled
+// corner outward. The gradient rides the rotation: one local recipe
+// serves all four placements.
+[data-placement^='top'] .colox-tooltip__arrow {
   top: 100%;
   left: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-3);
-  height: var(--colox-spacing-1-5);
-  translate: -50% 0;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  translate: -50% -50%;
+  rotate: 45deg;
 }
 
-// bottom placement: panel below the trigger, arrow above pointing UP.
-.colox-tooltip__panel[data-placement^='bottom'] .colox-tooltip__arrow {
+[data-placement^='bottom'] .colox-tooltip__arrow {
   bottom: 100%;
   left: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-3);
-  height: var(--colox-spacing-1-5);
-  translate: -50% 0;
-  clip-path: polygon(0 100%, 100% 100%, 50% 0);
+  translate: -50% 50%;
+  rotate: -135deg;
 }
 
-// left placement: panel left of the trigger, arrow right pointing RIGHT.
-.colox-tooltip__panel[data-placement^='left'] .colox-tooltip__arrow {
+[data-placement^='left'] .colox-tooltip__arrow {
   left: 100%;
   top: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-1-5);
-  height: var(--colox-spacing-3);
-  translate: 0 -50%;
-  clip-path: polygon(0 0, 0 100%, 100% 50%);
+  translate: -50% -50%;
+  rotate: -45deg;
 }
 
-// right placement: panel right of the trigger, arrow left pointing LEFT.
-.colox-tooltip__panel[data-placement^='right'] .colox-tooltip__arrow {
+[data-placement^='right'] .colox-tooltip__arrow {
   right: 100%;
   top: clamp(
     var(--colox-spacing-3),
     var(--colox-floating-arrow-offset, 50%),
     calc(100% - var(--colox-spacing-3))
   );
-  width: var(--colox-spacing-1-5);
-  height: var(--colox-spacing-3);
-  translate: 0 -50%;
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+  translate: 50% -50%;
+  rotate: 135deg;
 }

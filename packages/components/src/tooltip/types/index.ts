@@ -4,7 +4,7 @@ export type {
   TooltipProps,
   TooltipRef,
   TooltipSize,
-  TooltipVariant,
+  TooltipPalette,
   TooltipVisibleOn,
 } from './component';
 export type { TooltipContextValue } from './context';

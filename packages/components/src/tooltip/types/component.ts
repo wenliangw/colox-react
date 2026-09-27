@@ -2,8 +2,8 @@ import type { HTMLAttributes, ReactNode } from 'react';
 import type { Placement } from '@floating-ui/dom';
 import type { TooltipVariants } from '../variants';
 
-/** The visual surfaces, derived from the cva recipe (single source). */
-export type TooltipVariant = NonNullable<TooltipVariants['variant']>;
+/** The surface families, derived from the cva recipe (single source). */
+export type TooltipPalette = NonNullable<TooltipVariants['palette']>;
 /** The content tiers, derived from the cva recipe (single source). */
 export type TooltipSize = NonNullable<TooltipVariants['size']>;
 
@@ -41,8 +41,8 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLElement>, 'content
   showArrow?: boolean;
   /** The floating-ui placement word the popup prefers. @default 'top' */
   placement?: Placement;
-  /** The surface pair: the inverse canvas or the light default-surface box. @default 'dark' */
-  variant?: TooltipVariant;
+  /** The surface family — one of the six design-language palettes; gray is the neutral dark default. @default 'gray' */
+  palette?: TooltipPalette;
   /** The hover-channel delay pair; partial objects merge into the defaults. */
   delay?: TooltipDelay;
   /** Close on any scroll while open (false = follow the reference). @default false */

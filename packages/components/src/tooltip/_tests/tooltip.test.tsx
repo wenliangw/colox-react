@@ -65,20 +65,38 @@ describe('Tooltip', () => {
     expect(ref.current).toBe(screen.getByRole('button', { name: 'focus' }));
   });
 
-  it('maps variant/size/arrow onto the content box classes', () => {
+  it('maps palette/size/arrow onto the panel and content box classes', () => {
     render(
-      <Tooltip content="hint" variant="light" size="lg" showArrow>
+      <Tooltip content="hint" palette="primary" size="lg" showArrow>
         <button type="button">v</button>
       </Tooltip>,
     );
     fireEvent.focus(screen.getByRole('button', { name: 'v' }));
     const panel = screen.getByRole('tooltip');
     expect(panel).toHaveClass('colox-tooltip__panel');
-    const content = panel.firstElementChild as HTMLElement;
+    expect(panel).toHaveClass('colox-tooltip__panel--primary');
+    // The arrow span renders first (it buries under the content box).
+    expect(panel.firstElementChild).toHaveClass('colox-tooltip__arrow');
+    const content = panel.lastElementChild as HTMLElement;
     expect(content).toHaveClass('colox-tooltip__content');
-    expect(content).toHaveClass('colox-tooltip__content--light');
+    expect(content).toHaveClass('colox-tooltip__content--primary');
     expect(content).toHaveClass('colox-tooltip__content--size-lg');
     expect(content).toHaveClass('colox-tooltip__content--arrow');
+  });
+
+  it('sizes the arrow with the sm tier', () => {
+    render(
+      <Tooltip content="hint" size="sm" showArrow>
+        <button type="button">v</button>
+      </Tooltip>,
+    );
+    fireEvent.focus(screen.getByRole('button', { name: 'v' }));
+    const panel = screen.getByRole('tooltip');
+    expect(panel.firstElementChild).toHaveClass('colox-tooltip__arrow');
+    expect(panel.firstElementChild).toHaveClass('colox-tooltip__arrow--size-sm');
+    expect(screen.getByRole('tooltip').lastElementChild).toHaveClass(
+      'colox-tooltip__content--size-sm',
+    );
   });
 
   it('drops the arrow word with showArrow={false} and keeps the defaults unmodified', () => {
@@ -89,8 +107,8 @@ describe('Tooltip', () => {
     );
     fireEvent.focus(screen.getByRole('button', { name: 'a' }));
     const content = screen.getByRole('tooltip').firstElementChild as HTMLElement;
+    expect(content.className).toBe('colox-tooltip__content');
     expect(content.className).not.toMatch(/--arrow/);
-    expect(content.className).not.toMatch(/--light/);
     expect(content.className).not.toMatch(/--size/);
   });
 
@@ -107,7 +125,7 @@ describe('Tooltip', () => {
     expect(container.firstChild).toBe(trigger);
     fireEvent.focus(trigger);
     expect(screen.getByRole('tooltip').textContent).toBe('rich body');
-    const content = screen.getByRole('tooltip').firstElementChild as HTMLElement;
+    const content = screen.getByRole('tooltip').lastElementChild as HTMLElement;
     expect(content).toHaveClass('custom-box');
   });
 

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode, RefObject } from 'react';
 import type { Placement } from '@floating-ui/dom';
-import type { TooltipSize, TooltipVariant } from './component';
+import type { TooltipPalette, TooltipSize } from './component';
 
 /** The portal panel unit: the resolved surface the two channels share. */
 export interface TooltipPanelProps {
@@ -12,7 +12,7 @@ export interface TooltipPanelProps {
   gap: number;
   fallbackPlacements: Placement[];
   showArrow: boolean;
-  variant: TooltipVariant;
+  palette: TooltipPalette;
   size: TooltipSize;
   /** The content-box escape hatch (the composed Content part's words). */
   contentClassName?: string;

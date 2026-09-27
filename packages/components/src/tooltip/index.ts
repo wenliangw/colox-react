@@ -7,7 +7,7 @@ export type {
   TooltipRef,
   TooltipSize,
   TooltipTriggerProps,
-  TooltipVariant,
+  TooltipPalette,
   TooltipVisibleOn,
 } from './types';
 export { tooltipVariants } from './variants';

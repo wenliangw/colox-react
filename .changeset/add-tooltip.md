@@ -10,10 +10,13 @@ renders the panel out of a portal. Two channels: the props form
 `Tooltip.Trigger` + `Tooltip.Content` form; giving both is a compile
 error. hover+focus (delay as `{ in, out }`), click and manual
 (`visible`) trigger modes; `closeOnScroll` as an explicit opt-out of
-the default autoUpdate follow. dark/light variants, sm/md/lg tiers —
-both surfaces frosted (translucent color-mix fill + backdrop blur,
-borderless, a drop-shadow cast), the arrow (a clip-path triangle on
-the same fill and lens) sitting outside the bubble, and
-the decorative arrow pinning to the resolved placement the cdk popup
-now publishes as `data-placement`, staying aimed at the trigger under
-boundary flip/shift.
+the default autoUpdate follow. The surface is a design-language
+`palette` — gray (the neutral default, the black-900 translucency
+rung) plus primary/info/error/warning/success (family solids mixed at
+the matching 0.9 alpha), all frosted (translucent fill + backdrop
+blur, borderless, drop-shadow casts). The arrow is a rotated frosted
+diamond half buried behind the bubble — a rounded tip, no clip-path —
+and it pins to the resolved placement the cdk popup publishes as
+`data-placement`, staying aimed at the trigger under boundary
+flip/shift. sm/md/lg tiers, the sm tier sizing the arrow one ladder
+step down.

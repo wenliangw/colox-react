@@ -11,7 +11,7 @@ const meta: Meta<typeof Tooltip> = {
     docs: {
       description: {
         component:
-          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain; dark is the inverse canvas, light rides the default surface — both frosted (translucent fill + backdrop blur, borderless). The arrow is a clip-path triangle sitting entirely outside the bubble, on the same fill and the same backdrop lens; the depth is a drop-shadow cast silhouetting each surface (the ant-design approach, alpha compensated for the translucent dilution). It pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
+          'The hint layer on the cdk popup: a zero-container component that clones its trigger in place — no wrapper element, the authored DOM stays intact — and mounts the panel out of a portal. Two channels: the props form (`content` plus a single trigger child — falsy content renders no tooltip) and the composed `Tooltip.Trigger` + `Tooltip.Content` form for custom DOM; giving both is a compile error. hover rides delay.in/out (default 300/0) with an instant focus channel, click toggles instantly, manual is the controlled visible word. The panel is click-through, flipped by the opposite-side fallback chain. The surface is the design-language palette — the six families (gray/primary/info/error/warning/success, gray default), every one frosted at the 0.9 alpha tier (the pure-black translucency rung for the neutral, the family solid mixed at 90% for the colors) plus a backdrop blur, borderless. The arrow is a rotated frosted diamond, half buried behind the bubble — no clip-path anywhere — with a rounded tip (radius-xs) and the same lens; its own drop-shadow cast plus the bubble cast read as one ant-design-style union silhouette (alpha compensated for the translucent dilution). The sm tier sizes the arrow one ladder step down. The diamond pins to the resolved placement while staying aimed at the trigger, clamped inside the panel when a boundary collision shifts it. sm/md/lg tiers shift the hint ladder; the entrance is a fade+scale held by the motion tokens.',
       },
     },
   },
@@ -44,13 +44,25 @@ export const Overview: Story = {
           </Stack>
         </Section>
 
-        <Section title="Surfaces">
-          <Stack direction="row" gap="4" align="center">
-            <Tooltip content="The inverse canvas.">
-              <Button>Dark</Button>
+        <Section title="Palettes">
+          <Stack direction="row" gap="3" align="center">
+            <Tooltip content="The neutral default — the design language black-900 tier.">
+              <Button>Gray</Button>
             </Tooltip>
-            <Tooltip content="The default surface, frosted and borderless." variant="light">
-              <Button>Light</Button>
+            <Tooltip content="Brand-blue glass." palette="primary">
+              <Button>Primary</Button>
+            </Tooltip>
+            <Tooltip content="Info blue." palette="info">
+              <Button>Info</Button>
+            </Tooltip>
+            <Tooltip content="Error red." palette="error">
+              <Button>Error</Button>
+            </Tooltip>
+            <Tooltip content="Warning orange." palette="warning">
+              <Button>Warning</Button>
+            </Tooltip>
+            <Tooltip content="Success green." palette="success">
+              <Button>Success</Button>
             </Tooltip>
           </Stack>
         </Section>
@@ -99,7 +111,7 @@ export const Overview: Story = {
             content="Controlled open — visible drives, no surfaces, no auto close."
             visibleOn="manual"
             visible
-            variant="light"
+            palette="primary"
           >
             <Button>Manual</Button>
           </Tooltip>

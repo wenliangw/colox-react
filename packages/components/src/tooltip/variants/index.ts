@@ -1,16 +1,16 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { tooltipArrowStyles } from './arrow';
+import { tooltipPaletteStyles } from './palette';
 import { tooltipSizeStyles } from './size';
-import { tooltipVariantStyles } from './variant';
 
 export const tooltipVariants = cva('colox-tooltip__content', {
   variants: {
-    variant: tooltipVariantStyles,
+    palette: tooltipPaletteStyles,
     size: tooltipSizeStyles,
     arrow: tooltipArrowStyles,
   },
   defaultVariants: {
-    variant: 'dark',
+    palette: 'gray',
     size: 'md',
     arrow: true,
   },
