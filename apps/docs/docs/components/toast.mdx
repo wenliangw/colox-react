@@ -1,0 +1,82 @@
+---
+sidebar_position: 19
+---
+
+import { Button, Stack, Toast, toast } from '@colox/react';
+import '@colox/react/style.css';
+import CodeBlock from '@theme/CodeBlock';
+
+# Toast
+
+The transient notification stack — the **M4 overlay family closer**.
+Unlike the Modal/Drawer (whose content lives in the tree), a toast's
+content comes from an **imperative call** at any code position; the
+`<Toast.Provider>` host is what must live in the tree.
+
+<CodeBlock className="colox-import" language="tsx">{`import { Toast, toast } from '@colox/react';
+import '@colox/react/style.css';`}</CodeBlock>
+
+## Host
+
+The host is two pieces:
+
+- `<Toast.Provider>` — wraps the app; the host that must be in the tree
+  (the store is module-level, so the provider is a pass-through today —
+  the future home of provider configuration).
+- `<Toast.Viewport position="top-right">` — the stack slot the toasts
+  mount in; `position` picks one of the six slots (top/bottom ×
+  left/center/right). The consumer's className/style shape the slot.
+
+```tsx
+<Toast.Provider>
+  <Toast.Viewport position="top-right" />
+</Toast.Provider>
+```
+
+## The imperative API
+
+`toast()` is a global function — call it from anywhere (a click handler,
+a fetch callback, a store). One component, **two payload tiers**:
+
+```tsx
+toast('Saved'); // lightweight single-line
+toast({ title: 'Saved', content: 'The file is on disk.' }); // titled
+```
+
+The return value is the toast's id — hand it to `toast.dismiss(id)`.
+Tone shortcuts: `toast.info` / `toast.success` / `toast.warning` /
+`toast.error`.
+
+## Lifecycle
+
+- **Duration**: auto-dismiss after 3s by default; `duration: 0` is
+  sticky (only the close button or an action dismisses). Hovering a
+  toast pauses its countdown.
+- **Close**: the corner close button (IconButton muted), or
+  `toast.dismiss(id)` / `toast.dismiss()` (all).
+- **Update**: `toast.update(key, patch)` mutates a live toast in place —
+  progress, retries. Give the toast a `key` to target it.
+- **Exit**: each toast plays its own exit animation (a fade + slide on
+  the shared motion tier) before the store removes it.
+
+## Action
+
+One `action: { label, onClick }` slot — undo/retry semantics. Clicking
+the action runs `onClick` and then dismisses the toast (a confirmation
+is done when it's acted on). Multiple actions are a dialog's job, not a
+toast's.
+
+```tsx
+toast({
+  content: 'Item deleted.',
+  action: { label: 'Undo', onClick: () => restore() },
+});
+```
+
+## Surface
+
+Opaque `bg-default` cards (the Popover surface — translucency is the
+hover-hint Tooltip recipe, and a toast never hovers) with a union
+drop-shadow, radius-lg, no border. The palette tone drives the semantic
+icon (info/success/warning/error) tinted by the design-language text
+tokens. `role="status"` (polite) announces each toast.

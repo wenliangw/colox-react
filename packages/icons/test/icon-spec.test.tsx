@@ -9,11 +9,15 @@ import {
   IconChevronRight,
   IconChevronUp,
   IconClock,
+  IconError,
   IconEye,
   IconEyeOff,
   IconGrip,
+  IconInfo,
   IconPlus,
   IconSearch,
+  IconSuccess,
+  IconWarning,
   IconX,
 } from '../src';
 import { calendarPath } from '../src/icons/geometry/calendar';
@@ -64,6 +68,10 @@ const BOUNDS: Record<string, [number, number, number, number]> = {
   eye: [3.25, 20.75, 4.25, 19.75],
   grip: [9.25, 21.75, 9.25, 21.75],
   search: [3.25, 20.75, 3.25, 20.75],
+  info: [2.25, 21.75, 2.25, 21.75],
+  success: [2.25, 21.75, 2.25, 21.75],
+  warning: [2.25, 21.75, 4.25, 19.75],
+  error: [2.25, 21.75, 2.25, 21.75],
 };
 
 interface IconSpec {
@@ -124,6 +132,29 @@ const ICONS: IconSpec[] = [
     component: IconSearch,
     paths: ['M16 16 L20 20'],
     circle: [11, 11, 7],
+  },
+  {
+    name: 'info',
+    component: IconInfo,
+    paths: ['M12 8 L12 8', 'M12 12 V16'],
+    circle: [12, 12, 9],
+  },
+  {
+    name: 'success',
+    component: IconSuccess,
+    paths: ['M8 13 L11 16 L16 10'],
+    circle: [12, 12, 9],
+  },
+  {
+    name: 'warning',
+    component: IconWarning,
+    paths: ['M12 5 L21 19 L3 19 Z', 'M12 10 V15 M12 17 V17'],
+  },
+  {
+    name: 'error',
+    component: IconError,
+    paths: ['M9 9 L15 15 M15 9 L9 15'],
+    circle: [12, 12, 9],
   },
 ];
 

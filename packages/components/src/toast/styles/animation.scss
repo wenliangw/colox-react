@@ -1,0 +1,41 @@
+// The entrance: a fade + upward slide (toasts surface from below the
+// slot edge — a top slot slides down, a bottom slot slides up; the
+// 4px travel keeps it a surface cue, not a motion statement). A fresh
+// mount plays it once. The exit rides the `--exiting` status class
+// (the store keeps the entry mounted through TOAST_EXIT): a fade +
+// reverse slide, `forwards` holding the hidden end state until the
+// removal lands. The motion tokens gate reduced motion centrally, so
+// no local media query belongs here.
+
+@keyframes colox-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes colox-toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.colox-toast {
+  animation: colox-toast-enter var(--colox-motion-duration-normal) var(--colox-motion-easing-out);
+}
+
+.colox-toast--exiting {
+  animation: colox-toast-exit var(--colox-motion-duration-normal) var(--colox-motion-easing-in)
+    forwards;
+}

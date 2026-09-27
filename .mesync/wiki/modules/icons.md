@@ -33,6 +33,7 @@ chevron-right（族基准，纯折线 V：`M9 6 L15 12 L9 18`，45° 臂 + round
 
 - **calendar**（DatePicker 批，批次一扩为十一枚）：边框 + 顶栏规则线 + 绑定桩，join-round 成角、整数网格、[2,22] 光学内容框——spec lint 门禁照常过。
 - **clock**（TimePicker 批 2，十二枚）：`<circle cx 12 cy 12 r 9>` 表盘 + 指针折线 `M12 6 V12 L16 14`（4:30 位姿，读「时钟」而非靶/眼），inline 字面 glyph（search/grip 先例，无 geometry 文件）；spec lint ICONS/BOUNDS 表注册照常。
+- **语义四枚**（Toast 批次三，十六枚）：`IconInfo`（circle r9 + 点 `M12 8 L12 8` + 竖 `M12 12 V16`——「i」）/`IconSuccess`（circle r9 + 对勾 `M8 13 L11 16 L16 10`）/`IconWarning`（纯三角 `M12 5 L21 19 L3 19 Z` + 叹号 `M12 10 V15 M12 17 V17`）/`IconError`（circle r9 + 叉 `M9 9 L15 15 M15 9 L9 15`）——palette 语义图标（Toast/Alert 共用），色由消费方按 tone 上语义 token（`--colox-color-text-*`），图标自身全整数坐标 + BOUNDS 表注册照常。
 
 ## 新增图标流程（按需追加时的执行步骤）
 

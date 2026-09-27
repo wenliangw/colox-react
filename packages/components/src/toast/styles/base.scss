@@ -1,0 +1,87 @@
+// The toast card: an OPAQUE surface (the Popover recipe — a toast
+// carries information and an action, readable-first; the translucent
+// hover-hint recipe is the Tooltip's, and a toast never hovers) on the
+// bg-default token, NO border (the shadow defines the edge). Depth =
+// ONE union drop-shadow at the master shadow alpha, copied into a
+// private variable — the family calibration, no invented numbers.
+//
+// The card is a horizontal row: [tone icon] [title/content] [action]
+// [close]. The icon is tinted by the palette tone via the semantic
+// text tokens; the body owns the width (content wraps, the card caps
+// at a readable max); the action and the close sit at the row end,
+// never the primary actors. `role="status"` + `aria-live="polite"`
+// announce it politely to assistive tech.
+.colox-toast {
+  --colox-toast-shadow-color: rgba(25, 25, 25, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--colox-spacing-3);
+  max-width: 384px;
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+  background: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+  border-radius: var(--colox-radius-lg);
+  filter: drop-shadow(0 8px 24px var(--colox-toast-shadow-color));
+}
+
+// The tone icon: the semantic icon (info/success/warning/error) tinted
+// by the tone's semantic text token — the design language owns the
+// tone→color mapping, the component only reads it.
+.colox-toast__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: var(--colox-spacing-1);
+  color: var(--colox-color-text-info);
+}
+
+.colox-toast--tone-success .colox-toast__icon {
+  color: var(--colox-color-text-success);
+}
+
+.colox-toast--tone-warning .colox-toast__icon {
+  color: var(--colox-color-text-warning);
+}
+
+.colox-toast--tone-error .colox-toast__icon {
+  color: var(--colox-color-text-error);
+}
+
+// The body: the title (titled tier) over the content (both tiers).
+// The body owns the leftover width — content wraps inside the cap.
+.colox-toast__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.colox-toast__title {
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-md);
+  font-weight: 600;
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+}
+
+.colox-toast__content {
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}
+
+// The action sits inline at the row end, before the close — a subtle
+// button, never the primary actor; clicking it dismisses the toast
+// (the handler runs and the store closes it).
+.colox-toast__action {
+  flex: none;
+  margin-top: var(--colox-spacing-1);
+}
+
+// The corner close: the shared IconButton muted base — this site
+// class only widens the hit area around the 16px icon.
+.colox-toast__close {
+  flex: none;
+  padding: var(--colox-spacing-1);
+}

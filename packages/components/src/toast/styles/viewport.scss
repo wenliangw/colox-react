@@ -1,0 +1,63 @@
+// The stack slot: a FIXED box pinned to one of the six positions
+// (top/bottom × left/center/right). It is a flex column of cards with
+// the stack gap — top slots grow downward from the top edge, bottom
+// slots grow upward from the bottom edge; the horizontal alignment
+// follows the slot word (left = flex-start, center = center, right =
+// flex-end). The slot itself never intercepts the pointer (cards
+// re-enable it) so clicks pass through the gaps; the z-index rides
+// the overlay tier — toasts float above page content. The consumer's
+// className/style on the Viewport shape the slot (offset, width, …
+// position is the prop).
+.colox-toast-viewport {
+  position: fixed;
+  z-index: var(--colox-z-overlay, 1100);
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-2);
+  pointer-events: none;
+}
+
+.colox-toast-viewport--top-left {
+  top: var(--colox-spacing-6);
+  left: var(--colox-spacing-6);
+  align-items: flex-start;
+}
+
+.colox-toast-viewport--top-center {
+  top: var(--colox-spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.colox-toast-viewport--top-right {
+  top: var(--colox-spacing-6);
+  right: var(--colox-spacing-6);
+  align-items: flex-end;
+}
+
+.colox-toast-viewport--bottom-left {
+  bottom: var(--colox-spacing-6);
+  left: var(--colox-spacing-6);
+  align-items: flex-start;
+  flex-direction: column-reverse;
+}
+
+.colox-toast-viewport--bottom-center {
+  bottom: var(--colox-spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  flex-direction: column-reverse;
+}
+
+.colox-toast-viewport--bottom-right {
+  bottom: var(--colox-spacing-6);
+  right: var(--colox-spacing-6);
+  align-items: flex-end;
+  flex-direction: column-reverse;
+}
+
+.colox-toast-viewport .colox-toast {
+  pointer-events: auto;
+}

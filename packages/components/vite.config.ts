@@ -30,6 +30,7 @@ const entries = {
   switch: resolve(import.meta.dirname, 'src/switch/index.ts'),
   textarea: resolve(import.meta.dirname, 'src/textarea/index.ts'),
   'time-picker': resolve(import.meta.dirname, 'src/time-picker/index.ts'),
+  toast: resolve(import.meta.dirname, 'src/toast/index.ts'),
   tooltip: resolve(import.meta.dirname, 'src/tooltip/index.ts'),
   popover: resolve(import.meta.dirname, 'src/popover/index.ts'),
   // The public date/time toolbelt: @colox/react/cdk/date. The entry

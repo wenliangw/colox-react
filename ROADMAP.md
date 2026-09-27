@@ -84,7 +84,7 @@ The validation and field layer the form controls deliberately left out:
   itself, with the three cyclic rolling columns, the confirm commit and
   the throttle-gated direct-write glide.
 
-### M4 — Overlay family (done — Tooltip/Popover/Modal/Drawer shipped)
+### M4 — Overlay family (done — Tooltip/Popover/Modal/Drawer/Toast shipped)
 
 The cdk `floating` layer already provides positioning, portal and dismissal; this
 milestone adds the semantics on top (focus management, scroll locking, ARIA):
@@ -160,7 +160,29 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   Close via the corner button (`showClose` default true), Escape and
   the backdrop click; directional slide entrance/exit (translate from
   the anchored edge) on the shared cdk exit channel.
-- `Toast`/`Notification` — planned.
+- `Toast`/`Notification` — **shipped**: the transient
+  notification stack — the M4 overlay family closer. Global
+  imperative `toast()` (a module-level store, callable from any code
+  position — the content comes from a call, not the tree, so the
+  "content must be in the tree" rule does not apply) + a
+  `<Toast.Provider>` host (must be in the tree) + a separate
+  `<Toast.Viewport>` where the consumer declares the position.
+  Unified two-tier payloads: `toast(content)` lightweight single-line
+  (antd message style) and `toast({ title, content })` titled
+  notification (antd notification style) — one component, one mental
+  model. Opaque `bg-default` cards (the Popover surface — translucency
+  is the hover-hint Tooltip recipe, a toast never hovers) with palette
+  semantic icons (info/success/warning/error — icons batch three). One
+  `action: { label, onClick }` slot (single undo/retry semantics;
+  multiple actions are a dialog's job), auto-closes on click, laid out
+  inline right beside the close button (subtle Button, never the
+  primary actor). Stacked positioning across six slots
+  (top/bottom × left/center/right), duration auto-dismiss (default ~3s,
+  0 = sticky), hover pause, manual close (IconButton muted), same-key
+  update (`toast.update`), per-item exit on the shared cdk exit
+  channel, `role="status"` (polite) by default. With this the M4
+  overlay family is complete: Tooltip / Popover / Modal / Drawer /
+  Toast.
 
 ### M5 — Display and feedback (planned)
 

@@ -23,4 +23,5 @@ export * from './stack';
 export * from './switch';
 export * from './textarea';
 export * from './time-picker';
+export * from './toast';
 export * from './tooltip';

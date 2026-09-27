@@ -135,6 +135,11 @@
       "import": "./dist/es/time-picker.js",
       "require": "./dist/cjs/time-picker.cjs"
     },
+    "./toast": {
+      "types": "./dist/types/toast/index.d.ts",
+      "import": "./dist/es/toast.js",
+      "require": "./dist/cjs/toast.cjs"
+    },
     "./tooltip": {
       "types": "./dist/types/tooltip/index.d.ts",
       "import": "./dist/es/tooltip.js",
