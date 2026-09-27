@@ -92,6 +92,7 @@
 ## props 声明顺序：属性在前，事件在后
 
 - 接口、组件解构、调用点（`useXxx({...})` / JSX）三处同序：**属性块在前、事件块在后**，不混插（Select v2 首版把 `onChange`/`onSearch` 夹在 `value`/`defaultValue` 与视觉属性中间，被用户指正「属性 … 事件」）。事件块内部保持接口声明的相对顺序（如 `onChange` → `onSearch` → `onOpenChange`）。组合式组件的 **context 值面同此**：`types/context.ts` 字段序 = 根组件 `contextValue` 字面量 = 子件 `useXxxContext()` 解构，解构子集可跳字段、不可乱序（Popover/Tooltip 的 Content 被用户点名「解构顺序不对」）。
+- **任何值面列表推同一序**（用户 2026-12 二轮定调「我们编写代码的顺序是：属性、方法，除了解构，还有 React 依赖、对象传值等等场景」）：类型字段、解构、`useXxx({...})` 对象传值、useMemo 字面量、**React 依赖数组**、JSX 属性座——一律**属性在前、方法在后**（方法 = 函数/回调/handler 束，事件回调在链末）。**类型声明序就是规范序**：接口自身字段也要把方法放对位，否则会一路传染到字面量/解构/依赖（Popover 整改把 `UsePopoverParams.hasContent` 移到 `onVisibleChange` 前、`PopoverContextValue.setPanelRef` 移到属性区后、`Resolve*TriggerSurfaceParams` 与 `PopoverPanelProps` 同排；依赖数组里函数名出现在值名之前、对象传值里 `on*` 不在末位，都是漏点）。
 - 属性块内部按语义关系分组（模式 → 数据 → 视觉 → 状态），不做字母序。
 - 原生事件透传属性（`onClick` 等）随 `...rest` 末尾展开，不参与排序。
 - 2026 复发把控：Switch 交付把 `onChange` 夹在 `checked/defaultChecked` 与 `disabled` 之间（照抄 Checkbox/Radio 存量反例），用户再指正「onChange 事件应该写在属性之后，不要混着写」——七处解构（Switch/Checkbox/Radio/Textarea/Input/两 Group）+ 两处接口（`CheckboxGroupProps`/`RadioGroupProps` 的 onChange 曾夹在 defaultValue 与 size 间）一并归一。**新组件不得照抄现存反例**，以本条为准。
