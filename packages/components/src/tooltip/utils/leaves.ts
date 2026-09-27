@@ -2,17 +2,7 @@ import { Fragment, isValidElement } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { TooltipContent } from '../children/content';
 import { TooltipTrigger } from '../children/trigger';
-import type { TooltipContentProps, TooltipTriggerProps } from '../types';
-
-/** The compiled channels: what the root clones and what it mounts aside. */
-export interface CompiledTooltipLeaves {
-  /** The element the root clones: the Trigger's host (composed) or the single child (props). */
-  trigger: ReactElement | null;
-  /** The composed Content part; rendered by the root inside the provider. */
-  content: ReactElement<TooltipContentProps> | null;
-  /** True once any declaration part is present. */
-  composed: boolean;
-}
+import type { CompiledTooltipLeaves, TooltipContentProps, TooltipTriggerProps } from '../types';
 
 /** Collects the top-level elements, fragments transparent. */
 function collectTopLevelElements(node: ReactNode, out: ReactElement[]): void {

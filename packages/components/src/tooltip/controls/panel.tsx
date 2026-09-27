@@ -41,20 +41,21 @@ export const TooltipPanel = forwardRef<HTMLDivElement, TooltipPanelProps>(
       gap={gap}
       matchWidth={false}
       fallbackPlacements={fallbackPlacements}
-      className={clsx(
-        'colox-tooltip__panel',
-        palette !== 'gray' && `colox-tooltip__panel--${palette}`,
-      )}
+      className={clsx('colox-tooltip__panel', {
+        [`colox-tooltip__panel--${palette}`]: palette !== 'gray',
+      })}
     >
       {/* The arrow renders BEFORE the content: the rotated diamond buries
           its inner half under the content box (painted after), so only
           the outer triangle shows without any clip-path. */}
-      {showArrow ? (
+      {showArrow && (
         <span
           aria-hidden="true"
-          className={clsx('colox-tooltip__arrow', size === 'sm' && 'colox-tooltip__arrow--size-sm')}
+          className={clsx('colox-tooltip__arrow', {
+            'colox-tooltip__arrow--size-sm': size === 'sm',
+          })}
         />
-      ) : null}
+      )}
       <div
         className={clsx(tooltipVariants({ palette, size, arrow: showArrow }), contentClassName)}
         style={contentStyle}

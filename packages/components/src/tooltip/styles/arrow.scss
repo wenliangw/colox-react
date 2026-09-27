@@ -1,27 +1,13 @@
-// The decorative arrow: a rotated translucent diamond, half buried
-// behind the bubble. The arrow span renders BEFORE the content
-// (panel.tsx), so the content box paints over the diamond's inner
-// half — only the outer triangle shows, and NO clip-path exists
-// anywhere. That matters: a clipped element's own drop-shadow is
-// clipped away with it (measured: no cast at all), and a mask variant
-// casts the full rectangle instead. The diamond paints only its outer
-// half — a diagonal hard-stop gradient (the inner half is
-// transparent, so nothing stacks behind the 90% glass above; measured
-// identical to the plain plate on a striped page). Only the
-// PROTRUDING tip corner is rounded (the radius-xs token on the filled
-// BR corner — the base corners stay sharp; the rotation carries the
-// local recipe to all four placements), softening the apex without
-// rounding the seam corners against the bubble.
-//
-// The depth now lives on the PANEL (base.scss): one union
-// drop-shadow silhouettes the bubble and the visible diamond half
-// together in a single ant-design-style pass — the arrow itself
-// carries NO filter at all.
-//
-// The size axis shifts the diamond one ladder step via the local
-// --colox-tooltip-arrow-depth (base md = spacing-1-5 / 6px; sm =
-// spacing-1 / 4px; the side derives as depth × √2 so the box IS the
-// diamond's bounding square).
+// The rotated translucent diamond, half buried behind the bubble:
+// the arrow renders BEFORE the content (panel.tsx) so the content box
+// paints over the inner half — only the outer triangle shows, with NO
+// clip-path anywhere and NO filter of its own (the union cast lives
+// on the panel, base.scss). The outer-half paint is a diagonal
+// hard-stop gradient — the transparent inner half stacks nothing
+// behind the 90% glass. Only the PROTRUDING tip corner is rounded
+// (radius-xs on the filled BR corner); the base corners stay sharp,
+// against the bubble. The box side = depth × √2 (spacing-1-5 md /
+// spacing-1 sm), the bounding square of the diamond.
 .colox-tooltip__arrow {
   position: absolute;
   --colox-tooltip-arrow-depth: var(--colox-spacing-1-5);

@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDismissible } from '@colox/cdk/floating';
+import { TOOLTIP_DELAY } from '../constants/behavior';
 import type { TooltipTriggerHandlers, UseTooltipParams, UseTooltipResult } from '../types';
-
-const DEFAULT_DELAY_IN = 300;
-const DEFAULT_DELAY_OUT = 0;
 
 /**
  * The hint-layer visibility machine. The channels:
@@ -93,8 +91,8 @@ export function useTooltip(params: UseTooltipParams): UseTooltipResult {
     [clearOpenTimer, clearCloseTimer, setVisible],
   );
 
-  const delayIn = delay.in ?? DEFAULT_DELAY_IN;
-  const delayOut = delay.out ?? DEFAULT_DELAY_OUT;
+  const delayIn = delay.in ?? TOOLTIP_DELAY.IN;
+  const delayOut = delay.out ?? TOOLTIP_DELAY.OUT;
 
   const handlers = useMemo<TooltipTriggerHandlers>(() => {
     if (visibleOn === 'hover') {

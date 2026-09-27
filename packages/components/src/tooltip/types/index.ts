@@ -10,3 +10,4 @@ export type {
 export type { TooltipContextValue } from './context';
 export type { TooltipPanelProps } from './controls';
 export type { TooltipTriggerHandlers, UseTooltipParams, UseTooltipResult } from './hooks';
+export type { CompiledTooltipLeaves, ResolveTooltipTriggerSurfaceParams } from './utils';

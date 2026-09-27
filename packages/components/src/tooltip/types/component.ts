@@ -41,7 +41,7 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLElement>, 'content
   showArrow?: boolean;
   /** The floating-ui placement word the popup prefers. @default 'top' */
   placement?: Placement;
-  /** The surface family — one of the six design-language palettes; gray is the neutral dark default. @default 'gray' */
+  /** The surface family — one of the seven design-language families (six palettes plus the white inverse); gray is the neutral dark default. @default 'gray' */
   palette?: TooltipPalette;
   /** The hover-channel delay pair; partial objects merge into the defaults. */
   delay?: TooltipDelay;

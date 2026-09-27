@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { TOOLTIP_GAP } from '../constants/position';
 import type { TooltipContextValue } from '../types';
 
 /**
@@ -13,7 +14,7 @@ export const defaultTooltipContextValue: TooltipContextValue = {
   triggerRef: { current: null },
   panelRef: { current: null },
   placement: 'top',
-  gap: 6,
+  gap: TOOLTIP_GAP.WITH_ARROW,
   fallbackPlacements: ['bottom'],
   showArrow: true,
   palette: 'gray',

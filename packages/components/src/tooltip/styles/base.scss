@@ -1,44 +1,18 @@
-// The hint-layer surfaces: the panel root is the click-through portal
-// carrier (positioning and the enter transition come from cdk Popup),
-// the content box paints the tooltip body. Panel pointer-events stay
-// none for life — a hint is not interactive, the pointer slides
-// through it to the trigger. The surface is translucent: the fill
-// rides the 0.9 alpha tier and the page stays readable through the
-// plate, without any backdrop blur (the frost machinery earned more
-// problems — the backdrop-root laws around every filter — than the
-// frosted look earned; removed by the user's call). The neutral
-// default (the classless `gray`) is the design language's own 0.9
-// translucency rung — `--colox-palette-black-900` (#000000E5), no
-// ad-hoc color-mix; every palette family rides the same 0.9 tier
-// (palette.scss, mixed on their own solid — or the white ladder rung
-// for the white family).
-//
-// Depth: ONE union cast on the outermost container — the panel. Now
-// that the backdrop blur is gone, no lens law forbids a filter on
-// the panel root, so the drop-shadow sits there and silhouettes the
-// whole union — the bubble plus the visible arrow half — in a single
-// ant-design-style pass. The offset follows the arrow direction
-// (data-placement, resolved by the cdk positioning layer): the cast
-// seats on the gap side of the panel in all four orientations. The
-// shadow color is the design language's own value — the master
-// shadow alpha rgba(25, 25, 25, 0.10), copied from the
-// --colox-shadow-* token values in the theme's shadow token source
-// (no bare shadow-color token exists in the emitted set, and
-// box-shadow shorthands cannot feed a drop-shadow filter).
-// drop-shadow cannot express the token's -1px spread, and the
-// translucent fill dilutes the cast (the filter shadows the
-// silhouette alpha), so the rendered depth under the 0.9 fill is
-// one honest step below the token — no alpha compensation hack
-// anymore.
-//
-// The panel OWNS the surface custom properties
-// (--colox-tooltip-fill / --colox-tooltip-text /
-// --colox-tooltip-shadow-color) on a single-class rule — the
-// palette overrides win through heavier compound selectors, and
-// both children — the content AND its arrow sibling — resolve the
-// paint words against the panel: the single source that turns one
-// palette word into the fill and the ink. The base tier is `md` (the
-// size axis shifts one ladder step in either direction).
+// The panel root is the click-through portal carrier (pointer-events
+// stay none: a hint never blocks its trigger). The content box paints
+// the body at the design language's 0.9 alpha tier — the black-900
+// rung for the neutral gray, the family solids mixed to 90% in
+// palette.scss — with NO backdrop blur (removed as more harm than
+// worth). The depth is ONE union drop-shadow on the panel: the blur
+// removal freed the outer-most filter, the cast silhouettes the
+// bubble plus the arrow half in a single pass, the offset follows the
+// arrow direction (data-placement, resolved by the cdk), and the
+// color is the design language's master shadow alpha — rgba(25, 25,
+// 25, 0.10) copied from the --colox-shadow-* values (no bare
+// shadow-color token exists; drop-shadow cannot take the -1px spread).
+// The panel owns the fill/text/shadow variables — one class, one
+// paint source — and the palette overrides win through heavier
+// compound selectors. md is the base size tier.
 .colox-tooltip__panel {
   --colox-tooltip-fill: var(--colox-palette-black-900);
   --colox-tooltip-text: var(--colox-color-text-inverse);

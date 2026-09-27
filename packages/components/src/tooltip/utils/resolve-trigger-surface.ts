@@ -1,24 +1,7 @@
+import type { CSSProperties, SyntheticEvent } from 'react';
 import clsx from 'clsx';
 import type { ClassValue } from 'clsx';
-import type { CSSProperties, ReactElement, SyntheticEvent } from 'react';
-import type { TooltipTriggerHandlers } from '../types';
-
-export interface ResolveTriggerSurfaceParams {
-  /** The compiled trigger element — its own words stay below the injection. */
-  trigger: ReactElement;
-  /** The merged ref callback (the trigger's DOM node). */
-  setTriggerRef: (node: HTMLElement | null) => void;
-  /** The final describedby wording: the author's words plus the panel id. */
-  describedBy?: string;
-  /** The mode-built interaction surfaces (empty for manual). */
-  handlers: TooltipTriggerHandlers;
-  /** The root className, concatenated with the trigger's own. */
-  className?: string;
-  /** The root style, spread under the trigger's own keys. */
-  style?: CSSProperties;
-  /** The remaining root props — the trigger's own words win. */
-  rest: object;
-}
+import type { ResolveTooltipTriggerSurfaceParams } from '../types';
 
 /** Chains the library handler before the surviving author handler. */
 function chainHandlers<E extends SyntheticEvent>(
@@ -46,7 +29,7 @@ function chainHandlers<E extends SyntheticEvent>(
  * the author already declared.
  */
 export function resolveTooltipTriggerSurface(
-  params: ResolveTriggerSurfaceParams,
+  params: ResolveTooltipTriggerSurfaceParams,
 ): Record<string, unknown> {
   const { trigger, setTriggerRef, describedBy, handlers, className, style, rest } = params;
   const own = trigger.props as Record<string, unknown>;

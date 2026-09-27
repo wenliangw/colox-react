@@ -8,6 +8,8 @@ import type { TooltipContextValue, TooltipProps, TooltipRef } from './types';
 import { compileTooltipLeaves } from './utils/leaves';
 import { assignTooltipRef } from './utils/refs';
 import { resolveTooltipFallbackPlacements } from './utils/resolve-fallback-placements';
+import { resolveTooltipGap } from './utils/resolve-gap';
+import { resolveTooltipHasContent } from './utils/resolve-has-content';
 import { resolveTooltipTriggerSurface } from './utils/resolve-trigger-surface';
 
 import './styles/index.scss';
@@ -59,7 +61,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
   });
 
   const contentId = useId();
-  const hasContent = compiled.composed ? compiled.content !== null : Boolean(content);
+  const hasContent = resolveTooltipHasContent(compiled, content);
 
   const setTriggerRef = useCallback(
     (node: HTMLElement | null) => {
@@ -85,7 +87,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
       triggerRef,
       panelRef,
       placement,
-      gap: showArrow ? 8 : 6,
+      gap: resolveTooltipGap(showArrow),
       fallbackPlacements,
       showArrow,
       palette,
@@ -124,16 +126,15 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
   return (
     <TooltipContext.Provider value={contextValue}>
       {trigger}
-      {compiled.composed ? (
-        compiled.content
-      ) : content ? (
+      {compiled.composed && compiled.content}
+      {content && (
         <TooltipPanel
           ref={panelRef}
           open={open}
           contentId={contentId}
           referenceRef={triggerRef}
           placement={placement}
-          gap={showArrow ? 8 : 6}
+          gap={resolveTooltipGap(showArrow)}
           fallbackPlacements={fallbackPlacements}
           showArrow={showArrow}
           palette={palette}
@@ -141,7 +142,7 @@ const TooltipRoot = forwardRef<TooltipRef, TooltipProps>((props, ref) => {
         >
           {content}
         </TooltipPanel>
-      ) : null}
+      )}
     </TooltipContext.Provider>
   );
 });
