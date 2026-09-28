@@ -1,0 +1,27 @@
+/**
+ * Variant paint — the surface strength of the text avatar (and of the
+ * failure fallback) over the private palette variables (the palette
+ * layer maps them onto the color families). plain (default) is the
+ * quiet neutral portrait surface — muted background, default text,
+ * palette-independent; the colored tiers read the palette.
+ */
+.colox-avatar--plain {
+  background-color: var(--colox-color-bg-muted);
+  color: var(--colox-color-text-default);
+}
+
+.colox-avatar--subtle {
+  background-color: var(--colox-avatar-palette-subtle);
+  color: var(--colox-avatar-palette-solid);
+}
+
+.colox-avatar--solid {
+  background-color: var(--colox-avatar-palette-solid);
+  color: var(--colox-avatar-palette-inverse);
+}
+
+.colox-avatar--outline {
+  background-color: transparent;
+  color: var(--colox-avatar-palette-solid);
+  box-shadow: inset 0 0 0 1px var(--colox-avatar-palette-solid);
+}

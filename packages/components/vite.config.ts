@@ -10,6 +10,7 @@ const entries = {
   index: resolve(import.meta.dirname, 'src/index.ts'),
   anchor: resolve(import.meta.dirname, 'src/anchor/index.ts'),
   autocomplete: resolve(import.meta.dirname, 'src/autocomplete/index.ts'),
+  avatar: resolve(import.meta.dirname, 'src/avatar/index.ts'),
   button: resolve(import.meta.dirname, 'src/button/index.ts'),
   checkbox: resolve(import.meta.dirname, 'src/checkbox/index.ts'),
   compact: resolve(import.meta.dirname, 'src/compact/index.ts'),

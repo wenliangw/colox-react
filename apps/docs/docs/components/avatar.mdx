@@ -1,0 +1,95 @@
+---
+sidebar_position: 22
+---
+
+import { Avatar } from '@colox/react';
+import '@colox/react/style.css';
+
+# Avatar
+
+The portrait primitive — a round footprint carrying one of three content
+forms in priority order:
+
+1. **`children`** — a rich content slot (an icon or any custom node), always
+   wins when present;
+2. **`src`** — the picture avatar; on load failure it falls back to
+   `fallback`, then to the `name` initials, then to the `alt` initials;
+3. **`name`** — a person name, automatically reduced to its initials (CJK
+   first character, Latin first letters).
+
+`fallback` is the image-failure escape hatch only — a missing `src` never
+shows it; `name` (then `alt`) initials are the standing text fallback.
+
+<Avatar name="张伟" />
+<Avatar
+  src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2280%22%20height%3D%2280%22%3E%3Crect%20width%3D%2280%22%20height%3D%2280%22%20rx%3D%2240%22%20fill%3D%22%235B5FC7%22%2F%3E%3Ctext%20x%3D%2240%22%20y%3D%2252%22%20font-size%3D%2234%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22sans-serif%22%3E%E5%BC%A0%3C%2Ftext%3E%3C%2Fsvg%3E"
+  alt="张伟"
+/>
+<Avatar>
+  <span role="img" aria-label="User">
+    👤
+  </span>
+</Avatar>
+
+## Shape
+
+Circle is the default — an avatar reads as a round portrait. `rounded` rides
+the form-family radius, `square` has none.
+
+<Avatar name="张伟" shape="circle" />
+<Avatar name="张伟" shape="rounded" />
+<Avatar name="张伟" shape="square" />
+
+## Size
+
+`size` takes the preset form tiers (same-name same-block as
+Input/Button/Select) **or any theme size-token key** — the text tier follows
+the footprint proportionally.
+
+<Avatar name="张伟" size="xs" />
+<Avatar name="张伟" size="sm" />
+<Avatar name="张伟" size="md" />
+<Avatar name="张伟" size="lg" />
+
+`size="4"` renders a 16px avatar; `size="7"` renders 28px — any `sizeKeys`
+value works.
+
+## Variant and palette
+
+`variant` sets the surface strength of the **text avatar** (and of the
+failure fallback); `palette` the semantic color family of the colored
+variants. A picture avatar ignores the axis — the image is the content.
+
+- `plain` (default): the quiet neutral portrait surface — muted background,
+  default text, palette-independent.
+- `subtle`: the palette tint fill.
+- `solid`: the full palette fill with inverse text.
+- `outline`: a palette ring on a transparent fill.
+
+<Avatar name="张伟" />
+<Avatar name="张伟" variant="subtle" />
+<Avatar name="张伟" variant="solid" />
+<Avatar name="张伟" variant="outline" />
+
+<Avatar name="张伟" variant="solid" palette="primary" />
+<Avatar name="张伟" variant="solid" palette="info" />
+<Avatar name="张伟" variant="solid" palette="success" />
+<Avatar name="张伟" variant="solid" palette="warning" />
+<Avatar name="张伟" variant="solid" palette="error" />
+
+## Failure fallback
+
+A picture avatar whose `src` fails to load fires `onError` once and falls
+back to the `fallback` escape hatch when given, then to the `name`
+initials, then to the `alt` initials.
+
+<Avatar src="https://example.invalid/avatar.png" alt="张伟" name="张伟" />
+<Avatar src="https://example.invalid/avatar.png" alt="张伟" fallback={<span>!</span>} />
+
+## Accessibility
+
+- A picture avatar reads through the inner `img`'s `alt` — required; a
+  missing `alt` warns and renders an empty alt.
+- The derived text avatar is `role="img"`, named by `aria-label`, then the
+  `name`, then the `alt`.
+- An author-supplied `children`/`fallback` node owns its own naming.

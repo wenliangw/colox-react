@@ -1,0 +1,28 @@
+@use '@colox/theme/variables' as tokens;
+
+// Preset tiers: one block with the form family — Button/Input/Select
+// land their same-name tiers on the same size tokens.
+.colox-avatar--xs {
+  --colox-avatar-block: var(--colox-size-6);
+}
+
+.colox-avatar--sm {
+  --colox-avatar-block: var(--colox-size-8);
+}
+
+.colox-avatar--md {
+  --colox-avatar-block: var(--colox-size-10);
+}
+
+.colox-avatar--lg {
+  --colox-avatar-block: var(--colox-size-12);
+}
+
+// Raw scale keys, straight from the theme emission: every size token
+// is addressable as `size="<key>"` (`size="4"` renders a 16px
+// avatar).
+@each $key in tokens.$colox-size-keys {
+  .colox-avatar--size-#{$key} {
+    --colox-avatar-block: var(--colox-size-#{$key});
+  }
+}

@@ -18,20 +18,19 @@ discipline and non-goals — lives in the repository:
 - **Form controls** — `Input`, `InputNumber`, `Textarea`, `Checkbox`, `Radio`,
   `Switch`, `Slider`, `DatePicker`, `Select`, `AutoComplete`.
 - **Form layer** — `Form` with `Form.Field` / `Form.Label` / `Form.Hint` /
-  `Form.Validate` and `useForm`.
-- **Overlay** — `Tooltip` (the hover/focus hint layer).
+  `Form.Validate` and `useForm`; `TimePicker`; `Compact` (the visual joining base).
+- **Overlay** — `Tooltip`, `Popover`, `Modal`, `Drawer` and the message system
+  (`Toast` / `Notify` on the shared `MessageViewport`).
 
 ## Next
 
-| Milestone                     | Contents                                                                                                                                                                      |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| M3 Form layer (complete)      | delivered: `Form` + fields + rules + TimePicker panel refresh + `Compact` (the visual joining base) — deferred: `FieldArray` (dynamic list form, design re-alignment pending) |
-| M4 Overlay                    | delivered: `Tooltip` — pending: `Popover`, `Modal`, `Drawer`, `Toast`                                                                                                         |
-| M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`                                                                                                            |
-| M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps`                                                                                                      |
-| M7 Data display               | `Table`, `VirtualList`, `Tree`                                                                                                                                                |
-| M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                                                                                                                               |
-| M9 Combobox consumers         | `Mentions`, `Cascader`, `TreeSelect`, `Transfer`                                                                                                                              |
+| Milestone                     | Contents                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`       |
+| M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps` |
+| M7 Data display               | `Table`, `VirtualList`, `Tree`                                           |
+| M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                          |
+| M9 Combobox consumers         | `Mentions`, `Cascader`, `TreeSelect`, `Transfer`                         |
 
 Components with no product scenario yet (Carousel, Tour, Upload, …) are listed as
 "on demand" in the repository roadmap and enter a milestone when a real need

@@ -224,11 +224,35 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   the M4 overlay family is complete: Tooltip / Popover / Modal / Drawer
   / Toast / Notify.
 
-### M5 — Display and feedback (planned)
+### M5 — Display and feedback (in progress)
 
-- `Avatar`, `Badge`, `Tag` (the size/rounded habits for shape components are
-  already recorded in the API-design taste), `Alert`, `Progress`, `Skeleton`,
-  `Empty`.
+- `Avatar` — the portrait primitive — **shipped**: a round footprint
+  (circle by default — the ecosystem convention, an avatar reads as a
+  round portrait; `shape` also offers `rounded`/`square`, breaking the
+  family's "square-by-default + explicit `rounded`" habit on purpose —
+  a portrait is not a control), carrying one of three content forms in
+  priority order (`children` the rich slot always wins → `src` the
+  picture avatar → `name` auto-derived initials — CJK first character,
+  Latin first letters). `size` takes the form-family preset tiers
+  (xs/sm/md/lg, same-name same-block as Button/Input) or any theme
+  size-token key, the text tier following the footprint
+  proportionally. A picture avatar whose image fails to load fires
+  `onError` once and falls back to the `fallback` escape hatch, then
+  to the `name` initials, then to the `alt` initials — `fallback` is
+  the image-failure escape hatch only, a missing `src` never shows it;
+  `alt` is required (missing warns), the
+  derived text avatar is `role="img"` named by `aria-label` or the
+  `name`, and author-supplied `children`/`fallback` nodes own their
+  own naming. `variant` (plain/subtle/solid/outline — the text-avatar
+  surface strength) and `palette` (the six design-language families,
+  read by the colored variants) were added on the maintainer's
+  request after the first landing — a semantic-color portrait needs
+  them (role/group/status coloring); plain stays the quiet neutral
+  muted surface, palette-independent. The Avatar+Badge combo forms
+  naturally when Badge lands.
+- `Badge`, `Tag` (the size/rounded habits for shape components are
+  already recorded in the API-design taste), `Alert`, `Progress`,
+  `Skeleton`, `Empty` — planned.
 
 ### M6 — Navigation and containment (planned)
 

@@ -1,0 +1,14 @@
+// The footprint rounding. Circle is the default (the portrait reads as
+// a round head), `rounded` rides the form-family lg radius and
+// `square` has none.
+.colox-avatar--circle {
+  border-radius: var(--colox-radius-full);
+}
+
+.colox-avatar--rounded {
+  border-radius: var(--colox-radius-lg);
+}
+
+.colox-avatar--square {
+  border-radius: var(--colox-radius-none);
+}

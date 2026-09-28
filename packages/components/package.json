@@ -90,6 +90,11 @@
       "import": "./dist/es/autocomplete.js",
       "require": "./dist/cjs/autocomplete.cjs"
     },
+    "./avatar": {
+      "types": "./dist/types/avatar/index.d.ts",
+      "import": "./dist/es/avatar.js",
+      "require": "./dist/cjs/avatar.cjs"
+    },
     "./positioner": {
       "types": "./dist/types/positioner/index.d.ts",
       "import": "./dist/es/positioner.js",

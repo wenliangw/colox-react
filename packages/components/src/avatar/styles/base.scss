@@ -1,0 +1,47 @@
+/**
+ * Avatar — the portrait primitive.
+ *
+ * Base scope: the token-pinned round footprint, the centering
+ * behavior, the fallback surface (muted background + default text,
+ * what a text/empty avatar rests on), the image paint (cover-crop
+ * into the footprint) and the private palette variables (the brand
+ * fallback keeps the paint alive even without a palette class).
+ * Size tiers live in size.scss, the footprint rounding in shape.scss,
+ * the surface strength in variant.scss, the palette families in
+ * palette.scss. The text tier is sized proportionally to the
+ * footprint, so any raw size key gets a readable initial without a
+ * per-tier font table.
+ */
+.colox-avatar {
+  // md fallback: the size channel normally feeds this var through a
+  // size class, but the base keeps a sane footprint on its own.
+  --colox-avatar-block: var(--colox-size-10);
+  // Palette fallback: the palette layer overrides these; the brand
+  // family keeps the paint alive even without a palette class.
+  --colox-avatar-palette-solid: var(--colox-color-brand-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-brand-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-brand-inverse);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--colox-avatar-block);
+  height: var(--colox-avatar-block);
+  overflow: hidden;
+  background-color: var(--colox-color-bg-muted);
+  color: var(--colox-color-text-default);
+  font-weight: var(--colox-font-weight-medium);
+  font-size: calc(var(--colox-avatar-block) * 0.45);
+  line-height: 1;
+  user-select: none;
+  vertical-align: middle;
+}
+
+.colox-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

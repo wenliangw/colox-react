@@ -1,0 +1,48 @@
+/**
+ * Palette color families — the six design-language families mapped
+ * onto the private avatar palette variables. Each family carries its
+ * solid level (the subtle fill's text and the outline's ring), the
+ * subtle tint fill and the inverse on-fill. Base.scss holds the brand
+ * fallback so the paint survives even without a palette class.
+ */
+.colox-avatar--primary {
+  --colox-avatar-palette-solid: var(--colox-color-brand-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-brand-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+.colox-avatar--gray {
+  --colox-avatar-palette-solid: var(--colox-color-gray-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-gray-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-gray-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-gray-inverse);
+}
+
+.colox-avatar--info {
+  --colox-avatar-palette-solid: var(--colox-color-blue-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-blue-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-blue-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-blue-inverse);
+}
+
+.colox-avatar--error {
+  --colox-avatar-palette-solid: var(--colox-color-red-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-red-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-red-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-red-inverse);
+}
+
+.colox-avatar--warning {
+  --colox-avatar-palette-solid: var(--colox-color-orange-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-orange-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-orange-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-orange-inverse);
+}
+
+.colox-avatar--success {
+  --colox-avatar-palette-solid: var(--colox-color-green-solid);
+  --colox-avatar-palette-subtle: var(--colox-color-green-subtle);
+  --colox-avatar-palette-muted: var(--colox-color-green-muted);
+  --colox-avatar-palette-inverse: var(--colox-color-green-inverse);
+}
