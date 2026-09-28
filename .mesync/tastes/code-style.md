@@ -41,6 +41,7 @@
 - **文件夹内不许同级平铺**：按能力分层，组件根目录只保留组件入口 `index.tsx`；能力一律文件夹化（`theme-context/types/index.ts`、`theme-context/context/index.ts`、`theme-context/reducers/theme.ts`）。
 - **测试独立目录**：`test/` 与 `src/` 同级，按功能模块分目录（theme：`test/theme-context/`；theme-builder：`test/cli/` + `test/config/`）；测试基础设施放 `test/utils/` 与 `test/setup.ts`。
 - **src 内引用规范**：跨模块引用走 `@/` 别名（tsconfig paths + vite/vitest alias 三处齐配）；组件文件夹内部用相对路径（`./types`、`../constants/theme`，与 react 包组件一致）。
+- **hooks/ 只放 React hooks——纯 TS 装置归 utils/**：不消费 React 的类/函数装置（timer、date、combobox 纯函数）落 `utils/`（或对应能力目录），`hooks/` 目录身份 = React hooks；装置不冒充 hook（前科：Timer 倒计时核先放 hooks/timer 下，用户立即指正「既然不写 hook，应创建到 utils 下」）。「后面会有组件复用」不是现在写 hook 的理由——hook 等真实消费方出现再写，未消费的 API 不立项。
 
 ## store / utils / constants 各司其职，消灭魔法值
 

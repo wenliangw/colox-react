@@ -62,57 +62,59 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
 
 - **`store.ts`**：`createMessageStore()` 工厂 + `MessageStore` 类——队列 +
   shown→exiting→removed 状态机 + duration 计时 + hover pause/resume
-  （记录 remaining；**多持有者计数**——`pauseCount` 每 holder +1、归零才
-  restart，hover 暂停与折叠冻结可叠加）+ `getRemaining(id)`（剩余 ms /
-  无计时返回 null，倒计时胶囊读秒源）+ `DEFAULT_EXIT`=200 退场窗口
-  （**已无 DEFAULT_SWAP**——
-  透明度换场机制整体退役）+ subscribe/getSnapshot/
-  add/update/dismiss/dismissAll/pause/resume/getRemaining。**剩余时间是
-  自持账本**（`remaining`：startCountdown 武装、pause 按 elapsed 递减、
-  resume 从账本重启、getRemaining 读账本 ± 活期流逝）——不从
-  `entry.duration` 反推：resume 后 startedAt 归零，反推会把冻结史
-  拉回满时长。**fold 记账在 store**：`folds` Map（position → 该槽
-  冻结持有 id 集——进入 >FOLD_THRESHOLD、持有到底、清空才
-  褪；**逐槽隔离**，释放一槽绝不妨扰另槽的冻结）+ `reconcileFold()`
-  （emit 前置对账——阈值进出/冻结持卡/末卡释放/离槽者剔剪）+
-  `isFolded(position)` 供 viewport 直读；`transitionToExiting` 内聚
-  `clearCountdown`（任何 shown→exiting 路径不遗留计时器）；
-  **`restartCountdown` 统一倒计时重启**（update/replaceInPlace）——
-  重启前清账本、重新武装后若卡片在折叠持有集内即刻 `pause` 补回冻结
-  持有（**更新不解冻折叠卡**：折叠承诺「突刺不自删」，任何重启路径
-  都不得破坏冻结）；
-  `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
-  晋升者 contentVersion+1 播 zoom——无退场窗）；叠期新到卡在 `add` 里
-  判 `folds.has(position)` 直接 contentVersion 置 1（露出即
-  zoom）；胶囊 ✕ =
-  **`clearSlot(position)`**（积压即时清 + 可见卡走退场窗）；dismissAll
-  折叠槽走同纪律。**type 在条目上**
-  （`MessageAddOptions` 含 type）——命令式场景 usePresence 的 open
-  翻转不适用，全部 timer 归 store。**默认解析集中**：`resolveMessageDefaults`
-  把 mode（缺省 info）、palette（缺省随 mode）、variant（缺省 plain）、
-  showIcon/closeable（缺省均 true）一次解析——条目上 chrome 永不为
-  undefined；**single 策略在 add 时执行**——同 type + 同 position 已有条目时
-  走 `replaceInPlace`（保留条目 id 与 DOM 节点不重新挂载、不区分 palette/
-  variant；**即时落位**：shown 态先 `fireClose(existing)`（旧载荷终结）、
-  直接 commit `{...next, contentVersion + 1}`（内容结点重挂 + zoom
-  进场）+ `restartCountdown` 计时重置；退场态复活同样即时换载荷——不再重发
-  onClose（该载荷已在退场发过））。**chrome 是结构态不是载荷**：
-  showIcon/closeable 不进 pending（现在也没有 pending）——update 里即时
-  并入 next。`update(key, patch)` 可见载荷变化
-  （content/title/mode/palette/variant 引用比较、shown 态）
-  **即时落位 + `contentVersion + 1`**（重挂 + zoom 进场）+ 倒计时重启；
-  隐形 patch（duration/key/position/chrome/data/onClose）即时应用不重挂。
-  **onClose 生命周期**：随「载荷终结」发一次——dismiss（✕/api）、
-  自动超时、dismissAll、原地被替换（替换落位的同一刻发）；update
-  延续同一载荷不触发；无 mid-swap 状态，故也不需要防重发护栏。
-  **fire 序 = 先 commit 后 fire**（决策 ae16bee7，round 12 修复）：
-  onClose 恒在 entries 提交成终态（exiting / 已替换）之后才 fire——
-  回调重入 add 看到的已是 committed 状态（exiting 条目 single 替换时
-  revive 不再重发、新载荷占新槽）；旧序（先 fire 后改 status）会让
-  demo 式 onClose（`() => Toast.info(...)` 同槽 single）命中仍是 shown
-  的旧条目再 replaceInPlace 再 fire、无限递归。
-  同槽 stack 残留的其它 shown 条目一并 transitionToExiting（存活者位置
-  不动、无回流），无既有条目才新加。
+  - `getRemaining(id)`（剩余 ms /
+    无计时返回 null，倒计时胶囊读秒源）+ `DEFAULT_EXIT`=200 退场窗口
+    （**已无 DEFAULT_SWAP**——
+    透明度换场机制整体退役）+ subscribe/getSnapshot/
+    add/update/dismiss/dismissAll/pause/resume/getRemaining。**倒计时
+    核心提为共享 `Timer`**（`cdk/utils/timer.ts`，纯 TS 装置非 hook）：
+    剩余账本（start 武装/pause 按 elapsed 递减/resume 从账本重启/
+    getRemaining 读账本 ± 活期流逝——不从 `entry.duration` 反推）、
+    多持有者暂停（hover 与冻结叠加）、一实例一在途计时器，全在类内；
+    store 只持 `Map<id, Timer>`（到期路由 dismiss）、`exitTimers`
+    （退场窗 = 固定延时无暂停语义，独立 map；复活路径先销退场计时器）。
+    **fold 记账在 store**：`folds` Map（position → 该槽
+    冻结持有 id 集——进入 >FOLD_THRESHOLD、持有到底、清空才
+    褪；**逐槽隔离**，释放一槽绝不妨扰另槽的冻结）+ `reconcileFold()`
+    （emit 前置对账——阈值进出/冻结持卡/末卡释放/离槽者剔剪）+
+    `isFolded(position)` 供 viewport 直读；`transitionToExiting` 内聚
+    timer clear（任何 shown→exiting 路径不遗留计时器）；
+    **`restartCountdown` 统一倒计时重启**（update/replaceInPlace）——
+    重启前清账本、重新武装后若卡片在折叠持有集内即刻 `pause` 补回冻结
+    持有（**更新不解冻折叠卡**：折叠承诺「突刺不自删」，任何重启路径
+    都不得破坏冻结）；
+    `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
+    晋升者 contentVersion+1 播 zoom——无退场窗）；叠期新到卡在 `add` 里
+    判 `folds.has(position)` 直接 contentVersion 置 1（露出即
+    zoom）；胶囊 ✕ =
+    **`clearSlot(position)`**（积压即时清 + 可见卡走退场窗）；dismissAll
+    折叠槽走同纪律。**type 在条目上**
+    （`MessageAddOptions` 含 type）——命令式场景 usePresence 的 open
+    翻转不适用，全部 timer 归 store。**默认解析集中**：`resolveMessageDefaults`
+    把 mode（缺省 info）、palette（缺省随 mode）、variant（缺省 plain）、
+    showIcon/closeable（缺省均 true）一次解析——条目上 chrome 永不为
+    undefined；**single 策略在 add 时执行**——同 type + 同 position 已有条目时
+    走 `replaceInPlace`（保留条目 id 与 DOM 节点不重新挂载、不区分 palette/
+    variant；**即时落位**：shown 态先 `fireClose(existing)`（旧载荷终结）、
+    直接 commit `{...next, contentVersion + 1}`（内容结点重挂 + zoom
+    进场）+ `restartCountdown` 计时重置；退场态复活同样即时换载荷——不再重发
+    onClose（该载荷已在退场发过））。**chrome 是结构态不是载荷**：
+    showIcon/closeable 不进 pending（现在也没有 pending）——update 里即时
+    并入 next。`update(key, patch)` 可见载荷变化
+    （content/title/mode/palette/variant 引用比较、shown 态）
+    **即时落位 + `contentVersion + 1`**（重挂 + zoom 进场）+ 倒计时重启；
+    隐形 patch（duration/key/position/chrome/data/onClose）即时应用不重挂。
+    **onClose 生命周期**：随「载荷终结」发一次——dismiss（✕/api）、
+    自动超时、dismissAll、原地被替换（替换落位的同一刻发）；update
+    延续同一载荷不触发；无 mid-swap 状态，故也不需要防重发护栏。
+    **fire 序 = 先 commit 后 fire**（决策 ae16bee7，round 12 修复）：
+    onClose 恒在 entries 提交成终态（exiting / 已替换）之后才 fire——
+    回调重入 add 看到的已是 committed 状态（exiting 条目 single 替换时
+    revive 不再重发、新载荷占新槽）；旧序（先 fire 后改 status）会让
+    demo 式 onClose（`() => Toast.info(...)` 同槽 single）命中仍是 shown
+    的旧条目再 replaceInPlace 再 fire、无限递归。
+    同槽 stack 残留的其它 shown 条目一并 transitionToExiting（存活者位置
+    不动、无回流），无既有条目才新加。
 
 - **`constants/defaults.ts`**：`DEFAULT_DURATION`=3000（默认自动关窗）、
   `DEFAULT_EXIT`=200（退场窗口，CSS 时长镜像）、`ROOT_SCOPE`='root'。
@@ -171,6 +173,12 @@ absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账�
 
 - **`cdk/utils/id.ts`**：`createId(prefix)` 通用唯一 ID 生成器（毫秒 +
   同毫秒序号 + 前缀计数）。
+
+- **`cdk/utils/timer.ts`**：**`Timer`** 类——可 start/pause/resume/
+  restart/clear/getRemaining 的共享倒计时核（剩余账本真值 + 多持有者
+  暂停 + 一实例一在途计时器，类内结构化了三轮审计的不变量）；消息条目
+  一钟、到期路由 dismiss。**未来 CountDown 组件复用此核**——hook 只包
+  订阅与 tick，计时机制不重写。（纯 TS 装置归 utils 不冒充 hook。）
 
 - **styles/**：viewport.scss（容器 fixed/absolute + 六槽绝对定位 +
   notify 折叠计数胶囊/倒计时胶囊/清空✕）、box.scss（palette→私有变量映射 +
