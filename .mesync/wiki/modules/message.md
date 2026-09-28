@@ -66,7 +66,14 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   无计时返回 null，倒计时胶囊读秒源）+ `DEFAULT_EXIT`=200 退场窗口
   （**已无 DEFAULT_SWAP**——
   透明度换场机制整体退役）+ subscribe/getSnapshot/
-  add/update/dismiss/dismissAll/pause/resume/getRemaining。**type 在条目上**
+  add/update/dismiss/dismissAll/pause/resume/getRemaining。**fold 记账
+  在 store**：`foldedPositions`（进入 >FOLD_THRESHOLD、持有到底、清空才
+  褪）+ `foldHeldIds`（冻结持有）+ `reconcileFold()`（emit 前置对账——
+  阈值进出/冻结持卡/末卡释放）+ `isFolded(position)` 供 viewport 直读；
+  `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
+  晋升者 contentVersion+1 播 zoom——无退场窗）；胶囊 ✕ =
+  **`clearSlot(position)`**（积压即时清 + 可见卡走退场窗）；dismissAll
+  折叠槽走同纪律。**type 在条目上**
   （`MessageAddOptions` 含 type）——命令式场景 usePresence 的 open
   翻转不适用，全部 timer 归 store。**默认解析集中**：`resolveMessageDefaults`
   把 mode（缺省 info）、palette（缺省随 mode）、variant（缺省 plain）、
@@ -116,20 +123,23 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   每条目用 messageFactory.getRenderer(entry.type) 渲染（传 entry + store
   props），useEffect 卸载时 unregister(scope)，spread rest props，
   `import './styles/index.scss'`。容器类 `colox-message-viewport--fixed/
-absolute`、data-scope。**notify 折叠在这里**：同槽 notify 显示条目 >
-  FOLD_THRESHOLD(2) 时交折叠（MessageDeck 全系退役），slot 拆到
-  `MessageSlot` 组件——最新卡可见 + `FoldCapsule` 计数胶囊（总数 + 清空✕
-  `.colox-message-count__clear`）；积压卡**停止渲染**且**冻结计时**（不进
-  退场——heldIds ref 记录、每卡 hold 一个 store.pause()，与 hover pause
-  共存靠 store 的 pauseCount 多持有者计数）；关可见卡 LIFO pop（最新积压
-  补位展示）、胶囊计数递减；剩最后 1 张时释放冻结（resume）、胶囊切换
-  `--countdown` 倒计时胶囊（COUNTDOWN_TICK 250ms 读 store.getRemaining(id)
-  展示剩余秒），该卡恢复自动关闭、归零走人。✕ = 清空整个槽（逐条 dismiss
-  照常发 onClose）。折叠态持续到栈空才褪去（4→3→2→1 不中途回退）。**三代
-  前科**（用户「没有堆叠反而像透明」起，三轮收敛）：①首版 peek 无轴长
-  overflow + opacity 0.6 → 半透明整卡罗列；②限高裁切细条（腰斩文字）；
-  ③z-index 露边牌堆（用户拍板做进去后仍换掉）；④终态 = 不堆叠——计数
-  胶囊 + 冻结 + 手动 LIFO pop + 倒计时胶囊（用户「更好的想法」）。
+absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账归 store（`isFolded(position)`
+  直读，viewport 是纯渲染）；折叠态下可见卡走 **`fold-display` 固定 key 的
+  display 槽**——pop 时帧留存（不重建、不重播进场动画）、晋升卡
+  contentVersion 进位让词面重挂播 zoom（popInstant 的即时落位语言，用户
+  拍板「直接同位置更新，不要再走退出动画」）；`FoldCapsule` 计数胶囊
+  （总数 + 清空✕ `.colox-message-count__clear`→store.clearSlot）；积压卡
+  **停止渲染**且**冻结计时**（store 持有，不进退场——foldHeldIds +
+  pauseCount 多持有者，与 hover pause 共存）；剩最后 1 张时 store 释放
+  冻结、胶囊切换 `--countdown` 倒计时胶囊（COUNTDOWN_TICK 250ms 读
+  store.getRemaining(id) 展示剩余秒），该卡恢复自动关闭、归零走人；
+  **退出动画只属于最后一张**——此前的 pop 与 ✕ 积压均即时清除，无退场
+  窗。折叠态持续到栈空才褪去（4→3→2→1 不中途回退）。**四代前科**（用户
+  「没有堆叠反而像透明」起，四轮收敛）：①首版 peek 无轴长 overflow +
+  opacity 0.6 → 半透明整卡罗列；②限高裁切细条（腰斩文字）；③z-index
+  露边牌堆（用户拍板做进去后仍换掉）；④不堆叠——计数胶囊 + 冻结 +
+  倒计时胶囊（用户「更好的想法」）；⑤补 pop 即时语义（同位置更新、无
+  退场动画）。
 
 - **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +
@@ -210,7 +220,8 @@ notify、package.json 加 `./notify` 子路径（modal 后 popover 前）。
 - **single 作用域**：按槽位（position）+ kind 类型——同槽新 toast 替换旧 toast，
   不同 position / 不同 type 互不干扰。
 - **fold 只折叠 notify**：同槽 notify > 2 才折叠（最新卡 + 计数胶囊，冻结
-  计时不自动删、LIFO pop、最后一卡倒计时）；toast（默认 single）天然
+  计时不自动删、关卡 LIFO 即时 pop 无退场动画——**退场只属最后一张**、
+  最后一卡倒计时胶囊）；toast（默认 single）天然
   一槽一条，stack 时照常堆叠不折叠。
 - **范围外**：嵌套 viewport（scope 名重复归最后挂载者）、可拖拽、多实例
   均为范围外。

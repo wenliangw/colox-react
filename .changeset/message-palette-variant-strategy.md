@@ -31,13 +31,23 @@ viewport pollution:
   folds into the newest card plus one count capsule (the tally + a
   clear-all ✕); the folded cards stop rendering and their auto-dismiss
   countdowns freeze, so a burst never deletes itself behind the user's
-  back. Closing the visible card pops the stack LIFO — the newest
-  backlog card slides into the visible slot — and when the stack is
-  down to its last card, that card resumes its timer while the capsule
-  turns into a countdown capsule reading its remaining seconds. The
-  store's pause/resume becomes a holder counter (the fold freeze and
-  the hover pause stack) and `getRemaining(id)` feeds the countdown
-  capsule.
+  back. Closing the visible card pops the stack **in place** — the
+  popped card leaves with no exit window and the next-newest card
+  lands right where it was (the display slot keeps its frame, the
+  incoming words play the zoom entrance — the single-replacement
+  update language); only the LAST card of a fold walks the exit
+  animation. When the stack is down to that last card, the card
+  resumes its timer while the capsule turns into a countdown capsule
+  reading its remaining seconds. The store's pause/resume becomes a
+  holder counter (the fold freeze and the hover pause stack) and
+  `getRemaining(id)` feeds the countdown capsule.
+- **fold bookkeeping lives in the store** — the fold (enter past the
+  threshold, hold through the descent, drain when empty) rides
+  `reconcileFold` on every commit with `isFolded` for the viewport;
+  the folded close routes through `popInstant` and the capsule ✕
+  through `clearSlot` (the invisible backlog clears instantly — a
+  never-seen card never flashes an exit animation — while the visible
+  card exits).
 - **toast chrome** — `showIcon: false` drops the mode icon,
   `closeable: false` drops the corner ✕ (both default on). Chrome is
   renderer-owned, structural state: it toggles eagerly and never

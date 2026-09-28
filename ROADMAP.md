@@ -197,8 +197,12 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   tally + one clear-all ✕) — the viewport-pollution valve for
   notification bursts. Folded countdowns **freeze**: nothing deletes
   itself behind the user's back; closing the visible card pops the
-  stack LIFO and the last survivor resumes its timer under a **countdown
-  capsule** on its remaining seconds. The message
+  stack **in place** (the popped card leaves instantly — no exit
+  animation — and the next card lands right there with the zoom
+  entrance, the single-replacement update language; **only the last
+  card of a fold plays the exit animation**) and the last survivor
+  resumes its timer under a **countdown capsule** on its remaining
+  seconds. The message
   store is a shown→exiting→removed state machine (all timers in the
   store — duration, hover pause/resume on a holder counter so the fold
   freeze and hover pause stack, `DEFAULT_EXIT`=200 window;

@@ -44,3 +44,11 @@ Form store 批 A 修复（2026）拖出的两类状态真值缺陷，将来任�
   - [ ] 幂等性靠调用侧记录（heldIds ref）而不是 store 里猜——组件 effect 每次渲染重复 pause 会让计数虚增、resume 一次解不掉。
   - [ ] 补「双 holder、逆序释放」测试：pause A + freeze B → A 释放仍冻结 → B 释放恢复计时。
 - **为什么**：fold 冻结改造时的选型——单例 pause/resume 会让 hover 离开箱体时把视口持有的冻结一并解除（box 的 onMouseLeave 永远 resume），折叠中的通知恢复自动删除，正好毁掉「出现堆叠后不再自动关闭」的语义；计数 + 视口 heldIds 幂等是两处各司其职。
+
+## 订阅通知（emit）里跑状态对账 → 对账依赖的副作用必须先 commit
+
+- **改这里**：把「跟随每次变更的重算/对账」（fold 记账、派生缓存、清理回收）挂进 emit/subscribe 通知点，且该对账读写副作用状态（计时器、holder、剩余量）。
+- **必须检查：**
+  - [ ] 对账依赖的副作用（add 的 startCountdown 等）先于 emit 落位——emit 后启动会让对账看到「无计时器的新条目」，冻结/栅栏类逻辑静默放行（新卡逃逸冻结）。
+  - [ ] 对账函数幂等 + 不 emit——它跑在 emit 里，自身再 emit 会递归；内部 mutation（timer/holder）不通知。
+- **为什么**：fold 冻结迁进 store 的 reconcileFold（挂 emit 前置）时，add 的第 3 条在 emit 之后才 startCountdown——reconcileFold 的 pause 找不到计时器，折叠槽的新卡漏冻结、照常自动删；教训 = 通知点是「状态已完整」的承诺边界，进通知点前一切应落位。

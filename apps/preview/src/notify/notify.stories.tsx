@@ -179,8 +179,10 @@ export const Overview = {
                 onClick={() => {
                   // a burst: the slot passes FOLD_THRESHOLD (2) and folds
                   // into the newest card + a count capsule; the folded
-                  // countdowns freeze — close the card to pop the stack,
-                  // the capsule ✕ clears everything at once
+                  // countdowns freeze — closing the card pops the slot IN
+                  // PLACE (no exit animation, the next card's words zoom
+                  // in; only the last card exits), the capsule ✕ clears
+                  // everything at once
                   Notify.info({ title: 'one', content: 'First in.' });
                   Notify.info({ title: 'two', content: 'Second in.' });
                   Notify.info({ title: 'three', content: 'Third in.' });
