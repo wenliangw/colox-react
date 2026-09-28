@@ -191,15 +191,17 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   `dismiss(key?)`, duration auto-dismiss (default ~3s, 0 = sticky),
   hover pause, manual close (IconButton muted, gated by `closeable`),
   per-item exit on the
-  shared motion tier, `role="status"` (polite) by default. A slot with
-  more than three notify cards collapses into a **deck** (newest full
-  and holding the pile's footprint, the two behind it rendered in full
-  and hanging above it — a z-index ladder shifted up by index × 4px so
-  their top edges peek out like cards in a deck, the rest in a `+N`
-  chip, click to expand/collapse) —
-  the viewport-pollution valve for notification bursts. The message
+  shared motion tier, `role="status"` (polite) by default. A slot
+  showing more than two notify cards **folds** — the newest card stays
+  visible, the rest stop rendering and fold into a count capsule (the
+  tally + one clear-all ✕) — the viewport-pollution valve for
+  notification bursts. Folded countdowns **freeze**: nothing deletes
+  itself behind the user's back; closing the visible card pops the
+  stack LIFO and the last survivor resumes its timer under a **countdown
+  capsule** on its remaining seconds. The message
   store is a shown→exiting→removed state machine (all timers in the
-  store — duration, hover pause/resume, `DEFAULT_EXIT`=200 window;
+  store — duration, hover pause/resume on a holder counter so the fold
+  freeze and hover pause stack, `DEFAULT_EXIT`=200 window;
   `single` replaces same-type same-slot entries IN PLACE at add time —
   same node, the new payload lands instantly and its words play a
   **zoom entrance** (a scale+fade re-mount on the shared motion tier —

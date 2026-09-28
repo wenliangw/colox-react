@@ -9,10 +9,11 @@
 [message.md](message.md)。
 
 **默认 `strategy: 'stack'`**——通知卡片可以多条并存；防视口污染靠
-**deck 折叠**（用户拍板）：同槽 notify 超过 3 条折叠为 deck——最新卡全显、
-后两张露顶部边（完整渲染 + z-index 阶梯 + index×4px 同向偏移）、其余折叠
-进 `+N` 计数 chip，点卡面/计数展开收起（展开后
-newest-first 全列表 + chevron-up 收起 chip）。可选 `{ strategy: 'single' }`
+**fold 折叠**（用户三轮拍板，deck/牌堆两代退役）：同槽 notify 显示 > 2 条
+折叠——最新卡可见 + **计数胶囊**（总数 + 清空✕）；积压卡停止渲染且**冻结**
+计时（不自动删）；关可见卡 = **LIFO pop**（最新积压依次补位展示），计数
+递减；剩最后 1 张时恢复定时关闭、胶囊切换为**倒计时胶囊**（读秒）。可选
+`{ strategy: 'single' }`
 替换在槽内（同一 DOM 节点、**即时落位 + zoom 进场**——与 Toast 同机制，
 无任何透明度过渡，见 [message.md](message.md)）。
 
@@ -73,7 +74,8 @@ Notify.dismiss();             // 该 scope 全部
   等决定型交互是对话框职责，自造交互走 `Notify.custom`）。
 - 默认槽 `top-right`；六位置相对容器盒。
 - **palette 默认随 mode**；variant 四档默认 plain。
-- **deck 阈值 = 3**（DECK_THRESHOLD）：同槽 notify > 3 才折叠；front 全显 +
-  露边两张（z-index 阶梯 + index×4px 上移）、其余进 `+N`。deck 只折叠
-  notify 类目，toast 不折叠。
+- **fold 阈值 = 2**（FOLD_THRESHOLD）：同槽 notify 显示 > 2 才折叠；最新卡
+  可见 + 计数胶囊（总数，折叠态持续到清空——不进不出的积压冻结计时），
+  LIFO pop 补位、最后一卡恢复计时 + 倒计时胶囊。fold 只折叠 notify 类目，
+  toast 不折叠。
 - 生命周期/退场/共享外壳/scope 路由全部归 cdk/message 基座。

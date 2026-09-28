@@ -173,21 +173,23 @@ export const Overview = {
             </Row>
           </Section>
 
-          <Section title="Burst → deck (past 3) + dismiss">
+          <Section title="Burst → fold capsule (past 2) + dismiss">
             <Row>
               <Button
                 onClick={() => {
-                  // a burst: the slot passes DECK_THRESHOLD (3) and the
-                  // viewport collapses the stack into a deck
-                  Notify.info({ title: 'one', content: 'First in the pile.' });
-                  Notify.info({ title: 'two', content: 'Second behind it.' });
-                  Notify.info({ title: 'three', content: 'Third peeks out.' });
-                  Notify.info({ title: 'four', content: 'Fourth folds into +N.' });
+                  // a burst: the slot passes FOLD_THRESHOLD (2) and folds
+                  // into the newest card + a count capsule; the folded
+                  // countdowns freeze — close the card to pop the stack,
+                  // the capsule ✕ clears everything at once
+                  Notify.info({ title: 'one', content: 'First in.' });
+                  Notify.info({ title: 'two', content: 'Second in.' });
+                  Notify.info({ title: 'three', content: 'Third in.' });
+                  Notify.info({ title: 'four', content: 'Fourth too.' });
                   Notify.info({ title: 'five', content: 'Fifth too.' });
                 }}
                 variant="subtle"
               >
-                Fire a burst (decks past 3)
+                Fire a burst (folds past 2)
               </Button>
               <Button onClick={() => Notify.dismiss()}>Dismiss all</Button>
             </Row>

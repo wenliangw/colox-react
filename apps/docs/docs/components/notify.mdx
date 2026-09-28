@@ -82,19 +82,24 @@ Notify.error({
 });
 ```
 
-## Strategy: stack + deck
+## Strategy: stack + fold
 
 Notify defaults to `strategy: 'stack'` — several notifications can
 legitimately coexist, each keeping its own timer. To stop a burst from
-polluting the viewport, a slot that holds **more than three** notify
-cards collapses into a **deck**: the newest card stays fully visible
-and holds the pile's footprint, the two behind it render in full and
-hang above it on a z-index ladder — each shifted up by index × 4px so
-its top edge peeks out like the next card in a deck — and the rest
-fold into a `+N` count chip. Click the deck (or the `+N` chip) to
-expand it into the full newest-first stack; the collapse chip folds it
-back. The cards keep their timers and interactions (hover pause,
-close) in both states.
+polluting the viewport, a slot that shows **more than two** notify
+cards **folds**: the newest card stays visible, the rest stop rendering
+and fold into one **count capsule** reading the tally, with a ✕ that
+dismisses the whole slot at once.
+
+While folded, the auto-dismiss countdowns **freeze** — bursting
+notifications stop deleting themselves, so nothing is lost behind the
+user's back. Closing the visible card **pops the stack** (LIFO: the
+newest backlog card slides into the visible slot) and the count ticks
+down. When the stack is down to its **last card**, that card resumes
+its timer and the capsule becomes a **countdown capsule** reading the
+remaining seconds — the slot empties itself at zero. Sticky cards
+(`duration: 0`) never count down, in or out of a fold; hovering keeps
+pausing the countdown as usual.
 
 Pass `strategy: 'single'` to replace in place instead — one card per
 slot; the slot keeps its identity, the new payload lands **instantly**

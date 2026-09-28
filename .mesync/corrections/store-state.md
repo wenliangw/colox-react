@@ -35,3 +35,12 @@ Form store 批 A 修复（2026）拖出的两类状态真值缺陷，将来任�
   - [ ] 每个会「终止一条载荷」的路径（dismiss 单条、dismissAll、single 原地替换）都配一个「重入回调恰好触发一次」的回归测试；计数守卫（`calls === 1` 才重入）让回归失败时是干净断言而非无限递归/栈溢出。
   - [ ] 替换/复活路径在 fire 前 clearCountdown 清掉退出计时器，避免条目复活后再被旧的退出定时器移除。
 - **为什么**：message store 的 `transitionToExiting`/`replaceInPlace`/`dismissAll` 都在 `notifyClose`（fire onClose）之后才改 status/替换 entries——demo 的 `onClose: () => Toast.info(...)` 同槽 single 重入，命中仍是 shown 的旧条目再 replaceInPlace 再 fire，无限递归（用户报「循环引用」）。教训 = 用户回调是 re-entrancy 门，先 commit 再 fire 是唯一安全序（决策 ae16bee7）。
+
+## 暂停/冻结计时 → 多持有者计数，不能单例布尔
+
+- **改这里**：给计时器加「暂停」语义时有两个以上触发源（hover 暂停 + 折叠/积压冻结、隐藏冻结 + 外部 pause API）。
+- **必须检查：**
+  - [ ] 暂停状态是 **holder 计数**（每触发源 +1、归零才 restart）而不是单例布尔/单例 remaining——否则第二个源 pause 时被第一个源「已在暂停」吞掉，或第一个源 resume 时把第二个源的冻结解除（hover 离开解锁折叠冻结 = 积压卡自动删，用户报告场景必现）。
+  - [ ] 幂等性靠调用侧记录（heldIds ref）而不是 store 里猜——组件 effect 每次渲染重复 pause 会让计数虚增、resume 一次解不掉。
+  - [ ] 补「双 holder、逆序释放」测试：pause A + freeze B → A 释放仍冻结 → B 释放恢复计时。
+- **为什么**：fold 冻结改造时的选型——单例 pause/resume 会让 hover 离开箱体时把视口持有的冻结一并解除（box 的 onMouseLeave 永远 resume），折叠中的通知恢复自动删除，正好毁掉「出现堆叠后不再自动关闭」的语义；计数 + 视口 heldIds 幂等是两处各司其职。

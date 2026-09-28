@@ -27,14 +27,17 @@ viewport pollution:
   transition — the zoom on the landed words is the whole swap
   feedback. The countdown restarts for the fresh payload. Invisible
   patches (duration/key only) apply instantly without blinking.
-- **notify deck** — a slot that accumulates more than three notify
-  cards collapses into a stacked deck: the newest card fully visible
-  and holding the pile's footprint, the two behind it rendered in full
-  and hanging above it on a z-index ladder (each shifted up by index ×
-  4px so its top edge peeks out like the next card in a deck), the
-  rest folded into a `+N` count chip. Clicking the deck (or the chip)
-  expands it into the full newest-first stack; the collapse chip folds
-  it back. Cards keep their timers and interactions in both states.
+- **notify fold capsule** — a slot showing more than two notify cards
+  folds into the newest card plus one count capsule (the tally + a
+  clear-all ✕); the folded cards stop rendering and their auto-dismiss
+  countdowns freeze, so a burst never deletes itself behind the user's
+  back. Closing the visible card pops the stack LIFO — the newest
+  backlog card slides into the visible slot — and when the stack is
+  down to its last card, that card resumes its timer while the capsule
+  turns into a countdown capsule reading its remaining seconds. The
+  store's pause/resume becomes a holder counter (the fold freeze and
+  the hover pause stack) and `getRemaining(id)` feeds the countdown
+  capsule.
 - **toast chrome** — `showIcon: false` drops the mode icon,
   `closeable: false` drops the corner ✕ (both default on). Chrome is
   renderer-owned, structural state: it toggles eagerly and never

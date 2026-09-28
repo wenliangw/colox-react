@@ -18,8 +18,9 @@
 update 与替换同款（用户拍板「替换前也直接进行 update，然后 zoom 进场」）、
 **容器上没有任何透明度过渡**（无下潜、无浅谷、无 keyframe 相位）、
 重置计时；无重新挂载/位置跳变；不区分 palette/variant）；可选 `'stack'`
-堆叠。② Notify 默认 `'stack'`，但**同槽超过 3 条折叠成 deck**——最新卡全显、
-后两张 peek 条、其余折叠进 `+N` 计数 chip，点卡面/计数展开收起。
+堆叠。② Notify 默认 `'stack'`，但**同槽 > 2 条交折叠**——最新卡全显、
+积压停止渲染 + 计数胶囊（总数 + 清空✕）、冻结计时、LIFO pop 补位、
+最后一卡倒计时胶囊（见 viewport 条目，四代前科收敛终态）。
 
 **Round 11 命名与目录重整**（用户拍板）：注册判别词 `face` → **`type`**、
 语义轴 `type`（tone）→ **`mode`**、`MessageTone` → **`MessageMode`**、
@@ -60,9 +61,12 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
 
 - **`stores/store.ts`**：`createMessageStore()` 工厂 + `MessageStore` 类——队列 +
   shown→exiting→removed 状态机 + duration 计时 + hover pause/resume
-  （记录 remaining）+ `DEFAULT_EXIT`=200 退场窗口（**已无 DEFAULT_SWAP**——
+  （记录 remaining；**多持有者计数**——`pauseCount` 每 holder +1、归零才
+  restart，hover 暂停与折叠冻结可叠加）+ `getRemaining(id)`（剩余 ms /
+  无计时返回 null，倒计时胶囊读秒源）+ `DEFAULT_EXIT`=200 退场窗口
+  （**已无 DEFAULT_SWAP**——
   透明度换场机制整体退役）+ subscribe/getSnapshot/
-  add/update/dismiss/dismissAll/pause/resume。**type 在条目上**
+  add/update/dismiss/dismissAll/pause/resume/getRemaining。**type 在条目上**
   （`MessageAddOptions` 含 type）——命令式场景 usePresence 的 open
   翻转不适用，全部 timer 归 store。**默认解析集中**：`resolveMessageDefaults`
   把 mode（缺省 info）、palette（缺省随 mode）、variant（缺省 plain）、
@@ -92,7 +96,8 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
 
 - **`constants/defaults.ts`**：`DEFAULT_DURATION`=3000（默认自动关窗）、
   `DEFAULT_EXIT`=200（退场窗口，CSS 时长镜像）、`ROOT_SCOPE`='root'。
-  **`constants/viewport.ts`**：`POSITIONS` 六槽数组、`DECK_THRESHOLD`=3。
+  **`constants/viewport.ts`**：`POSITIONS` 六槽数组、`FOLD_THRESHOLD`=2
+  （同槽 notify > 2 折叠）。
   **`constants/icons.ts`**：`MODE_ICONS` 映射（info/success/warning/error →
   IconInfo/IconSuccess/IconWarning/IconError，旧名 TONE_ICONS）。
   —— 常量按主题文件归 constants/，直接路径引用无 barrel（TimePicker 先例）。
@@ -111,22 +116,20 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   每条目用 messageFactory.getRenderer(entry.type) 渲染（传 entry + store
   props），useEffect 卸载时 unregister(scope)，spread rest props，
   `import './styles/index.scss'`。容器类 `colox-message-viewport--fixed/
-absolute`、data-scope。**deck 折叠在这里**：同槽 notify 条目 > DECK_THRESHOLD(3)
-  时，notify 条目交给 `MessageDeck` 组件（最新在前 + 后两张露顶部边 + `+N`
-  chip，点面/计数展开收起，展开后 newest-first 全列表 + chevron-up 收起
-  chip）；非 notify 条目照常渲染。**牌堆 = 完整卡 z-index 阶梯**（用户拍板：
-  动态 z-index + 从初值依次 index×4px 同向偏移）：front 卡包
-  `.colox-message-deck__front` in-flow 占位（容器高 = 卡高、零测量）+ 内联
-  zIndex 最高；后方两卡**完整渲染**包 `.colox-message-deck__peek-card`
-  absolute（top:0 + 内联 `translateY(calc(-1 * (i+1) * var(--colox-spacing-1)))`
-  上移——4px 真实 token 档）+ zIndex 递减（peeks.length - i），各自顶部 4px
-  边条向上梯出如扑克牌；容器 position:relative + isolation:isolate 圈层、
-  与同槽 toast 不错层；peek wrapper 内 flex justify-content 按槽对齐（左/中/右
-  = flex-start/center/flex-end）；堆高恒定卡高+8px 与数量无关。**两代前科**
-  （用户「没有堆叠反而像透明」起，两轮到牌堆）：①首版 deck__peek 只有
-  overflow hidden 无高度 + opacity 0.6 → 裁切从未发生、两张 peek 半透明整
-  卡罗列；②限高裁切细条（max-height 40px）→ 文字腰斩、不像叠牌，用户改拍
-  z-index 偏移方案；③本周牌堆（完整渲染 + 露边）为终态。
+absolute`、data-scope。**notify 折叠在这里**：同槽 notify 显示条目 >
+  FOLD_THRESHOLD(2) 时交折叠（MessageDeck 全系退役），slot 拆到
+  `MessageSlot` 组件——最新卡可见 + `FoldCapsule` 计数胶囊（总数 + 清空✕
+  `.colox-message-count__clear`）；积压卡**停止渲染**且**冻结计时**（不进
+  退场——heldIds ref 记录、每卡 hold 一个 store.pause()，与 hover pause
+  共存靠 store 的 pauseCount 多持有者计数）；关可见卡 LIFO pop（最新积压
+  补位展示）、胶囊计数递减；剩最后 1 张时释放冻结（resume）、胶囊切换
+  `--countdown` 倒计时胶囊（COUNTDOWN_TICK 250ms 读 store.getRemaining(id)
+  展示剩余秒），该卡恢复自动关闭、归零走人。✕ = 清空整个槽（逐条 dismiss
+  照常发 onClose）。折叠态持续到栈空才褪去（4→3→2→1 不中途回退）。**三代
+  前科**（用户「没有堆叠反而像透明」起，三轮收敛）：①首版 peek 无轴长
+  overflow + opacity 0.6 → 半透明整卡罗列；②限高裁切细条（腰斩文字）；
+  ③z-index 露边牌堆（用户拍板做进去后仍换掉）；④终态 = 不堆叠——计数
+  胶囊 + 冻结 + 手动 LIFO pop + 倒计时胶囊（用户「更好的想法」）。
 
 - **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +
@@ -138,7 +141,7 @@ absolute`、data-scope。**deck 折叠在这里**：同槽 notify 条目 > DECK_
   同毫秒序号 + 前缀计数）。
 
 - **styles/**：viewport.scss（容器 fixed/absolute + 六槽绝对定位 +
-  deck 堆叠/计数 chip/收起 chip）、shell.scss（palette→私有变量映射 +
+  notify 折叠计数胶囊/倒计时胶囊/清空✕）、shell.scss（palette→私有变量映射 +
   variant 面料 + 图标色）、animation.scss（colox-toast-enter/exit +
   colox-notify-enter/exit keyframes + **`colox-message-zoom-in` zoom
   进场 keyframes（scale 0.92 + fade，motion-normal/ease-out，
@@ -206,7 +209,8 @@ notify、package.json 加 `./notify` 子路径（modal 后 popover 前）。
 - **一容器双面**：共享 scope 表是机制核心——toast/notify 同容器各占自己的槽。
 - **single 作用域**：按槽位（position）+ kind 类型——同槽新 toast 替换旧 toast，
   不同 position / 不同 type 互不干扰。
-- **deck 只折叠 notify**：同槽 notify > 3 才折叠；toast（默认 single）天然
+- **fold 只折叠 notify**：同槽 notify > 2 才折叠（最新卡 + 计数胶囊，冻结
+  计时不自动删、LIFO pop、最后一卡倒计时）；toast（默认 single）天然
   一槽一条，stack 时照常堆叠不折叠。
 - **范围外**：嵌套 viewport（scope 名重复归最后挂载者）、可拖拽、多实例
   均为范围外。
