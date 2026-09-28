@@ -66,13 +66,19 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   无计时返回 null，倒计时胶囊读秒源）+ `DEFAULT_EXIT`=200 退场窗口
   （**已无 DEFAULT_SWAP**——
   透明度换场机制整体退役）+ subscribe/getSnapshot/
-  add/update/dismiss/dismissAll/pause/resume/getRemaining。**fold 记账
-  在 store**：`foldedPositions`（进入 >FOLD_THRESHOLD、持有到底、清空才
-  褪）+ `foldHeldIds`（冻结持有）+ `reconcileFold()`（emit 前置对账——
-  阈值进出/冻结持卡/末卡释放）+ `isFolded(position)` 供 viewport 直读；
+  add/update/dismiss/dismissAll/pause/resume/getRemaining。**剩余时间是
+  自持账本**（`remaining`：startCountdown 武装、pause 按 elapsed 递减、
+  resume 从账本重启、getRemaining 读账本 ± 活期流逝）——不从
+  `entry.duration` 反推：resume 后 startedAt 归零，反推会把冻结史
+  拉回满时长。**fold 记账在 store**：`folds` Map（position → 该槽
+  冻结持有 id 集——进入 >FOLD_THRESHOLD、持有到底、清空才
+  褪；**逐槽隔离**，释放一槽绝不妨扰另槽的冻结）+ `reconcileFold()`
+  （emit 前置对账——阈值进出/冻结持卡/末卡释放/离槽者剔剪）+
+  `isFolded(position)` 供 viewport 直读；`transitionToExiting` 内聚
+  `clearCountdown`（任何 shown→exiting 路径不遗留计时器）；
   `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
   晋升者 contentVersion+1 播 zoom——无退场窗）；叠期新到卡在 `add` 里
-  判 `foldedPositions.has(position)` 直接 contentVersion 置 1（露出即
+  判 `folds.has(position)` 直接 contentVersion 置 1（露出即
   zoom）；胶囊 ✕ =
   **`clearSlot(position)`**（积压即时清 + 可见卡走退场窗）；dismissAll
   折叠槽走同纪律。**type 在条目上**

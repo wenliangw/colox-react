@@ -45,3 +45,13 @@
 - [ ] 偏移数值先查 token：用户说 4px → `--colox-spacing-1` 正是 4px，直接取档不造数。
 - [ ] **多轮视觉校正 = 设计在演化，不是修 bug**——用户每轮口述的机制都是当轮骨架（照做），但要做成可整段替换的结构（slot 级封装如 MessageSlot），下一轮推翻视觉时机制层（store 计时）不动。
 - [ ] jsdom 挡得住 DOM 结构（裁切 wrapper 是否挂上），**挡不住 CSS 生效**——裁切/透明度类样式改完 storybook 肉眼过一遍。
+
+## 撤能力/改类 → 同步删消费它的 CSS 规则
+
+- 撤掉结构槽（action 槽）、把结构类收敛到 kind 级（`__content`/`__close` 只在 toast/notify 级存在）等「DOM 面消失」的改动。
+- 必须检查：
+  - [ ] 撤能力后 grep 类名负向确认零使用；仍在样式表里存活的选择器 = **死规则**（不报错、不冒烟），删除——
+        round-19 message 审计发现 shell.scss 的 `--variant-solid` 反白规则仍列着 `.colox-message__content`/`.colox-message__close`（从来只有 kind 级类）+ 整块 `.colox-notify__action`（action 槽已撤）。
+  - [ ] 死规则删完构建 + grep `dist/style.css` 确认死选择器归零。
+  - [ ] 删能力时同步检查「反向包含」：kind 级注释还在引用已撤槽（notify-item 的 No action 注释与 shell 死规则并存的「半撤」状态）。
+- **为什么**：CSS 死规则没有编译器提示，会成为后来者的语义误导（以为该元素/槽还存在、以为该反白还生效）；撤退必须一次撤干净——代码、样式、注释三面无残留。
