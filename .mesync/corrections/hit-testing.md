@@ -12,6 +12,15 @@ Select clearable × 的「点不到」排查实录沉淀。将来任何组件做
   - [ ] **@colox/icons 的图标不用再处理**：IconBase 已默认 `pointer-events="none"` 表现属性（spec §9），消费方经 className CSS / style / pointerEvents prop 三通道显式恢复。组件里若用非 icons 包的自备 svg/字符做渐隐装饰件，仍照本条目显式处理。
 - **为什么**：Select 光滑进 chevron、× 渐显后，chevron 的命中面仍盖在 × 上——真实点击永远落在 chevron 的 SVG 上（无 handler），× 看起来可点但「点不到」；面板开着时 mousedown 落在 SVG 上把焦点从 control 拽走。jsdom/vitest 测不出（fireEvent 直接调处理器、不做命中测试）——最终靠 Playwright + `elementFromPoint` 实弹钉死。首版修复在组件 scss 里给 chevron 显式加规则，后按「契约收进基座」缩编：IconBase 默认承载（决策 d9d62f07），组件侧规则撤回。
 
+## 全屏透传容器（pointer-events: none）内的交互后代 → 每个可交互族显式 re-enable
+
+- **改这里**：任何「固定全屏覆盖层打 `pointer-events: none` 让页面照常交互，其内部浮出的卡片/胶囊承载按钮」的形态（消息 viewport、toast/notify 槽、通知泡容器）。
+- **必须检查：**
+  - [ ] 容器 none 之下，**每一族**含交互元素的后代（`.colox-message` 卡片、`.colox-message-count` 胶囊……）都要各自的 `pointer-events: auto`——漏一族 = 那一族的 hover/cursor/点击全部穿到下层，视觉可点而点不到。
+  - [ ] `cursor: pointer` 规则写在按钮上不够——祖先 none 时 hover 根本不到达后代，cursor 不会触发；re-enable 后 cursor 才会生效。
+  - [ ] 新增「浮在容器里的小件」（计数胶囊、倒计时、积压指示器）时，把它加进 re-enable 清单——它是新的一族，不会自动跟着旧选择器走。
+- **为什么**：Notify fold 的计数胶囊在 `.colox-message` 之外（slot 直属子元素），而 viewport 容器的 none-drop 只给卡片族配了 re-enable——胶囊 ✕ 死点 + 无手型光标。jsdom 测不出（fireEvent 绕过 CSS 命中），用户真浏览器一眼报「图标无法点击、没有 pointer 样式」；CSS 属性层修复，测试只能保结构、肉眼/Playwright 保行为。
+
 ## 排查「点不到」类问题 → 先做命中点对拍
 
 - **改这里**：用户报「按钮/图标点了没反应、像没点中」，而单测（jsdom fireEvent）全绿。

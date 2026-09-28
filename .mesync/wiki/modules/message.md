@@ -71,7 +71,9 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   褪）+ `foldHeldIds`（冻结持有）+ `reconcileFold()`（emit 前置对账——
   阈值进出/冻结持卡/末卡释放）+ `isFolded(position)` 供 viewport 直读；
   `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
-  晋升者 contentVersion+1 播 zoom——无退场窗）；胶囊 ✕ =
+  晋升者 contentVersion+1 播 zoom——无退场窗）；叠期新到卡在 `add` 里
+  判 `foldedPositions.has(position)` 直接 contentVersion 置 1（露出即
+  zoom）；胶囊 ✕ =
   **`clearSlot(position)`**（积压即时清 + 可见卡走退场窗）；dismissAll
   折叠槽走同纪律。**type 在条目上**
   （`MessageAddOptions` 含 type）——命令式场景 usePresence 的 open
@@ -127,9 +129,12 @@ absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账�
   直读，viewport 是纯渲染）；折叠态下可见卡走 **`fold-display` 固定 key 的
   display 槽**——pop 时帧留存（不重建、不重播进场动画）、晋升卡
   contentVersion 进位让词面重挂播 zoom（popInstant 的即时落位语言，用户
-  拍板「直接同位置更新，不要再走退出动画」）；`FoldCapsule` 计数胶囊
-  （总数 + 清空✕ `.colox-message-count__clear`→store.clearSlot）；积压卡
-  **停止渲染**且**冻结计时**（store 持有，不进退场——foldHeldIds +
+  拍板「直接同位置更新，不要再走退出动画」）；折叠期间新到卡同一语言
+  （add 进已折叠槽 contentVersion 从 1 起播 zoom——胶囊出现后的露出均
+  zoom）；`FoldCapsule` 计数胶囊（总数 + 清空✕ `.colox-message-count__clear`
+  →store.clearSlot；**胶囊 `pointer-events: auto`**——viewport 容器 none
+  drop 指针、卡片与胶囊两块交互后代各自 re-enable，漏了胶囊则 ✕ 死点）；
+  积压卡 **停止渲染**且**冻结计时**（store 持有，不进退场——foldHeldIds +
   pauseCount 多持有者，与 hover pause 共存）；剩最后 1 张时 store 释放
   冻结、胶囊切换 `--countdown` 倒计时胶囊（COUNTDOWN_TICK 250ms 读
   store.getRemaining(id) 展示剩余秒），该卡恢复自动关闭、归零走人；

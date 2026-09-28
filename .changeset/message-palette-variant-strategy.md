@@ -36,7 +36,9 @@ viewport pollution:
   lands right where it was (the display slot keeps its frame, the
   incoming words play the zoom entrance — the single-replacement
   update language); only the LAST card of a fold walks the exit
-  animation. When the stack is down to that last card, the card
+  animation. A new card arriving while the capsule is out is the same
+  kind of reveal: the frame stays, the fresh words zoom in. When the
+  stack is down to that last card, the card
   resumes its timer while the capsule turns into a countdown capsule
   reading its remaining seconds. The store's pause/resume becomes a
   holder counter (the fold freeze and the hover pause stack) and
@@ -47,7 +49,9 @@ viewport pollution:
   the folded close routes through `popInstant` and the capsule ✕
   through `clearSlot` (the invisible backlog clears instantly — a
   never-seen card never flashes an exit animation — while the visible
-  card exits).
+  card exits). Arrivals into an active fold bump their content
+  version so the reveal zooms; the capsule re-enables pointer events
+  (its ✕ and cursor hand work — the viewport container drops them).
 - **toast chrome** — `showIcon: false` drops the mode icon,
   `closeable: false` drops the corner ✕ (both default on). Chrome is
   renderer-owned, structural state: it toggles eagerly and never

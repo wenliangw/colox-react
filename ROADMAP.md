@@ -202,7 +202,8 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   entrance, the single-replacement update language; **only the last
   card of a fold plays the exit animation**) and the last survivor
   resumes its timer under a **countdown capsule** on its remaining
-  seconds. The message
+  seconds. A card arriving **while the capsule is out** is another
+  such reveal — the frame stays, the fresh words zoom in. The message
   store is a shown→exiting→removed state machine (all timers in the
   store — duration, hover pause/resume on a holder counter so the fold
   freeze and hover pause stack, `DEFAULT_EXIT`=200 window;
