@@ -362,3 +362,30 @@
 - **可达性契约**：图片模式内层 `<img alt>` 作者必传（缺失 warn 一次 + 空 alt）；文字模式 `role="img"` + `aria-label` = 显式 ?? `name`；`children`/`fallback` 是作者内容，命名由作者自持（库不强行加 role）。
 
 来源：Avatar 设计对齐轮（决策 4851856c，caused_by M5 启动——用户三项全采纳推荐方案）；palette/variant 二轮（用户「我觉得可以支持 palette 和 variant」+ 四档 variant + plain 不参与 palette 拍板）。
+
+## 纯展示徽章家族：形态走 dot-part 命名空间 + 锚定不内置（Badge 定案）
+
+- **展示与定位分离，锚定不内置**：Badge 做纯展示，`Anchor`（inline 抱紧 = badge 包壳）+ `Positioner`（九格 placement）负责钉到宿主角落——「我们其实已经有了 Positioner」是用户方向的原话；不发明 Badge 私有 corner/offset（Positioner 九格 + offset 词表已覆盖，且 RTL 安全）。
+- **形态家族走 dot-part 命名空间（composition 判据新实例）**：Badge/Dot/Count/Group/Item 各件 props 干净（Count 只有 count/overflowCount/showZero、Dot 只有 palette/size）——「形态是可扩展维度」时 props 无法分类，命名空间优于单组件判别 props（`<Badge kind="count">`）；与「属性少收根 props」的插槽类（Input leading/trailing）相反。
+- **双段专用形态让位通用多段**：`Badge.Label` + `Badge.Value` 双段专用被用户改判为 `Badge.Group` + `Badge.Item` 通用多段——覆盖双端甚至多段（shields.io），Item 每段自由 palette「自由组合」。
+- **无缝多段 = 容器裁剪而非逐段圆角**：Group `overflow:hidden` + radius-full，Item radius-0——首末可见角由容器一次裁剪，无 JS 协调、无 per-segment 圆角逻辑。
+- **无 strength 的形态不背 variant 轴**：Dot 固定实色（点是实点）、Count 固定实底（计数徽标是填满的 pill）——「变体决定颜色、不留给语境猜」的家族纪律反向：没有强度可选就不给轴。
+- **胶囊 size 刻度比控件低一档**：指示器非控件——sm=20/md=24/lg=28（控件档 24/32/40），font-xs/sm。
+
+来源：Badge 设计对齐轮（两轮：① 纯展示 + Positioner 锚定 + Tag 并入，② Group/Item 多段改判 + 无缝一体拍板）。
+
+## 定位偏移的逃生舱：数字 px 悬出，不造负 token 键（Positioner offset 定案）
+
+- **offset 值双通道**：spacing key（语义档位，走 class 表，盒内推）与**数字 px**（逃生舱，走 inline style 逻辑属性）——「档位管语义、逃生舱管精确」家族模式（Modal/Drawer width 同款）。
+- **负数 = 悬出参照边界**（badge 悬宿主角落外的经典形态），正数 = 盒内推——数字的符号承载方向语义，零新词。
+- **不造负 token 键**：组件层发明 `'-1'` 之类负 spacing 键（+ `calc(-1 * var(...))` 负变换）被否决——键表永远由 theme 发射、组件只消费，负键是组件侧发明 token 语义；要悬出就用数字逃生舱，不扩展 token 面。
+
+来源：Badge 锚定（用户问「你要准备扩展 Token 来支持负值吗？」点破负键方案的纪律问题）。
+
+## 多段容器的圆角语义：rounded 词切换档位，默认轻圆角（Badge.Group 定案）
+
+- **多段容器的默认读作轻圆角方块拼段，胶囊形态显式选**：Badge.Group 默认外角 radius-sm（方块的轻圆角，信息密度高的多段场景），`rounded` = radius-full 满圆胶囊——「rounded 的时候才设置圆角」（用户拍板）。
+- **两态语义用布尔词，不为两态发明轴**：只有「轻圆角默认 / 满圆胶囊」两种圆角语义，布尔 `rounded` 足够；shape 轴（square/rounded/…）是给有更多形态的单段件预留的词位，多段容器不背第三形态。
+- **圆角档位落在设计语言 radius 真实 token**（sm/full），不造数值。
+
+来源：Badge.Group 圆角语义对齐（用户「rounded 的时候才设置圆角，默认应该是方块的轻圆角」）。
