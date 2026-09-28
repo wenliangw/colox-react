@@ -351,3 +351,14 @@
 - **文件名命名随内容**：`api.ts` → `factory.ts`——该文件的主体就是 `ToastFactory` 类与 `toastFactory` 单例，文件名与内容同名互证。types/api.ts 仍叫 api（它是契约类型层，不是工厂）。
 - **判别词与语义轴各占自己的词位**：kind 判别词占 `type`（`MessageType` 'toast'|'notify'——「type 说它是什么类目」，旧名 face）+ 语义轴占 `mode`（`MessageMode` info/success/warning/error——「mode 说它是什么腔调」，旧名 MessageTone）；共享外壳 `MessageBox` 说形状（「box 说它是盒子」比 ItemShell 的容器腔直白）。接口名说形状的同一纪律在基座层再走一遍——同一轮把 `--tone-*` 死类钩子改成 `--mode-*` 让钩子名与轴名一致。
 - 来源：Toast 改名轮（决策 be61c45c，caused_by 1c5eff77——用户点名三个改名）；基座命名轮（决策 5b048b4a，caused_by be61c45c——用户点名 face→type/type→mode/MessageTone→MessageMode/MessageItemShell→MessageBox 四项）。
+
+## 形状类展示件：圆形默认 + shape 轴 + 内容三态（Avatar 定案）
+
+- **展示件形状惯例独立于控件**：Avatar 圆形默认（生态惯例——antd/MUI/Chakra 头像天然读作圆脸），`shape?: 'circle' | 'rounded' | 'square'` 轴显式切方。控件的「方形圆角默认 + `rounded` 显式」基准（IconButton/Button）不迁移——方形足迹是控件的交互基准，肖像展示件的形状语义不同（形状语义分场景，惯例不跨类迁移）。
+- **内容三态优先级**：`children`（富内容槽，恒赢）> `src`（图片，加载失败回退）> `name`（自动派生首字/首字母）> 空。name 自动派生（Chakra 词形）省消费方样板：CJK 名取首字符（「张伟」→「张」）、拉丁名取前两词首字母大写（"john doe" → "JD"）——`getInitials` 纯函数收 utils/。
+- **失败检测内置 + 回退成什么归消费方**（antd 词形收窄）：`src` 失败 → `onError` 一次 + 自动回退 `fallback` 逃生舱 > `name` 首字 > `alt` 首字；`imgProps.onError` 通道被接管（内置检测是机制、顶层 `onError` prop 是监听口）。**fallback 只管图片失败**（用户拍板 B）：无 `src` 不咨询 fallback——fallback 是「图片失败」的逃生舱不是「没有图片」的常驻内容；name 与 alt 首字才是常驻文字回退。「背机制不背产品」：失败检测机制进库、回退产品决策归消费方。
+- **尺寸双通道沿用**（形状类组件尺寸 prop 惯例）：预设档与家族同源（24/32/40/48，默认 md）+ SizeKey 裸键兜底；文字档字号 = 块尺寸 45% 比例跟随（任何裸键都有可读首字，无每档字表）。
+- **palette/variant 轴（二轮补，用户点名反转首版「无 palette 轴」定案）**：`variant`（plain/subtle/solid/outline，默认 plain）+ `palette`（六族同源，默认 gray）作用于**文字头像**的面料——plain = muted 中性面（palette 不参与，同 IconButton muted 档先例：要语义色就显式选彩色档，不留给语境猜）、subtle = palette-subtle 浅底 + palette 字、solid = palette-solid 实底 + inverse 字、outline = palette 描边环（inset box-shadow 不 shift 盒子尺寸）+ 透明底 + palette 字。图片头像忽略两轴（图片是内容）。**「展示件不背产品状态」≠「无语义色需求」**：首版「头像是人像容器不是语义色控件」的克制在用户点名「我觉得可以支持 palette 和 variant」后退让——角色/分组/状态着色的展示场景是真实需求，需求出现即立项。
+- **可达性契约**：图片模式内层 `<img alt>` 作者必传（缺失 warn 一次 + 空 alt）；文字模式 `role="img"` + `aria-label` = 显式 ?? `name`；`children`/`fallback` 是作者内容，命名由作者自持（库不强行加 role）。
+
+来源：Avatar 设计对齐轮（决策 4851856c，caused_by M5 启动——用户三项全采纳推荐方案）；palette/variant 二轮（用户「我觉得可以支持 palette 和 variant」+ 四档 variant + plain 不参与 palette 拍板）。
