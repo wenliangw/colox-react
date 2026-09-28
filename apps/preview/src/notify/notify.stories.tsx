@@ -11,7 +11,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'The titled card kind of the message system (cdk/message) — the antd-notification tier: `title` + `content`, default slot `top-right`. No action slot — a notification reports and closes (undo/retry ride `Notify.custom`). Mount one `<MessageViewport>` per container (default `root`, screen-wide `fixed`; `positioning="absolute"` pins a scoped container inside a `position: relative` parent). `Notify.info/success/warning/error({ title, content, ... }, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }`. `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (default `stack` — several titled cards legitimately coexist; `single` replaces in place with an instant zoom). A slot that accumulates more than three cards collapses into a **deck** — the newest card full, two behind it peeking as clipped strips, the rest folded into a `+N` chip; click the deck (or the chip) to expand/collapse. The call options carry the same chrome + lifecycle axes Toast exposes: `showIcon` / `closeable` (both default `true`), `data` passthrough and `onClose({ id, data })` fired once per payload end. `custom` renders any ReactNode as the card body, `update(key, patch)` same-key in-place updates, `dismiss(key?)`. Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The lightweight hint kind lives under Components/Toast — both share one scope table, so one container holds toast and notify side by side. Card depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
+          'The titled card kind of the message system (cdk/message) — the antd-notification tier: `title` + `content`, default slot `top-right`. No action slot — a notification reports and closes (undo/retry ride `Notify.custom`). Mount one `<MessageViewport>` per container (default `root`, screen-wide `fixed`; `positioning="absolute"` pins a scoped container inside a `position: relative` parent). `Notify.info/success/warning/error({ title, content, ... }, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }` and the slot named by `{ position }` — the six slots top-left / top-center / top-right / bottom-left / bottom-center / bottom-right (see the Positions story). `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (default `stack` — several titled cards legitimately coexist; `single` replaces in place with an instant zoom). A slot that accumulates more than two cards **folds** into the newest card + one count capsule (the tally + a clear-all ✕) with every countdown frozen — closing the card pops the stack in place (no exit animation, the revealed words zoom; only the last card exits), and that last card resumes its timer under a countdown capsule. The call options carry the same chrome + lifecycle axes Toast exposes: `showIcon` / `closeable` (both default `true`), `data` passthrough and `onClose({ id, data })` fired once per payload end. `custom` renders any ReactNode as the card body, `update(key, patch)` same-key in-place updates, `dismiss(key?)`. Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The lightweight hint kind lives under Components/Toast — both share one scope table, so one container holds toast and notify side by side. Card depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
       },
     },
   },
@@ -336,6 +336,95 @@ export const Overview = {
                 </Button>
               </Stack>
             </div>
+          </Section>
+        </Stack>
+      </Container>
+    </>
+  ),
+};
+
+/**
+ * The six slots of the root container — each `position` anchors its
+ * cards to one viewport edge. Top rows drop down, bottom rows rise up;
+ * every slot runs the same stack/fold behavior.
+ */
+export const Positions = {
+  render: () => (
+    <>
+      <MessageViewport />
+
+      <Container size="md" gutter="4">
+        <Stack direction="column" gap="8">
+          <Section title="Positions — the six slots of the root viewport">
+            <Stack direction="column" gap="4">
+              <Row>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Top left', content: 'Anchored top-left.' },
+                      { position: 'top-left' },
+                    )
+                  }
+                >
+                  top-left
+                </Button>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Top center', content: 'Anchored top-center.' },
+                      { position: 'top-center' },
+                    )
+                  }
+                >
+                  top-center
+                </Button>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Top right', content: 'Anchored top-right.' },
+                      { position: 'top-right' },
+                    )
+                  }
+                >
+                  top-right
+                </Button>
+              </Row>
+              <Row>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Bottom left', content: 'Anchored bottom-left.' },
+                      { position: 'bottom-left' },
+                    )
+                  }
+                >
+                  bottom-left
+                </Button>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Bottom center', content: 'Anchored bottom-center.' },
+                      { position: 'bottom-center' },
+                    )
+                  }
+                >
+                  bottom-center
+                </Button>
+                <Button
+                  onClick={() =>
+                    Notify.info(
+                      { title: 'Bottom right', content: 'Anchored bottom-right.' },
+                      { position: 'bottom-right' },
+                    )
+                  }
+                >
+                  bottom-right
+                </Button>
+              </Row>
+            </Stack>
+            <Row>
+              <Button onClick={() => Notify.dismiss()}>Dismiss all</Button>
+            </Row>
           </Section>
         </Stack>
       </Container>
