@@ -1,5 +1,5 @@
 import { ROOT_SCOPE } from './constants/defaults';
-import { createMessageStore, MessageStore } from './stores/store';
+import { createMessageStore, MessageStore } from './store';
 import type { MessageRenderer, MessageType } from './types';
 
 export { ROOT_SCOPE };

@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import clsx from 'clsx';
 import type { MessageEntry } from './types';
-import type { MessageStore } from './stores/store';
+import type { MessageStore } from './store';
 
 /**
  * The shared message item box: the presence/aria/hover wrapper every

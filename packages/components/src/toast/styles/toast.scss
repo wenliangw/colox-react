@@ -8,9 +8,9 @@
 // [mode icon] [content] [close?]. Icon/close are
 // renderer chrome: `showIcon`/`closeable` drop the icon/✕ respectively.
 // `role="status"` + `aria-live`
-// announce it politely (the shell owns those).
+// announce it politely (the shared MessageBox owns those).
 //
-// The palette/variant paint lives on the shared shell (shell.scss) —
+// The palette/variant paint lives on the shared box (box.scss) —
 // this file owns the kind geometry: the pill shape, the row layout and
 // the icon's fixed size. The icon color follows the palette via the
 // shared `.colox-message__icon` class.
@@ -27,7 +27,7 @@
 }
 
 // The mode icon: fixed size. The color comes from the shared
-// `.colox-message__icon` rule in shell.scss (palette-driven).
+// `.colox-message__icon` rule in box.scss (palette-driven).
 .colox-toast__icon {
   flex: none;
   width: 20px;

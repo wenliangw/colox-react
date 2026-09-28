@@ -4,7 +4,7 @@ import { IconX } from '@colox/icons';
 import { messageFactory } from './factory';
 import { POSITIONS } from './constants/viewport';
 import type { MessageEntry, MessagePosition, MessageViewportProps } from './types';
-import type { MessageStore } from './stores/store';
+import type { MessageStore } from './store';
 
 import './styles/index.scss';
 
@@ -82,7 +82,7 @@ function MessageSlot({
               words zooming in) and across the last card's exit (the
               animation plays on the live node) — the fold never
               remounts the visible card. */}
-          <RendererSlot key="fold-display" entry={displayed} store={store} />
+          <EntryRenderer key="fold-display" entry={displayed} store={store} />
           {notifyShown.length > 0 && (
             <FoldCapsule
               count={notifyShown.length}
@@ -100,18 +100,18 @@ function MessageSlot({
                 (entry.type !== 'notify' || entry.status === 'exiting'),
             )
             .map((entry) => (
-              <RendererSlot key={entry.id} entry={entry} store={store} />
+              <EntryRenderer key={entry.id} entry={entry} store={store} />
             ))}
         </>
       ) : (
-        entries.map((entry) => <RendererSlot key={entry.id} entry={entry} store={store} />)
+        entries.map((entry) => <EntryRenderer key={entry.id} entry={entry} store={store} />)
       )}
     </div>
   );
 }
 
 /** One entry rendered through the renderer registered for its kind. */
-function RendererSlot({ entry, store }: { entry: MessageEntry; store: MessageStore }) {
+function EntryRenderer({ entry, store }: { entry: MessageEntry; store: MessageStore }) {
   const Renderer = messageFactory.getRenderer(entry.type);
   if (Renderer === undefined) {
     return null;

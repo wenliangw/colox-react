@@ -1,5 +1,5 @@
-// The shared message item box: every message entry — whatever its
-// kind (toast/notify) — rides these base classes. `colox-message`
+// The label of the shared box (MessageBox in box.tsx): every message
+// entry — whatever its kind (toast/notify) — rides these base classes. `colox-message`
 // names the box; the palette class tints the semantic icon via the
 // design-language family tokens and seeds the variant paint; the
 // variant class (plain/subtle/solid/outline) decides how much of that
@@ -92,8 +92,8 @@
 
 // On the solid surface the body words must ride the inverse ink too —
 // the kind's content rule (text-default) would otherwise fight the
-// shell color. The close button (IconButton muted) follows the shell
-// ink as well, quieting the corner on the loud fill.
+// box color. The close button (IconButton muted) follows the box ink
+// as well, quieting the corner on the loud fill.
 .colox-message.colox-message--variant-solid .colox-toast__content,
 .colox-message.colox-message--variant-solid .colox-notify__content,
 .colox-message.colox-message--variant-solid .colox-notify__title {

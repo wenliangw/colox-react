@@ -1,6 +1,6 @@
 import { createId } from '@colox/cdk/utils/id';
-import { DEFAULT_DURATION, DEFAULT_EXIT } from '../constants/defaults';
-import { FOLD_THRESHOLD, POSITIONS } from '../constants/viewport';
+import { DEFAULT_DURATION, DEFAULT_EXIT } from './constants/defaults';
+import { FOLD_THRESHOLD, POSITIONS } from './constants/viewport';
 import type {
   MessageAddOptions,
   MessageEntry,
@@ -10,7 +10,7 @@ import type {
   MessagePalette,
   MessagePosition,
   MessageVariant,
-} from '../types';
+} from './types';
 
 /**
  * Resolves the message defaults the store owns: the mode falls back to
@@ -266,9 +266,11 @@ export class MessageStore {
   /**
    * Replaces the message carrying `key` (or the id, when `key` matches
    * none) with a patched copy. Duration changes restart the countdown;
-   * a patch from an exiting message keeps it exiting. Every visible
-   * payload change commits INSTANTLY (both updates and replacements
-   * land straight away — the swap-era opacity cross-fade is gone): the
+   * a folded card stays FROZEN across the restart (the fold's promise:
+   * a burst never deletes itself — see restartCountdown); a patch from
+   * an exiting message keeps it exiting. Every visible payload change
+   * commits INSTANTLY (both updates and replacements land straight
+   * away — the swap-era opacity cross-fade is gone): the
    * `contentVersion` bump re-mounts the content node and its zoom
    * entrance plays. An invisible patch (duration/key/position/data/
    * chrome/onClose only) applies without re-mounting the content. An
@@ -304,10 +306,7 @@ export class MessageStore {
           { ...next, contentVersion: current.contentVersion + 1 }
         : next;
     if (current.status === 'shown') {
-      this.clearCountdown(current.id);
-      if (next.duration > 0) {
-        this.startCountdown(next.id, next.duration);
-      }
+      this.restartCountdown(next.id, next.duration);
     }
     this.emit();
   }
@@ -518,6 +517,34 @@ export class MessageStore {
     this.startedAt.set(id, Date.now());
     const timer = setTimeout(() => this.dismiss(id), ms);
     this.timers.set(id, timer);
+  }
+
+  /**
+   * Restarts an entry's countdown from `ms` — the update/replacement
+   * path. A card whose countdown sits under a fold freeze stays
+   * frozen: `clearCountdown` wipes holders, so the restart re-arms
+   * the freeze holder right away (an update must never un-freeze a
+   * folded card — the fold's whole promise is that a burst never
+   * deletes itself).
+   */
+  private restartCountdown(id: MessageId, ms: number): void {
+    this.clearCountdown(id);
+    if (ms <= 0) {
+      return;
+    }
+    this.startCountdown(id, ms);
+    if (this.heldByFold(id)) {
+      this.pause(id);
+    }
+  }
+
+  private heldByFold(id: MessageId): boolean {
+    for (const held of this.folds.values()) {
+      if (held.has(id)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private clearCountdown(id: MessageId): void {

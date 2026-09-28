@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_EXIT } from '../constants/defaults';
-import { createMessageStore } from '../stores/store';
+import { createMessageStore } from '../store';
 
 describe('MessageStore', () => {
   beforeEach(() => {
@@ -329,6 +329,61 @@ describe('MessageStore', () => {
     const snapshot = store.getSnapshot();
     expect(snapshot.find((entry) => entry.id === d)?.contentVersion).toBe(1);
     expect(store.isFolded('top-right')).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it('an update never unfreezes a folded card — the countdown stays halted', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    const a = store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    expect(store.isFolded('top-right')).toBe(true);
+    // the burst stays put through the freeze — 10s with zero movement
+    vi.advanceTimersByTime(10_000);
+    expect(store.getSnapshot()).toHaveLength(3);
+    // a visible update of a folded card must not un-freeze it
+    store.update(a, { content: 'a2' });
+    vi.advanceTimersByTime(10_000);
+    expect(store.getSnapshot()).toHaveLength(3);
+    expect(store.getSnapshot().every((entry) => entry.status === 'shown')).toBe(true);
+    // ...and the fold still drains normally by hand
+    store.dismiss(store.getSnapshot()[2].id);
+    store.dismiss(store.getSnapshot()[1].id);
+    expect(store.getSnapshot()).toHaveLength(1);
+    expect(store.isFolded('top-right')).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it('a single replacement into a folded slot exits the leftovers — the survivor resumes', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    expect(store.isFolded('top-right')).toBe(true);
+    // the newcomer replaces the edge-anchored card, the leftovers exit
+    store.add({
+      type: 'notify',
+      content: 'a2',
+      position: 'top-right',
+      strategy: 'single',
+      duration: 3000,
+    });
+    expect(store.getSnapshot()).toHaveLength(3);
+    expect(store.getSnapshot().filter((entry) => entry.status === 'exiting')).toHaveLength(2);
+    // the slot descended to one survivor: the fold RELEASED it (the
+    // fold contract — the last card's countdown resumes)
+    const survivor = store.getSnapshot().find((item) => item.status === 'shown');
+    expect(survivor?.content).toBe('a2');
+    expect(store.isFolded('top-right')).toBe(true);
+    vi.advanceTimersByTime(2900);
+    expect(store.getSnapshot().find((item) => item.id === survivor?.id)?.status).toBe('shown');
+    vi.advanceTimersByTime(200);
+    expect(store.getSnapshot().find((item) => item.id === survivor?.id)?.status).toBe('exiting');
+    vi.advanceTimersByTime(200);
+    expect(store.getSnapshot()).toHaveLength(0);
+    expect(store.isFolded('top-right')).toBe(false);
     vi.useRealTimers();
   });
 

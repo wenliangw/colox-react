@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ComponentType, ReactNode } from 'react';
 
-import type { MessageStore } from '../stores/store';
+import type { MessageStore } from '../store';
 
 /**
  * The six stack slots inside a scope container: vertical (top/bottom) ×

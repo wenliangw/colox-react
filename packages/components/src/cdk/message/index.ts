@@ -1,5 +1,5 @@
 export { MessageFactory, messageFactory, ROOT_SCOPE } from './factory';
-export { MessageStore, createMessageStore, resolveMessageDefaults } from './stores/store';
+export { MessageStore, createMessageStore, resolveMessageDefaults } from './store';
 export { DEFAULT_DURATION, DEFAULT_EXIT } from './constants/defaults';
 export { MessageViewport } from './viewport';
 export { MessageBox } from './box';
