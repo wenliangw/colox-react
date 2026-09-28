@@ -52,7 +52,7 @@ key = `id:contentVersion` 复合，不撞值不吞动画），计数递减；剩
     （round 14 与 Toast 的 chrome 门控同构；已无 action 渲染块。）
 - **styles/notify.scss**：卡片——bg-default、radius-lg、**深度 =
   `box-shadow: var(--colox-shadow-md)` 设计语言浮层档（与 Toast 同档）**、
-  mode 图标（几何）。图标色/palette/variant 面料归共享 shell.scss。
+  mode 图标（几何）。图标色/palette/variant 面料归共享 box.scss。
 
 ## 使用
 

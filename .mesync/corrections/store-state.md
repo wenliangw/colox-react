@@ -78,3 +78,12 @@ Form store 批 A 修复（2026）拖出的两类状态真值缺陷，将来任�
   - [ ] 单条的 `transitionToExiting` 内聚 clearCountdown，批量 map 转 exiting 的路径（clearSlot 的 newest map、dismissAll 的 map 批量）**手动重复同样的清理**——漏了会让退场计时器被 countdown 计时器占位跳过 scheduling，条目永不移除。
   - [ ] `scheduleRemovals` 加「id 已有在途计时器则跳过」守卫 + 移除回调里自删 handle——防 dismissAll 重入开双窗口、防 timers map 只增不减。
 - **为什么**：round-19 审计把 clearCountdown 收敛进 transitionToExiting 时，clearSlot/dismissAll 的批量 map 路径若漏清，countdown 计时器占据同 id 槽位会让 `timers.has` 守卫误判「已调度」，退场窗结束条目不删；计时器槽位复用是隐性契约，要收进清单。
+
+## 倒计时重启/替换路径 → 冻结持有必须随之重建
+
+- **改这里**：任何「清掉再重启」倒计时的重置路径（`update` 改 duration/可见载荷、`replaceInPlace`、其他 restart 语义）——若该条目此刻坐在冻结/暂停持有里，重启会静默解冻。
+- **必须检查：**
+  - [ ] 重启倒计时统一走一个 `restartCountdown`（先清账本 → 重新武装 → 若条目在持有集内立即 `pause` 补回持有）——不得有第二条 `clearCountdown + startCountdown` 直连路径散落调用侧。
+  - [ ] 持有判定问**持有集本身**（`heldByFold` 扫 folds），不依赖「会不会发生」的推理——清零型 `clearCountdown` 抹掉 pauseCount 后，对账的 `held.has` 不再补挂（已含该 id），冻结就此丢失。
+  - [ ] 补「折叠中的卡被 update/替换后长时间推进仍 shown」测试——旧行为下它会按新 duration 自动删（折叠承诺「突刺不自删」被静默打破）。
+- **为什么**：round-19 把 `clearCountdown` 收敛为「清定时器 + 清账本 + 清持有计数」后，update/replaceInPlace 的重启路径先清后启——折叠持有者的 pauseCount 被抹掉，而 `reconcileFold` 的补挂条件是 `!held.has(id)`（id 仍在 set 里）→ 永远不补；折叠中的卡被一次 update 解冻、恢复自动删除。修正 = `restartCountdown` 内聚「重建冻结」；另注意 single 替换进折叠槽的真实语义是「余卡退场 → 折叠降到一幸存者 → 按折叠纪律恢复计时」——不是保持冻结，测试别把机制猜错。

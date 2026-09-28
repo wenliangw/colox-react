@@ -25,7 +25,8 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
 **Round 11 命名与目录重整**（用户拍板）：注册判别词 `face` → **`type`**、
 语义轴 `type`（tone）→ **`mode`**、`MessageTone` → **`MessageMode`**、
 共享外壳 `MessageItemShell` → **`MessageBox`**；cdk/message 基座目录按
-仓库惯例整理为 **`types/`、`stores/`、`constants/`** + `box.tsx`。
+仓库惯例整理为 **`types/`、`constants/`** + `box.tsx`（store 单文件直落
+基座，不套 stores/ 目录层）。
 
 ## cdk/message 基座结构
 
@@ -59,7 +60,7 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   `MessageViewportProps`（div 元素 props + `scope?` + `positioning?:
 'fixed'|'absolute'`，默认 root/fixed）。
 
-- **`stores/store.ts`**：`createMessageStore()` 工厂 + `MessageStore` 类——队列 +
+- **`store.ts`**：`createMessageStore()` 工厂 + `MessageStore` 类——队列 +
   shown→exiting→removed 状态机 + duration 计时 + hover pause/resume
   （记录 remaining；**多持有者计数**——`pauseCount` 每 holder +1、归零才
   restart，hover 暂停与折叠冻结可叠加）+ `getRemaining(id)`（剩余 ms /
@@ -76,6 +77,10 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   （emit 前置对账——阈值进出/冻结持卡/末卡释放/离槽者剔剪）+
   `isFolded(position)` 供 viewport 直读；`transitionToExiting` 内聚
   `clearCountdown`（任何 shown→exiting 路径不遗留计时器）；
+  **`restartCountdown` 统一倒计时重启**（update/replaceInPlace）——
+  重启前清账本、重新武装后若卡片在折叠持有集内即刻 `pause` 补回冻结
+  持有（**更新不解冻折叠卡**：折叠承诺「突刺不自删」，任何重启路径
+  都不得破坏冻结）；
   `dismiss` 折叠槽路由 **`popInstant`**（即时移除 + 被关的是可见卡时
   晋升者 contentVersion+1 播 zoom——无退场窗）；叠期新到卡在 `add` 里
   判 `folds.has(position)` 直接 contentVersion 置 1（露出即
@@ -88,9 +93,9 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   showIcon/closeable（缺省均 true）一次解析——条目上 chrome 永不为
   undefined；**single 策略在 add 时执行**——同 type + 同 position 已有条目时
   走 `replaceInPlace`（保留条目 id 与 DOM 节点不重新挂载、不区分 palette/
-  variant；**即时落位**：shown 态先 `notifyClose(existing)`（旧载荷终结）、
+  variant；**即时落位**：shown 态先 `fireClose(existing)`（旧载荷终结）、
   直接 commit `{...next, contentVersion + 1}`（内容结点重挂 + zoom
-  进场）+ startCountdown 计时重置；退场态复活同样即时换载荷——不再重发
+  进场）+ `restartCountdown` 计时重置；退场态复活同样即时换载荷——不再重发
   onClose（该载荷已在退场发过））。**chrome 是结构态不是载荷**：
   showIcon/closeable 不进 pending（现在也没有 pending）——update 里即时
   并入 next。`update(key, patch)` 可见载荷变化
@@ -157,17 +162,18 @@ absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账�
   撞值被 React 复用节点，改 id:version 复合（用户「zoom 只有第一个被
   替换的卡片有，后面就没有了」）；⑦倒计时胶囊收回 ✕（读秒不是控件）。
 
-- **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
+- **`box.tsx`**：`MessageBox`（旧名 MessageItemShell；样式文件
+  **`box.scss`**——与组件名同构，旧名 shell.scss）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +
   colox-message--palette-{palette} + colox-message--variant-{variant} +
-  exiting 类、hover pause/resume、children 注入。共享外壳。（**已无**
+  exiting 类、hover pause/resume、children 注入。共享条目标壳。（**已无**
   swap-out / was-swapped 类——透明度换场退役。）
 
 - **`cdk/utils/id.ts`**：`createId(prefix)` 通用唯一 ID 生成器（毫秒 +
   同毫秒序号 + 前缀计数）。
 
 - **styles/**：viewport.scss（容器 fixed/absolute + 六槽绝对定位 +
-  notify 折叠计数胶囊/倒计时胶囊/清空✕）、shell.scss（palette→私有变量映射 +
+  notify 折叠计数胶囊/倒计时胶囊/清空✕）、box.scss（palette→私有变量映射 +
   variant 面料 + 图标色）、animation.scss（colox-toast-enter/exit +
   colox-notify-enter/exit keyframes + **`colox-message-zoom-in` zoom
   进场 keyframes（scale 0.92 + fade，motion-normal/ease-out，

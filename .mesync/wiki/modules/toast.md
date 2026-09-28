@@ -65,7 +65,7 @@ store 原样保留；`onClose({ id, data })` 随「载荷终结」发**一次**�
   「shadow 样式走设计语言」——弃 kind 私有 rgba 25,25,25,0.1 +
   filter drop-shadow，md 档与 Select/DatePicker popup 同档）**、
   20px 图标（几何）、content、close。**图标色/palette/variant
-  面料归共享 shell.scss**，此文件只留面几何。
+  面料归共享 box.scss**，此文件只留面几何。
 
 ## 使用
 

@@ -29,6 +29,9 @@
 - 文件名一律小写，多单词用 `-` 连字符：组件文件 `input.tsx`/`button.tsx`、样式 `button.scss`、用例 `size.stories.tsx`。
 - 导出的组件/类型符号仍用 PascalCase（`Input`、`InputProps`），仅文件名小写。
 - SCSS 文件**不加下划线前缀**：partial 与普通文件同样命名（如 `base.scss`、`size.scss`），不用 Sass 惯用的 `_partial.scss` 约定。
+- **样式文件与组件/件名同构**：哪个 ts 文件画哪张脸，scss 就同名——`box.tsx`(MessageBox) ≥ `box.scss`（前科：消息共享条目样式叫 `shell.scss`，用户指正「命名已经过时了吧，最新的应该是 box」）。文件名不是描述文件内容的自由行文，是「谁的样子」的指针。
+- **单文件能力不套目录层**：`stores/store.ts` 这类「目录只装一个文件」的包装不必要——store 单文件直落基座同级（`factory.ts`、`box.tsx`、`viewport.tsx`、`store.ts` 平级）；只有真正多文件的族才留 `types/`、`constants/` 目录。
+- **内部件名避词撞**：同一系统的两个不同职责不共享同一个词（viewport 里的「slot」既是位置槽又是条目渲染器——后者改 `EntryRenderer`；`notifyClose` 与 Notify 面撞词——改 `fireClose`）。名字让读者一眼分清职责。
 
 ## 目录分类：能力文件夹 + 层内分组（2025 通用规范）
 
