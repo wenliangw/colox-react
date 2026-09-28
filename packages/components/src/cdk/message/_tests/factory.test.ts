@@ -29,7 +29,7 @@ describe('MessageFactory', () => {
     const a = new MessageFactory();
     const b = new MessageFactory();
     const storeA = a.getOrCreate('shared');
-    storeA.add({ variant: 'toast', content: 'hi' });
+    storeA.add({ type: 'toast', content: 'hi' });
     const storeB = b.getOrCreate('shared');
     expect(storeB.getSnapshot()).toHaveLength(1);
   });

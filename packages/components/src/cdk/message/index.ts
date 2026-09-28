@@ -1,18 +1,25 @@
 export { MessageFactory, messageFactory, ROOT_SCOPE } from './factory';
-export type { MessageRenderer, MessageRendererProps } from './factory';
-export { MessageStore, createMessageStore, DEFAULT_DURATION, DEFAULT_EXIT } from './store';
+export { MessageStore, createMessageStore, resolveMessageDefaults } from './stores/store';
+export { DEFAULT_DURATION, DEFAULT_EXIT } from './constants/defaults';
 export { MessageViewport } from './viewport';
-export { MessageItemShell } from './item-shell';
-export type { MessageItemShellProps } from './item-shell';
-export { TONE_ICONS } from './tone-icons';
+export { MessageBox } from './box';
+export { MODE_ICONS } from './constants/icons';
 export type {
-  MessageAction,
+  MessageAddOptions,
+  MessageCloseHandler,
+  MessageClosePayload,
   MessageEntry,
   MessageId,
+  MessageMode,
   MessageOptions,
+  MessagePalette,
   MessagePosition,
+  MessageRenderer,
+  MessageRendererProps,
   MessageStatus,
-  MessageTone,
+  MessageStrategy,
+  MessageType,
   MessageVariant,
   MessageViewportProps,
 } from './types';
+export type { MessageBoxProps } from './box';

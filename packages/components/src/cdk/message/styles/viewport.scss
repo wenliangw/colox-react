@@ -75,3 +75,109 @@
 .colox-message-viewport .colox-message {
   pointer-events: auto;
 }
+
+// ——— notify deck —————————————————————————————————————————————
+// A slot holding more than DECK_THRESHOLD notify cards collapses into
+// a deck: the newest card fully visible, up to two older cards peeking
+// as clipped strips behind it, and the rest folded into the "+N" count
+// chip. The deck is the viewport's pollution valve — a notification
+// storm paints one pile instead of the full stack. Clicking the deck
+// surface (or the count chip) expands it into the full newest-first
+// stack; the collapse chip folds it back. The deck's cross-axis
+// alignment follows the slot it lives in (a left slot left-aligns, a
+// center slot centers, a right slot right-aligns).
+
+.colox-message-deck {
+  display: flex;
+  flex-direction: column;
+}
+
+.colox-message-viewport__slot--top-left .colox-message-deck,
+.colox-message-viewport__slot--bottom-left .colox-message-deck {
+  align-items: flex-start;
+}
+
+.colox-message-viewport__slot--top-center .colox-message-deck,
+.colox-message-viewport__slot--bottom-center .colox-message-deck {
+  align-items: center;
+}
+
+.colox-message-viewport__slot--top-right .colox-message-deck,
+.colox-message-viewport__slot--bottom-right .colox-message-deck {
+  align-items: flex-end;
+}
+
+// The peek strips: each older card clipped to a thin top sliver so the
+// pile reads as stacked cards behind the front one. They are pure
+// decoration — aria-hidden and pointer-transparent; the cards inside
+// keep their own timers (they expire normally behind the front).
+.colox-message-deck__peek {
+  display: flex;
+  flex-direction: column;
+  gap: var(--colox-spacing-2);
+  width: 100%;
+  margin-top: var(--colox-spacing-2);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+// The count chip: a compact muted pill reading "+N" — the folded cards.
+// Clicking expands the deck. Select's overflow tag is the family
+// precedent for the pill shape.
+.colox-message-deck__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--colox-size-6);
+  height: var(--colox-size-5);
+  margin-top: var(--colox-spacing-2);
+  padding-inline: var(--colox-spacing-2);
+  border: none;
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+  color: var(--colox-color-text-muted);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-xs);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+
+  &:hover {
+    background-color: var(--colox-color-gray-subtle);
+    color: var(--colox-color-text-default);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--colox-color-brand-muted);
+    outline-offset: 2px;
+  }
+}
+
+// The collapse chip: the expanded deck's fold-back affordance — a small
+// circular chevron-up button.
+.colox-message-deck__collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--colox-size-6);
+  height: var(--colox-size-6);
+  margin-top: var(--colox-spacing-2);
+  padding: 0;
+  border: none;
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-color-bg-muted);
+  color: var(--colox-color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+
+  &:hover {
+    background-color: var(--colox-color-gray-subtle);
+    color: var(--colox-color-text-default);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--colox-color-brand-muted);
+    outline-offset: 2px;
+  }
+}

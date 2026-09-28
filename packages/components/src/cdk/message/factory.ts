@@ -1,45 +1,34 @@
-import type { ComponentType } from 'react';
-import type { MessageEntry, MessageVariant } from './types';
-import { createMessageStore, MessageStore } from './store';
+import { ROOT_SCOPE } from './constants/defaults';
+import { createMessageStore, MessageStore } from './stores/store';
+import type { MessageRenderer, MessageType } from './types';
 
-/** The renderer a consumer face registers for its variant. */
-export interface MessageRendererProps {
-  /** The live entry to render. */
-  entry: MessageEntry;
-  /** The store the entry lives in (pause/resume/dismiss). */
-  store: MessageStore;
-}
-
-export type MessageRenderer = ComponentType<MessageRendererProps>;
-
-/** The default scope: the screen-wide container `toast()`/`notify()` use. */
-export const ROOT_SCOPE = 'root';
+export { ROOT_SCOPE };
 
 // ——— module-level shared state ———————————————————————————————
 // The scope table and renderer registry are module singletons, so EVERY
-// MessageFactory instance (the Toast face, the Notify face, any consumer
+// MessageFactory instance (the Toast kind, the Notify kind, any consumer
 // subclass) reads and writes the SAME scope space. That is the whole
 // point: a scope is a container, and a container can hold toast and
-// notify entries side by side — the face only decides how entries get in.
+// notify entries side by side — the kind only decides how entries get in.
 
 const scopes = new Map<string, MessageStore>();
-const renderers = new Map<MessageVariant, MessageRenderer>();
+const renderers = new Map<MessageType, MessageRenderer>();
 
 /**
  * The base message factory: the scope → store registry plus the renderer
- * registry. Consumer faces extend it (ToastFactory, NotifyFactory) to add
+ * registry. Consumer kinds extend it (ToastFactory, NotifyFactory) to add
  * their imperative API; the scope management is inherited unchanged.
  *
  * A scope names a container (a `<MessageViewport scope="…">`). All
  * factories share one scope table, so a container can hold entries from
- * every face — `toast(msg, { scope })` and `notify(…, { scope })` land in
- * the same store, and the viewport renders each entry by its variant's
- * registered renderer.
+ * every kind — `toast(msg, { scope })` and `notify(…, { scope })` land in
+ * the same store, and the viewport renders each entry by the renderer
+ * registered for its type.
  */
 export class MessageFactory {
   /**
    * Returns the store for a scope, creating it on first touch. This is
-   * how a viewport "registers" its scope — and how a face routes an
+   * how a viewport "registers" its scope — and how a kind routes an
    * imperative call into the right container.
    */
   getOrCreate(scope: string = ROOT_SCOPE): MessageStore {
@@ -61,14 +50,14 @@ export class MessageFactory {
     scopes.delete(scope);
   }
 
-  /** Registers the renderer for a variant (called by each face). */
-  registerRenderer(variant: MessageVariant, renderer: MessageRenderer): void {
-    renderers.set(variant, renderer);
+  /** Registers the renderer for a message type (called by each consumer kind). */
+  registerRenderer(type: MessageType, renderer: MessageRenderer): void {
+    renderers.set(type, renderer);
   }
 
-  /** Returns the renderer for a variant (undefined if no face registered it). */
-  getRenderer(variant: MessageVariant): MessageRenderer | undefined {
-    return renderers.get(variant);
+  /** Returns the renderer for a message type (undefined if no kind registered it). */
+  getRenderer(type: MessageType): MessageRenderer | undefined {
+    return renderers.get(type);
   }
 
   /** Clears every scope — mostly for tests. */
@@ -79,9 +68,9 @@ export class MessageFactory {
 
 /**
  * The shared base factory instance: the viewport and every consumer
- * face operate on the SAME scope table through this instance (or their
+ * kind operate on the SAME scope table through this instance (or their
  * own subclass instances — the table is module-level, so all of them
- * read and write one space). Faces extend the class for their API and
+ * read and write one space). Kinds extend the class for their API and
  * register their renderers; the viewport reads the shared registry
  * through this instance.
  */

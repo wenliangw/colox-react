@@ -1,14 +1,19 @@
-// The shared message item shell: every message entry — whatever its
-// face (toast/notify) — rides these base classes. `colox-message`
-// names the shell; the tone class tints the semantic icon via the
-// design-language text tokens; `--exiting` plays the out-animation
-// (the store keeps the entry mounted through the exit window).
+// The shared message item box: every message entry — whatever its
+// kind (toast/notify) — rides these base classes. `colox-message`
+// names the box; the palette class tints the semantic icon via the
+// design-language family tokens and seeds the variant paint; the
+// variant class (plain/subtle/solid/outline) decides how much of that
+// paint the surface carries; `--exiting` plays the out-animation (the
+// store keeps the entry mounted through the exit window).
 //
-// The surface itself (card vs pill, shadow, radius) is the FACE's job —
-// the face item supplies its own class (colox-toast / colox-notify) on
-// top of the shell.
+// The surface itself (card vs pill, shadow, radius) is the KIND's job —
+// the kind's item supplies its own class (colox-toast / colox-notify) on
+// top of the box. The palette/variant paint here wins over the kind
+// base because the box classes ride a `.colox-message` prefix
+// (0,2,0 specificity beats the kind's single class).
+
 .colox-message {
-  // Enter animation set per-face below (animation.scss).
+  // Enter animation set per kind below (animation.scss).
   animation-fill-mode: both;
 }
 
@@ -16,25 +21,111 @@
   animation-play-state: running;
 }
 
-// The tone icon color: the tone's semantic text token — the design
-// language owns the tone→color mapping, the component only reads it.
-// Faces reuse this via `colox-message--tone-*` on their item.
-.colox-message--info .colox-message__icon,
-.colox-message--tone-info .colox-message__icon {
-  color: var(--colox-color-text-info);
+// ——— palette → private family tokens ——————————————————————————
+// Each palette class seeds the message's private color set from the
+// design language family: the solid (fill/ink), the subtle (tint fill)
+// and the icon color. `plain` only reads the icon color; `subtle` /
+// `solid` / `outline` consume the rest. The mapping mirrors Button:
+// gray → gray, primary → brand, info → blue, success → green,
+// warning → orange, error → red.
+
+.colox-message--palette-gray {
+  --colox-message-solid: var(--colox-color-gray-solid);
+  --colox-message-subtle: var(--colox-color-gray-subtle);
+  --colox-message-inverse: var(--colox-color-gray-inverse);
+  --colox-message-icon: var(--colox-color-text-default);
 }
 
-.colox-message--success .colox-message__icon,
-.colox-message--tone-success .colox-message__icon {
-  color: var(--colox-color-text-success);
+.colox-message--palette-primary {
+  --colox-message-solid: var(--colox-color-brand-solid);
+  --colox-message-subtle: var(--colox-color-brand-subtle);
+  --colox-message-inverse: var(--colox-color-brand-inverse);
+  --colox-message-icon: var(--colox-color-brand-solid);
 }
 
-.colox-message--warning .colox-message__icon,
-.colox-message--tone-warning .colox-message__icon {
-  color: var(--colox-color-text-warning);
+.colox-message--palette-info {
+  --colox-message-solid: var(--colox-color-blue-solid);
+  --colox-message-subtle: var(--colox-color-blue-subtle);
+  --colox-message-inverse: var(--colox-color-blue-inverse);
+  --colox-message-icon: var(--colox-color-text-info);
 }
 
-.colox-message--error .colox-message__icon,
-.colox-message--tone-error .colox-message__icon {
-  color: var(--colox-color-text-error);
+.colox-message--palette-success {
+  --colox-message-solid: var(--colox-color-green-solid);
+  --colox-message-subtle: var(--colox-color-green-subtle);
+  --colox-message-inverse: var(--colox-color-green-inverse);
+  --colox-message-icon: var(--colox-color-text-success);
+}
+
+.colox-message--palette-warning {
+  --colox-message-solid: var(--colox-color-orange-solid);
+  --colox-message-subtle: var(--colox-color-orange-subtle);
+  --colox-message-inverse: var(--colox-color-orange-inverse);
+  --colox-message-icon: var(--colox-color-text-warning);
+}
+
+.colox-message--palette-error {
+  --colox-message-solid: var(--colox-color-red-solid);
+  --colox-message-subtle: var(--colox-color-red-subtle);
+  --colox-message-inverse: var(--colox-color-red-inverse);
+  --colox-message-icon: var(--colox-color-text-error);
+}
+
+// ——— variant surface ——————————————————————————————————————————
+// plain = the neutral bg-default card (the kind base), only the icon
+// carries the palette color. subtle tints the card with the family
+// subtle fill and moves the icon to the family solid. solid paints the
+// family solid with inverse ink (icon and content follow via
+// currentColor). outline keeps the same opaque bg-default card as plain
+// and draws a 1px family border on it. The `.colox-message` prefix
+// keeps the overrides above the kind base regardless of stylesheet
+// order.
+
+.colox-message.colox-message--variant-subtle {
+  background-color: var(--colox-message-subtle);
+}
+
+.colox-message.colox-message--variant-solid {
+  background-color: var(--colox-message-solid);
+  color: var(--colox-message-inverse);
+}
+
+// On the solid surface the body words must ride the inverse ink too —
+// the kind's content rule (text-default) would otherwise fight the
+// shell color. The close button (IconButton muted) follows the shell
+// ink as well, quieting the corner on the loud fill.
+.colox-message.colox-message--variant-solid .colox-message__content,
+.colox-message.colox-message--variant-solid .colox-toast__content,
+.colox-message.colox-message--variant-solid .colox-notify__content,
+.colox-message.colox-message--variant-solid .colox-notify__title {
+  color: var(--colox-message-inverse);
+}
+
+.colox-message.colox-message--variant-solid .colox-message__close,
+.colox-message.colox-message--variant-solid .colox-toast__close,
+.colox-message.colox-message--variant-solid .colox-notify__close {
+  color: var(--colox-message-inverse);
+}
+
+.colox-message.colox-message--variant-solid .colox-notify__action {
+  color: var(--colox-message-inverse);
+}
+
+.colox-message.colox-message--variant-outline {
+  background-color: var(--colox-color-bg-default);
+  border: 1px solid var(--colox-message-solid);
+}
+
+// ——— icon color ————————————————————————————————————————————————
+// The semantic icon glyph comes from the mode (MODE_ICONS picks it);
+// its color follows the palette. Kinds target the shared
+// `.colox-message__icon` class for the tint (the kind class keeps the
+// geometry — size, margin). `solid` flips the icon to the inverse ink.
+
+.colox-message__icon {
+  color: var(--colox-message-icon);
+}
+
+.colox-message--variant-solid .colox-message__icon {
+  color: var(--colox-message-inverse);
 }

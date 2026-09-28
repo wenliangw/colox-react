@@ -28,6 +28,6 @@ export * from './toast';
 export * from './tooltip';
 
 // The message container the consumer mounts; the message base layer
-// itself (store/factory) stays internal behind the faces.
+// itself (store/factory) stays internal behind the kinds.
 export { MessageViewport } from './cdk/message';
-export type { MessagePosition, MessageTone, MessageViewportProps } from './cdk/message';
+export type { MessageMode, MessagePosition, MessageViewportProps } from './cdk/message';
