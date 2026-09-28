@@ -1,18 +1,12 @@
-import type { ReactNode } from 'react';
-import type { MessageId, MessageOptions, MessagePosition } from '../cdk/message';
-import { toastFactory } from './api';
-import type { ToastCallOptions } from './api';
-
-/** The callable method surface of the Toast face. */
-export interface ToastNamespace {
-  info(content: ReactNode, options?: ToastCallOptions): MessageId;
-  success(content: ReactNode, options?: ToastCallOptions): MessageId;
-  warning(content: ReactNode, options?: ToastCallOptions): MessageId;
-  error(content: ReactNode, options?: ToastCallOptions): MessageId;
-  custom(content: ReactNode, options?: ToastCallOptions): MessageId;
-  update(key: string, patch: MessageOptions, options?: { scope?: string }): void;
-  dismiss(key?: string, options?: { scope?: string }): void;
-}
+import type {
+  MessageId,
+  MessagePalette,
+  MessagePosition,
+  MessageStrategy,
+  MessageVariant,
+} from '../cdk/message';
+import { toastFactory } from './factory';
+import type { ToastActions, ToastOptions } from './types';
 
 /**
  * The `Toast` namespace: the imperative face of the lightweight hint.
@@ -22,7 +16,7 @@ export interface ToastNamespace {
  * screen-wide viewport). No component lives here: the container is the
  * separate `MessageViewport`.
  */
-export const Toast: ToastNamespace = {
+export const Toast: ToastActions = {
   info: (content, options) => toastFactory.info(content, options),
   success: (content, options) => toastFactory.success(content, options),
   warning: (content, options) => toastFactory.warning(content, options),
@@ -32,8 +26,10 @@ export const Toast: ToastNamespace = {
   dismiss: (key, options) => toastFactory.dismiss(key, options),
 };
 
-export type { ToastCallOptions };
+export type { ToastOptions };
 
 export type { MessageId as ToastId };
-export type { MessageOptions as ToastOptions };
 export type { MessagePosition as ToastPosition };
+export type { MessagePalette as ToastPalette };
+export type { MessageVariant as ToastVariant };
+export type { MessageStrategy as ToastStrategy };
