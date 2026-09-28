@@ -205,12 +205,13 @@ export interface MessageViewportProps extends ComponentPropsWithoutRef<'div'> {
    */
   scope?: string;
   /**
-   * How the container anchors itself: `'fixed'` pins it to the viewport
-   * (the root screen container), `'absolute'` pins it to its nearest
-   * positioned ancestor (a scoped container inside a panel). Defaults to
-   * `'fixed'`.
+   * Merges the container onto the single element child instead of
+   * rendering its own box: the child becomes the anchor (the `--content`
+   * class positions it) and the slots render inside it — no wrapper div,
+   * no contract on any ancestor's position. Without `asChild` the
+   * viewport renders its own screen-wide layer (`--fixed`).
    */
-  positioning?: 'fixed' | 'absolute';
+  asChild?: boolean;
 }
 
 /** The renderer contract: how a message kind draws its entries in the viewport. */

@@ -1,4 +1,15 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import {
+  Children,
+  Fragment,
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import clsx from 'clsx';
 import { IconX } from '@colox/icons';
 import { messageFactory } from './factory';
@@ -174,6 +185,21 @@ function FoldCapsule({
 /**
  * The message container — the one component a consumer actually mounts.
  *
+ * Two shapes, one contract:
+ *
+ * - `<MessageViewport />` (no `asChild`) renders its own screen-wide
+ *   layer (`--fixed`): the default `'root'` scope for the unscoped
+ *   helper calls, messages pinned to the six screen edges.
+ * - `<MessageViewport scope="…" asChild>{element}</MessageViewport>`
+ *   renders NO box of its own: it merges the anchor onto the ONE
+ *   element child (`--content` — the child becomes the positioning
+ *   context) and renders the slots inside it as absolutely positioned
+ *   siblings. No wrapper div, and nothing depends on an ancestor being
+ *   `position: relative` — the child itself is the box the messages
+ *   pin to (an `absolute` viewport used to lean on the parent's
+ *   positioning; a parent without `relative` leaked the layer to the
+ *   page — the merge removes the contract entirely).
+ *
  * A `<MessageViewport scope="…">` registers a named container into the
  * shared MessageFactory scope table, subscribes to that scope's store,
  * groups its live entries by position, and renders each entry via the
@@ -185,18 +211,13 @@ function FoldCapsule({
  * owns the fold — see MessageStore.reconcileFold) — the viewport's
  * pollution valve for notification storms; folded closes pop in place,
  * only the last card exits.
- *
- * `scope` defaults to `'root'` — the screen-wide container that the
- * no-scope `toast()`/`notify()` calls route into. The viewport's own
- * box is the container: pass a className to size it, and use
- * `positioning` to anchor it to the screen (`fixed`) or to a parent
- * container (`absolute`).
  */
 export function MessageViewport({
   scope = 'root',
-  positioning = 'fixed',
+  asChild = false,
   className,
   style,
+  children,
   ...rest
 }: MessageViewportProps) {
   const store = useMemo(() => messageFactory.getOrCreate(scope), [scope]);
@@ -210,26 +231,59 @@ export function MessageViewport({
     };
   }, [scope]);
 
+  const slotNodes = POSITIONS.map((position) => {
+    const slotEntries = entries.filter((entry) => entry.position === position);
+    if (slotEntries.length === 0) {
+      return null;
+    }
+    return <MessageSlot key={position} position={position} entries={slotEntries} store={store} />;
+  });
+
+  // The merge shape: no box of its own — the consumer's element IS the
+  // container. The anchor class turns it into the positioning context,
+  // and the slots land inside it as absolute siblings (absolutely
+  // positioned elements never take part in the child's own layout, so
+  // the consumer's layout is untouched).
+  if (asChild) {
+    const childList = Children.toArray(children);
+    if (
+      childList.length !== 1 ||
+      !isValidElement(childList[0]) ||
+      (childList[0].type as unknown) === Fragment
+    ) {
+      throw new Error(
+        'MessageViewport `asChild` merges onto exactly one element child — ' +
+          'the element the messages anchor to.',
+      );
+    }
+    const child = childList[0] as ReactElement<Record<string, unknown>>;
+    const childProps = child.props as {
+      className?: string;
+      style?: object;
+      children?: ReactNode;
+      'data-scope'?: string;
+    };
+    return cloneElement(child, {
+      className: clsx(
+        'colox-message-viewport',
+        'colox-message-viewport--content',
+        childProps.className,
+        className,
+      ),
+      style: { ...style, ...(childProps.style ?? {}) },
+      'data-scope': childProps['data-scope'] ?? scope,
+      children: [...Children.toArray(childProps.children), ...slotNodes],
+    });
+  }
+
   return (
     <div
-      className={clsx(
-        'colox-message-viewport',
-        `colox-message-viewport--${positioning}`,
-        className,
-      )}
+      className={clsx('colox-message-viewport', 'colox-message-viewport--fixed', className)}
       style={style}
       data-scope={scope}
       {...rest}
     >
-      {POSITIONS.map((position) => {
-        const slotEntries = entries.filter((entry) => entry.position === position);
-        if (slotEntries.length === 0) {
-          return null;
-        }
-        return (
-          <MessageSlot key={position} position={position} entries={slotEntries} store={store} />
-        );
-      })}
+      {slotNodes}
     </div>
   );
 }

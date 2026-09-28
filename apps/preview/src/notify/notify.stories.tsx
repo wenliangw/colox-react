@@ -11,7 +11,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'The titled card kind of the message system (cdk/message) — the antd-notification tier: `title` + `content`, default slot `top-right`. No action slot — a notification reports and closes (undo/retry ride `Notify.custom`). Mount one `<MessageViewport>` per container (default `root`, screen-wide `fixed`; `positioning="absolute"` pins a scoped container inside a `position: relative` parent). `Notify.info/success/warning/error({ title, content, ... }, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }` and the slot named by `{ position }` — the six slots top-left / top-center / top-right / bottom-left / bottom-center / bottom-right (see the Positions story). `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (default `stack` — several titled cards legitimately coexist; `single` replaces in place with an instant zoom). A slot that accumulates more than two cards **folds** into the newest card + one count capsule (the tally + a clear-all ✕) with every countdown frozen — closing the card pops the stack in place (no exit animation, the revealed words zoom; only the last card exits), and that last card resumes its timer under a countdown capsule. The call options carry the same chrome + lifecycle axes Toast exposes: `showIcon` / `closeable` (both default `true`), `data` passthrough and `onClose({ id, data })` fired once per payload end. `custom` renders any ReactNode as the card body, `update(key, patch)` same-key in-place updates, `dismiss(key?)`. Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The lightweight hint kind lives under Components/Toast — both share one scope table, so one container holds toast and notify side by side. Card depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
+          'The titled card kind of the message system (cdk/message) — the antd-notification tier: `title` + `content`, default slot `top-right`. No action slot — a notification reports and closes (undo/retry ride `Notify.custom`). Mount one `<MessageViewport>` per container (default `root`, screen-wide `fixed`; `<MessageViewport scope="…" asChild>` merges a scoped container onto your own element — no wrapper div, no `position: relative` parent needed). `Notify.info/success/warning/error({ title, content, ... }, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }` and the slot named by `{ position }` — the six slots top-left / top-center / top-right / bottom-left / bottom-center / bottom-right (see the Positions story). `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (default `stack` — several titled cards legitimately coexist; `single` replaces in place with an instant zoom). A slot that accumulates more than two cards **folds** into the newest card + one count capsule (the tally + a clear-all ✕) with every countdown frozen — closing the card pops the stack in place (no exit animation, the revealed words zoom; only the last card exits), and that last card resumes its timer under a countdown capsule. The call options carry the same chrome + lifecycle axes Toast exposes: `showIcon` / `closeable` (both default `true`), `data` passthrough and `onClose({ id, data })` fired once per payload end. `custom` renders any ReactNode as the card body, `update(key, patch)` same-key in-place updates, `dismiss(key?)`. Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The lightweight hint kind lives under Components/Toast — both share one scope table, so one container holds toast and notify side by side. Card depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
       },
     },
   },
@@ -309,33 +309,37 @@ export const Overview = {
           </Section>
 
           <Section title="A scoped container — Notify inside a panel">
-            <div
-              style={{
-                position: 'relative',
-                height: '240px',
-                border: '1px dashed var(--colox-color-border-muted)',
-                borderRadius: 'var(--colox-radius-md)',
-              }}
-            >
-              <MessageViewport scope="panel" positioning="absolute" />
-              <Stack
-                direction="row"
-                gap="4"
-                align="center"
-                style={{ padding: 'var(--colox-spacing-4)' }}
+            {/* the panel IS the container: `asChild` merges the anchor onto
+                the div — no wrapper node, no position: relative needed
+                anywhere (the viewport used to lean on a positioned
+                parent; a parent without `relative` leaked to the page) */}
+            <MessageViewport scope="panel" asChild>
+              <div
+                style={{
+                  height: '240px',
+                  border: '1px dashed var(--colox-color-border-muted)',
+                  borderRadius: 'var(--colox-radius-md)',
+                }}
               >
-                <Button
-                  onClick={() =>
-                    Notify.info(
-                      { title: 'Panel notify', content: 'Scoped to the container box.' },
-                      { scope: 'panel' },
-                    )
-                  }
+                <Stack
+                  direction="row"
+                  gap="4"
+                  align="center"
+                  style={{ padding: 'var(--colox-spacing-4)' }}
                 >
-                  Notify in panel
-                </Button>
-              </Stack>
-            </div>
+                  <Button
+                    onClick={() =>
+                      Notify.info(
+                        { title: 'Panel notify', content: 'Scoped to the container box.' },
+                        { scope: 'panel' },
+                      )
+                    }
+                  >
+                    Notify in panel
+                  </Button>
+                </Stack>
+              </div>
+            </MessageViewport>
           </Section>
         </Stack>
       </Container>

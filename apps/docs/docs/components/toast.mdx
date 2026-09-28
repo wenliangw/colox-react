@@ -34,20 +34,22 @@ import '@colox/react/style.css';`}</CodeBlock>
 
 Mount one `<MessageViewport>` per container. The default `scope`
 (`'root'`) is the screen-wide container every unscoped call routes into
-— `positioning="fixed"` pins it to the viewport:
+— its own box is fixed to the screen:
 
 ```tsx
 <MessageViewport />
 ```
 
-A scoped container (`scope="panel"`, `positioning="absolute"`) pins
-itself inside a `position: relative` parent — a panel, a card, a
-drawer. Messages sent with `{ scope: 'panel' }` land inside that box:
+A scoped container merges onto your own element with `asChild` — the
+element itself becomes the anchor, no wrapper div and no parent
+`position: relative` needed (the previous `positioning="absolute"` lean
+leaked to the page when a parent forgot the class). Messages sent with
+`{ scope: 'panel' }` land inside that box:
 
 ```tsx
-<div style={{ position: 'relative', height: 240 }}>
-  <MessageViewport scope="panel" positioning="absolute" />
-</div>;
+<MessageViewport scope="panel" asChild>
+  <div style={{ height: 240, border: '1px dashed gray' }}>...panel content</div>
+</MessageViewport>;
 
 Toast.info('Inside the panel.', { scope: 'panel' });
 ```

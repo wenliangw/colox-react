@@ -252,4 +252,43 @@ describe('MessageViewport', () => {
     expect(vp.querySelector('.colox-message-count')).toBeNull();
     vi.useRealTimers();
   });
+
+  it('asChild merges the container onto the child — no wrapper div, no parent contract', () => {
+    render(
+      <MessageViewport scope="chat" asChild>
+        <section className="chat-panel">
+          <span>panel content</span>
+        </section>
+      </MessageViewport>,
+    );
+    const panel = screen.getByText('panel content').closest('section')!;
+    // the child IS the container: the anchor classes merge onto it and
+    // no screen layer renders anywhere
+    expect(panel.classList.contains('chat-panel')).toBe(true);
+    expect(panel.classList.contains('colox-message-viewport')).toBe(true);
+    expect(panel.classList.contains('colox-message-viewport--content')).toBe(true);
+    expect(document.body.querySelector('.colox-message-viewport--fixed')).toBeNull();
+    // entries land INSIDE the child node, in their position slot
+    act(() => {
+      Toast.info('inside', { scope: 'chat' });
+    });
+    expect(panel.querySelector('.colox-toast')?.textContent).toContain('inside');
+    expect(panel.querySelector('.colox-message-viewport__slot--top-center')).not.toBeNull();
+  });
+
+  it('asChild rejects anything but one element child', () => {
+    // the merge needs a single element to attach to — anything else
+    // leaves the messages without an anchor and must fail loudly
+    expect(() => render(<MessageViewport scope="chat" asChild />)).toThrow(
+      /merges onto exactly one element child/,
+    );
+    expect(() =>
+      render(
+        <MessageViewport scope="chat" asChild>
+          <span>one</span>
+          <span>two</span>
+        </MessageViewport>,
+      ),
+    ).toThrow(/merges onto exactly one element child/);
+  });
 });

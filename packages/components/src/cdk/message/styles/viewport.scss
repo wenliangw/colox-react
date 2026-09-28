@@ -1,34 +1,42 @@
-// The message container: the box the consumer mounts (`<MessageViewport
-// scope="…">`). `fixed` pins it to the screen (the root container);
-// `absolute` pins it to the nearest positioned ancestor (a scoped
-// container inside a panel). The container itself never intercepts the
-// pointer — each slot's cards re-enable it — and it floats above page
-// content on the overlay tier.
-.colox-message-viewport {
+// The message anchor: a marker class every host carries — the screen
+// layer's own box (`--fixed`) or the consumer node an `asChild` viewport
+// merges onto (`--content`). It owns no rules of its own; each mode
+// class owns its positioning. Both modes hang the slots off the same
+// anchored box, so the pointer re-enable rules below apply everywhere.
+//
+// `--fixed` is the screen-wide layer the unscoped calls route into.
+// `--content` is a consumer node that becomes the positioning context —
+// the anchor is the node itself, so nothing depends on an ancestor being
+// `position: relative` (the old `absolute` viewport leaned on a parent
+// with the class; a parent without it leaked the layer to the page).
+.colox-message-viewport--fixed {
+  position: fixed;
+  inset: 0;
+  // the layer never intercepts the pointer — each slot re-enables its
+  // cards — and it floats above page content on the overlay tier
   z-index: var(--colox-z-overlay, 1100);
   pointer-events: none;
 }
 
-.colox-message-viewport--fixed {
-  position: fixed;
-  inset: 0;
-}
-
-.colox-message-viewport--absolute {
-  position: absolute;
-  inset: 0;
+.colox-message-viewport--content {
+  position: relative;
+  // the node IS the consumer's content — its pointer behavior is the
+  // consumer's own (the slot layer below keeps itself transparent)
 }
 
 // One slot: a flex column pinned to one of the six positions (top/bottom
 // × left/center/right). Top slots grow downward from the container's top
 // edge, bottom slots grow upward; the horizontal alignment follows the
-// slot word. Cards re-enable pointer events inside.
+// slot word. The slot itself never intercepts the pointer — in content
+// mode the box is live, and even in screen mode the transparent band
+// must not block: cards re-enable pointer events inside.
 .colox-message-viewport__slot {
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: var(--colox-spacing-2);
   max-width: 100%;
+  pointer-events: none;
 }
 
 .colox-message-viewport__slot--top-left {

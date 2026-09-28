@@ -37,12 +37,14 @@ which kind the entry came from:
 ```
 
 Calls without a `scope` route into `'root'` (the screen-wide fixed
-container). A scoped container routes calls that name it:
+container). A scoped container merges onto your own element with
+`asChild` — the element itself becomes the anchor, no wrapper div and
+no parent `position: relative` needed:
 
 ```tsx
-<div style={{ position: 'relative', height: 240 }}>
-  <MessageViewport scope="panel" positioning="absolute" />
-</div>;
+<MessageViewport scope="panel" asChild>
+  <div style={{ height: 240, border: '1px dashed gray' }}>...panel content</div>
+</MessageViewport>;
 
 Notify.info({ title: 'Panel', content: 'Scoped.' }, { scope: 'panel' });
 ```

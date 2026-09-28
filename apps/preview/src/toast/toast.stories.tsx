@@ -11,7 +11,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'The lightweight hint kind of the message system (cdk/message) — the antd-message tier: a slim single-line pill, default slot `top-center`. Mount one `<MessageViewport>` per container (default `root`, screen-wide `fixed`; `positioning="absolute"` pins a scoped container inside a `position: relative` parent). `Toast.info/success/warning/error(content, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }`. `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (`single` replaces a toast in its slot IN PLACE — the new words land instantly with a zoom entrance, no opacity dip; `stack` piles up), `update(key, patch)` same-key in-place updates (the same instant zoom), `custom` renders any ReactNode, renderer chrome `showIcon` / `closeable` (both default on) gate the mode icon / the corner ✕. No `action` slot — a 3s transient hint solicits no decision; custom interactive content rides `content` / `Toast.custom`. `data` passes an opaque value through and `onClose({ id, data })` fires once per payload end (dismissed, expired, cleared or replaced — `update` never fires it). Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The titled-card kind lives under Components/Notify — both share one scope table, so one container holds toast and notify side by side. Pill depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
+          'The lightweight hint kind of the message system (cdk/message) — the antd-message tier: a slim single-line pill, default slot `top-center`. Mount one `<MessageViewport>` per container — the default `root` is the screen-wide fixed layer; `<MessageViewport scope="…" asChild>` merges a scoped container onto your own element (no wrapper div, no `position: relative` parent needed — the element itself becomes the anchor). `Toast.info/success/warning/error(content, options)` is a global imperative namespace, callable from any code position, routing into the scope named by `{ scope }`. `palette` (six family colors, defaulting to the mode: info/success/warning/error) and `variant` (plain default / subtle / solid / outline surface), `strategy` (`single` replaces a toast in its slot IN PLACE — the new words land instantly with a zoom entrance, no opacity dip; `stack` piles up), `update(key, patch)` same-key in-place updates (the same instant zoom), `custom` renders any ReactNode, renderer chrome `showIcon` / `closeable` (both default on) gate the mode icon / the corner ✕. No `action` slot — a 3s transient hint solicits no decision; custom interactive content rides `content` / `Toast.custom`. `data` passes an opaque value through and `onClose({ id, data })` fires once per payload end (dismissed, expired, cleared or replaced — `update` never fires it). Duration auto-dismiss (default 3s, 0 = sticky) with hover pause, per-item exit animation, `role="status"` (polite). The titled-card kind lives under Components/Notify — both share one scope table, so one container holds toast and notify side by side. Pill depth = the design language\'s `--colox-shadow-md` (the popup family tier).',
       },
     },
   },
@@ -201,26 +201,30 @@ export const Overview = {
           </Section>
 
           <Section title="A scoped container — Toast inside a panel">
-            <div
-              style={{
-                position: 'relative',
-                height: '240px',
-                border: '1px dashed var(--colox-color-border-muted)',
-                borderRadius: 'var(--colox-radius-md)',
-              }}
-            >
-              <MessageViewport scope="panel" positioning="absolute" />
-              <Stack
-                direction="row"
-                gap="4"
-                align="center"
-                style={{ padding: 'var(--colox-spacing-4)' }}
+            {/* the panel IS the container: `asChild` merges the anchor onto
+                the div — no wrapper node, no position: relative needed
+                anywhere (the viewport used to lean on a positioned
+                parent; a parent without `relative` leaked to the page) */}
+            <MessageViewport scope="panel" asChild>
+              <div
+                style={{
+                  height: '240px',
+                  border: '1px dashed var(--colox-color-border-muted)',
+                  borderRadius: 'var(--colox-radius-md)',
+                }}
               >
-                <Button onClick={() => Toast.info('Inside the panel.', { scope: 'panel' })}>
-                  Toast in panel
-                </Button>
-              </Stack>
-            </div>
+                <Stack
+                  direction="row"
+                  gap="4"
+                  align="center"
+                  style={{ padding: 'var(--colox-spacing-4)' }}
+                >
+                  <Button onClick={() => Toast.info('Inside the panel.', { scope: 'panel' })}>
+                    Toast in panel
+                  </Button>
+                </Stack>
+              </div>
+            </MessageViewport>
           </Section>
         </Stack>
       </Container>
