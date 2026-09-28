@@ -1,12 +1,12 @@
 // The notify card: the titled notification surface. An OPAQUE bg-default
 // card (the Popover recipe), NO border (the shadow defines the edge),
-// depth = ONE union drop-shadow at the master alpha — the family
-// calibration, no invented numbers. The card is a horizontal row:
-// [tone icon] [title/content] [action] [close]. The body owns the
-// width (content wraps, the card caps at a readable max); the action
-// and the close sit at the row end, never the primary actors.
+// depth = the design language's surface shadow tier
+// (`box-shadow: var(--colox-shadow-md)` — the float-surface standard,
+// Select/DatePicker popups share it). The card is a horizontal row:
+// [mode icon] [title/content] [close]. The body owns the
+// width (content wraps, the card caps at a readable max); the close
+// sits at the row end, never the primary actor.
 .colox-notify {
-  --colox-notify-shadow-color: rgba(25, 25, 25, 0.1);
   display: flex;
   align-items: flex-start;
   gap: var(--colox-spacing-3);
@@ -15,17 +15,16 @@
   background: var(--colox-color-bg-default);
   color: var(--colox-color-text-default);
   border-radius: var(--colox-radius-lg);
-  filter: drop-shadow(0 8px 24px var(--colox-notify-shadow-color));
+  box-shadow: var(--colox-shadow-md);
 }
 
-// The tone icon: fixed size, tinted by the tone's semantic text token
-// (shell.scss owns the tone→color mapping via `colox-message--tone-*`).
+// The mode icon: fixed size. The color comes from the shared
+// `.colox-message__icon` rule in shell.scss (palette-driven).
 .colox-notify__icon {
   flex: none;
   width: 20px;
   height: 20px;
   margin-top: var(--colox-spacing-1);
-  color: var(--colox-color-text-info);
 }
 
 // The body: the title over the content. Owns the leftover width.
@@ -49,14 +48,6 @@
   color: var(--colox-color-text-default);
   white-space: normal;
   word-break: break-word;
-}
-
-// The action sits inline at the row end, before the close — a subtle
-// button, never the primary actor; clicking it dismisses the card
-// (the handler runs and the store closes it).
-.colox-notify__action {
-  flex: none;
-  margin-top: var(--colox-spacing-1);
 }
 
 // The corner close: the shared IconButton muted base — this site class

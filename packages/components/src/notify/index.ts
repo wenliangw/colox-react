@@ -1,27 +1,21 @@
-import type { ReactNode } from 'react';
-import type { MessageId, MessagePosition } from '../cdk/message';
-import { notifyFactory } from './api';
-import type { NotifyCallOptions, NotifyPayload } from './api';
-
-/** The callable method surface of the Notify face. */
-export interface NotifyNamespace {
-  info(payload: NotifyPayload, options?: NotifyCallOptions): MessageId;
-  success(payload: NotifyPayload, options?: NotifyCallOptions): MessageId;
-  warning(payload: NotifyPayload, options?: NotifyCallOptions): MessageId;
-  error(payload: NotifyPayload, options?: NotifyCallOptions): MessageId;
-  custom(content: ReactNode, options?: NotifyCallOptions): MessageId;
-  update(key: string, patch: NotifyPayload, options?: { scope?: string }): void;
-  dismiss(key?: string, options?: { scope?: string }): void;
-}
+import type {
+  MessageId,
+  MessagePalette,
+  MessagePosition,
+  MessageStrategy,
+  MessageVariant,
+} from '../cdk/message';
+import { notifyFactory } from './factory';
+import type { NotifyActions, NotifyOptions, NotifyPayload } from './types';
 
 /**
- * The `Notify` namespace: the imperative face of the titled
+ * The `Notify` namespace: the imperative kind of the titled
  * notification card. A pure-methods namespace — `Notify.info({ title,
  * content })`, callable from ANY code position, routing into the
  * container named by `{ scope }` (default `'root'`). No component
  * lives here: the container is the separate `MessageViewport`.
  */
-export const Notify: NotifyNamespace = {
+export const Notify: NotifyActions = {
   info: (payload, options) => notifyFactory.info(payload, options),
   success: (payload, options) => notifyFactory.success(payload, options),
   warning: (payload, options) => notifyFactory.warning(payload, options),
@@ -31,7 +25,10 @@ export const Notify: NotifyNamespace = {
   dismiss: (key, options) => notifyFactory.dismiss(key, options),
 };
 
-export type { NotifyCallOptions, NotifyPayload };
+export type { NotifyOptions, NotifyPayload };
 
 export type { MessageId as NotifyId };
 export type { MessagePosition as NotifyPosition };
+export type { MessagePalette as NotifyPalette };
+export type { MessageVariant as NotifyVariant };
+export type { MessageStrategy as NotifyStrategy };
