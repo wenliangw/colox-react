@@ -78,18 +78,26 @@
 
 // ——— notify deck —————————————————————————————————————————————
 // A slot holding more than DECK_THRESHOLD notify cards collapses into
-// a deck: the newest card fully visible, up to two older cards peeking
-// as clipped strips behind it, and the rest folded into the "+N" count
-// chip. The deck is the viewport's pollution valve — a notification
-// storm paints one pile instead of the full stack. Clicking the deck
-// surface (or the count chip) expands it into the full newest-first
-// stack; the collapse chip folds it back. The deck's cross-axis
-// alignment follows the slot it lives in (a left slot left-aligns, a
-// center slot centers, a right slot right-aligns).
+// a deck: the newest card fully visible and holding the pile's
+// footprint (in-flow), the two behind it rendered IN FULL and hanging
+// above the front — each shifted up by index × --colox-spacing-1 (4px)
+// with a descending z-index so only its top edge ladders out like the
+// next card in a deck — and the rest folded into the "+N" count chip.
+// The pile's height stays card + 2 × 4px no matter how many cards the
+// slot holds. Clicking the deck surface (or the count chip) expands it
+// into the full newest-first stack; the collapse chip folds it back.
+// The deck's cross-axis alignment (and the peek bands' justification)
+// follows the slot it lives in: a left slot left-aligns, a center slot
+// centers, a right slot right-aligns.
 
 .colox-message-deck {
   display: flex;
   flex-direction: column;
+  // relative anchor for the absolutely positioned peeks; isolation
+  // rings the pile's z-index ladder inside the deck so it can never
+  // interleave with same-slot toast cards
+  position: relative;
+  isolation: isolate;
 }
 
 .colox-message-viewport__slot--top-left .colox-message-deck,
@@ -107,33 +115,48 @@
   align-items: flex-end;
 }
 
-// The peek strips: each older card clipped to a thin top sliver (its
-// padding + mode-icon row — the recognizable "another card" edge), so
-// a pile reads as stacked card backs behind the front one instead of a
-// full translucent stack. Each sliver is a real render of its card
-// capped by a fixed-height wrapper — the cards inside keep their own
-// timers (they expire normally behind the front). The area is pure
-// decoration: aria-hidden and pointer-transparent, NO translucency —
-// the clip alone signals "behind".
-.colox-message-deck__peek {
-  display: flex;
-  flex-direction: column;
-  gap: var(--colox-spacing-1);
-  width: 100%;
-  margin-top: var(--colox-spacing-2);
-  overflow: hidden;
-  pointer-events: none;
+// The front card's wrapper: the only in-flow pile member besides the
+// chips — it sizes the deck and its inline z-index (peeks + 1) keeps
+// the newest card covering every band behind it.
+.colox-message-deck__front {
+  position: relative;
 }
 
-// One clipped sliver: caps the card to its top strip. The wrapper
-// ceiling is the visible band height (size-10 = 40px — the padding +
-// full mode icon row); cards taller than the band clip, shorter cards
-// (e.g. a tiny `custom` body) stay natural.
+// One peeked card behind the front: a FULL render absolutely anchored
+// to the deck's top edge and shifted up by its index (inline
+// translateY: -4px then -8px against the spacing-1 token). Its inline
+// z-index descends (peeks.length - index), so the front covers the
+// nearest band, which covers the farthest. The wrapper spans the
+// deck's width and justifies the card inside like the slot aligns the
+// pile (left slots: flex-start, center: center, right: flex-end) —
+// every band reveals the full top edge of its card, not a corner.
+// Pure decoration: aria-hidden and pointer-transparent; no
+// translucency — the covered/full render + ladder geometry alone
+// signal "behind".
 .colox-message-deck__peek-card {
-  flex: none;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-height: var(--colox-size-10);
-  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  pointer-events: none;
+  transition: transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
+}
+
+.colox-message-viewport__slot--top-left .colox-message-deck__peek-card,
+.colox-message-viewport__slot--bottom-left .colox-message-deck__peek-card {
+  justify-content: flex-start;
+}
+
+.colox-message-viewport__slot--top-center .colox-message-deck__peek-card,
+.colox-message-viewport__slot--bottom-center .colox-message-deck__peek-card {
+  justify-content: center;
+}
+
+.colox-message-viewport__slot--top-right .colox-message-deck__peek-card,
+.colox-message-viewport__slot--bottom-right .colox-message-deck__peek-card {
+  justify-content: flex-end;
 }
 
 // The count chip: a compact muted pill reading "+N" — the folded cards.

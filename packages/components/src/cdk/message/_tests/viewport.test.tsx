@@ -64,13 +64,26 @@ describe('MessageViewport', () => {
     // deck collapsed: the +N chip folds the cards beyond the peek
     expect(vp.querySelector('.colox-message-deck')).not.toBeNull();
     expect(vp.querySelector('.colox-message-deck__count')?.textContent).toBe('+1');
-    // the two cards behind the front render as clipped slivers — one
-    // fixed-height wrapper per card, not full-size cards
-    const peek = vp.querySelector('.colox-message-deck__peek');
-    expect(peek).not.toBeNull();
-    expect(peek!.querySelectorAll('.colox-message-deck__peek-card')).toHaveLength(2);
-    expect(peek!.textContent).toContain('three');
-    expect(peek!.textContent).toContain('two');
+    // the two cards behind the front hang above it as FULL renders:
+    // descending z-index ladder (front on top), each shifted up by
+    // index × spacing-1 (4px)
+    const front = vp.querySelector('.colox-message-deck__front');
+    expect(front).not.toBeNull();
+    expect((front as HTMLElement).style.zIndex).toBe('3');
+    expect(front!.textContent).toContain('four');
+    const peeks = vp.querySelectorAll('.colox-message-deck__peek-card');
+    expect(peeks).toHaveLength(2);
+    expect(peeks[0].getAttribute('aria-hidden')).toBe('true');
+    expect((peeks[0] as HTMLElement).style.zIndex).toBe('2');
+    expect((peeks[1] as HTMLElement).style.zIndex).toBe('1');
+    expect((peeks[0] as HTMLElement).style.transform).toBe(
+      'translateY(calc(-1 * 1 * var(--colox-spacing-1)))',
+    );
+    expect((peeks[1] as HTMLElement).style.transform).toBe(
+      'translateY(calc(-1 * 2 * var(--colox-spacing-1)))',
+    );
+    expect(peeks[0].textContent).toContain('three');
+    expect(peeks[1].textContent).toContain('two');
     // not expanded yet — no collapse chip
     expect(vp.querySelector('.colox-message-deck__collapse')).toBeNull();
   });

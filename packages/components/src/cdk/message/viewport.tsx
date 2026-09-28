@@ -25,13 +25,17 @@ function sliceDeck(entries: readonly MessageEntry[]) {
 /**
  * The notify deck: a slot that holds more than DECK_THRESHOLD notify
  * cards collapses them into a stacked deck — the newest card fully
- * visible, the two behind it peeking as clipped top strips, and the
- * rest folded into a "+N" count chip. This is the viewport-pollution
- * valve: many simultaneous notifications stop painting the whole
- * stack and show a compact pile instead. Clicking the deck surface
- * (or the count chip) expands it into the full newest-first stack;
- * clicking again collapses. The cards keep their own timers and
- * interactions (hover pause, close) in both states.
+ * visible and holding the pile's footprint, the two behind it rendered
+ * in full and hanging above it (each shifted up by index × 4px with a
+ * descending z-index, so only their top edges ladder out like cards in
+ * a deck), and the rest folded into a "+N" count chip. This is the
+ * viewport-pollution valve: many simultaneous notifications stop
+ * painting the whole stack and show a compact pile instead — the pile
+ * height stays card + 2 × 4px no matter how many cards a slot holds.
+ * Clicking the deck surface (or the count chip) expands it into the
+ * full newest-first stack; clicking again collapses. The cards keep
+ * their own timers in both states; collapsed, only the front card and
+ * the chips are interactive.
  */
 export function MessageDeck({
   entries,
@@ -68,17 +72,28 @@ export function MessageDeck({
         newestFirst.map((entry) => <Renderer key={entry.id} entry={entry} store={store} />)
       ) : (
         <>
-          <Renderer entry={front} store={store} />
-          <div className="colox-message-deck__peek" aria-hidden="true">
-            {peeks.map((entry) => (
-              // one clipped sliver per card: the wrapper caps the card
-              // to its top strip, so the pile reads as stacked card
-              // backs instead of full translucent notifications
-              <div key={entry.id} className="colox-message-deck__peek-card">
-                <Renderer entry={entry} store={store} />
-              </div>
-            ))}
+          {/* the front card keeps the pile's footprint (in-flow) and
+              sits on top: its z-index tops every peek */}
+          <div className="colox-message-deck__front" style={{ zIndex: peeks.length + 1 }}>
+            <Renderer entry={front} store={store} />
           </div>
+          {/* the cards behind it: FULL renders absolutely anchored to
+              the deck's top edge, each shifted up by its index (× the
+              spacing-1 token = 4px) with a descending z-index — the two
+              top edges ladder up above the front card like a deck */}
+          {peeks.map((entry, index) => (
+            <div
+              key={entry.id}
+              className="colox-message-deck__peek-card"
+              style={{
+                zIndex: peeks.length - index,
+                transform: `translateY(calc(-1 * ${index + 1} * var(--colox-spacing-1)))`,
+              }}
+              aria-hidden="true"
+            >
+              <Renderer entry={entry} store={store} />
+            </div>
+          ))}
           <button
             type="button"
             className="colox-message-deck__count"
