@@ -87,12 +87,14 @@ Notify.error({
 Notify defaults to `strategy: 'stack'` — several notifications can
 legitimately coexist, each keeping its own timer. To stop a burst from
 polluting the viewport, a slot that holds **more than three** notify
-cards collapses into a **deck**: the newest card stays fully visible,
-the two behind it peek as thin strips, and the rest fold into a `+N`
-count chip. Click the deck (or the `+N` chip) to expand it into the
-full newest-first stack; the collapse chip folds it back. The cards
-keep their timers and interactions (hover pause, close) in both
-states.
+cards collapses into a **deck**: the newest card stays fully visible
+and holds the pile's footprint, the two behind it render in full and
+hang above it on a z-index ladder — each shifted up by index × 4px so
+its top edge peeks out like the next card in a deck — and the rest
+fold into a `+N` count chip. Click the deck (or the `+N` chip) to
+expand it into the full newest-first stack; the collapse chip folds it
+back. The cards keep their timers and interactions (hover pause,
+close) in both states.
 
 Pass `strategy: 'single'` to replace in place instead — one card per
 slot; the slot keeps its identity, the new payload lands **instantly**

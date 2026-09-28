@@ -112,14 +112,21 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   props），useEffect 卸载时 unregister(scope)，spread rest props，
   `import './styles/index.scss'`。容器类 `colox-message-viewport--fixed/
 absolute`、data-scope。**deck 折叠在这里**：同槽 notify 条目 > DECK_THRESHOLD(3)
-  时，notify 条目交给 `MessageDeck` 组件（最新在前 + 后两张 peek 条 + `+N`
+  时，notify 条目交给 `MessageDeck` 组件（最新在前 + 后两张露顶部边 + `+N`
   chip，点面/计数展开收起，展开后 newest-first 全列表 + chevron-up 收起
-  chip）；非 notify 条目照常渲染。**peek 条 = 每张旧卡真渲染 + 限高裁切
-  包装**（`.colox-message-deck__peek-card` max-height = size-10 40px +
-  overflow hidden——只露上缘细条；首版 colox-message-deck__peek 只有
-  overflow hidden 无高度且带 opacity 0.6，裁切从未发生、peek 以半透明
-  整卡罗列——用户报「没有堆叠、多个像设置了透明度」后修复：去透明度、
-  每卡包限高裁切 wrapper）。
+  chip）；非 notify 条目照常渲染。**牌堆 = 完整卡 z-index 阶梯**（用户拍板：
+  动态 z-index + 从初值依次 index×4px 同向偏移）：front 卡包
+  `.colox-message-deck__front` in-flow 占位（容器高 = 卡高、零测量）+ 内联
+  zIndex 最高；后方两卡**完整渲染**包 `.colox-message-deck__peek-card`
+  absolute（top:0 + 内联 `translateY(calc(-1 * (i+1) * var(--colox-spacing-1)))`
+  上移——4px 真实 token 档）+ zIndex 递减（peeks.length - i），各自顶部 4px
+  边条向上梯出如扑克牌；容器 position:relative + isolation:isolate 圈层、
+  与同槽 toast 不错层；peek wrapper 内 flex justify-content 按槽对齐（左/中/右
+  = flex-start/center/flex-end）；堆高恒定卡高+8px 与数量无关。**两代前科**
+  （用户「没有堆叠反而像透明」起，两轮到牌堆）：①首版 deck__peek 只有
+  overflow hidden 无高度 + opacity 0.6 → 裁切从未发生、两张 peek 半透明整
+  卡罗列；②限高裁切细条（max-height 40px）→ 文字腰斩、不像叠牌，用户改拍
+  z-index 偏移方案；③本周牌堆（完整渲染 + 露边）为终态。
 
 - **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +

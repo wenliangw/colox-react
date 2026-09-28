@@ -40,4 +40,7 @@
 - [ ] `overflow: hidden` 的**裁剪必须配套轴长度**（height/max-height/width）——只有 overflow:hidden 而没有轴长度 = 内容原样完整渲染（裁剪从未发生）；此刻若再挂 opacity，症状就变成「多个半透明整卡」而不是「细条」（deck peek 前科：容器无高度 + opacity 0.6，用户报「没有堆叠、多个像设置了透明度」）。
 - [ ] 装饰性层级**不靠 opacity 表达**——opacity 只降全层透明、不裁内容，用户把它读作 bug；「在后排」用形状（裁到细条）+ 影深表达。
 - [ ] 裁切高度取**真实 token 档**（size-10 = 40px，露满图标行），且用 max-height 而非 height——比裁切档还矮的内容（tiny custom 卡）保持自然高度不被撑满。
+- [ ] **叠放/后排的层级表达优先级：完整渲染 + z-index 阶梯 + 微偏移露边 > 裁切细条 > 透明度**——用户三连校正的收敛（deck：半透明整卡 → 腰斩细条 → 拍板「动态 z-index + index×4px 同向偏移」）；露「边」必须露**真实卡片的完整宽度边**（peek wrapper 宽 100% + 按槽 justify-content），不是角落。
+- [ ] z-index 阶梯的**容器必须建立堆叠上下文**（`position: relative` + `isolation: isolate`），把阶梯圈在组件内——否则与同槽兄弟卡片错层。
+- [ ] 偏移数值先查 token：用户说 4px → `--colox-spacing-1` 正是 4px，直接取档不造数。
 - [ ] jsdom 挡得住 DOM 结构（裁切 wrapper 是否挂上），**挡不住 CSS 生效**——裁切/透明度类样式改完 storybook 肉眼过一遍。

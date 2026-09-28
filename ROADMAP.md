@@ -192,8 +192,11 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   hover pause, manual close (IconButton muted, gated by `closeable`),
   per-item exit on the
   shared motion tier, `role="status"` (polite) by default. A slot with
-  more than three notify cards collapses into a **deck** (newest full,
-  two peek strips, the rest in a `+N` chip, click to expand/collapse) —
+  more than three notify cards collapses into a **deck** (newest full
+  and holding the pile's footprint, the two behind it rendered in full
+  and hanging above it — a z-index ladder shifted up by index × 4px so
+  their top edges peek out like cards in a deck, the rest in a `+N`
+  chip, click to expand/collapse) —
   the viewport-pollution valve for notification bursts. The message
   store is a shown→exiting→removed state machine (all timers in the
   store — duration, hover pause/resume, `DEFAULT_EXIT`=200 window;
