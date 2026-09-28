@@ -8,15 +8,21 @@ import CodeBlock from '@theme/CodeBlock';
 
 # Toast
 
-The **lightweight hint face** of the message system — the antd-message
-tier. A slim single-line pill (`bg-default`, the Popover surface) with
-a palette tone icon, the body words and a close button. No title, no
-action — those are the Notify tier's job.
+The **lightweight hint kind** of the message system — the antd-message
+tier. A slim single-line pill with the semantic mode icon, the body
+words and a close button — the icon and the
+corner ✕ are renderer chrome (`showIcon` / `closeable`, both default
+on). No title, no action — a 3s transient hint solicits no decisions;
+(the whole message system is informational: even the titled
+[Notify](/docs/components/notify) card carries no action — undo/retry
+is a dialog's job). Custom interactive content rides the `content`
+node / `Toast.custom` — an arbitrary ReactNode.
 
 The message system is two pieces: one **container** per scope (a
-`<MessageViewport>` you mount), and the **imperative faces** that route
-into it (`Toast.…` / `Notify.…`). Both faces share one scope table, so
-a single container holds toast and notify entries side by side.
+`<MessageViewport>` you mount), and the **imperative kinds** that
+route into it (`Toast.…` / `Notify.…`). Both kinds share one scope
+table, so a single container holds toast and notify entries side by
+side.
 
 <CodeBlock
   className="colox-import"
@@ -49,7 +55,7 @@ Toast.info('Inside the panel.', { scope: 'panel' });
 ## The imperative API
 
 `Toast.…` is a global namespace — call it from anywhere (a click
-handler, a fetch callback, a store action). Tone shortcuts:
+handler, a fetch callback, a store action). Mode shortcuts:
 
 ```tsx
 Toast.info('Saved.');
@@ -61,29 +67,116 @@ Toast.error('Something went wrong.');
 The return value is the message's id — hand it to `Toast.dismiss(id)`.
 `Toast.custom(anyNode)` renders arbitrary React content as-is (a
 progress bar, a live status). Options: `scope`, `position` (default
-`top-center`), `duration`, `key`.
+`top-center`), `palette`, `variant`, `strategy`, `showIcon`,
+`closeable`, `duration`, `key`, `data`, `onClose`.
+
+## Palette & variant
+
+A toast's color family is the **palette** — the design language's six
+families: `gray`, `primary`, `info`, `success`, `warning`, `error`. It
+defaults to the mode (`Toast.error` is `error`), so the mode shortcuts
+read naturally; override for a neutral or brand toast:
+
+```tsx
+Toast.info('A brand toast.', { palette: 'primary' });
+Toast.warning('A neutral toast.', { palette: 'gray' });
+```
+
+The **variant** decides how much paint the pill carries:
+
+- `plain` (default) — the neutral `bg-default` pill, only the icon is
+  tinted.
+- `subtle` — the family tint fills the pill, the icon carries the
+  family solid.
+- `solid` — the family solid fills the pill with inverse ink.
+- `outline` — a 1px family border on the opaque `bg-default` pill (same
+  card as `plain`, the difference is only the border).
+
+```tsx
+Toast.error('Solid error.', { palette: 'error', variant: 'solid' });
+Toast.success('Subtle success.', { palette: 'success', variant: 'subtle' });
+```
+
+## Strategy: single vs stack
+
+A toast is a lightweight centered hint, and a burst of them pollutes
+the viewport — so Toast defaults to `strategy: 'single'`: a new toast
+**replaces** the current one in its slot **in place** — the slot keeps
+its identity (same node), the new payload lands **instantly**, the new
+words play a **zoom entrance** (exactly the same shape as an update —
+no opacity dip, no trough), and the countdown restarts — no re-mount,
+no position shift. Exactly one toast shows per position, whatever its
+`palette`/`variant`.
+
+```tsx
+Toast.info('This replaces the previous toast.');
+```
+
+Pass `strategy: 'stack'` to pile them up instead — the slot grows
+downward, each toast keeping its own timer:
+
+```tsx
+Toast.info('One.', { strategy: 'stack' });
+Toast.info('Two.', { strategy: 'stack' });
+```
+
+## Chrome & data
+
+The pill's chrome is two flags, both optional:
+
+- **`showIcon`** (default `true`) — `false` gives a text-only pill.
+- **`closeable`** (default `true`) — `false` drops the corner ✕; the
+  duration and `Toast.dismiss` still close the toast.
+- **`data`** — an opaque pass-through value you attach; handed back
+  untouched inside `onClose`'s payload.
+- **`onClose`** — fires once when the toast's payload ends (dismissed,
+  auto-expired, cleared, or replaced in place): the payload is
+  `{ id, data }` — the message's id and your own `data`. `Toast.update`
+  continues the same payload, so it never fires.
+
+```tsx
+Toast.info('All changes saved.', { showIcon: false });
+
+Toast.error('Upload failed.', {
+  data: { file: 'report.pdf' },
+  onClose: ({ id, data }) => cleanup(id, data),
+});
+
+Toast.info('Nothing else to do.', { closeable: false });
+```
 
 ## Lifecycle
 
 - **Duration**: auto-dismiss after 3s by default; `duration: 0` is
   sticky (only the close button dismisses). Hovering a toast pauses its
   countdown.
-- **Close**: the corner close button (IconButton muted), or
-  `Toast.dismiss(id)` / `Toast.dismiss()` (all in the scope).
 - **Update**: `Toast.update(key, patch)` mutates a live toast in place —
-  progress, retries. Give the toast a `key` to target it.
+  progress, retries. Give the toast a `key` to target it. A visible
+  payload change lands instantly: the content node re-mounts and plays
+  a **zoom entrance** (a scale + fade on the normal motion token) — the
+  update's whole feedback, no opacity dip. Invisible patches
+  (duration/key/data) apply instantly without re-mounting. (A same-slot
+  replacement works the same way — instant + zoom, no dip either.)
+- **Close**: the corner close button (IconButton muted, dropped by
+  `closeable: false`), or `Toast.dismiss(id)` / `Toast.dismiss()` (all
+  in the scope). Each close
+  (any route) fires the toast's `onClose({ id, data })` once.
 - **Exit**: each toast plays its own exit animation before the store
   removes it.
 
 ## Surface
 
-Opaque `bg-default` pills (the Popover surface — translucency is the
-hover-hint Tooltip recipe, and a toast never hovers) with a union
-drop-shadow, radius-lg, no border. The palette tone drives the semantic
-icon (info/success/warning/error) tinted by the design-language text
-tokens. `role="status"` (polite) announces each toast.
+The pill is opaque `bg-default` by default (the Popover surface —
+translucency is the hover-hint Tooltip recipe, and a toast never
+hovers) with the design language's `md` surface shadow
+(`--colox-shadow-md` — the floating-surface tier the popup family
+shares), radius-lg, no border. The `variant`
+paint (subtle / solid / outline) overrides the surface, and the palette
+drives the semantic icon color. `role="status"` (polite) announces each
+toast.
 
 ## Next
 
-Prefer a titled card with content and an action? See
-[Notify](/docs/components/notify) — the same container, the other face.
+Prefer a titled card with a heading? See
+[Notify](/docs/components/notify) — the same container, the other kind,
+which stacks notifications and decks them past three.

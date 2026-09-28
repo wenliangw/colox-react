@@ -8,15 +8,16 @@ import CodeBlock from '@theme/CodeBlock';
 
 # Notify
 
-The **titled card face** of the message system — the antd-notification
-tier. An opaque `bg-default` card holding the palette tone icon, a
-**title** + content, a single **action** (subtle Button, auto-closes
-the card on click) and the close button. The heavier sibling of
+The **titled card kind** of the message system — the antd-notification
+tier. An opaque `bg-default` card holding the semantic mode icon, a
+**title** + content and the close button. The heavier sibling of
 [Toast](/docs/components/toast) — where Toast is a single-line hint,
-Notify is a proper notification.
+Notify is a proper notification. No action slot: a notification
+reports and closes; the decision-tier interactions (undo/retry) are a
+dialog's job, and custom interactive content rides `Notify.custom`.
 
 Notify shares the message system's container with Toast: one
-`<MessageViewport>` per scope holds both faces' entries side by side,
+`<MessageViewport>` per scope holds both kinds' entries side by side,
 each in its own slot (Notify defaults to `top-right`, Toast to
 `top-center`).
 
@@ -29,7 +30,7 @@ import '@colox/react/style.css';`}</CodeBlock>
 ## Container
 
 The same `<MessageViewport>` Toast uses — the container does not care
-which face the entry came from:
+which kind the entry came from:
 
 ```tsx
 <MessageViewport />
@@ -49,8 +50,8 @@ Notify.info({ title: 'Panel', content: 'Scoped.' }, { scope: 'panel' });
 ## The imperative API
 
 `Notify.…` is a global namespace — callable from any code position.
-The payload carries the card's own shape: `title`, `content`, `type`,
-`action`, `duration`, `key`.
+The payload carries the card's own shape: `title`, `content`, `mode`,
+`palette`, `variant`, `duration`, `key`.
 
 ```tsx
 Notify.info({
@@ -59,24 +60,44 @@ Notify.info({
 });
 ```
 
-Tone shortcuts: `Notify.info` / `Notify.success` / `Notify.warning` /
+Mode shortcuts: `Notify.info` / `Notify.success` / `Notify.warning` /
 `Notify.error`. `Notify.custom(anyNode)` renders arbitrary content as
-the card body. Options: `scope`, `position` (default `top-right`).
+the card body. Call options: `scope`, `position` (default `top-right`),
+`strategy`, plus the shared chrome/lifecycle axes — `showIcon`
+(default `true`), `closeable` (default `true`), `data` and `onClose`
+(same semantics as Toast).
 
-## Action
+## Palette & variant
 
-One `action: { label, onClick }` slot — undo/retry semantics. Clicking
-the action runs `onClick` and then dismisses the card (a confirmation
-is done when it's acted on). Multiple actions are a dialog's job, not a
-notification's.
+Like Toast, a notify card's color family is the **palette** (defaulting
+to the mode) and its surface is the **variant** (`plain` default,
+`subtle` / `solid` / `outline`). The card body (title/content) rides
+the variant paint the same way a toast pill does.
 
 ```tsx
 Notify.error({
   title: 'Upload failed',
   content: 'The file is larger than 10 MB.',
-  action: { label: 'Retry', onClick: () => upload() },
+  variant: 'solid',
 });
 ```
+
+## Strategy: stack + deck
+
+Notify defaults to `strategy: 'stack'` — several notifications can
+legitimately coexist, each keeping its own timer. To stop a burst from
+polluting the viewport, a slot that holds **more than three** notify
+cards collapses into a **deck**: the newest card stays fully visible,
+the two behind it peek as thin strips, and the rest fold into a `+N`
+count chip. Click the deck (or the `+N` chip) to expand it into the
+full newest-first stack; the collapse chip folds it back. The cards
+keep their timers and interactions (hover pause, close) in both
+states.
+
+Pass `strategy: 'single'` to replace in place instead — one card per
+slot; the slot keeps its identity, the new payload lands **instantly**
+and the new words play a **zoom entrance** (exactly like a Toast
+replacement), no opacity dip.
 
 ## Lifecycle
 
@@ -84,7 +105,17 @@ Notify.error({
   sticky. Hovering pauses the countdown.
 - **Close**: the corner close button, `Notify.dismiss(id)` /
   `Notify.dismiss()` (all in the scope).
+- **Chrome**: `showIcon: false` drops the mode icon, `closeable: false`
+  removes the corner ✕ (both default `true`).
+- **onClose**: `onClose({ id, data })` fires once when a card's payload
+  ends (dismissed, expired, cleared or replaced in place); `data` is the
+  opaque passthrough value of that call. `Notify.update` does not fire
+  it (the payload continues).
 - **Update**: `Notify.update(key, patch)` mutates a live card in place.
+  A visible payload change lands instantly: the content node re-mounts
+  and plays a **zoom entrance** (a scale + fade on the normal motion
+  token) — the update's whole feedback, no opacity dip; an invisible
+  patch (duration/key) applies instantly.
 - **Exit**: per-item exit animation before the store removes it.
 
 ## Positions
@@ -92,11 +123,12 @@ Notify.error({
 The six slots are relative to the **container's own box** — for the
 root container that is the screen (top/bottom × left/center/right); for
 a scoped container, the box it is pinned inside. Pass `position` to
-override the face default per call.
+override the kind default per call.
 
 ## Surface
 
-Opaque `bg-default` card (the Popover surface recipe) with a union
-drop-shadow, radius-lg, no border. The palette tone drives the semantic
-icon tinted by the design-language text tokens. `role="status"`
-(polite) announces each card.
+Opaque `bg-default` card (the Popover surface recipe) with the design
+language's `md` surface shadow (`--colox-shadow-md` — the
+floating-surface tier the popup family shares), radius-lg, no border.
+The palette drives the semantic icon color and the `variant` paint
+overrides the surface. `role="status"` (polite) announces each card.
