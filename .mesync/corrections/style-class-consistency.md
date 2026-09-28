@@ -29,3 +29,15 @@
 - [ ] **keyframe 相位 + JS 定时器 = 必然不同步**（动画起跑与 setTimeout 不是同一时刻，结尾 fill 回弹/闪是常态结局）——要「衔接自然」优先 **transition 属性自同步**（改 opacity 值，别换 animation-name）。
 - [ ] **animation-name 回弹**：按类换绑 animation-name 的元素，「删类」不是回静止而是弹回别的动画并重放——防回弹 = 冻结类常驻（`--was-swapped` 的 `animation: none` 永在，由 exit 动画接管前不清）；真的需要删相位类时，删完必须先确认下一个 animation-name 是谁。
 - [ ] 相位类选择器必须**压过**面进场类：双类 `.colox-message.colox-message--was-swapped`（0,2,0）> 面进场类（0,1,0），与 exit 类（0,2,0）同分靠**CSS 顺序**——was-swapped 规则必须排在 enter/exit 规则前让 exit 接管。
+
+## overflow:hidden 裁剪容器必须有轴长度
+
+- 给「裁出局部」（细条、peek、遮罩窗口）的元素加 overflow:hidden。
+- 想用透明度弱化「被压在后排」的装饰层。
+
+## 必须检查
+
+- [ ] `overflow: hidden` 的**裁剪必须配套轴长度**（height/max-height/width）——只有 overflow:hidden 而没有轴长度 = 内容原样完整渲染（裁剪从未发生）；此刻若再挂 opacity，症状就变成「多个半透明整卡」而不是「细条」（deck peek 前科：容器无高度 + opacity 0.6，用户报「没有堆叠、多个像设置了透明度」）。
+- [ ] 装饰性层级**不靠 opacity 表达**——opacity 只降全层透明、不裁内容，用户把它读作 bug；「在后排」用形状（裁到细条）+ 影深表达。
+- [ ] 裁切高度取**真实 token 档**（size-10 = 40px，露满图标行），且用 max-height 而非 height——比裁切档还矮的内容（tiny custom 卡）保持自然高度不被撑满。
+- [ ] jsdom 挡得住 DOM 结构（裁切 wrapper 是否挂上），**挡不住 CSS 生效**——裁切/透明度类样式改完 storybook 肉眼过一遍。

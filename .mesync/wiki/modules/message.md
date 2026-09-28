@@ -114,7 +114,12 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
 absolute`、data-scope。**deck 折叠在这里**：同槽 notify 条目 > DECK_THRESHOLD(3)
   时，notify 条目交给 `MessageDeck` 组件（最新在前 + 后两张 peek 条 + `+N`
   chip，点面/计数展开收起，展开后 newest-first 全列表 + chevron-up 收起
-  chip）；非 notify 条目照常渲染。
+  chip）；非 notify 条目照常渲染。**peek 条 = 每张旧卡真渲染 + 限高裁切
+  包装**（`.colox-message-deck__peek-card` max-height = size-10 40px +
+  overflow hidden——只露上缘细条；首版 colox-message-deck__peek 只有
+  overflow hidden 无高度且带 opacity 0.6，裁切从未发生、peek 以半透明
+  整卡罗列——用户报「没有堆叠、多个像设置了透明度」后修复：去透明度、
+  每卡包限高裁切 wrapper）。
 
 - **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +
