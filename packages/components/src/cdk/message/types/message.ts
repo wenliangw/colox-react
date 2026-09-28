@@ -183,11 +183,13 @@ export interface MessageEntry extends MessageOptions {
   duration: number;
   /**
    * The visible-payload generation: bumps every time a new payload
-   * lands (an update, an in-place replacement, a revive). The item's
-   * content node keys itself by it, so each landed payload re-mounts
-   * and plays the zoom entrance — a mount-triggered animation, no
-   * phase classes. Starts at 0: the first mount (the pill's own enter
-   * animation) never zooms.
+   * lands (an update, an in-place replacement, a revive, a fold-pop
+   * promotion). The item's content node keys itself by the entry id +
+   * this number, so a new payload or a different entry re-mounts the
+   * words and plays the zoom entrance — a mount-triggered animation,
+   * no phase classes. Starts at 0 (the first mount never zooms — the
+   * card's own enter animation plays); a card revealed into an active
+   * fold display slot starts at 1, because its reveal is an update.
    */
   contentVersion: number;
   /** The live status driving the animation. */

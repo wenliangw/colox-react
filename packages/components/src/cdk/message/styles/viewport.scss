@@ -80,13 +80,15 @@
 // A slot holding MORE than FOLD_THRESHOLD notify cards folds into the
 // newest card plus one count capsule: the tally of the folded stack.
 // While folded the cards' auto-dismiss countdowns freeze — the capsule
-// reads the paused stack, its ✕ dismisses the whole slot at once, and
-// closing the visible card pops the stack IN PLACE (no exit window —
-// only the last card exits). When the stack is down to its last card,
-// the capsule turns into a countdown capsule (--countdown) reading
-// that card's remaining seconds. The pill keeps the first-generation
-// count chip look: the compact muted surface, size-5 height, uniform
-// padding — the countdown capsule dresses exactly the same.
+// reads the paused stack, and while more than one card is in, its ✕
+// dismisses the whole slot at once; closing the visible card pops the
+// stack IN PLACE (no exit window — only the last card exits). When the
+// stack is down to its last card, the capsule turns into a countdown
+// capsule (--countdown) reading that card's remaining seconds — a
+// reading, not a control, so the ✕ is not rendered there. The pill
+// keeps the first-generation count chip look: the compact muted
+// surface, size-5 height, uniform padding — the countdown capsule
+// dresses exactly the same.
 
 .colox-message-count {
   display: inline-flex;

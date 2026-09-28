@@ -51,11 +51,18 @@ export function resolveMessageDefaults(
 export class MessageStore {
   private entries: MessageEntry[] = [];
   private listeners = new Set<() => void>();
-  /** id → the auto-dismiss timer handle (present while counting down). */
+  /** id → the auto-dismiss timer handle (countdown or exit-window removal). */
   private timers = new Map<MessageId, ReturnType<typeof setTimeout>>();
-  /** id → ms left on the countdown (updated on pause). */
+  /**
+   * id → ms left on the countdown. The single ledger for the remaining
+   * time: `startCountdown` arms it, `pause` debits the elapsed span,
+   * `resume` re-arms the timer from it, `getRemaining` reads it (+ the
+   * live elapsed while the timer runs). Never re-derived from
+   * `entry.duration` — a countdown resumed from a partial remaining
+   * must not snap back to the full duration on the next pause.
+   */
   private remaining = new Map<MessageId, number>();
-  /** id → the countdown start timestamp (pause bookkeeping). */
+  /** id → the current countdown start timestamp (live-elapsed bookkeeping). */
   private startedAt = new Map<MessageId, number>();
   /**
    * id → how many pause holders sit on the countdown (the hover pause
@@ -64,20 +71,16 @@ export class MessageStore {
    */
   private pauseCount = new Map<MessageId, number>();
   /**
-   * Positions currently under the notify fold. The fold is the store's
-   * bookkeeping (reconciled on every commit): a position ENTERS when
-   * its shown notify count passes FOLD_THRESHOLD and HOLDS through the
-   * whole descent (4 → 3 → 2 → 1), draining only when the position
-   * holds no notify entries at all — the last card's exit window still
-   * renders under the fold.
+   * The notify fold bookkeeping, one set per slot: position → the ids
+   * whose countdown holds that slot's freeze (one holder per folded
+   * card). A position ENTERS when its shown notify count passes
+   * FOLD_THRESHOLD and HOLDS through the whole descent (4 → 3 → 2 → 1),
+   * draining only when the position holds no notify entries at all —
+   * the last card's exit window still renders under the fold. Each
+   * slot's holds are its own: releasing one folded slot never touches
+   * another slot's freeze.
    */
-  private foldedPositions = new Set<MessagePosition>();
-  /**
-   * The ids whose countdown holds the store-side fold freeze (one
-   * holder per folded card) — released when the fold descends to its
-   * last survivor.
-   */
-  private foldHeldIds = new Set<MessageId>();
+  private folds = new Map<MessagePosition, Set<MessageId>>();
 
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
@@ -97,7 +100,7 @@ export class MessageStore {
 
   /** Whether a position is under the notify fold (see reconcileFold). */
   isFolded(position: MessagePosition): boolean {
-    return this.foldedPositions.has(position);
+    return this.folds.has(position);
   }
 
   /**
@@ -107,7 +110,8 @@ export class MessageStore {
    * one shown card, every shown card holds one freeze (its countdown
    * stops — a burst never deletes itself behind the user's back); the
    * LAST survivor is released so its timer resumes under the countdown
-   * capsule.
+   * capsule. Holds of cards that left the slot (popped, cleared) prune
+   * on the same pass.
    */
   private reconcileFold(): void {
     const notifyByPosition = new Map<MessagePosition, MessageEntry[]>();
@@ -123,29 +127,37 @@ export class MessageStore {
     for (const position of POSITIONS) {
       const notify = notifyByPosition.get(position) ?? [];
       if (notify.length === 0) {
-        this.foldedPositions.delete(position);
+        this.folds.delete(position);
         continue;
       }
       const shown = notify.filter((entry) => entry.status === 'shown');
-      if (shown.length > FOLD_THRESHOLD) {
-        this.foldedPositions.add(position);
+      if (shown.length > FOLD_THRESHOLD && !this.folds.has(position)) {
+        this.folds.set(position, new Set());
       }
-      if (!this.foldedPositions.has(position)) {
+      const held = this.folds.get(position);
+      if (held === undefined) {
         continue;
       }
       if (shown.length === 1) {
-        // the last survivor — release the freeze so its countdown
-        // resumes under the countdown capsule
-        for (const id of this.foldHeldIds) {
+        // the last survivor — release THIS slot's freeze only, so its
+        // countdown resumes under the countdown capsule
+        for (const id of held) {
           this.resume(id);
         }
-        this.foldHeldIds.clear();
+        held.clear();
       } else {
         for (const entry of shown) {
-          if (!this.foldHeldIds.has(entry.id)) {
-            this.foldHeldIds.add(entry.id);
+          if (!held.has(entry.id)) {
+            held.add(entry.id);
             this.pause(entry.id);
           }
+        }
+      }
+      // prune stale holds: cards that left the slot (popped, cleared)
+      // no longer shown
+      for (const id of [...held]) {
+        if (!shown.some((entry) => entry.id === id)) {
+          held.delete(id);
         }
       }
     }
@@ -163,17 +175,15 @@ export class MessageStore {
         // entry in place (the first one — the edge-anchored spot);
         // any OTHER shown entries of the slot are leftovers — they
         // exit (the survivor keeps its spot, no reflow).
-        for (const leftover of this.entries) {
-          if (
-            leftover.id !== this.entries[existingIndex].id &&
-            leftover.status === 'shown' &&
-            leftover.type === options.type &&
-            leftover.position === options.position
-          ) {
-            this.clearCountdown(leftover.id);
-            this.remaining.delete(leftover.id);
-            this.transitionToExiting(leftover.id);
-          }
+        const leftovers = this.entries.filter(
+          (item) =>
+            item.id !== this.entries[existingIndex].id &&
+            item.status === 'shown' &&
+            item.type === options.type &&
+            item.position === options.position,
+        );
+        for (const leftover of leftovers) {
+          this.transitionToExiting(leftover.id);
         }
         return this.replaceInPlace(existingIndex, options);
       }
@@ -183,8 +193,7 @@ export class MessageStore {
     // slot — for the viewer that is an update, not an arrival: bump the
     // version so the words re-mount with the zoom entrance (the same
     // language as a pop promotion and a single replacement)
-    const revealsFoldDisplay =
-      options.position !== undefined && this.foldedPositions.has(options.position);
+    const revealsFoldDisplay = options.position !== undefined && this.folds.has(options.position);
     const entry: MessageEntry = {
       ...options,
       id,
@@ -212,13 +221,14 @@ export class MessageStore {
   /**
    * Replaces the entry at `index` with a new payload in place — the
    * slot keeps its id (and therefore its DOM node), so a same-position
-   * replacement never re-mounts or shifts the stack. The swap commits
-   * instantly (no opacity dip — see the consumer direction note in
-   * animation.scss): the new payload lands right away, the
-   * `contentVersion` bump re-mounts the content node and its zoom
-   * entrance plays. An exiting entry revives back to `shown` the same
-   * instant way. The replaced payload's `onClose` fires once when its
-   * job ends (an exiting entry's already fired at its own exit).
+   * replacement never re-mounts or shifts the stack. The replacement
+   * commits instantly (no opacity dip — the swap-era cross-fade is
+   * retired; see the consumer direction note in animation.scss): the
+   * new payload lands right away, the `contentVersion` bump re-mounts
+   * the content node and its zoom entrance plays. An exiting entry
+   * revives back to `shown` the same instant way. The replaced
+   * payload's `onClose` fires once when its job ends (an exiting
+   * entry's already fired at its own exit).
    */
   private replaceInPlace(index: number, options: MessageAddOptions): MessageId {
     const existing = this.entries[index];
@@ -237,8 +247,6 @@ export class MessageStore {
       status: 'shown',
     };
     this.clearCountdown(existing.id);
-    this.remaining.delete(existing.id);
-    this.startedAt.delete(existing.id);
     this.entries = [...this.entries];
     this.entries[index] = next;
     if (next.duration > 0) {
@@ -260,11 +268,11 @@ export class MessageStore {
    * none) with a patched copy. Duration changes restart the countdown;
    * a patch from an exiting message keeps it exiting. Every visible
    * payload change commits INSTANTLY (both updates and replacements
-   * land straight away — the swap fade is gone): the `contentVersion`
-   * bump re-mounts the content node and its zoom entrance plays. An
-   * invisible patch (duration/key/position/data/chrome/onClose only)
-   * applies without re-mounting the content. An update continues the
-   * same payload, so it never fires `onClose`.
+   * land straight away — the swap-era opacity cross-fade is gone): the
+   * `contentVersion` bump re-mounts the content node and its zoom
+   * entrance plays. An invisible patch (duration/key/position/data/
+   * chrome/onClose only) applies without re-mounting the content. An
+   * update continues the same payload, so it never fires `onClose`.
    */
   update(key: string, patch: MessageOptions): void {
     const index = this.entries.findIndex((entry) => entry.key === key || entry.id === key);
@@ -315,11 +323,7 @@ export class MessageStore {
     if (!entry || entry.status === 'exiting') {
       return;
     }
-    if (
-      entry.type === 'notify' &&
-      entry.position !== undefined &&
-      this.foldedPositions.has(entry.position)
-    ) {
+    if (entry.type === 'notify' && entry.position !== undefined && this.folds.has(entry.position)) {
       const slotShown = this.entries.filter(
         (item) =>
           item.type === 'notify' && item.status === 'shown' && item.position === entry.position,
@@ -329,8 +333,6 @@ export class MessageStore {
         return;
       }
     }
-    this.clearCountdown(entry.id);
-    this.remaining.delete(entry.id);
     this.transitionToExiting(entry.id);
   }
 
@@ -344,8 +346,6 @@ export class MessageStore {
    */
   private popInstant(entry: MessageEntry): void {
     this.clearCountdown(entry.id);
-    this.remaining.delete(entry.id);
-    this.foldHeldIds.delete(entry.id);
     // the promoted card: the next-newest shown notify of the same
     // slot, when the popped one WAS the visible card
     let promotedId: MessageId | undefined;
@@ -382,19 +382,16 @@ export class MessageStore {
     }
     const newest = slotShown[slotShown.length - 1];
     if (slotShown.length === 1) {
-      this.clearCountdown(newest.id);
-      this.remaining.delete(newest.id);
       this.transitionToExiting(newest.id);
       return;
     }
     const backlog = slotShown.slice(0, -1);
     const backlogIds = new Set(backlog.map((item) => item.id));
     this.clearCountdown(newest.id);
-    this.remaining.delete(newest.id);
+    // the invisible backlog freezes end instantly with its cards (its
+    // holds prune in the fold reconciliation)
     for (const item of backlog) {
       this.clearCountdown(item.id);
-      this.remaining.delete(item.id);
-      this.foldHeldIds.delete(item.id);
     }
     // commit first: the backlog is gone instantly, the newest exits
     this.entries = this.entries
@@ -414,14 +411,13 @@ export class MessageStore {
     // folded notify slots clear through the fold discipline: the
     // invisible backlog vanishes instantly, only the visible newest
     // card walks the exit animation
-    for (const position of [...this.foldedPositions]) {
+    for (const position of [...this.folds.keys()]) {
       this.clearSlot(position);
     }
     const ending: MessageEntry[] = [];
     for (const entry of this.entries) {
       if (entry.status === 'shown') {
         this.clearCountdown(entry.id);
-        this.remaining.delete(entry.id);
         ending.push(entry);
       }
     }
@@ -439,10 +435,13 @@ export class MessageStore {
   }
 
   /**
-   * Halts the countdown (hover, fold freeze): remembers the ms left.
-   * Pauses stack — each holder increments the count, and only the
-   * final release restarts the timer, so the hover pause and the
-   * viewport's fold freeze can coexist without clobbering each other.
+   * Halts the countdown (hover, fold freeze): debits the elapsed span
+   * from the remaining ledger. Pauses stack — each holder increments
+   * the count, and only the final release restarts the timer, so the
+   * hover pause and the fold freeze can coexist without clobbering
+   * each other. The ledger (not `entry.duration`) is the source of
+   * truth: a countdown resumed from a partial remaining keeps its
+   * partial remaining across further pauses.
    */
   pause(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
@@ -462,7 +461,8 @@ export class MessageStore {
     clearTimeout(timer);
     this.timers.delete(id);
     const started = this.startedAt.get(id) ?? Date.now();
-    this.remaining.set(id, Math.max(0, entry.duration - (Date.now() - started)));
+    const armed = this.remaining.get(id) ?? entry.duration;
+    this.remaining.set(id, Math.max(0, armed - (Date.now() - started)));
     this.startedAt.delete(id);
   }
 
@@ -505,15 +505,16 @@ export class MessageStore {
       return null;
     }
     const timer = this.timers.get(id);
-    if (timer !== undefined) {
+    const armed = this.remaining.get(id);
+    if (timer !== undefined && armed !== undefined) {
       const started = this.startedAt.get(id) ?? Date.now();
-      return Math.max(0, entry.duration - (Date.now() - started));
+      return Math.max(0, armed - (Date.now() - started));
     }
-    const left = this.remaining.get(id);
-    return left ?? null;
+    return armed ?? null;
   }
 
   private startCountdown(id: MessageId, ms: number): void {
+    this.remaining.set(id, ms);
     this.startedAt.set(id, Date.now());
     const timer = setTimeout(() => this.dismiss(id), ms);
     this.timers.set(id, timer);
@@ -525,9 +526,11 @@ export class MessageStore {
       clearTimeout(timer);
       this.timers.delete(id);
     }
-    // the countdown is over — stale pause holders end with it
-    this.pauseCount.delete(id);
+    // the countdown is over — its ledger, bookkeeping and any stale
+    // pause holders end with it
+    this.remaining.delete(id);
     this.startedAt.delete(id);
+    this.pauseCount.delete(id);
   }
 
   /** Moves one shown message to exiting and schedules its removal. */
@@ -537,6 +540,9 @@ export class MessageStore {
       return;
     }
     const entry = this.entries[index];
+    // the countdown is over with the transition — its timer must not
+    // outlive the entry (the removal timer reuses the same slot)
+    this.clearCountdown(id);
     this.entries = [...this.entries];
     this.entries[index] = {
       ...entry,
@@ -561,7 +567,13 @@ export class MessageStore {
   private scheduleRemovals(): void {
     const exiting = this.entries.filter((entry) => entry.status === 'exiting');
     for (const entry of exiting) {
+      // one timer per id: an entry already scheduled keeps its window
+      // (dismissAll re-commits must not open a second exposure)
+      if (this.timers.has(entry.id)) {
+        continue;
+      }
       const timer = setTimeout(() => {
+        this.timers.delete(entry.id);
         this.entries = this.entries.filter((item) => item.id !== entry.id);
         this.emit();
       }, DEFAULT_EXIT);

@@ -186,6 +186,35 @@ describe('MessageStore', () => {
     vi.useRealTimers();
   });
 
+  it('a pause after a resume keeps the true remaining — no full-duration snap', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'toast', content: 'hi', duration: 5000 });
+    const id = store.getSnapshot()[0].id;
+    vi.advanceTimersByTime(1000);
+    store.pause(id);
+    expect(store.getRemaining(id)).toBeGreaterThan(3900);
+    expect(store.getRemaining(id)).toBeLessThanOrEqual(4000);
+    // the freeze span must survive a resume → pause round trip: the
+    // countdown restarts from the REMAINING, and a second pause debits
+    // that same ledger — never the entry's full duration
+    vi.advanceTimersByTime(2000);
+    store.resume(id);
+    vi.advanceTimersByTime(500);
+    expect(store.getRemaining(id)).toBeGreaterThan(3400);
+    expect(store.getRemaining(id)).toBeLessThanOrEqual(3500);
+    store.pause(id);
+    expect(store.getRemaining(id)).toBeGreaterThan(3400);
+    expect(store.getRemaining(id)).toBeLessThanOrEqual(3500);
+    store.resume(id);
+    // the entry dismisses 3500ms after the final resume
+    vi.advanceTimersByTime(3400);
+    expect(store.getSnapshot()[0].status).toBe('shown');
+    vi.advanceTimersByTime(200);
+    expect(store.getSnapshot()[0].status).toBe('exiting');
+    vi.useRealTimers();
+  });
+
   it('the store folds a burst past the threshold and freezes the countdowns', () => {
     vi.useFakeTimers();
     const store = createMessageStore();
@@ -317,6 +346,45 @@ describe('MessageStore', () => {
     vi.advanceTimersByTime(200);
     store.add({ type: 'notify', content: 'z', position: 'top-right', duration: 3000 });
     expect(store.getSnapshot()[0].contentVersion).toBe(0);
+    vi.useRealTimers();
+  });
+
+  it('two folded slots freeze independently — one release never touches the other', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    // slot B folds first, with real elapsed time on its first cards
+    store.add({ type: 'notify', content: 'b1', position: 'bottom-left', duration: 3000 });
+    store.add({ type: 'notify', content: 'b2', position: 'bottom-left', duration: 3000 });
+    vi.advanceTimersByTime(2000);
+    store.add({ type: 'notify', content: 'b3', position: 'bottom-left', duration: 3000 });
+    // b1/b2 froze at ~1000 ms left, b3 at its full 3000
+    expect(store.isFolded('bottom-left')).toBe(true);
+    // slot A folds later
+    store.add({ type: 'notify', content: 'a1', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'a2', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'a3', position: 'top-right', duration: 3000 });
+    const [b1] = store.getSnapshot();
+    expect(store.getRemaining(b1.id)).toBeGreaterThan(900);
+    expect(store.getRemaining(b1.id)).toBeLessThanOrEqual(1000);
+    // release A down to its survivor (pop the two newest) — snapshot
+    // order is insertion order: a1, a2, a3 are the last three
+    const slotA = store
+      .getSnapshot()
+      .filter((entry) => entry.position === 'top-right')
+      .sort((x, y) => (x.id < y.id ? -1 : 1));
+    store.dismiss(slotA[2].id);
+    store.dismiss(slotA[1].id);
+    expect(store.getSnapshot().filter((entry) => entry.position === 'top-right')).toHaveLength(1);
+    // B must not notice: b1's freeze keeps its ~1000 ms — a shared
+    // release would have snapped it back toward a full 3000
+    const b1After = store.getSnapshot().find((entry) => entry.id === b1.id);
+    expect(b1After?.status).toBe('shown');
+    expect(store.getRemaining(b1.id)).toBeGreaterThan(900);
+    expect(store.getRemaining(b1.id)).toBeLessThanOrEqual(1000);
+    expect(store.isFolded('bottom-left')).toBe(true);
+    // and the survivor of A resumes from its own remaining (~3000)
+    const aSurvivor = store.getSnapshot().find((entry) => entry.position === 'top-right');
+    expect(store.getRemaining(aSurvivor!.id)).not.toBeNull();
     vi.useRealTimers();
   });
 

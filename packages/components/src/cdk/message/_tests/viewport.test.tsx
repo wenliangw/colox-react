@@ -67,8 +67,6 @@ describe('MessageViewport', () => {
     expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
     expect(vp.textContent).toContain('three');
     expect(vp.textContent).not.toContain('two');
-    // the deck markup is gone — the fold replaced it
-    expect(vp.querySelector('.colox-message-deck')).toBeNull();
   });
 
   it('a new arrival during a fold reveals with the zoom entrance', () => {

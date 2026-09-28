@@ -1,13 +1,13 @@
 // ——— payload zoom entrance ————————————————————————————————————
-// Every freshly landed payload — an update or an in-place
-// replacement, both instant now — re-mounts the kind's content node
-// (its React key is the entry's contentVersion) and replays this
-// zoom: a slight scale-in with a fade on the normal motion token.
-// Mount-triggered, so no phase classes, no cleanup, no timer
-// bookkeeping, no animation-name juggling; the motion token gates
-// reduced motion centrally. No opacity transition belongs on the
-// message container — the zoom on the landed words IS the whole
-// swap feedback.
+// Every freshly landed payload — an update, an in-place replacement
+// or a fold reveal, all instant now — re-mounts the kind's content
+// node (its React key is the entry's id + contentVersion, so each
+// reveal re-mounts by identity) and replays this zoom: a slight
+// scale-in with a fade on the normal motion token. Mount-triggered,
+// so no phase classes, no cleanup, no timer bookkeeping, no
+// animation-name juggling; the motion token gates reduced motion
+// centrally. No opacity transition belongs on the message container —
+// the zoom on the landed words IS the whole update feedback.
 
 @keyframes colox-message-zoom-in {
   from {

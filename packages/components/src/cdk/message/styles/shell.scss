@@ -94,20 +94,14 @@
 // the kind's content rule (text-default) would otherwise fight the
 // shell color. The close button (IconButton muted) follows the shell
 // ink as well, quieting the corner on the loud fill.
-.colox-message.colox-message--variant-solid .colox-message__content,
 .colox-message.colox-message--variant-solid .colox-toast__content,
 .colox-message.colox-message--variant-solid .colox-notify__content,
 .colox-message.colox-message--variant-solid .colox-notify__title {
   color: var(--colox-message-inverse);
 }
 
-.colox-message.colox-message--variant-solid .colox-message__close,
 .colox-message.colox-message--variant-solid .colox-toast__close,
 .colox-message.colox-message--variant-solid .colox-notify__close {
-  color: var(--colox-message-inverse);
-}
-
-.colox-message.colox-message--variant-solid .colox-notify__action {
   color: var(--colox-message-inverse);
 }
 
