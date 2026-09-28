@@ -95,6 +95,11 @@
       "import": "./dist/es/avatar.js",
       "require": "./dist/cjs/avatar.cjs"
     },
+    "./badge": {
+      "types": "./dist/types/badge/index.d.ts",
+      "import": "./dist/es/badge.js",
+      "require": "./dist/cjs/badge.cjs"
+    },
     "./positioner": {
       "types": "./dist/types/positioner/index.d.ts",
       "import": "./dist/es/positioner.js",

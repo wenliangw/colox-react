@@ -1,4 +1,4 @@
-import type { PositionerOffset, PositionerOffsetKey, PositionerPlacement } from './component';
+import type { PositionerOffset, PositionerOffsetValue, PositionerPlacement } from './component';
 
 export interface SplitOffsetParams {
   offset: PositionerOffset | undefined;
@@ -7,11 +7,11 @@ export interface SplitOffsetParams {
 
 /**
  * The offset vocabulary split into its four logical edges — the shape
- * the item's class axes consume.
+ * the item's class axes and inline-style escape hatch consume.
  */
 export interface SplitOffsetResult {
-  top?: PositionerOffsetKey;
-  bottom?: PositionerOffsetKey;
-  start?: PositionerOffsetKey;
-  end?: PositionerOffsetKey;
+  top?: PositionerOffsetValue;
+  bottom?: PositionerOffsetValue;
+  start?: PositionerOffsetValue;
+  end?: PositionerOffsetValue;
 }

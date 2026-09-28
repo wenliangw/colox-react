@@ -1,0 +1,48 @@
+/**
+ * Palette color families — the six design-language families mapped
+ * onto the private badge palette variables. Each family carries its
+ * solid level (the subtle fill's text and the outline's ring), the
+ * subtle tint fill and the inverse on-fill. Base.scss holds the brand
+ * fallback so the paint survives even without a palette class.
+ */
+.colox-badge--primary {
+  --colox-badge-palette-solid: var(--colox-color-brand-solid);
+  --colox-badge-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-badge-palette-muted: var(--colox-color-brand-muted);
+  --colox-badge-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+.colox-badge--gray {
+  --colox-badge-palette-solid: var(--colox-color-gray-solid);
+  --colox-badge-palette-subtle: var(--colox-color-gray-subtle);
+  --colox-badge-palette-muted: var(--colox-color-gray-muted);
+  --colox-badge-palette-inverse: var(--colox-color-gray-inverse);
+}
+
+.colox-badge--info {
+  --colox-badge-palette-solid: var(--colox-color-blue-solid);
+  --colox-badge-palette-subtle: var(--colox-color-blue-subtle);
+  --colox-badge-palette-muted: var(--colox-color-blue-muted);
+  --colox-badge-palette-inverse: var(--colox-color-blue-inverse);
+}
+
+.colox-badge--error {
+  --colox-badge-palette-solid: var(--colox-color-red-solid);
+  --colox-badge-palette-subtle: var(--colox-color-red-subtle);
+  --colox-badge-palette-muted: var(--colox-color-red-muted);
+  --colox-badge-palette-inverse: var(--colox-color-red-inverse);
+}
+
+.colox-badge--warning {
+  --colox-badge-palette-solid: var(--colox-color-orange-solid);
+  --colox-badge-palette-subtle: var(--colox-color-orange-subtle);
+  --colox-badge-palette-muted: var(--colox-color-orange-muted);
+  --colox-badge-palette-inverse: var(--colox-color-orange-inverse);
+}
+
+.colox-badge--success {
+  --colox-badge-palette-solid: var(--colox-color-green-solid);
+  --colox-badge-palette-subtle: var(--colox-color-green-subtle);
+  --colox-badge-palette-muted: var(--colox-color-green-muted);
+  --colox-badge-palette-inverse: var(--colox-color-green-inverse);
+}

@@ -2,7 +2,9 @@
 
 // The offset axes: one class family per logical edge, every spacing
 // scale key. These rules sit after the placement presets, so an
-// explicit offset always wins over the anchor it adjusts.
+// explicit offset always wins over the anchor it adjusts. (A numeric
+// offset is the px escape hatch — it renders as an inline style in the
+// component, not through this class table.)
 @each $key in tokens.$colox-spacing-keys {
   .colox-positioner--offset-top-#{$key} {
     inset-block-start: var(--colox-spacing-#{$key});

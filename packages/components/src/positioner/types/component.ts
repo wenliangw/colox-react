@@ -25,20 +25,32 @@ export type PositionerPlacement =
   | 'bottom'
   | 'bottom-end';
 
-/** A spacing scale key — the offset vocabulary (theme token grid). */
+/**
+ * A spacing scale key — the offset vocabulary (theme token grid).
+ * The distance from the pinned edge, into the box.
+ */
 export type PositionerOffsetKey = NonNullable<PositionerVariants['top']>;
 
 /**
- * The distance from the pinned edges: one spacing key sets every edge
- * the placement pins, an object sets each edge on its own.
+ * The offset vocabulary: a spacing key (the semantic tier, resolved
+ * through the theme grid) or a raw number treated as px — the escape
+ * hatch. A negative number overhangs the reference boundary (the
+ * pinned edge moves past it), so a corner-pinned indicator can hang
+ * half outside its host; a positive number pushes into the box.
+ */
+export type PositionerOffsetValue = PositionerOffsetKey | number;
+
+/**
+ * The distance from the pinned edges: one value sets every edge the
+ * placement pins, an object sets each edge on its own.
  */
 export type PositionerOffset =
-  | PositionerOffsetKey
+  | PositionerOffsetValue
   | {
-      top?: PositionerOffsetKey;
-      bottom?: PositionerOffsetKey;
-      start?: PositionerOffsetKey;
-      end?: PositionerOffsetKey;
+      top?: PositionerOffsetValue;
+      bottom?: PositionerOffsetValue;
+      start?: PositionerOffsetValue;
+      end?: PositionerOffsetValue;
     };
 
 /**

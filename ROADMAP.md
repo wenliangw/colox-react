@@ -248,11 +248,24 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   read by the colored variants) were added on the maintainer's
   request after the first landing — a semantic-color portrait needs
   them (role/group/status coloring); plain stays the quiet neutral
-  muted surface, palette-independent. The Avatar+Badge combo forms
-  naturally when Badge lands.
-- `Badge`, `Tag` (the size/rounded habits for shape components are
-  already recorded in the API-design taste), `Alert`, `Progress`,
-  `Skeleton`, `Empty` — planned.
+  muted surface, palette-independent.
+- `Badge` — the pure-display badge family — **shipped**: the
+  standalone capsule (`Badge`, `children` carry the label/pill form —
+  absorbing the planned `Tag`), the status point (`Badge.Dot`), the
+  count capsule (`Badge.Count`, truncated at `overflowCount` with
+  "99+", hides at zero unless `showZero`) and the seamless
+  multi-segment badge (`Badge.Group` of `Badge.Item`s — shields.io
+  style, each segment paints its own palette/size/variant).
+  Anchoring is **not** built in — `Anchor` (inline, hugs the content
+  = the badge wrap shape) + `Positioner` (nine-cell placement) pin a
+  badge to a host corner, so the Avatar+Badge combo and the icon
+  notification-count badge both compose from the same primitives.
+  Shared axes: `palette` (six families, default gray like Button),
+  `size` (sm/md/lg compact capsule tiers), `variant`
+  (solid/subtle/outline/plain — where the surface has a strength;
+  the Dot is always a solid point, the Count always a solid pill).
+  `Tag` is dropped — the standalone pill is Badge's root form.
+- `Alert`, `Progress`, `Skeleton`, `Empty` — planned.
 
 ### M6 — Navigation and containment (planned)
 

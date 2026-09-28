@@ -1,0 +1,38 @@
+/**
+ * The group seam — the Compact approach, applied to segments that
+ * carry no borders of their own (a solid capsule's background is
+ * continuous across the seam, so no -1px pull is needed; an `outline`
+ * segment draws its inset ring on its own inner edge and is never
+ * clipped by the container). The radius coordination lives on the
+ * segments: the first rounds its outer corners, the last its outer
+ * corners, everything between stays square — the group never clips,
+ * so a segment's own border/ring stays fully visible.
+ *
+ * Single-segment groups match both :first-child and :last-child and
+ * so round all four corners — a lone item reads as a plain capsule.
+ */
+
+// The first segment rounds its start-side outer corners; its end-side
+// (the seam toward the next segment) stays square. The default is a
+// square's light rounding (`radius-sm`); the `--rounded` modifier opts
+// the outer corners into the full capsule radius.
+.colox-badge-group > .colox-badge__item:first-child {
+  border-start-start-radius: var(--colox-radius-sm);
+  border-end-start-radius: var(--colox-radius-sm);
+}
+
+// The last segment rounds its end-side outer corners.
+.colox-badge-group > .colox-badge__item:last-child {
+  border-start-end-radius: var(--colox-radius-sm);
+  border-end-end-radius: var(--colox-radius-sm);
+}
+
+.colox-badge-group--rounded > .colox-badge__item:first-child {
+  border-start-start-radius: var(--colox-radius-full);
+  border-end-start-radius: var(--colox-radius-full);
+}
+
+.colox-badge-group--rounded > .colox-badge__item:last-child {
+  border-start-end-radius: var(--colox-radius-full);
+  border-end-end-radius: var(--colox-radius-full);
+}

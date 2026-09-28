@@ -23,14 +23,36 @@ const PositionerRoot = forwardRef<HTMLDivElement, PositionerProps>((props, ref) 
     fill = false,
     className,
     children,
+    style,
     ...rest
   } = props;
   const edges = splitOffset({ offset, placement });
 
+  // The spacing-key edges ride the class table; the numeric edges are
+  // the px escape hatch and render inline (a negative number moves the
+  // pinned edge past the reference boundary — the overhang).
+  const INSET_PROPERTY: Record<string, string> = {
+    top: 'insetBlockStart',
+    bottom: 'insetBlockEnd',
+    start: 'insetInlineStart',
+    end: 'insetInlineEnd',
+  };
+  const classEdges: Record<string, string> = {};
+  const inlineEdges: Record<string, number> = {};
+  (Object.keys(edges) as (keyof typeof edges)[]).forEach((edge) => {
+    const value = edges[edge];
+    if (typeof value === 'number') {
+      inlineEdges[INSET_PROPERTY[edge]] = value;
+    } else if (value !== undefined) {
+      classEdges[edge] = value;
+    }
+  });
+
   return (
     <div
       ref={ref}
-      className={clsx(positionerVariants({ position, placement, fill, ...edges }), className)}
+      className={clsx(positionerVariants({ position, placement, fill, ...classEdges }), className)}
+      style={{ ...inlineEdges, ...style }}
       {...rest}
     >
       {children}

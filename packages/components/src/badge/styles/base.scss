@@ -1,0 +1,77 @@
+/**
+ * Badge — the pure-display badge family.
+ *
+ * Base scope: the shared capsule typography (Badge / Badge.Count /
+ * Badge.Item all ride it), the private palette variables (the brand
+ * fallback keeps the paint alive even without a palette class), the
+ * Dot's solid-point base, the Count's solid-capsule base, the Group's
+ * seamless capsule container and the Item's radius-0 segment base.
+ * Palette families land in palette.scss, the capsule strength in
+ * variant.scss, the sizes in size.scss, the group seam in group.scss.
+ */
+
+// Shared capsule typography + the palette fallback variables.
+.colox-badge,
+.colox-badge-count,
+.colox-badge__item {
+  // Palette fallback: the palette layer overrides these; the brand
+  // family keeps the paint alive even without a palette class.
+  --colox-badge-palette-solid: var(--colox-color-brand-solid);
+  --colox-badge-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-badge-palette-muted: var(--colox-color-brand-muted);
+  --colox-badge-palette-inverse: var(--colox-color-brand-inverse);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  font-weight: var(--colox-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  vertical-align: middle;
+}
+
+// The standalone capsule — the family's base form.
+.colox-badge {
+  border-radius: var(--colox-radius-full);
+}
+
+// The count capsule: always a solid fill (a count badge is a filled
+// pill — there is no strength to choose).
+.colox-badge-count {
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-badge-palette-solid);
+  color: var(--colox-badge-palette-inverse);
+}
+
+// The status dot: a solid point, no strength concept, no text.
+.colox-badge-dot {
+  --colox-badge-palette-solid: var(--colox-color-brand-solid);
+  --colox-badge-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-badge-palette-muted: var(--colox-color-brand-muted);
+  --colox-badge-palette-inverse: var(--colox-color-brand-inverse);
+
+  display: inline-block;
+  flex: none;
+  border-radius: var(--colox-radius-full);
+  background-color: var(--colox-badge-palette-solid);
+  vertical-align: middle;
+}
+
+// The multi-segment capsule: an inline-flex row. The seam (group.scss)
+// rounds only the first/last visible corners on the segments
+// themselves — the container never clips, so a segment's own border or
+// ring (an `outline` variant) stays fully visible.
+.colox-badge-group {
+  display: inline-flex;
+  align-items: stretch;
+  flex: none;
+  vertical-align: middle;
+}
+
+// A group segment: radius-0 by design — the seam rounds only the outer
+// corners of the first/last segment (group.scss).
+.colox-badge__item {
+  border-radius: 0;
+}

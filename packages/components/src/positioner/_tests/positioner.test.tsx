@@ -100,6 +100,40 @@ describe('Positioner', () => {
     );
   });
 
+  it('renders a negative numeric offset as an inline overhang style', () => {
+    render(
+      <Positioner data-testid="box" placement="bottom-end" offset={{ bottom: -6, end: -6 }} />,
+    );
+    const box = screen.getByTestId('box');
+
+    expect(box).toHaveStyle({ insetBlockEnd: '-6px', insetInlineEnd: '-6px' });
+    expect(box.className).not.toMatch(/--offset-/);
+  });
+
+  it('renders a positive numeric offset as an inline inset style', () => {
+    render(<Positioner data-testid="box" placement="top-start" offset={{ top: 8 }} />);
+    const box = screen.getByTestId('box');
+
+    expect(box).toHaveStyle({ insetBlockStart: '8px' });
+    expect(box.className).not.toMatch(/--offset-/);
+  });
+
+  it('applies a bare numeric offset to every edge the placement pins', () => {
+    render(<Positioner data-testid="box" placement="top-end" offset={-4} />);
+    const box = screen.getByTestId('box');
+
+    expect(box).toHaveStyle({ insetBlockStart: '-4px', insetInlineEnd: '-4px' });
+    expect(box).not.toHaveStyle({ insetBlockEnd: '-4px' });
+  });
+
+  it('mixes a spacing-key offset with a numeric edge', () => {
+    render(<Positioner data-testid="box" placement="top-end" offset={{ top: '2', end: -4 }} />);
+    const box = screen.getByTestId('box');
+
+    expect(box).toHaveClass('colox-positioner--offset-top-2');
+    expect(box).toHaveStyle({ insetInlineEnd: '-4px' });
+  });
+
   it('merges className and keeps the native box attributes', () => {
     const ref = createRef<PositionerRef>();
     render(

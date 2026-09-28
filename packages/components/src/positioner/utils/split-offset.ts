@@ -21,17 +21,17 @@ const ALL_EDGES = ['top', 'bottom', 'start', 'end'] as const;
 
 /**
  * Resolves the offset input into per-edge distances. A bare spacing key
- * means "this far from the edges the placement pins" (every edge when
- * the item has no placement); an object states each edge explicitly,
- * which also pins edges the placement left unanchored (CSS-faithful
- * stretch / two-edge anchoring).
+ * or bare number means "this far from the edges the placement pins"
+ * (every edge when the item has no placement); an object states each
+ * edge explicitly, which also pins edges the placement left unanchored
+ * (CSS-faithful stretch / two-edge anchoring).
  */
 export function splitOffset({ offset, placement }: SplitOffsetParams): SplitOffsetResult {
   if (offset === undefined) {
     return {};
   }
 
-  if (typeof offset === 'string') {
+  if (typeof offset === 'string' || typeof offset === 'number') {
     const edges = placement === undefined ? ALL_EDGES : PLACEMENT_EDGES[placement];
     return Object.fromEntries(edges.map((edge) => [edge, offset])) as SplitOffsetResult;
   }

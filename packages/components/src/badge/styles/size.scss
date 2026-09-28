@@ -1,0 +1,37 @@
+/**
+ * Size tiers — the capsule forms share one compact pill scale (an
+ * indicator, not a control — one notch below the form family's
+ * control tiers), the Dot its own small round footprint scale.
+ */
+.colox-badge--sm {
+  height: var(--colox-size-5);
+  padding-inline: var(--colox-spacing-1-5);
+  font-size: var(--colox-font-size-xs);
+}
+
+.colox-badge--md {
+  height: var(--colox-size-6);
+  padding-inline: var(--colox-spacing-2);
+  font-size: var(--colox-font-size-xs);
+}
+
+.colox-badge--lg {
+  height: var(--colox-size-7);
+  padding-inline: var(--colox-spacing-2-5);
+  font-size: var(--colox-font-size-sm);
+}
+
+.colox-badge-dot--sm {
+  width: var(--colox-size-2);
+  height: var(--colox-size-2);
+}
+
+.colox-badge-dot--md {
+  width: var(--colox-size-2-5);
+  height: var(--colox-size-2-5);
+}
+
+.colox-badge-dot--lg {
+  width: var(--colox-size-3);
+  height: var(--colox-size-3);
+}

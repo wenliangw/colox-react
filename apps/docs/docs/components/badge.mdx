@@ -1,0 +1,113 @@
+---
+sidebar_position: 23
+---
+
+import { Anchor, Avatar, Badge, IconButton, Positioner, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Badge
+
+The pure-display badge family — a standalone capsule, a status point, a
+count capsule and the seamless multi-segment badge. Anchoring is **not**
+built in: compose `Anchor` (inline) with `Positioner` to pin a badge to a
+corner of a host element.
+
+## Badge
+
+The standalone capsule — the children carry the label/pill form. `palette`
+(six design-language families, default gray), `size` (sm/md/lg) and
+`variant` (solid/subtle/outline/plain — default solid).
+
+<Badge>New</Badge>
+<Badge palette="primary">Primary</Badge>
+<Badge palette="info" variant="subtle">
+  Info
+</Badge>
+<Badge palette="success">Done</Badge>
+<Badge palette="warning" variant="outline">
+  Pending
+</Badge>
+<Badge palette="error">Failed</Badge>
+
+## Dot
+
+The status point — a solid palette circle with no text and no strength
+concept (a dot is a filled point).
+
+<Badge.Dot />
+<Badge.Dot palette="primary" />
+<Badge.Dot palette="info" />
+<Badge.Dot palette="success" />
+<Badge.Dot palette="warning" />
+<Badge.Dot palette="error" />
+
+## Count
+
+The count capsule — an always-solid pill showing the count, truncated at
+`overflowCount` (default 99 → "99+"). Hides at zero unless `showZero`.
+
+<Badge.Count count={5} />
+<Badge.Count count={128} />
+<Badge.Count count={128} overflowCount={9} />
+<Badge.Count count={0} showZero />
+<Badge.Count count={3} palette="error" />
+
+## Group (multi-segment)
+
+The seamless multi-segment capsule — an inline-flex row of `Badge.Item`s
+whose outer corners the seam rounds. The default is a square's light
+rounding (`radius-sm`); `rounded` opts the outer corners into the full
+capsule radius. Each item paints its own palette, size and variant, so
+shields.io-style multi-color badges compose naturally.
+
+<Badge.Group>
+  <Badge.Item>build</Badge.Item>
+  <Badge.Item palette="success">passing</Badge.Item>
+</Badge.Group>
+
+<Badge.Group rounded>
+  <Badge.Item>build</Badge.Item>
+  <Badge.Item palette="success">passing</Badge.Item>
+</Badge.Group>
+
+<Badge.Group>
+  <Badge.Item>npm</Badge.Item>
+  <Badge.Item palette="info">1.0.0</Badge.Item>
+  <Badge.Item palette="warning">MIT</Badge.Item>
+</Badge.Group>
+
+## Sizes
+
+<Badge size="sm">sm</Badge>
+<Badge size="md">md</Badge>
+<Badge size="lg">lg</Badge>
+
+## Anchoring
+
+Anchor a badge to a corner of a host with `Anchor` (inline — hugs the
+content) + `Positioner` (pins to the corner). A **negative numeric
+`offset`** (the px escape hatch) overhangs the badge past the host
+boundary — the classic badge look, without covering the host:
+
+<Anchor inline>
+  <Avatar name="张伟" size="lg" />
+  <Positioner placement="bottom-end" offset={{ bottom: -4, end: -4 }}>
+    <Badge.Dot palette="success" size="sm" />
+  </Positioner>
+</Anchor>
+
+<Anchor inline>
+  <IconButton aria-label="通知" variant="muted" />
+  <Positioner placement="top-end" offset={{ top: -4, end: -4 }}>
+    <Badge.Count count={3} palette="error" size="sm" />
+  </Positioner>
+</Anchor>
+
+## Accessibility
+
+- The capsule, count and segments render their text as content — a count
+  badge should be announced as part of the host's label by the author (the
+  badge itself is a plain `span`; give the host an `aria-label` that
+  includes the count, or an `aria-label` on the badge).
+- The Dot is decorative by default — add `aria-label` (or `aria-hidden`)
+  as the reading order requires.
