@@ -66,3 +66,13 @@
 - **遮罩 = 设计语言黑阶梯真实档**：`--colox-palette-black-500`（rgba(0,0,0,0.5)）——阶梯 0/50/100/.../900 步进、无自造透明度；无 blur（family 已整体移除 blur）。
 
 来源：Modal 设计对齐轮（决策 654abd7c：size 档取 token/纯组合式/共享能力进 cdk）+ 滚动归属修正（决策 cfec8a68：用户报告「Title 和 Footer 应该是固定的，应该是 Content 根据内容 Scroll」）。
+
+## 换内容 = 即换即 zoom，不做容器透明度动画
+
+- **换内容不「呼吸」，直接换 + 新词 zoom 登场**（终态，用户拍板）：update 与 single 替换都是「新词登场」不是「旧词退场」——可见载荷变化**即时落位**，内容结点以 contentVersion 为 key **重挂**重播 zoom 进场（scale 0.92 + fade、motion-normal/ease-out）。**换内容不做容器级透明度过渡**（transition 下潜/浅谷/淡回两代方案全部退役——用户先移除 update 的过渡、再把替换的下潜也移除：「直接进行 update，然后 zoom 进场即可」）。挂载触发是**最安全的动画重播机制**：无相位类、无清理定时器、无 animation-name 换绑回弹——重挂即重播。
+- **「衔接自然」优先于机制花哨**（教训留存）：曾经的换场两代教训——keyframe 相位 + setTimeout 天然错帧（动画从 paint 起跑、定时器从 emit 起算），结束时 fill 落点不一致就闪（100ms 双 keyframe 相位被用户报「像闪一下」）；「谷底不完全透明」曾让卡片换场常驻一波（用户「不要到 0，到 0.4」）。但这两代都被最终形态取代：**换载荷的反馈锚定在新词自身（zoom），而不是容器**——过渡越少，错帧/回弹/护栏越少。能不进动画体系就别进。
+- **animation-name 是元素的唯一动画身份，类在名在**（教训留存）：按类换绑 animation-name 的相位类，删除≠回到静止，而是弹回别的动画重放——将来做任何「重播动画」需求，优先 key 重挂（挂载触发），而不是相位类切换。
+- **用户建议里的数值先查令牌档再采纳**：0.3s 撞上 `--colox-motion-duration-slow`(300ms) 是令牌真档；运动中间值（keyframes 的 scale 0.92 等）不属于令牌域——令牌纪律只锁时长/缓动/表面色档，中间值手写是本仓既有模式。
+- **浮层深度走设计语言 shadow 档**（用户「shadow 样式走设计语言」）：消息 pill/card 的深度用 `box-shadow: var(--colox-shadow-md)`——md 是设计语言的浮层面标准档（Select/DatePicker/Autocomplete/TimePicker popup 全部同档），不透明浮层直接消费 token 即可；face 私有 rgba + filter drop-shadow 是「自造深度值」。drop-shadow 版式只留给必须投影联合形状的半透明面（Tooltip/Popover 箭头）。
+
+来源：Toast/Notify 换场两代定案（决策 2eef2f61，caused_by + supersedes b2a192d8——用户反馈「像闪一下，衔接更自然」并给 transition 实现建议）+ 谷底 0→0.4 微调（决策 48cafcc8，caused_by 2eef2f61——用户「现在的效果好多了，但不要到 0，到 0.4 试试」）+ 不对称节奏与 update 软谷（决策 887bb77c，caused_by 48cafcc8——用户「0-1 透明度时再快一些、update 初始透明度改 0.6」，其 update 软谷段被 1c5eff77 推翻）+ update 换 zoom 进场（决策 1c5eff77，caused_by c0abf854——用户「移除透明度的 update 过渡效果，改为给要替换的元素一个 zoom 的进场动画」）+ **替换下潜也移除、transition 换场整体退役（决策 be61c45c，caused_by 1c5eff77——用户「替换前的浅谷透明度过渡也移除，直接进行 update，然后 zoom 进场即可」；同轮影子走设计语言 md 档）**。

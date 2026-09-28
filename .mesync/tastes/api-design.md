@@ -114,6 +114,16 @@
 - **计数靠 layout 响应式测量，不设固定 maxTagCount prop**：壳宽随宿主布局变化，固定数字阈值在窄宿主溢出、宽宿主浪费；ResizeObserver 重测一次到位，不引入临时公共 prop 面。**切片必须双向可重算**（响应式放宽是常态）：挂载全量 + 尾部脱流隐藏（visibility + position），隐藏 chip 兼任测量源——收紧折、放宽长回、新值即折叠也有宽度。
 - 来源：用户报告多选溢出折行跑版后两候选（横向滚动/+N 折叠）讨论拍板 A 方案（决策 59ee6358）；叠加形态经 Storybook 评审改判为视觉切片（决策 1c6ee3a7）。
 
+## 消息系统：palette/variant 家族同构 + 策略默认 + 防污染（Toast/Notify 优化定案）
+
+- **消息面补上家族既有的 palette/variant 双轴（家族同构最后一公里）**：表单/按钮/图标早已有 palette 六族（gray/primary/info/success/warning/error）+ variant 面料，消息系统是家族里唯一只有 mode 四色图标的成员——补上两轴让消息面与 Button 的 private-var 播种做法同源（palette 默认随 mode、驱动图标色 + variant 面料），也顺带修掉「旧 shell 的 mode 调色从未命中图标类、四 mode 图标全 info 蓝」的潜伏 bug。mode 仍决定图标字形，palette 决定色、variant 决定多厚刷上面料——三轴各司其职，不合并。
+- **词界清晰：内部判别词与视觉轴各自说各自的形状**——判别词（toast/notify）是 cdk 运行时事实，variant（plain/subtle/solid/outline）是用户面视觉词；旧名撞车已两度让位：MessageVariant→MessageFace（让出 variant 给视觉轴）→**`type: MessageType`**（用户拍板 face 改 type——「type 说它是什么类目」，注册判别词就该占 type 词位）；被腾出的语义轴词位（info/success/warning/error）改叫 **`mode: MessageMode`**（旧 MessageTone——「mode 说它是什么腔调」，旧 `type` 词位归判别词）。词描述它自己的那一层：内部事实给内部词、用户面语义给用户词。
+- **默认是「省心的正确」**：toast 天然单条（轻量居中提示，一槽一条即够）、notify 天然堆叠（带标题卡片多条合理共存）——两个面的身份自带最优策略，让默认值表达它（Toast `strategy: 'single'`、Notify `stack`），per-call 覆盖是逃生舱不是样板。默认即正确 > 强制每次声明。
+- **防污染是消息系统的产品责任**：用户两次点名前台污染（「太多 Toast 频繁触发导致视口污染」「Notify 消息过多减少视口污染」）——轻量提示用 single 替换阀、卡片用 deck 折叠阀，两阀各配各的面身份。**single 在 store.add 时原地替换**（同 type+同 position 已有条目时 `replaceInPlace`：保留条目 id 与 DOM 节点、不重新挂载、不区分 palette/variant——「一个位置仅一条」是单一真相，叠加+让位+z-index 只是它的实现噪声），store 按条目 carry 的 type 判别 kind、各 kind 自持默认——机制下沉到能同时拿到「同槽同 type」正确域的层（面层做会散落）。**换载荷的瞬间要有反馈、落点留在可见域、收尾要快**（M4 续，用户「更新的时候加个淡出淡入，视觉感受更好」→「像闪一下，衔接更自然」→「不要到 0，到 0.4 试试」→「回升再快一些、update 初始透明度 0.6」）——透明度过渡形态曾被做成单容器 transition 驻留链（浅谷 0.4 / update 0.6、不对称回升），最终被用户点名为**整体退役**（「update 直接进行，zoom 进场即可」、「替换前也直接进行 update，然后 zoom 进场即可」）：**换字反馈统一为 zoom 进场**——新载荷即时落位、内容结点以 contentVersion 为 key 重挂、播放挂载触发 keyframe（scale 0.92 + fade，motion-normal，无相位类无定时器），update 与替换同款、容器上没有任何透明度过渡。补的是「换内容」的反馈不是「换位置」的动画；隐形 patch（duration/key 等）即时不闪烁——「给用户视觉反馈」与「不打扰」分层各配各的。
+- **机制复用先例**：deck 折叠 +N 计数 chip 复用 Select 多选溢出的 `tag-overflow` 先例（折叠成堆叠栈保留「有多少条」、peek 条让后两条仍可瞥见、+N 表达余量——比硬隐藏更诚实）；peek 条 aria-hidden + pointer-events:none 装饰只读、卡片计时器/交互两态照常——复用不强改既有行为。
+
+来源：Toast/Notify 继续优化定案（决策 10252fe1，caused_by Toast 设计对齐定案 89cd1415）；原地替换两点修正（决策 f9f95d95，caused_by 10252fe1）；替换/更新淡出淡入 staged swap（决策 b2a192d8，caused_by f9f95d95，用户浏览器反馈「更新的时候加个淡出淡入」）；换场改单容器 transition 链式 + 0.3s motion-slow（决策 2eef2f61，caused_by + supersedes b2a192d8，用户反馈「像闪一下，衔接更自然」+ 给 transition 实现建议）；谷底透明度 0→0.4 浅谷（决策 48cafcc8，caused_by 2eef2f61，用户「现在的效果好多了，但不要到 0，到 0.4 试试效果」）；回升提速 + update 软谷 0.6（决策 887bb77c，caused_by 48cafcc8，用户「0-1 透明度再快一些、update 初始透明度 0.6」）；update 改 zoom 进场 + data/onClose 终结合约（决策 1c5eff77，caused_by c0abf854，用户「update 移除透明度过渡改为 zoom 进场 + 新增 data/onClose」）；替换过渡整体退役 + shadow 走设计语言 + Toast 改名（决策 be61c45c，caused_by 1c5eff77，用户「替换前也直接 update 然后 zoom + 三点改名 + shadow 走设计语言」）。
+
 ## variant 是从设计语言推导的封闭轴
 
 - 轴必须来自 Figma 真实状态；取值集合小且穷举；轴间正交（非法组合用 `compoundVariants` 显式声明）。
@@ -295,3 +305,40 @@
 - **取自场景对齐而非抢跑**:「不带着未拍板的 API 形态开工」的延续——InputGroup 是带着歧义名被用户拦下,先摆场景与伪代码,再被追问出「Compact 适配性」的疑虑,最终收敛为语义二分 + 通用基座。名字歧义、词边界(零词)、判据消解三个设计问题都在对齐轮解法里互相成全。
 
 来源:输入组对齐轮(用户「InputGroup 确实值得做,先对齐一下使用场景和组件设计」→ 命名歧义质问「如果允许混编,是不是叫 InputGroup 命名有些歧义」→ 组合件多样性质疑「我不确定做 Compact 是否能适配这么多场景」→ 语义二分 + 通用基座拍板)。
+
+## 消息面渲染器 chrome：结构态不骑换场
+
+（Toast 续优化，用户「添加 showIcon, closeable props / 允许自定义 action / 组件目录结构应有 types/ 和 constants/」）
+
+- **chrome（门控渲染的开关）是渲染器自有的结构态，不是载荷**：`showIcon`/`closeable` 这类控制图标/关闭钮显隐的 props 不进换场、不骑动画——add/update/replace 一律**即时切换**，只有文字（content/title/mode/palette/variant… 这些「要说的话」）走 contentVersion 重挂播 zoom 进场。动画反馈留给「内容变了」，机制开关要即时——否则「内容已换完、图标才迟一步消失」的错位感。
+- **门控词面按用户词**：`showIcon`/`closeable` 用用户点名词（antd 的 showIcon 同源）；`closeable` 与 Modal/Drawer 的 `showClose` 同义不同词——用户明确给词时以用户词面为准，跨组件统一留待将来核对（不在此轮擅自替 Modal/Drawer 改名）。
+- **消息系统纯报告、不索求决策——两档都不持有 action 槽**：Toast 曾补 `action: { label, onClick }`（c0abf854 轮），round 12 用户重估后移除（3 秒自动消失的瞬时提示不应索要决策）；round 14 用户把 Notify 的也移掉——「看了消息做决定」的交互是对话框/页面的活，不是瞬时反馈层的，撤销/重试这类决定型交互最终归零于消息面，自造交互走 `content`/`custom`（任意 ReactNode）。**数据形态是单动作槽唯一有理由的形态**：一旦放开成 ReactNode，就与 content 完全重叠（同一位置、同一件事、两个通道）——「定死 Button」不是缺陷而是该槽位存在的唯一理由；同理 action 在仓库内零真实消费者（只有 demo 例），符合「无真实消费场景的能力不立项」。round 14 的推论延伸：当时「Toast 无 action、Notify 有 action」的两档分界，让位于「两档都无 action」的更齐边界；基座的 `MessageAction`/`MessageOptions.action` 随最后消费者离场整体删除——消费者退场、基座字段同步清退，不留死代码。
+- 来源：Toast chrome 三轴定案（决策 c0abf854，caused_by 887bb77c——用户点名 props 与目录结构）；action 移除（决策 4fe6007e，caused_by 5b048b4a——用户质疑「定死 Button」与「content 是否已够用」，三选项对齐拍板移除）。
+
+## 目录结构：constants/ + types/ 按仓库惯例
+
+（Toast 续优化同轮，用户「调整组件的目录结构，应该有 types/ 和 constants/」）
+
+- **`constants/` 按主题命名文件**：面默认值收 `constants/defaults.ts`（`TOAST_DEFAULT_POSITION/STRATEGY/VARIANT`），随 TimePicker 先例（`constants/time.ts`/`column.ts`，直接 `../constants/time` 引，无 index barrel）；api 只消费不定义——「组件内部常量收 `<component>/constants/` 域内单一事实源」的既有规矩新落地一遍。
+- **`types/` 按能力层分文件 + index barrel**：Toast 的契约层是它的 API 面（纯方法命名空间没有 component.ts 这一层）——`types/api.ts`（`ToastOptions` + `ToastActions`，旧名 ToastCallOptions/ToastNamespace 于 be61c45c 轮按用户拍板改名）+ `types/index.ts`（内部全量 barrel）；公共出口仍是 `<component>/index.ts` 选择性具名（ToastActions 不进公共面，只有 ToastOptions 进）。
+- **基座（cdk/message）同样按惯例组织**（用户「整理 message 组件的目录结构：types/，stores/，constants/ 等符合品味规范的结构」）：`types/message.ts` + `types/index.ts`（全量类型契约集中——MessageAddOptions/MessageRenderer 从 factory/store 归位）+ **`stores/store.ts`**（状态层单独成层——code-style 的 stores/ 惯例在基座落地）+ `constants/defaults.ts`（DEFAULT_DURATION/DEFAULT_EXIT/ROOT_SCOPE 默认值）+ `constants/viewport.ts`（POSITIONS/DECK_THRESHOLD 主题常量）+ `constants/icons.ts`（MODE_ICONS 映射）。结构件（`box.tsx` 共享外壳）与注册件（`factory.ts`）留根目录、`styles/` 不动——主题命名文件直接路径引用无 barrel，类型归 types、状态归 stores、默认值归 constants。
+- 来源：同上轮（决策 c0abf854）；基座目录重整（决策 5b048b4a，caused_by be61c45c——用户点名四个改名 + 目录结构）。
+
+## 消息生命周期回调：data 透传 + onClose 归一载荷
+
+（Toast 续优化，用户「Toast 新增 data 和 onClose，onClose 的 payload 是 { id, data }，data 作为透传参数」）
+
+- **`data` 是不透明透传值**（`unknown`）：组件不读写、不解释，原样保存、终结时原样交还——调用方挂自己的业务上下文（请求 id、文件名、记录），消息面零产品语义。透传 = 单一职责的正面表达：我不懂你，但我原封不动还给你。
+- **终结合约 = 一次 + 归一载荷 `{ id, data }`**：`onClose` 随「载荷终结」发一次——关闭（✕/dismiss api）、自动超时、清场、原地被替换；`update` 延续同一载荷不触发。发一次由状态机路径保证：每条终结只在一条路径上发（替换落位即发旧载荷、退场/清场转发各自活载荷——mid-swap 曾是需要显式护栏的重发窗口，换场机制退役后窗口自行消失）。载荷把 id 与透传值并列——消费方一个函数闭包全拿到（事件面统一载荷 `{ event, value }` 的同款心法：回调载荷自包含）。
+- **替换也是终结**：single 策略下 A 被 B 原地替换——A 的载荷终结（替换落位即发 A 的 onClose）、B 的 onClose 归条目录（下次关 B 才发）——「每次 add 都是一条独立生命周期」，换内容不等于同一生命周期（update 才延续）。
+- 来源：Toast data/onClose 定案（决策 1c5eff77，caused_by c0abf854——用户点名 payload 词形）。
+
+## 类型名说形状：名称按内容指派、用户点名直落
+
+（Toast 续优化，用户「ToastCallOptions 改名为 ToastOptions / ToastNamespace 改名为 ToastActions / api.ts 改名为 factory.ts」）
+
+- **接口名说形状不说机制**：`ToastOptions`（这个面的一次调用的选项——「调一次 toast 要给什么」）比 `ToastCallOptions` 更短更准；`ToastActions`（纯方法集合——「Toast 这个对象能做的动作」）比 `ToastNamespace` 更直白——namespace 是 JS 实现词，不是语义词。名字里不该有实现腔（同「today() 不说 todayIso()」的命名纪律）。
+- **名字冲突处理 = 用户新意优先**：`ToastOptions` 公开面一度是 `MessageOptions` 的别名，用户点名把 call options 改名成它——按用户新意重新指派该名字、删掉旧别名（update patch 回落到 MessageOptions），pre-release 无 break 负担时不搞并列双名。
+- **文件名命名随内容**：`api.ts` → `factory.ts`——该文件的主体就是 `ToastFactory` 类与 `toastFactory` 单例，文件名与内容同名互证。types/api.ts 仍叫 api（它是契约类型层，不是工厂）。
+- **判别词与语义轴各占自己的词位**：kind 判别词占 `type`（`MessageType` 'toast'|'notify'——「type 说它是什么类目」，旧名 face）+ 语义轴占 `mode`（`MessageMode` info/success/warning/error——「mode 说它是什么腔调」，旧名 MessageTone）；共享外壳 `MessageBox` 说形状（「box 说它是盒子」比 ItemShell 的容器腔直白）。接口名说形状的同一纪律在基座层再走一遍——同一轮把 `--tone-*` 死类钩子改成 `--mode-*` 让钩子名与轴名一致。
+- 来源：Toast 改名轮（决策 be61c45c，caused_by 1c5eff77——用户点名三个改名）；基座命名轮（决策 5b048b4a，caused_by be61c45c——用户点名 face→type/type→mode/MessageTone→MessageMode/MessageItemShell→MessageBox 四项）。

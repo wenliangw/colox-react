@@ -41,3 +41,25 @@
 ## 为什么
 
 用户看到的是「点了没反应」，但真凶在演示的受控闭环缺了回写——组件行为绿测能自证清白，前科记录要让「组件 bug」的排查先过接线这一关。
+
+---
+
+# 演示接线遮蔽默认行为（第三前科）
+
+## 现状
+
+- Toast story 的 Variant 区四个按钮显式传 `strategy: 'stack'`（想让四档同屏对照），把库里默认的 single 原地替换遮蔽了——用户按 demo 实测报「不同的 variant 好像没有走替换的逻辑」，而库的替换键只有 `face + position`、与 variant/palette 无关（store 测试盖着「replacement ignores palette/variant」）。真凶是演示接线换掉了默认行为，不是组件。
+
+## 改这里
+
+- 给任何「默认行为可自证」的 story/docs 演示接线，尤其是逐档演示某取值轴（variant/palette/strategy…）时。
+
+## 必须检查
+
+- [ ] 演示默认行为的区**不显式 override 会遮蔽默认的 prop/策略**：选项轴各档按钮走默认路径（点不同 variant 显示原地替换=默认自证）；显式 override 只放进专门演示该 override 的区（Toast 的「Add (stack, shows more than one)」单按钮）。
+- [ ] 「多取值同屏对照」与「默认行为可见」冲突时，默认行为优先——对照可逐次点击观察替换，同屏堆叠会制造「不同 variant 不替换」的误报。
+- [ ] 疑似 bug 的报告先扫一层**演示接线**：story/docs 里显式的 strategy/受控值/常量 override 都可能把库默认行为换掉，把「库 bug」伪造成型。
+
+## 为什么
+
+用户按 demo 实测组件；demo 强制掉默认行为时，用户看到的就是「反默认」现象并报为库 bug——组件绿测自证清白，前科记录要让这类报告先过演示接线排查。

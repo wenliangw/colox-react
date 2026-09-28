@@ -26,3 +26,12 @@ Form store 批 A 修复（2026）拖出的两类状态真值缺陷，将来任�
 - **必须检查：**
   - [ ] 每一件拿自己的 id（首个可保留裸 id、后继 `-<index>` 后缀），`aria-describedby` 聚合全部件 id（空格分隔）——辅助技术读到每一行，HTML 不出现同 id 重复。
 - **为什么**：`Form.Hint` 可多声明却共享同一个 `hintId`（批 A 缺陷 3）：同 id 挂多个节点属非法 HTML、仅第一个被读到。
+
+## store 里同步触发用户回调 → 先提交状态变更，再 fire
+
+- **改这里**：在 store/状态机的任何 mutation 里**同步**触发用户回调（onClose、onChange、提交钩子——订阅者除外）——消息关闭、表单提交生命周期、picker 变更回调。
+- **必须检查：**
+  - [ ] fire 用户回调**之前**，状态数组/entries 已经提交成「载荷已结束」的终态（exiting / 已替换）——回调若重入同一 store（再 add/dismiss），必须看到的是已 commit 的条目，而不是仍是 shown 的中间态。
+  - [ ] 每个会「终止一条载荷」的路径（dismiss 单条、dismissAll、single 原地替换）都配一个「重入回调恰好触发一次」的回归测试；计数守卫（`calls === 1` 才重入）让回归失败时是干净断言而非无限递归/栈溢出。
+  - [ ] 替换/复活路径在 fire 前 clearCountdown 清掉退出计时器，避免条目复活后再被旧的退出定时器移除。
+- **为什么**：message store 的 `transitionToExiting`/`replaceInPlace`/`dismissAll` 都在 `notifyClose`（fire onClose）之后才改 status/替换 entries——demo 的 `onClose: () => Toast.info(...)` 同槽 single 重入，命中仍是 shown 的旧条目再 replaceInPlace 再 fire，无限递归（用户报「循环引用」）。教训 = 用户回调是 re-entrancy 门，先 commit 再 fire 是唯一安全序（决策 ae16bee7）。
