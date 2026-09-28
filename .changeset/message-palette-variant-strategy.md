@@ -35,12 +35,16 @@ viewport pollution:
   popped card leaves with no exit window and the next-newest card
   lands right where it was (the display slot keeps its frame, the
   incoming words play the zoom entrance — the single-replacement
-  update language); only the LAST card of a fold walks the exit
+  update language, replaying on every reveal); only the LAST card of a
+  fold walks the exit
   animation. A new card arriving while the capsule is out is the same
   kind of reveal: the frame stays, the fresh words zoom in. When the
   stack is down to that last card, the card
   resumes its timer while the capsule turns into a countdown capsule
-  reading its remaining seconds. The store's pause/resume becomes a
+  reading its remaining seconds — a reading, so its clear-all ✕
+  steps back (the content nodes key by entry id + version, so every
+  reveal re-mounts and replays the zoom). The store's pause/resume
+  becomes a
   holder counter (the fold freeze and the hover pause stack) and
   `getRemaining(id)` feeds the countdown capsule.
 - **fold bookkeeping lives in the store** — the fold (enter past the

@@ -131,20 +131,25 @@ absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账�
   contentVersion 进位让词面重挂播 zoom（popInstant 的即时落位语言，用户
   拍板「直接同位置更新，不要再走退出动画」）；折叠期间新到卡同一语言
   （add 进已折叠槽 contentVersion 从 1 起播 zoom——胶囊出现后的露出均
-  zoom）；`FoldCapsule` 计数胶囊（总数 + 清空✕ `.colox-message-count__clear`
-  →store.clearSlot；**胶囊 `pointer-events: auto`**——viewport 容器 none
-  drop 指针、卡片与胶囊两块交互后代各自 re-enable，漏了胶囊则 ✕ 死点）；
+  zoom；**词面 key = `entry.id:contentVersion` 复合**——裸 version 会让
+  不同条目同值被 React 复用节点、zoom 只播第一次）；`FoldCapsule` 计数胶囊
+  （总数 + 清空✕ `.colox-message-count__clear`→store.clearSlot；**胶囊
+  `pointer-events: auto`**——viewport 容器 none drop 指针、卡片与胶囊两块
+  交互后代各自 re-enable，漏了胶囊则 ✕ 死点；**倒计时态无 ✕**——读秒是
+  阅读态不是控件，✕ 只服务多卡清空）；
   积压卡 **停止渲染**且**冻结计时**（store 持有，不进退场——foldHeldIds +
   pauseCount 多持有者，与 hover pause 共存）；剩最后 1 张时 store 释放
   冻结、胶囊切换 `--countdown` 倒计时胶囊（COUNTDOWN_TICK 250ms 读
   store.getRemaining(id) 展示剩余秒），该卡恢复自动关闭、归零走人；
   **退出动画只属于最后一张**——此前的 pop 与 ✕ 积压均即时清除，无退场
-  窗。折叠态持续到栈空才褪去（4→3→2→1 不中途回退）。**四代前科**（用户
-  「没有堆叠反而像透明」起，四轮收敛）：①首版 peek 无轴长 overflow +
+  窗。折叠态持续到栈空才褪去（4→3→2→1 不中途回退）。**多代前科**（用户
+  「没有堆叠反而像透明」起逐轮收敛）：①首版 peek 无轴长 overflow +
   opacity 0.6 → 半透明整卡罗列；②限高裁切细条（腰斩文字）；③z-index
   露边牌堆（用户拍板做进去后仍换掉）；④不堆叠——计数胶囊 + 冻结 +
   倒计时胶囊（用户「更好的想法」）；⑤补 pop 即时语义（同位置更新、无
-  退场动画）。
+  退场动画）；⑥补 zoom 每次露出必播——body key 裸 contentVersion 跨条目
+  撞值被 React 复用节点，改 id:version 复合（用户「zoom 只有第一个被
+  替换的卡片有，后面就没有了」）；⑦倒计时胶囊收回 ✕（读秒不是控件）。
 
 - **`box.tsx`**：`MessageBox`（旧名 MessageItemShell）——role="status" +
   aria-live="polite"、colox-message + colox-message--{mode} +

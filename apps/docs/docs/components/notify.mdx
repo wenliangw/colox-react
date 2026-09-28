@@ -97,14 +97,16 @@ user's back. Closing the visible card **pops the stack in place**: the
 popped card leaves **instantly** (no exit animation) and the
 next-newest card lands right where it was — the card frame stays put,
 the incoming words play the zoom entrance (the same update language as
-a single replacement) and the count ticks down. The same holds for a
+a single replacement) and the count ticks down; the zoom replays on
+**every** reveal. The same holds for a
 **new card arriving while the capsule is out**: the slot's frame stays,
 the fresh words reveal with the zoom entrance. When the stack is down
 to its **last card**, that card resumes its timer and the capsule
 becomes a **countdown capsule** reading the remaining seconds — the
-slot empties itself at zero. The exit animation belongs to the last
-card alone. Sticky cards (`duration: 0`) never count down, in or out
-of a fold; hovering keeps pausing the countdown as usual.
+slot empties itself at zero; a countdown capsule is a reading, not a
+control, so its clear-all ✕ steps back. The exit animation belongs to
+the last card alone. Sticky cards (`duration: 0`) never count down, in
+or out of a fold; hovering keeps pausing the countdown as usual.
 
 Pass `strategy: 'single'` to replace in place instead — one card per
 slot; the slot keeps its identity, the new payload lands **instantly**

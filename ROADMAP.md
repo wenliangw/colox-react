@@ -199,10 +199,12 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   itself behind the user's back; closing the visible card pops the
   stack **in place** (the popped card leaves instantly — no exit
   animation — and the next card lands right there with the zoom
-  entrance, the single-replacement update language; **only the last
+  entrance, the single-replacement update language; the zoom replays
+  on **every** reveal; **only the last
   card of a fold plays the exit animation**) and the last survivor
-  resumes its timer under a **countdown capsule** on its remaining
-  seconds. A card arriving **while the capsule is out** is another
+  resumes its timer under a **countdown capsule** reading its remaining
+  seconds (a reading, so its clear-all ✕ steps back).
+  A card arriving **while the capsule is out** is another
   such reveal — the frame stays, the fresh words zoom in. The message
   store is a shown→exiting→removed state machine (all timers in the
   store — duration, hover pause/resume on a holder counter so the fold
