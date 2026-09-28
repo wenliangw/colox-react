@@ -15,10 +15,14 @@ import './styles/notify.scss';
  * custom interactive content via `Notify.custom`). The renderer-owned
  * chrome follows the entry: `showIcon: false` drops the icon,
  * `closeable: false` drops the corner ✕. The content node keys itself
- * by the entry's `contentVersion`, so a freshly landed payload re-mounts
- * just that node and replays the zoom entrance (a visible update lands
- * instantly with the zoom). The shared box owns the role announcement,
- * the exiting flag and the hover pause/resume of the countdown.
+ * by the entry's id + its `contentVersion`, so a freshly landed payload
+ * re-mounts just that node and replays the zoom entrance (a visible
+ * update lands instantly with the zoom). The id prefix matters: two
+ * different entries can carry the same contentVersion (a fold shows
+ * one entry after another) and an equal bare-version key would make
+ * React reuse the node and skip the zoom the second time. The shared
+ * box owns the role announcement, the exiting flag and the hover
+ * pause/resume of the countdown.
  */
 export function NotifyItem({ entry, store }: MessageRendererProps) {
   const ModeIcon = MODE_ICONS[entry.mode];
@@ -36,7 +40,7 @@ export function NotifyItem({ entry, store }: MessageRendererProps) {
         <ModeIcon className="colox-notify__icon colox-message__icon" aria-hidden="true" />
       )}
       <div
-        key={entry.contentVersion}
+        key={`${entry.id}:${entry.contentVersion}`}
         className={clsx(
           'colox-notify__body',
           entry.contentVersion > 0 && 'colox-notify__body--zoom',

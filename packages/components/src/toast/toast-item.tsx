@@ -17,9 +17,11 @@ import './styles/toast.scss';
  * ReactNode). The renderer-owned chrome follows the entry:
  * `showIcon: false` drops the icon, `closeable: false` drops the
  * corner ✕. The content node keys
- * itself by the entry's `contentVersion`, so a freshly landed payload
- * re-mounts just that node and replays the zoom entrance (a visible
- * update lands instantly with the zoom — see animation.scss).
+ * itself by the entry's id + its `contentVersion`, so a freshly landed
+ * payload re-mounts just that node and replays the zoom entrance (a
+ * visible update lands instantly with the zoom — see animation.scss).
+ * The id prefix guards against two entries carrying the same version
+ * (a shared-key reuse would silently skip the zoom).
  *
  * The shared box owns the role announcement, the exiting flag and
  * the hover pause/resume of the auto-dismiss countdown.
@@ -37,7 +39,7 @@ export function ToastItem({ entry, store }: MessageRendererProps) {
         <ModeIcon className="colox-toast__icon colox-message__icon" aria-hidden="true" />
       )}
       <div
-        key={entry.contentVersion}
+        key={`${entry.id}:${entry.contentVersion}`}
         className={clsx(
           'colox-toast__content',
           entry.contentVersion > 0 && 'colox-toast__content--zoom',

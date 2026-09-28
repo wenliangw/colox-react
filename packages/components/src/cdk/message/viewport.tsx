@@ -86,6 +86,7 @@ function MessageSlot({
           {notifyShown.length > 0 && (
             <FoldCapsule
               count={notifyShown.length}
+              countdown={survivorId !== null}
               seconds={survivorId !== null && leftMs !== null ? Math.ceil(leftMs / 1000) : null}
               onClear={() => store.clearSlot(position)}
             />
@@ -123,40 +124,49 @@ function RendererSlot({ entry, store }: { entry: MessageEntry; store: MessageSto
  * one ✕ that dismisses everything in the slot. When the stack is down
  * to its last card, it switches to a countdown capsule (`--countdown`)
  * reading that card's remaining seconds — the same pill look, only the
- * wording changes.
+ * wording changes; there is one card left, so the clear-all ✕ steps
+ * back (the capsule is a reading, not a control).
  */
 function FoldCapsule({
   count,
+  countdown,
   seconds,
   onClear,
 }: {
   count: number;
-  /** Non-null when the capsule counts down the last card's timer. */
+  /** True when the capsule counts down the last card's timer. */
+  countdown: boolean;
+  /** The remaining seconds; ticked in, null right at the switch. */
   seconds: number | null;
   onClear: () => void;
 }) {
-  const countdown = seconds !== null && seconds >= 0;
   return (
     <div
       role="status"
       className={clsx('colox-message-count', countdown && 'colox-message-count--countdown')}
       aria-label={
         countdown
-          ? `${seconds} seconds before auto-dismiss`
+          ? seconds !== null
+            ? `${seconds} seconds before auto-dismiss`
+            : 'Counting down'
           : count === 1
             ? '1 notification'
             : `${count} notifications`
       }
     >
-      <span className="colox-message-count__label">{countdown ? `${seconds}s` : count}</span>
-      <button
-        type="button"
-        className="colox-message-count__clear"
-        aria-label="Dismiss all notifications"
-        onClick={onClear}
-      >
-        <IconX aria-hidden="true" />
-      </button>
+      <span className="colox-message-count__label">
+        {countdown ? (seconds !== null ? `${seconds}s` : '…') : count}
+      </span>
+      {!countdown && (
+        <button
+          type="button"
+          className="colox-message-count__clear"
+          aria-label="Dismiss all notifications"
+          onClick={onClear}
+        >
+          <IconX aria-hidden="true" />
+        </button>
+      )}
     </div>
   );
 }

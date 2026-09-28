@@ -128,12 +128,40 @@ describe('MessageViewport', () => {
     expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('2');
     expect(vp.textContent).toContain('two');
     // closing again leaves the last card under a countdown capsule —
-    // the capsule now reads its seconds, not the tally
+    // the capsule now reads its seconds, not the tally; a countdown is
+    // a reading, so the clear-all ✕ steps back
     act(() => {
       fireEvent.click(vp.querySelector('.colox-notify__close')!);
     });
     expect(vp.querySelector('.colox-message-count--countdown')).not.toBeNull();
     expect(vp.querySelector('.colox-message-count__label')?.textContent).toMatch(/^\d+s$/);
+    expect(vp.querySelector('.colox-message-count__clear')).toBeNull();
+    expect(vp.textContent).toContain('one');
+  });
+
+  it('every pop re-mounts the words — the zoom replays on each reveal', () => {
+    render(<MessageViewport scope="fold" data-testid="vp" />);
+    act(() => {
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
+    });
+    const vp = screen.getByTestId('vp');
+    // the fold-engage card is a plain arrival — no zoom words yet
+    expect(vp.querySelector('.colox-notify__body--zoom')).toBeNull();
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    const firstBody = vp.querySelector('.colox-notify__body');
+    expect(firstBody?.classList.contains('colox-notify__body--zoom')).toBe(true);
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    const secondBody = vp.querySelector('.colox-notify__body');
+    expect(secondBody?.classList.contains('colox-notify__body--zoom')).toBe(true);
+    // a FRESH node: the previous body must not be recycled under an
+    // equal bare-version key (two different entries can share v1)
+    expect(secondBody).not.toBe(firstBody);
     expect(vp.textContent).toContain('one');
   });
 
