@@ -64,6 +64,13 @@ describe('MessageViewport', () => {
     // deck collapsed: the +N chip folds the cards beyond the peek
     expect(vp.querySelector('.colox-message-deck')).not.toBeNull();
     expect(vp.querySelector('.colox-message-deck__count')?.textContent).toBe('+1');
+    // the two cards behind the front render as clipped slivers — one
+    // fixed-height wrapper per card, not full-size cards
+    const peek = vp.querySelector('.colox-message-deck__peek');
+    expect(peek).not.toBeNull();
+    expect(peek!.querySelectorAll('.colox-message-deck__peek-card')).toHaveLength(2);
+    expect(peek!.textContent).toContain('three');
+    expect(peek!.textContent).toContain('two');
     // not expanded yet — no collapse chip
     expect(vp.querySelector('.colox-message-deck__collapse')).toBeNull();
   });

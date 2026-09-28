@@ -71,7 +71,12 @@ export function MessageDeck({
           <Renderer entry={front} store={store} />
           <div className="colox-message-deck__peek" aria-hidden="true">
             {peeks.map((entry) => (
-              <Renderer key={entry.id} entry={entry} store={store} />
+              // one clipped sliver per card: the wrapper caps the card
+              // to its top strip, so the pile reads as stacked card
+              // backs instead of full translucent notifications
+              <div key={entry.id} className="colox-message-deck__peek-card">
+                <Renderer entry={entry} store={store} />
+              </div>
             ))}
           </div>
           <button

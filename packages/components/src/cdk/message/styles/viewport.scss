@@ -107,19 +107,33 @@
   align-items: flex-end;
 }
 
-// The peek strips: each older card clipped to a thin top sliver so the
-// pile reads as stacked cards behind the front one. They are pure
-// decoration — aria-hidden and pointer-transparent; the cards inside
-// keep their own timers (they expire normally behind the front).
+// The peek strips: each older card clipped to a thin top sliver (its
+// padding + mode-icon row — the recognizable "another card" edge), so
+// a pile reads as stacked card backs behind the front one instead of a
+// full translucent stack. Each sliver is a real render of its card
+// capped by a fixed-height wrapper — the cards inside keep their own
+// timers (they expire normally behind the front). The area is pure
+// decoration: aria-hidden and pointer-transparent, NO translucency —
+// the clip alone signals "behind".
 .colox-message-deck__peek {
   display: flex;
   flex-direction: column;
-  gap: var(--colox-spacing-2);
+  gap: var(--colox-spacing-1);
   width: 100%;
   margin-top: var(--colox-spacing-2);
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.6;
+}
+
+// One clipped sliver: caps the card to its top strip. The wrapper
+// ceiling is the visible band height (size-10 = 40px — the padding +
+// full mode icon row); cards taller than the band clip, shorter cards
+// (e.g. a tiny `custom` body) stay natural.
+.colox-message-deck__peek-card {
+  flex: none;
+  width: 100%;
+  max-height: var(--colox-size-10);
+  overflow: hidden;
 }
 
 // The count chip: a compact muted pill reading "+N" — the folded cards.
