@@ -1,4 +1,5 @@
 import { createId } from '@colox/cdk/utils/id';
+import { Timer } from '@colox/cdk/utils/timer';
 import { DEFAULT_DURATION, DEFAULT_EXIT } from './constants/defaults';
 import { FOLD_THRESHOLD, POSITIONS } from './constants/viewport';
 import type {
@@ -36,8 +37,8 @@ export function resolveMessageDefaults(
 /**
  * One message queue — the single source of truth behind one scope
  * container. A message lives here from `add(...)` until its exit window
- * ends; the store owns every timer (the auto-dismiss countdown, the
- * pause/resume bookkeeping, the exit window) and every mutation, so the
+ * ends; the store owns every mutation and the scheduling (the time
+ * mechanics themselves live in the shared `Timer` core), so the
  * viewport is a pure render of `getSnapshot()`.
  *
  * The store is kind-agnostic: entries carry their own `type` (toast /
@@ -51,25 +52,16 @@ export function resolveMessageDefaults(
 export class MessageStore {
   private entries: MessageEntry[] = [];
   private listeners = new Set<() => void>();
-  /** id → the auto-dismiss timer handle (countdown or exit-window removal). */
-  private timers = new Map<MessageId, ReturnType<typeof setTimeout>>();
   /**
-   * id → ms left on the countdown. The single ledger for the remaining
-   * time: `startCountdown` arms it, `pause` debits the elapsed span,
-   * `resume` re-arms the timer from it, `getRemaining` reads it (+ the
-   * live elapsed while the timer runs). Never re-derived from
-   * `entry.duration` — a countdown resumed from a partial remaining
-   * must not snap back to the full duration on the next pause.
+   * id → the entry's auto-dismiss clock. The time mechanics — the
+   * held remaining ledger, the stacking pause holders, one in-flight
+   * timer per clock — live in the shared `Timer` core (see
+   * `@colox/cdk/utils/timer`); the store just keeps one per timed
+   * entry and routes its expiry into `dismiss`.
    */
-  private remaining = new Map<MessageId, number>();
-  /** id → the current countdown start timestamp (live-elapsed bookkeeping). */
-  private startedAt = new Map<MessageId, number>();
-  /**
-   * id → how many pause holders sit on the countdown (the hover pause
-   * and the fold freeze can stack). The countdown only restarts when
-   * the last holder releases.
-   */
-  private pauseCount = new Map<MessageId, number>();
+  private timers = new Map<MessageId, Timer>();
+  /** id → the exit-window retention timer (a fixed delay, no pause semantics). */
+  private exitTimers = new Map<MessageId, ReturnType<typeof setTimeout>>();
   /**
    * The notify fold bookkeeping, one set per slot: position → the ids
    * whose countdown holds that slot's freeze (one holder per folded
@@ -209,10 +201,10 @@ export class MessageStore {
     };
     this.entries = [...this.entries, entry];
     // the countdown starts BEFORE the commit: the fold reconciliation
-    // runs inside emit — a freeze must find the entry's timer live,
+    // runs inside emit — a freeze must find the entry's clock armed,
     // or a new card would slip into a folded slot unfrozen
     if (entry.duration > 0) {
-      this.startCountdown(id, entry.duration);
+      this.timerOf(id).start(entry.duration);
     }
     this.emit();
     return id;
@@ -246,19 +238,23 @@ export class MessageStore {
       contentVersion: existing.contentVersion + 1,
       status: 'shown',
     };
-    this.clearCountdown(existing.id);
+    // an exiting entry revives: cancel its retention timer, or the
+    // exit window would remove the revived message mid-countdown
+    const exitTimer = this.exitTimers.get(existing.id);
+    if (exitTimer !== undefined) {
+      clearTimeout(exitTimer);
+      this.exitTimers.delete(existing.id);
+    }
     this.entries = [...this.entries];
     this.entries[index] = next;
-    if (next.duration > 0) {
-      this.startCountdown(next.id, next.duration);
-    }
+    this.restartCountdown(next.id, next.duration);
     this.emit();
     // Replaced in place — the old payload's job ends here. Fire its
     // onClose once, but ONLY after the replacement is committed: a
     // re-entrant add inside onClose must observe the fresh entry (a
     // still-shown `existing` would let it re-fire this payload).
     if (existing.status === 'shown') {
-      this.notifyClose(existing);
+      this.fireClose(existing);
     }
     return existing.id;
   }
@@ -344,7 +340,8 @@ export class MessageStore {
    * — the same in-place update language as a single replacement.
    */
   private popInstant(entry: MessageEntry): void {
-    this.clearCountdown(entry.id);
+    this.timers.get(entry.id)?.clear();
+    this.timers.delete(entry.id);
     // the promoted card: the next-newest shown notify of the same
     // slot, when the popped one WAS the visible card
     let promotedId: MessageId | undefined;
@@ -362,7 +359,7 @@ export class MessageStore {
       );
     this.emit();
     // the ended payload fires AFTER the commit (re-entrancy discipline)
-    this.notifyClose(entry);
+    this.fireClose(entry);
   }
 
   /**
@@ -386,11 +383,12 @@ export class MessageStore {
     }
     const backlog = slotShown.slice(0, -1);
     const backlogIds = new Set(backlog.map((item) => item.id));
-    this.clearCountdown(newest.id);
+    this.timers.get(newest.id)?.clear();
     // the invisible backlog freezes end instantly with its cards (its
     // holds prune in the fold reconciliation)
     for (const item of backlog) {
-      this.clearCountdown(item.id);
+      this.timers.get(item.id)?.clear();
+      this.timers.delete(item.id);
     }
     // commit first: the backlog is gone instantly, the newest exits
     this.entries = this.entries
@@ -400,9 +398,9 @@ export class MessageStore {
     this.scheduleRemovals();
     // then fire, per payload — AFTER the commit (re-entrancy discipline)
     for (const item of backlog) {
-      this.notifyClose(item);
+      this.fireClose(item);
     }
-    this.notifyClose(newest);
+    this.fireClose(newest);
   }
 
   /** Dismisses every message into its exit window. */
@@ -416,7 +414,7 @@ export class MessageStore {
     const ending: MessageEntry[] = [];
     for (const entry of this.entries) {
       if (entry.status === 'shown') {
-        this.clearCountdown(entry.id);
+        this.timers.get(entry.id)?.clear();
         ending.push(entry);
       }
     }
@@ -429,40 +427,23 @@ export class MessageStore {
     // AFTER the exiting commit: a re-entrant add inside onClose sees
     // the entries already exiting (no re-fire, no re-entrancy loop).
     for (const entry of ending) {
-      this.notifyClose(entry);
+      this.fireClose(entry);
     }
   }
 
   /**
-   * Halts the countdown (hover, fold freeze): debits the elapsed span
-   * from the remaining ledger. Pauses stack — each holder increments
-   * the count, and only the final release restarts the timer, so the
-   * hover pause and the fold freeze can coexist without clobbering
-   * each other. The ledger (not `entry.duration`) is the source of
-   * truth: a countdown resumed from a partial remaining keeps its
-   * partial remaining across further pauses.
+   * Halts the entry's countdown (hover, fold freeze). Pauses stack per
+   * holder and only the final release resumes — the hover pause and
+   * the fold freeze coexist without clobbering each other. The held
+   * remaining ledger (not `entry.duration`) is the truth: a countdown
+   * resumed from a partial remaining keeps it across further pauses.
    */
   pause(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
     }
-    const count = this.pauseCount.get(id) ?? 0;
-    if (count > 0) {
-      this.pauseCount.set(id, count + 1);
-      return;
-    }
-    const timer = this.timers.get(id);
-    this.pauseCount.set(id, 1);
-    if (timer === undefined) {
-      return;
-    }
-    clearTimeout(timer);
-    this.timers.delete(id);
-    const started = this.startedAt.get(id) ?? Date.now();
-    const armed = this.remaining.get(id) ?? entry.duration;
-    this.remaining.set(id, Math.max(0, armed - (Date.now() - started)));
-    this.startedAt.delete(id);
+    this.timers.get(id)?.pause();
   }
 
   /**
@@ -475,22 +456,7 @@ export class MessageStore {
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
     }
-    const count = this.pauseCount.get(id) ?? 0;
-    if (count === 0) {
-      return;
-    }
-    const next = count - 1;
-    if (next > 0) {
-      this.pauseCount.set(id, next);
-      return;
-    }
-    this.pauseCount.delete(id);
-    const left = this.remaining.get(id);
-    if (left === undefined) {
-      return;
-    }
-    this.remaining.delete(id);
-    this.startCountdown(id, left);
+    this.timers.get(id)?.resume();
   }
 
   /**
@@ -503,36 +469,33 @@ export class MessageStore {
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return null;
     }
-    const timer = this.timers.get(id);
-    const armed = this.remaining.get(id);
-    if (timer !== undefined && armed !== undefined) {
-      const started = this.startedAt.get(id) ?? Date.now();
-      return Math.max(0, armed - (Date.now() - started));
-    }
-    return armed ?? null;
+    return this.timers.get(id)?.getRemaining() ?? null;
   }
 
-  private startCountdown(id: MessageId, ms: number): void {
-    this.remaining.set(id, ms);
-    this.startedAt.set(id, Date.now());
-    const timer = setTimeout(() => this.dismiss(id), ms);
-    this.timers.set(id, timer);
+  /** The entry's clock — created on the first arm, expired into dismiss. */
+  private timerOf(id: MessageId): Timer {
+    let timer = this.timers.get(id);
+    if (timer === undefined) {
+      timer = new Timer(() => this.dismiss(id));
+      this.timers.set(id, timer);
+    }
+    return timer;
   }
 
   /**
    * Restarts an entry's countdown from `ms` — the update/replacement
    * path. A card whose countdown sits under a fold freeze stays
-   * frozen: `clearCountdown` wipes holders, so the restart re-arms
-   * the freeze holder right away (an update must never un-freeze a
-   * folded card — the fold's whole promise is that a burst never
-   * deletes itself).
+   * frozen: the restart wipes holders, so it re-arms the freeze
+   * holder right away (an update must never un-freeze a folded card —
+   * the fold's whole promise is that a burst never deletes itself).
    */
   private restartCountdown(id: MessageId, ms: number): void {
-    this.clearCountdown(id);
+    const timer = this.timerOf(id);
+    timer.clear();
     if (ms <= 0) {
       return;
     }
-    this.startCountdown(id, ms);
+    timer.start(ms);
     if (this.heldByFold(id)) {
       this.pause(id);
     }
@@ -547,19 +510,6 @@ export class MessageStore {
     return false;
   }
 
-  private clearCountdown(id: MessageId): void {
-    const timer = this.timers.get(id);
-    if (timer !== undefined) {
-      clearTimeout(timer);
-      this.timers.delete(id);
-    }
-    // the countdown is over — its ledger, bookkeeping and any stale
-    // pause holders end with it
-    this.remaining.delete(id);
-    this.startedAt.delete(id);
-    this.pauseCount.delete(id);
-  }
-
   /** Moves one shown message to exiting and schedules its removal. */
   private transitionToExiting(id: MessageId): void {
     const index = this.entries.findIndex((entry) => entry.id === id);
@@ -567,9 +517,9 @@ export class MessageStore {
       return;
     }
     const entry = this.entries[index];
-    // the countdown is over with the transition — its timer must not
-    // outlive the entry (the removal timer reuses the same slot)
-    this.clearCountdown(id);
+    // the countdown is over with the transition — its clock must not
+    // outlive the entry (the retention timer is a separate concern)
+    this.timers.get(id)?.clear();
     this.entries = [...this.entries];
     this.entries[index] = {
       ...entry,
@@ -582,11 +532,11 @@ export class MessageStore {
     // re-entrant add inside onClose now sees the entry already exiting,
     // so a single-slot replacement revives it without re-firing this
     // payload (the old order re-fired it and recursed forever).
-    this.notifyClose(entry);
+    this.fireClose(entry);
   }
 
   /** Fires the ended payload's onClose — once, at the moment its job ends. */
-  private notifyClose(entry: MessageEntry): void {
+  private fireClose(entry: MessageEntry): void {
     entry.onClose?.({ id: entry.id, data: entry.data });
   }
 
@@ -594,17 +544,18 @@ export class MessageStore {
   private scheduleRemovals(): void {
     const exiting = this.entries.filter((entry) => entry.status === 'exiting');
     for (const entry of exiting) {
-      // one timer per id: an entry already scheduled keeps its window
-      // (dismissAll re-commits must not open a second exposure)
-      if (this.timers.has(entry.id)) {
+      // one retention timer per id: an entry already scheduled keeps
+      // its window (dismissAll re-commits must not open a second one)
+      if (this.exitTimers.has(entry.id)) {
         continue;
       }
       const timer = setTimeout(() => {
+        this.exitTimers.delete(entry.id);
         this.timers.delete(entry.id);
         this.entries = this.entries.filter((item) => item.id !== entry.id);
         this.emit();
       }, DEFAULT_EXIT);
-      this.timers.set(entry.id, timer);
+      this.exitTimers.set(entry.id, timer);
     }
   }
 }
