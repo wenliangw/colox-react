@@ -161,26 +161,54 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   the backdrop click; directional slide entrance/exit (translate from
   the anchored edge) on the shared cdk exit channel.
 - `Toast`/`Notify` — **shipped**: the message system — a shared
-  **scope-registry base** (cdk/message) with two imperative faces.
+  **scope-registry base** (cdk/message) with two imperative kinds.
   The consumer mounts one `<MessageViewport>` per container (default
   `root`, screen-wide `fixed`; `positioning="absolute"` pins a scoped
   container inside a `position: relative` parent). `Toast.…` is the
-  lightweight hint face — a slim single-line pill, default slot
-  `top-center`, no title/action; `Notify.…` is the titled card face —
-  title + content + one `action: { label, onClick }` slot (subtle
-  Button, auto-closes on click), default slot `top-right`. Both faces
+  lightweight hint kind — a slim single-line pill, default slot
+  `top-center`, no title; `Notify.…` is the titled card kind —
+  title + content, default slot `top-right`. No action slot on either
+  kind — the message system is purely informational (report, don't
+  ask): a 3s transient hint solicits no decision, and the titled card
+  reports and closes — decision-tier interactions (undo/retry) are a
+  dialog's job; custom interactive content rides the `content` node /
+  `Toast.custom` / `Notify.custom` (an arbitrary ReactNode). Both kinds carry
+  renderer chrome — `showIcon` / `closeable` (both default
+  on) drop the mode icon / the corner ✕ on Toast AND the Notify card,
+  fixed by the renderer not
+  the payload, so chrome toggles apply eagerly while only the words
+  ride the zoom. Both kinds
   are global imperative namespaces (callable from any code position —
   the content comes from a call, not the tree) routing into the scope
   named by `{ scope }`; the base scope table is shared, so **one
   container holds toast and notify entries side by side**, each in its
-  own slot. Tone shortcuts on both faces (info/success/warning/error —
-  palette semantic icons), `custom` renders arbitrary content,
-  `update(key, patch)` same-key in-place updates, `dismiss(key?)`,
-  duration auto-dismiss (default ~3s, 0 = sticky), hover pause, manual
-  close (IconButton muted), per-item exit on the shared motion tier,
-  `role="status"` (polite) by default. The message store is a
-  shown→exiting→removed state machine (all timers in the store —
-  duration, hover pause/resume, `DEFAULT_EXIT`=200 window). With this
+  own slot. Mode shortcuts on both kinds (info/success/warning/error —
+  palette semantic icons), **palette** (six family colors, defaulting
+  to the mode) and **variant** (plain/subtle/solid/outline surface)
+  axes, **strategy** (`single` replaces in place — the Toast default,
+  `stack` piles up — the Notify default), `custom` renders arbitrary
+  content, `update(key, patch)` same-key in-place updates,
+  `dismiss(key?)`, duration auto-dismiss (default ~3s, 0 = sticky),
+  hover pause, manual close (IconButton muted, gated by `closeable`),
+  per-item exit on the
+  shared motion tier, `role="status"` (polite) by default. A slot with
+  more than three notify cards collapses into a **deck** (newest full,
+  two peek strips, the rest in a `+N` chip, click to expand/collapse) —
+  the viewport-pollution valve for notification bursts. The message
+  store is a shown→exiting→removed state machine (all timers in the
+  store — duration, hover pause/resume, `DEFAULT_EXIT`=200 window;
+  `single` replaces same-type same-slot entries IN PLACE at add time —
+  same node, the new payload lands instantly and its words play a
+  **zoom entrance** (a scale+fade re-mount on the shared motion tier —
+  no opacity dip at all, for updates AND replacements); the
+  countdown restarts; `update` visible payload changes land the same
+  instant zoom way; every
+  payload end — dismissed (✕ / dismiss), auto-expired,
+  cleared or replaced in place — fires its `onClose({ id, data })`
+  once, with the caller's opaque `data` passed through; the `outline` variant
+  keeps the opaque bg-default card under its family border; the message
+  pills take their depth from the design language (`--colox-shadow-md`).
+  With this
   the M4 overlay family is complete: Tooltip / Popover / Modal / Drawer
   / Toast / Notify.
 
