@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import clsx from 'clsx';
 import { IconX } from '@colox/icons';
 import { messageFactory } from './factory';
-import { FOLD_THRESHOLD, POSITIONS } from './constants/viewport';
-import type { MessageEntry, MessageId, MessagePosition, MessageViewportProps } from './types';
+import { POSITIONS } from './constants/viewport';
+import type { MessageEntry, MessagePosition, MessageViewportProps } from './types';
 import type { MessageStore } from './stores/store';
 
 import './styles/index.scss';
@@ -12,21 +12,23 @@ import './styles/index.scss';
 const COUNTDOWN_TICK = 250;
 
 /**
- * One position slot — the fold valve lives here. A slot that shows
- * MORE than FOLD_THRESHOLD notify cards collapses into the newest
- * card plus one count capsule reading the total; every card past the
- * visible one folds into the capsule's number (they stop rendering —
- * the storm no longer paints a pile). The capsule's ✕ dismisses the
- * whole slot at once.
+ * One position slot — the fold renders here. A slot under the notify
+ * fold (the store owns the fold bookkeeping — see reconcileFold)
+ * shows the NEWEST card plus one count capsule reading the tally;
+ * every card past the visible one stops rendering — the storm never
+ * paints a pile. The capsule's ✕ clears the whole slot through
+ * `clearSlot` (the invisible backlog vanishes instantly, the visible
+ * card walks the exit animation as the slot's last card).
  *
- * While folded, every card's auto-dismiss countdown is FROZEN —
- * bursting notifications stop deleting themselves, the user stays in
- * control. Closing the visible card pops the stack (LIFO — the newest
- * backlog card slides into the visible slot) and the count ticks down.
- * When the stack is down to its LAST card, that card resumes its timer
- * and the capsule becomes a countdown capsule on its seconds. The
- * fold stays engaged through the whole descent (4 → 3 → 2 → 1) and
- * ends when the slot empties.
+ * While folded, the store freezes every card's countdown — a burst
+ * never deletes itself behind the user's back. Closing the visible
+ * card POPS the stack: the popped card leaves instantly (no exit
+ * window) and the next-newest card lands IN PLACE — the display slot
+ * keeps its frame, the incoming words re-mount with the zoom entrance
+ * (the store bumps their contentVersion; see popInstant). Only the
+ * LAST card of the fold walks the exit animation, and then the slot
+ * empties. When the stack reaches its last survivor, its timer resumes
+ * and the capsule becomes a countdown capsule on its seconds.
  */
 function MessageSlot({
   position,
@@ -37,59 +39,22 @@ function MessageSlot({
   entries: readonly MessageEntry[];
   store: MessageStore;
 }) {
-  const notifyShown = useMemo(
-    () => entries.filter((entry) => entry.type === 'notify' && entry.status === 'shown'),
-    [entries],
+  const folded = store.isFolded(position);
+  const notify = useMemo(() => entries.filter((entry) => entry.type === 'notify'), [entries]);
+  const notifyShown = useMemo(() => notify.filter((entry) => entry.status === 'shown'), [notify]);
+  const exitingNotify = useMemo(
+    () => notify.filter((entry) => entry.status === 'exiting'),
+    [notify],
   );
 
-  // The fold ENTERS when a slot crosses FOLD_THRESHOLD shown notify
-  // cards and STAYS through the whole descent — it only ends when the
-  // stack runs out (a folded slot never half-degrades back to a plain
-  // stack mid-descent).
-  const [folded, setFolded] = useState(() => notifyShown.length > FOLD_THRESHOLD);
-  useEffect(() => {
-    if (notifyShown.length > FOLD_THRESHOLD) {
-      setFolded(true);
-    } else if (notifyShown.length === 0) {
-      setFolded(false);
-    }
-  }, [notifyShown.length]);
-
-  // Freeze holders: while folded, every shown notify card holds one
-  // pause on its countdown (a frozen card never auto-dismisses). The
-  // LAST survivor is released — its timer resumes and the capsule
-  // turns into the countdown capsule. The held-id record keeps the
-  // freeze idempotent across re-renders, and the store's pause counter
-  // lets it coexist with the hover pause.
-  const heldIds = useRef(new Set<MessageId>());
-  useEffect(() => {
-    if (folded) {
-      if (notifyShown.length === 1) {
-        for (const id of heldIds.current) {
-          store.resume(id);
-        }
-        heldIds.current.clear();
-      } else {
-        for (const entry of notifyShown) {
-          if (!heldIds.current.has(entry.id)) {
-            heldIds.current.add(entry.id);
-            store.pause(entry.id);
-          }
-        }
-      }
-    }
-  }, [folded, notifyShown, store]);
-
-  // Release whatever is held when the slot unmounts.
-  useEffect(
-    () => () => {
-      for (const id of heldIds.current) {
-        store.resume(id);
-      }
-      heldIds.current.clear();
-    },
-    [store],
-  );
+  // The fold renders while the position holds any notify entry — the
+  // last card's exit window still renders under the fold. The DISPLAY
+  // is the newest shown card; once the last card starts its exit there
+  // is no shown card left, so the exiting card itself stays displayed.
+  const showFold = folded && notify.length > 0;
+  const displayed = showFold
+    ? (notifyShown[notifyShown.length - 1] ?? exitingNotify[exitingNotify.length - 1] ?? null)
+    : null;
 
   // The countdown capsule's live seconds: the last survivor's ms left,
   // refreshed at COUNTDOWN_TICK granularity.
@@ -106,33 +71,32 @@ function MessageSlot({
     return () => clearInterval(timer);
   }, [survivorId, store]);
 
-  const showFold = folded && notifyShown.length > 0;
-  const newest = showFold ? notifyShown[notifyShown.length - 1] : null;
-
   return (
     <div
       className={clsx('colox-message-viewport__slot', `colox-message-viewport__slot--${position}`)}
     >
-      {showFold && newest !== null ? (
+      {showFold && displayed !== null ? (
         <>
-          <RendererSlot entry={newest} store={store} />
-          <FoldCapsule
-            count={notifyShown.length}
-            seconds={survivorId !== null && leftMs !== null ? Math.ceil(leftMs / 1000) : null}
-            onClear={() => {
-              // dismiss the whole slot's shown notify — one ✕ empties
-              // the stack; each payload fires its onClose normally
-              for (const entry of notifyShown) {
-                store.dismiss(entry.id);
-              }
-            }}
-          />
-          {/* the backlog stops rendering; leaving cards keep their exit
-              animation and toast entries stay untouched */}
+          {/* The DISPLAY slot keeps a stable key: the card frame stays
+              put across pops (an in-place update with the incoming
+              words zooming in) and across the last card's exit (the
+              animation plays on the live node) — the fold never
+              remounts the visible card. */}
+          <RendererSlot key="fold-display" entry={displayed} store={store} />
+          {notifyShown.length > 0 && (
+            <FoldCapsule
+              count={notifyShown.length}
+              seconds={survivorId !== null && leftMs !== null ? Math.ceil(leftMs / 1000) : null}
+              onClear={() => store.clearSlot(position)}
+            />
+          )}
+          {/* the backlog stops rendering; toast entries and the card
+              already leaving (the last card's exit) render normally */}
           {entries
             .filter(
               (entry) =>
-                entry.id !== newest.id && (entry.type !== 'notify' || entry.status === 'exiting'),
+                entry.id !== displayed.id &&
+                (entry.type !== 'notify' || entry.status === 'exiting'),
             )
             .map((entry) => (
               <RendererSlot key={entry.id} entry={entry} store={store} />
@@ -158,7 +122,8 @@ function RendererSlot({ entry, store }: { entry: MessageEntry; store: MessageSto
  * The notify count capsule: reads the folded stack's tally and offers
  * one ✕ that dismisses everything in the slot. When the stack is down
  * to its last card, it switches to a countdown capsule (`--countdown`)
- * showing that card's remaining seconds.
+ * reading that card's remaining seconds — the same pill look, only the
+ * wording changes.
  */
 function FoldCapsule({
   count,
@@ -206,9 +171,10 @@ function FoldCapsule({
  * notify → the notify kind's item). One scope container therefore holds
  * toast and notify entries side by side, each in its own slot.
  *
- * A slot's notify entries fold once they pass FOLD_THRESHOLD (see
- * MessageSlot) — the viewport's pollution valve for notification
- * storms.
+ * A slot's notify entries fold once they pass FOLD_THRESHOLD (the store
+ * owns the fold — see MessageStore.reconcileFold) — the viewport's
+ * pollution valve for notification storms; folded closes pop in place,
+ * only the last card exits.
  *
  * `scope` defaults to `'root'` — the screen-wide container that the
  * no-scope `toast()`/`notify()` calls route into. The viewport's own

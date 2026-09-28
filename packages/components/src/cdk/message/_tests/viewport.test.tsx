@@ -91,10 +91,15 @@ describe('MessageViewport', () => {
       Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
     });
     const vp = screen.getByTestId('vp');
-    // closing the visible (newest) card promotes the next-newest
+    // closing the visible (newest) card pops IN PLACE: the popped card
+    // leaves instantly (no exit window, still exactly one card) and
+    // the promoted card lands with the zoom entrance on its words
     act(() => {
       fireEvent.click(vp.querySelector('.colox-notify__close')!);
     });
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+    expect(vp.querySelector('.colox-notify.colox-message--exiting')).toBeNull();
+    expect(vp.querySelector('.colox-notify__body--zoom')).not.toBeNull();
     expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('2');
     expect(vp.textContent).toContain('two');
     // closing again leaves the last card under a countdown capsule —
@@ -105,6 +110,35 @@ describe('MessageViewport', () => {
     expect(vp.querySelector('.colox-message-count--countdown')).not.toBeNull();
     expect(vp.querySelector('.colox-message-count__label')?.textContent).toMatch(/^\d+s$/);
     expect(vp.textContent).toContain('one');
+  });
+
+  it('the last card walks the exit animation — earlier pops never do', () => {
+    vi.useFakeTimers();
+    render(<MessageViewport scope="fold" data-testid="vp" />);
+    act(() => {
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
+    });
+    const vp = screen.getByTestId('vp');
+    // each pop re-queries: the visible card changes between re-renders
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    // down to the last card — closing it now plays the exit window
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    expect(vp.querySelector('.colox-notify.colox-message--exiting')).not.toBeNull();
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(0);
+    vi.useRealTimers();
   });
 
   it('the capsule ✕ dismisses the whole slot at once', () => {
@@ -119,8 +153,11 @@ describe('MessageViewport', () => {
     act(() => {
       fireEvent.click(vp.querySelector('.colox-message-count__clear')!);
     });
-    // the capsule leaves instantly — the cards finish their exit window
+    // the capsule leaves instantly; the invisible backlog never flashes
+    // (it cleared instantly) — only the visible card walks its exit
     expect(vp.querySelector('.colox-message-count')).toBeNull();
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+    expect(vp.querySelector('.colox-notify.colox-message--exiting')).not.toBeNull();
     act(() => {
       vi.advanceTimersByTime(200);
     });

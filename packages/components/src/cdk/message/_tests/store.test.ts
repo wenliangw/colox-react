@@ -186,6 +186,82 @@ describe('MessageStore', () => {
     vi.useRealTimers();
   });
 
+  it('the store folds a burst past the threshold and freezes the countdowns', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    expect(store.isFolded('top-right')).toBe(false);
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    expect(store.isFolded('top-right')).toBe(true);
+    // frozen: way past their durations, everything stays shown
+    vi.advanceTimersByTime(10_000);
+    expect(store.getSnapshot().every((entry) => entry.status === 'shown')).toBe(true);
+    // down to the last survivor — its countdown resumes
+    const [a, b, c] = store.getSnapshot();
+    store.dismiss(c.id);
+    store.dismiss(b.id);
+    const survivor = store.getSnapshot()[0];
+    expect(survivor.id).toBe(a.id);
+    expect(store.getRemaining(survivor.id)).not.toBeNull();
+    expect(store.isFolded('top-right')).toBe(true);
+    vi.advanceTimersByTime(3000);
+    expect(store.getSnapshot()[0].status).toBe('exiting');
+    vi.advanceTimersByTime(200);
+    expect(store.getSnapshot()).toHaveLength(0);
+    expect(store.isFolded('top-right')).toBe(false);
+    vi.useRealTimers();
+  });
+
+  it('a folded close pops the card instantly and promotes the next in place', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    const [a, b, c] = store.getSnapshot();
+    store.dismiss(c.id);
+    // popped the visible card: gone INSTANTLY (not exiting), the next
+    // card stays put and its content version bumps for the zoom
+    let snapshot = store.getSnapshot();
+    expect(snapshot).toHaveLength(2);
+    expect(snapshot.every((entry) => entry.status === 'shown')).toBe(true);
+    expect(snapshot[1].id).toBe(b.id);
+    expect(snapshot[1].contentVersion).toBe(1);
+    // the remaining fold still freezes; the other cards show intact
+    vi.advanceTimersByTime(10_000);
+    expect(store.getSnapshot().every((entry) => entry.status === 'shown')).toBe(true);
+    // popping a BACKLOG card directly (not the visible one) removes it
+    // instantly without bumping the visible card
+    store.dismiss(a.id);
+    snapshot = store.getSnapshot();
+    expect(snapshot).toHaveLength(1);
+    expect(snapshot[0].id).toBe(b.id);
+    expect(snapshot[0].contentVersion).toBe(1);
+    expect(store.getSnapshot()[0].status).toBe('shown');
+    vi.useRealTimers();
+  });
+
+  it('clearSlot clears the invisible backlog instantly and exits the visible card', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    const [a, b, c] = store.getSnapshot();
+    store.clearSlot('top-right');
+    // only the visible card remains, walking its exit window
+    const snapshot = store.getSnapshot();
+    expect(snapshot).toHaveLength(1);
+    expect(snapshot[0].id).toBe(c.id);
+    expect(snapshot[0].status).toBe('exiting');
+    expect([a.id, b.id].every((id) => !snapshot.some((entry) => entry.id === id))).toBe(true);
+    vi.advanceTimersByTime(200);
+    expect(store.getSnapshot()).toHaveLength(0);
+    expect(store.isFolded('top-right')).toBe(false);
+    vi.useRealTimers();
+  });
+
   it('emits on mutation only (snapshot identity)', () => {
     const store = createMessageStore();
     const first = store.getSnapshot();

@@ -1,5 +1,6 @@
 import { createId } from '@colox/cdk/utils/id';
 import { DEFAULT_DURATION, DEFAULT_EXIT } from '../constants/defaults';
+import { FOLD_THRESHOLD, POSITIONS } from '../constants/viewport';
 import type {
   MessageAddOptions,
   MessageEntry,
@@ -7,6 +8,7 @@ import type {
   MessageMode,
   MessageOptions,
   MessagePalette,
+  MessagePosition,
   MessageVariant,
 } from '../types';
 
@@ -61,6 +63,21 @@ export class MessageStore {
    * the last holder releases.
    */
   private pauseCount = new Map<MessageId, number>();
+  /**
+   * Positions currently under the notify fold. The fold is the store's
+   * bookkeeping (reconciled on every commit): a position ENTERS when
+   * its shown notify count passes FOLD_THRESHOLD and HOLDS through the
+   * whole descent (4 → 3 → 2 → 1), draining only when the position
+   * holds no notify entries at all — the last card's exit window still
+   * renders under the fold.
+   */
+  private foldedPositions = new Set<MessagePosition>();
+  /**
+   * The ids whose countdown holds the store-side fold freeze (one
+   * holder per folded card) — released when the fold descends to its
+   * last survivor.
+   */
+  private foldHeldIds = new Set<MessageId>();
 
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
@@ -72,8 +89,65 @@ export class MessageStore {
   getSnapshot = (): readonly MessageEntry[] => this.entries;
 
   private emit(): void {
+    this.reconcileFold();
     for (const listener of this.listeners) {
       listener();
+    }
+  }
+
+  /** Whether a position is under the notify fold (see reconcileFold). */
+  isFolded(position: MessagePosition): boolean {
+    return this.foldedPositions.has(position);
+  }
+
+  /**
+   * Keeps the fold bookkeeping in step with the entries — runs on
+   * every commit, BEFORE the listeners: positions enter/hold/leave the
+   * fold, and the frozen timers follow. While folded with more than
+   * one shown card, every shown card holds one freeze (its countdown
+   * stops — a burst never deletes itself behind the user's back); the
+   * LAST survivor is released so its timer resumes under the countdown
+   * capsule.
+   */
+  private reconcileFold(): void {
+    const notifyByPosition = new Map<MessagePosition, MessageEntry[]>();
+    for (const entry of this.entries) {
+      // entries without a position never render in a slot — no fold
+      if (entry.type !== 'notify' || entry.position === undefined) {
+        continue;
+      }
+      const list = notifyByPosition.get(entry.position) ?? [];
+      list.push(entry);
+      notifyByPosition.set(entry.position, list);
+    }
+    for (const position of POSITIONS) {
+      const notify = notifyByPosition.get(position) ?? [];
+      if (notify.length === 0) {
+        this.foldedPositions.delete(position);
+        continue;
+      }
+      const shown = notify.filter((entry) => entry.status === 'shown');
+      if (shown.length > FOLD_THRESHOLD) {
+        this.foldedPositions.add(position);
+      }
+      if (!this.foldedPositions.has(position)) {
+        continue;
+      }
+      if (shown.length === 1) {
+        // the last survivor — release the freeze so its countdown
+        // resumes under the countdown capsule
+        for (const id of this.foldHeldIds) {
+          this.resume(id);
+        }
+        this.foldHeldIds.clear();
+      } else {
+        for (const entry of shown) {
+          if (!this.foldHeldIds.has(entry.id)) {
+            this.foldHeldIds.add(entry.id);
+            this.pause(entry.id);
+          }
+        }
+      }
     }
   }
 
@@ -119,10 +193,13 @@ export class MessageStore {
       status: 'shown',
     };
     this.entries = [...this.entries, entry];
-    this.emit();
+    // the countdown starts BEFORE the commit: the fold reconciliation
+    // runs inside emit — a freeze must find the entry's timer live,
+    // or a new card would slip into a folded slot unfrozen
     if (entry.duration > 0) {
       this.startCountdown(id, entry.duration);
     }
+    this.emit();
     return id;
   }
 
@@ -221,19 +298,119 @@ export class MessageStore {
     this.emit();
   }
 
-  /** Dismisses one message (by id or key) into its exit window. */
+  /**
+   * Dismisses one message (by id or key). In a folded slot, closing a
+   * card with others behind it POPS it instantly — the fold slot
+   * updates in place, no exit window (only the last card of a fold
+   * walks the exit animation; see popInstant).
+   */
   dismiss(key: MessageId | string): void {
     const entry = this.entries.find((item) => item.id === key || item.key === key);
     if (!entry || entry.status === 'exiting') {
       return;
+    }
+    if (
+      entry.type === 'notify' &&
+      entry.position !== undefined &&
+      this.foldedPositions.has(entry.position)
+    ) {
+      const slotShown = this.entries.filter(
+        (item) =>
+          item.type === 'notify' && item.status === 'shown' && item.position === entry.position,
+      );
+      if (slotShown.length > 1) {
+        this.popInstant(entry);
+        return;
+      }
     }
     this.clearCountdown(entry.id);
     this.remaining.delete(entry.id);
     this.transitionToExiting(entry.id);
   }
 
+  /**
+   * The fold pop: closes one folded card INSTANTLY — no exit window,
+   * no exit animation (that belongs to the last card alone). When the
+   * popped card was the VISIBLE (newest) one, the next-newest card
+   * promotes into the display slot: its `contentVersion` bumps so the
+   * card frame stays put and its words re-mount with the zoom entrance
+   * — the same in-place update language as a single replacement.
+   */
+  private popInstant(entry: MessageEntry): void {
+    this.clearCountdown(entry.id);
+    this.remaining.delete(entry.id);
+    this.foldHeldIds.delete(entry.id);
+    // the promoted card: the next-newest shown notify of the same
+    // slot, when the popped one WAS the visible card
+    let promotedId: MessageId | undefined;
+    const slotShown = this.entries.filter(
+      (item) =>
+        item.type === 'notify' && item.status === 'shown' && item.position === entry.position,
+    );
+    if (slotShown[slotShown.length - 1]?.id === entry.id) {
+      promotedId = slotShown[slotShown.length - 2]?.id;
+    }
+    this.entries = this.entries
+      .filter((item) => item.id !== entry.id)
+      .map((item) =>
+        item.id === promotedId ? { ...item, contentVersion: item.contentVersion + 1 } : item,
+      );
+    this.emit();
+    // the ended payload fires AFTER the commit (re-entrancy discipline)
+    this.notifyClose(entry);
+  }
+
+  /**
+   * The count capsule's clear-all ✕: the invisible backlog clears
+   * instantly — a never-seen card must not flash an exit animation —
+   * and the visible newest card walks the exit animation as the slot's
+   * last card, the only one the user can see leave. Every payload
+   * fires its onClose once, after the commit.
+   */
+  clearSlot(position: MessagePosition): void {
+    const slotShown = this.entries.filter(
+      (item) => item.type === 'notify' && item.status === 'shown' && item.position === position,
+    );
+    if (slotShown.length === 0) {
+      return;
+    }
+    const newest = slotShown[slotShown.length - 1];
+    if (slotShown.length === 1) {
+      this.clearCountdown(newest.id);
+      this.remaining.delete(newest.id);
+      this.transitionToExiting(newest.id);
+      return;
+    }
+    const backlog = slotShown.slice(0, -1);
+    const backlogIds = new Set(backlog.map((item) => item.id));
+    this.clearCountdown(newest.id);
+    this.remaining.delete(newest.id);
+    for (const item of backlog) {
+      this.clearCountdown(item.id);
+      this.remaining.delete(item.id);
+      this.foldHeldIds.delete(item.id);
+    }
+    // commit first: the backlog is gone instantly, the newest exits
+    this.entries = this.entries
+      .filter((item) => !backlogIds.has(item.id))
+      .map((item) => (item.id === newest.id ? { ...item, status: 'exiting' } : item));
+    this.emit();
+    this.scheduleRemovals();
+    // then fire, per payload — AFTER the commit (re-entrancy discipline)
+    for (const item of backlog) {
+      this.notifyClose(item);
+    }
+    this.notifyClose(newest);
+  }
+
   /** Dismisses every message into its exit window. */
   dismissAll(): void {
+    // folded notify slots clear through the fold discipline: the
+    // invisible backlog vanishes instantly, only the visible newest
+    // card walks the exit animation
+    for (const position of [...this.foldedPositions]) {
+      this.clearSlot(position);
+    }
     const ending: MessageEntry[] = [];
     for (const entry of this.entries) {
       if (entry.status === 'shown') {
