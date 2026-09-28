@@ -179,6 +179,12 @@ export class MessageStore {
       }
     }
     const resolved = resolveMessageDefaults(options);
+    // a card arriving into an ACTIVE fold lands straight in the display
+    // slot — for the viewer that is an update, not an arrival: bump the
+    // version so the words re-mount with the zoom entrance (the same
+    // language as a pop promotion and a single replacement)
+    const revealsFoldDisplay =
+      options.position !== undefined && this.foldedPositions.has(options.position);
     const entry: MessageEntry = {
       ...options,
       id,
@@ -189,7 +195,7 @@ export class MessageStore {
       showIcon: resolved.showIcon,
       closeable: resolved.closeable,
       duration: options.duration ?? DEFAULT_DURATION,
-      contentVersion: 0,
+      contentVersion: revealsFoldDisplay ? 1 : 0,
       status: 'shown',
     };
     this.entries = [...this.entries, entry];

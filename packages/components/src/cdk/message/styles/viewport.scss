@@ -102,6 +102,9 @@
   font-family: var(--colox-font-sans);
   font-size: var(--colox-font-size-xs);
   line-height: 1;
+  // the capsule hosts the ✕ button — like the cards, it must
+  // re-enable pointer events the viewport container drops
+  pointer-events: auto;
 }
 
 .colox-message-count__label {

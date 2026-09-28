@@ -71,6 +71,31 @@ describe('MessageViewport', () => {
     expect(vp.querySelector('.colox-message-deck')).toBeNull();
   });
 
+  it('a new arrival during a fold reveals with the zoom entrance', () => {
+    render(<MessageViewport scope="fold" data-testid="vp" />);
+    act(() => {
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
+    });
+    const vp = screen.getByTestId('vp');
+    // the card that BIRTHS the fold is a plain arrival: the capsule and
+    // the card appear together, the frame plays its enter animation
+    expect(vp.querySelector('.colox-notify__body--zoom')).toBeNull();
+    expect(vp.textContent).toContain('three');
+    // a NEW card arriving into the active fold is a reveal — the frame
+    // stays, the words re-mount with the zoom entrance
+    act(() => {
+      Notify.info({ title: 'four', content: 'fourth' }, { scope: 'fold' });
+    });
+    expect(vp.textContent).toContain('four');
+    expect(vp.textContent).not.toContain('three');
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('4');
+    const body = vp.querySelector('.colox-notify__body');
+    expect(body?.classList.contains('colox-notify__body--zoom')).toBe(true);
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+  });
+
   it('does not fold two or fewer notify cards', () => {
     render(<MessageViewport scope="fold" data-testid="vp" />);
     act(() => {

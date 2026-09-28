@@ -262,6 +262,64 @@ describe('MessageStore', () => {
     vi.useRealTimers();
   });
 
+  it('a card arriving into an active fold lands with a zoom bump', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    // the third card BIRTHS the fold — its reveal coincides with the
+    // capsule's first appearance: a plain arrival, no zoom bump
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    let snapshot = store.getSnapshot();
+    expect(snapshot[2].contentVersion).toBe(0);
+    // a NEW arrival into the already-folded slot lands in the display
+    // slot — a reveal, not an arrival: it bumps so the words zoom
+    store.add({ type: 'notify', content: 'd', position: 'top-right', duration: 3000 });
+    snapshot = store.getSnapshot();
+    expect(snapshot.map((entry) => entry.content)).toEqual(['a', 'b', 'c', 'd']);
+    expect(snapshot[3].contentVersion).toBe(1);
+    // arrivals keep bumping for the slot's lifetime (still folded)
+    store.add({ type: 'notify', content: 'e', position: 'top-right', duration: 3000 });
+    snapshot = store.getSnapshot();
+    expect(snapshot[4].contentVersion).toBe(1);
+    expect(snapshot[0].contentVersion).toBe(0);
+    vi.useRealTimers();
+  });
+
+  it('an arrival during the fold descent (count == 2 or tapped-out) still zooms', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    // pop down to two shown — the fold holds through the descent
+    const c = store.getSnapshot()[2];
+    store.dismiss(c.id);
+    // a fresh arrival while the fold holds: the display reveals it
+    const d = store.add({ type: 'notify', content: 'd', position: 'top-right', duration: 3000 });
+    const snapshot = store.getSnapshot();
+    expect(snapshot.find((entry) => entry.id === d)?.contentVersion).toBe(1);
+    expect(store.isFolded('top-right')).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it('arrivals outside a fold never bump', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'notify', content: 'a', position: 'top-right', duration: 3000 });
+    store.add({ type: 'notify', content: 'b', position: 'top-right', duration: 3000 });
+    // two shown — below the fold: plain arrivals
+    store.add({ type: 'notify', content: 'c', position: 'top-right', duration: 3000 });
+    expect(store.getSnapshot().every((entry) => entry.contentVersion === 0)).toBe(true);
+    // ...and a 4th card arriving after the fold DRAINED (post window,
+    // everything gone) is likewise a plain arrival — position empty, no fold
+    store.clearSlot('top-right');
+    vi.advanceTimersByTime(200);
+    store.add({ type: 'notify', content: 'z', position: 'top-right', duration: 3000 });
+    expect(store.getSnapshot()[0].contentVersion).toBe(0);
+    vi.useRealTimers();
+  });
+
   it('emits on mutation only (snapshot identity)', () => {
     const store = createMessageStore();
     const first = store.getSnapshot();
