@@ -55,6 +55,12 @@ export class MessageStore {
   private remaining = new Map<MessageId, number>();
   /** id → the countdown start timestamp (pause bookkeeping). */
   private startedAt = new Map<MessageId, number>();
+  /**
+   * id → how many pause holders sit on the countdown (the hover pause
+   * and the fold freeze can stack). The countdown only restarts when
+   * the last holder releases.
+   */
+  private pauseCount = new Map<MessageId, number>();
 
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
@@ -249,13 +255,24 @@ export class MessageStore {
     }
   }
 
-  /** Pauses the countdown (hover): remembers the ms left. */
+  /**
+   * Halts the countdown (hover, fold freeze): remembers the ms left.
+   * Pauses stack — each holder increments the count, and only the
+   * final release restarts the timer, so the hover pause and the
+   * viewport's fold freeze can coexist without clobbering each other.
+   */
   pause(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
     }
+    const count = this.pauseCount.get(id) ?? 0;
+    if (count > 0) {
+      this.pauseCount.set(id, count + 1);
+      return;
+    }
     const timer = this.timers.get(id);
+    this.pauseCount.set(id, 1);
     if (timer === undefined) {
       return;
     }
@@ -266,18 +283,51 @@ export class MessageStore {
     this.startedAt.delete(id);
   }
 
-  /** Resumes the countdown from the remaining ms (hover leaves). */
+  /**
+   * Releases one pause holder (hover leaves, fold releases). The
+   * countdown restarts from the remaining ms only when the LAST
+   * holder releases.
+   */
   resume(id: MessageId): void {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || entry.status !== 'shown' || entry.duration === 0) {
       return;
     }
+    const count = this.pauseCount.get(id) ?? 0;
+    if (count === 0) {
+      return;
+    }
+    const next = count - 1;
+    if (next > 0) {
+      this.pauseCount.set(id, next);
+      return;
+    }
+    this.pauseCount.delete(id);
     const left = this.remaining.get(id);
     if (left === undefined) {
       return;
     }
     this.remaining.delete(id);
     this.startCountdown(id, left);
+  }
+
+  /**
+   * The ms left on a shown entry's countdown — counting down or
+   * halted (hovered / folded). `null` when it has no countdown
+   * (sticky duration 0, or already leaving).
+   */
+  getRemaining(id: MessageId): number | null {
+    const entry = this.entries.find((item) => item.id === id);
+    if (!entry || entry.status !== 'shown' || entry.duration === 0) {
+      return null;
+    }
+    const timer = this.timers.get(id);
+    if (timer !== undefined) {
+      const started = this.startedAt.get(id) ?? Date.now();
+      return Math.max(0, entry.duration - (Date.now() - started));
+    }
+    const left = this.remaining.get(id);
+    return left ?? null;
   }
 
   private startCountdown(id: MessageId, ms: number): void {
@@ -292,6 +342,9 @@ export class MessageStore {
       clearTimeout(timer);
       this.timers.delete(id);
     }
+    // the countdown is over — stale pause holders end with it
+    this.pauseCount.delete(id);
+    this.startedAt.delete(id);
   }
 
   /** Moves one shown message to exiting and schedules its removal. */

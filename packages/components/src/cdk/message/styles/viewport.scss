@@ -76,135 +76,57 @@
   pointer-events: auto;
 }
 
-// ——— notify deck —————————————————————————————————————————————
-// A slot holding more than DECK_THRESHOLD notify cards collapses into
-// a deck: the newest card fully visible and holding the pile's
-// footprint (in-flow), the two behind it rendered IN FULL and hanging
-// above the front — each shifted up by index × --colox-spacing-1 (4px)
-// with a descending z-index so only its top edge ladders out like the
-// next card in a deck — and the rest folded into the "+N" count chip.
-// The pile's height stays card + 2 × 4px no matter how many cards the
-// slot holds. Clicking the deck surface (or the count chip) expands it
-// into the full newest-first stack; the collapse chip folds it back.
-// The deck's cross-axis alignment (and the peek bands' justification)
-// follows the slot it lives in: a left slot left-aligns, a center slot
-// centers, a right slot right-aligns.
+// ——— notify fold ——————————————————————————————————————————————
+// A slot holding MORE than FOLD_THRESHOLD notify cards folds into the
+// newest card plus one count capsule: the tally of the folded stack.
+// While folded the cards' auto-dismiss countdowns freeze — the capsule
+// reads the paused stack, its ✕ dismisses the whole slot at once, and
+// closing the visible card pops the stack (LIFO) one by one. When the
+// stack is down to its last card, the capsule turns into a countdown
+// capsule (--countdown) showing that card's remaining seconds, and the
+// card resumes its own timer. The pill keeps the message family's
+// muted-surface, full-radius chip look.
 
-.colox-message-deck {
-  display: flex;
-  flex-direction: column;
-  // relative anchor for the absolutely positioned peeks; isolation
-  // rings the pile's z-index ladder inside the deck so it can never
-  // interleave with same-slot toast cards
-  position: relative;
-  isolation: isolate;
-}
-
-.colox-message-viewport__slot--top-left .colox-message-deck,
-.colox-message-viewport__slot--bottom-left .colox-message-deck {
-  align-items: flex-start;
-}
-
-.colox-message-viewport__slot--top-center .colox-message-deck,
-.colox-message-viewport__slot--bottom-center .colox-message-deck {
-  align-items: center;
-}
-
-.colox-message-viewport__slot--top-right .colox-message-deck,
-.colox-message-viewport__slot--bottom-right .colox-message-deck {
-  align-items: flex-end;
-}
-
-// The front card's wrapper: the only in-flow pile member besides the
-// chips — it sizes the deck and its inline z-index (peeks + 1) keeps
-// the newest card covering every band behind it.
-.colox-message-deck__front {
-  position: relative;
-}
-
-// One peeked card behind the front: a FULL render absolutely anchored
-// to the deck's top edge and shifted up by its index (inline
-// translateY: -4px then -8px against the spacing-1 token). Its inline
-// z-index descends (peeks.length - index), so the front covers the
-// nearest band, which covers the farthest. The wrapper spans the
-// deck's width and justifies the card inside like the slot aligns the
-// pile (left slots: flex-start, center: center, right: flex-end) —
-// every band reveals the full top edge of its card, not a corner.
-// Pure decoration: aria-hidden and pointer-transparent; no
-// translucency — the covered/full render + ladder geometry alone
-// signal "behind".
-.colox-message-deck__peek-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  pointer-events: none;
-  transition: transform var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
-}
-
-.colox-message-viewport__slot--top-left .colox-message-deck__peek-card,
-.colox-message-viewport__slot--bottom-left .colox-message-deck__peek-card {
-  justify-content: flex-start;
-}
-
-.colox-message-viewport__slot--top-center .colox-message-deck__peek-card,
-.colox-message-viewport__slot--bottom-center .colox-message-deck__peek-card {
-  justify-content: center;
-}
-
-.colox-message-viewport__slot--top-right .colox-message-deck__peek-card,
-.colox-message-viewport__slot--bottom-right .colox-message-deck__peek-card {
-  justify-content: flex-end;
-}
-
-// The count chip: a compact muted pill reading "+N" — the folded cards.
-// Clicking expands the deck. Select's overflow tag is the family
-// precedent for the pill shape.
-.colox-message-deck__count {
+.colox-message-count {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: var(--colox-size-6);
-  height: var(--colox-size-5);
+  gap: var(--colox-spacing-1);
   margin-top: var(--colox-spacing-2);
-  padding-inline: var(--colox-spacing-2);
-  border: none;
+  padding-block: var(--colox-spacing-1);
+  padding-inline-start: var(--colox-spacing-3);
+  padding-inline-end: var(--colox-spacing-1);
   border-radius: var(--colox-radius-full);
   background-color: var(--colox-color-bg-muted);
   color: var(--colox-color-text-muted);
   font-family: var(--colox-font-sans);
   font-size: var(--colox-font-size-xs);
   line-height: 1;
-  cursor: pointer;
-  transition: background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
-
-  &:hover {
-    background-color: var(--colox-color-gray-subtle);
-    color: var(--colox-color-text-default);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--colox-color-brand-muted);
-    outline-offset: 2px;
-  }
 }
 
-// The collapse chip: the expanded deck's fold-back affordance — a small
-// circular chevron-up button.
-.colox-message-deck__collapse {
+.colox-message-count__label {
+  min-width: var(--colox-size-4);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+// The countdown capsule keeps its shape; only the semantics change —
+// the number is now the surviving card's seconds.
+.colox-message-count--countdown .colox-message-count__label {
+  font-weight: var(--colox-font-weight-semibold);
+  color: var(--colox-color-text-default);
+}
+
+.colox-message-count__clear {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--colox-size-6);
-  height: var(--colox-size-6);
-  margin-top: var(--colox-spacing-2);
+  width: var(--colox-size-5);
+  height: var(--colox-size-5);
   padding: 0;
   border: none;
   border-radius: var(--colox-radius-full);
-  background-color: var(--colox-color-bg-muted);
-  color: var(--colox-color-text-muted);
+  background: none;
+  color: inherit;
   cursor: pointer;
   transition: background-color var(--colox-motion-duration-fast) var(--colox-motion-easing-out);
 
@@ -216,5 +138,10 @@
   &:focus-visible {
     outline: 2px solid var(--colox-color-brand-muted);
     outline-offset: 2px;
+  }
+
+  svg {
+    width: var(--colox-size-3);
+    height: var(--colox-size-3);
   }
 }

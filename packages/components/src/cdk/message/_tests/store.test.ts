@@ -145,6 +145,47 @@ describe('MessageStore', () => {
     expect(store.getSnapshot()[0].status).toBe('exiting');
   });
 
+  it('pause holders stack — the countdown restarts only on the last resume', () => {
+    const store = createMessageStore();
+    store.add({ type: 'toast', content: 'hi' });
+    const id = store.getSnapshot()[0].id;
+    // hover pause + fold freeze hold together
+    store.pause(id);
+    store.pause(id);
+    vi.advanceTimersByTime(30_000);
+    expect(store.getSnapshot()[0].status).toBe('shown');
+    // one holder releases — still frozen
+    store.resume(id);
+    vi.advanceTimersByTime(30_000);
+    expect(store.getSnapshot()[0].status).toBe('shown');
+    // the last holder releases — the countdown continues from the rest
+    store.resume(id);
+    vi.advanceTimersByTime(3000);
+    expect(store.getSnapshot()[0].status).toBe('exiting');
+  });
+
+  it('getRemaining reports the ms left — counting and frozen', () => {
+    vi.useFakeTimers();
+    const store = createMessageStore();
+    store.add({ type: 'toast', content: 'hi', duration: 5000 });
+    const id = store.getSnapshot()[0].id;
+    vi.advanceTimersByTime(1000);
+    const counting = store.getRemaining(id);
+    expect(counting).not.toBeNull();
+    expect(counting!).toBeLessThanOrEqual(4000);
+    expect(counting!).toBeGreaterThan(3900);
+    store.pause(id);
+    const frozen = store.getRemaining(id);
+    expect(frozen).toBe(counting);
+    vi.advanceTimersByTime(10_000);
+    // frozen: unchanged
+    expect(store.getRemaining(id)).toBe(frozen);
+    // sticky entries have no countdown
+    store.add({ type: 'toast', content: 'sticky', duration: 0 });
+    expect(store.getRemaining(store.getSnapshot()[1].id)).toBeNull();
+    vi.useRealTimers();
+  });
+
   it('emits on mutation only (snapshot identity)', () => {
     const store = createMessageStore();
     const first = store.getSnapshot();

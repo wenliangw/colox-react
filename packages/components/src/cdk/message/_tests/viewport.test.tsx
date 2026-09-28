@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MessageViewport, messageFactory } from '../index';
 import { Toast } from '../../../toast';
@@ -52,73 +52,116 @@ describe('MessageViewport', () => {
     expect(messageFactory.get('gone')).toBeUndefined();
   });
 
-  it('collapses more than three notify cards into a deck with a +N chip', () => {
-    render(<MessageViewport scope="deck" data-testid="vp" />);
+  it('folds more than two notify cards into the newest card + a count capsule', () => {
+    render(<MessageViewport scope="fold" data-testid="vp" />);
     act(() => {
-      Notify.info({ title: 'one', content: 'first' }, { scope: 'deck' });
-      Notify.info({ title: 'two', content: 'second' }, { scope: 'deck' });
-      Notify.info({ title: 'three', content: 'third' }, { scope: 'deck' });
-      Notify.info({ title: 'four', content: 'fourth' }, { scope: 'deck' });
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
     });
     const vp = screen.getByTestId('vp');
-    // deck collapsed: the +N chip folds the cards beyond the peek
-    expect(vp.querySelector('.colox-message-deck')).not.toBeNull();
-    expect(vp.querySelector('.colox-message-deck__count')?.textContent).toBe('+1');
-    // the two cards behind the front hang above it as FULL renders:
-    // descending z-index ladder (front on top), each shifted up by
-    // index × spacing-1 (4px)
-    const front = vp.querySelector('.colox-message-deck__front');
-    expect(front).not.toBeNull();
-    expect((front as HTMLElement).style.zIndex).toBe('3');
-    expect(front!.textContent).toContain('four');
-    const peeks = vp.querySelectorAll('.colox-message-deck__peek-card');
-    expect(peeks).toHaveLength(2);
-    expect(peeks[0].getAttribute('aria-hidden')).toBe('true');
-    expect((peeks[0] as HTMLElement).style.zIndex).toBe('2');
-    expect((peeks[1] as HTMLElement).style.zIndex).toBe('1');
-    expect((peeks[0] as HTMLElement).style.transform).toBe(
-      'translateY(calc(-1 * 1 * var(--colox-spacing-1)))',
-    );
-    expect((peeks[1] as HTMLElement).style.transform).toBe(
-      'translateY(calc(-1 * 2 * var(--colox-spacing-1)))',
-    );
-    expect(peeks[0].textContent).toContain('three');
-    expect(peeks[1].textContent).toContain('two');
-    // not expanded yet — no collapse chip
-    expect(vp.querySelector('.colox-message-deck__collapse')).toBeNull();
-  });
-
-  it('does not deck three or fewer notify cards', () => {
-    render(<MessageViewport scope="deck" data-testid="vp" />);
-    act(() => {
-      Notify.info({ title: 'one', content: 'first' }, { scope: 'deck' });
-      Notify.info({ title: 'two', content: 'second' }, { scope: 'deck' });
-      Notify.info({ title: 'three', content: 'third' }, { scope: 'deck' });
-    });
-    const vp = screen.getByTestId('vp');
+    // folded: one count capsule reading the tally, its ✕ for clear-all
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('3');
+    expect(vp.querySelector('.colox-message-count__clear')).not.toBeNull();
+    // only the newest card renders — the backlog folded away
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+    expect(vp.textContent).toContain('three');
+    expect(vp.textContent).not.toContain('two');
+    // the deck markup is gone — the fold replaced it
     expect(vp.querySelector('.colox-message-deck')).toBeNull();
   });
 
-  it('expands the deck on count-chip click and collapses on the collapse chip', () => {
-    render(<MessageViewport scope="deck" data-testid="vp" />);
+  it('does not fold two or fewer notify cards', () => {
+    render(<MessageViewport scope="fold" data-testid="vp" />);
     act(() => {
-      Notify.info({ title: 'one', content: 'first' }, { scope: 'deck' });
-      Notify.info({ title: 'two', content: 'second' }, { scope: 'deck' });
-      Notify.info({ title: 'three', content: 'third' }, { scope: 'deck' });
-      Notify.info({ title: 'four', content: 'fourth' }, { scope: 'deck' });
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
     });
     const vp = screen.getByTestId('vp');
-    const count = vp.querySelector('.colox-message-deck__count');
-    expect(count).not.toBeNull();
+    expect(vp.querySelector('.colox-message-count')).toBeNull();
+    // both cards render as a plain stack
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(2);
+  });
+
+  it('closing the visible card pops the stack LIFO into a countdown capsule', () => {
+    render(<MessageViewport scope="fold" data-testid="vp" />);
     act(() => {
-      fireEvent.click(count!);
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
     });
-    // expanded: the collapse chip appears, the count chip is gone
-    expect(vp.querySelector('.colox-message-deck__collapse')).not.toBeNull();
-    expect(vp.querySelector('.colox-message-deck__count')).toBeNull();
+    const vp = screen.getByTestId('vp');
+    // closing the visible (newest) card promotes the next-newest
     act(() => {
-      fireEvent.click(vp.querySelector('.colox-message-deck__collapse')!);
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
     });
-    expect(vp.querySelector('.colox-message-deck__count')).not.toBeNull();
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('2');
+    expect(vp.textContent).toContain('two');
+    // closing again leaves the last card under a countdown capsule —
+    // the capsule now reads its seconds, not the tally
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    expect(vp.querySelector('.colox-message-count--countdown')).not.toBeNull();
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toMatch(/^\d+s$/);
+    expect(vp.textContent).toContain('one');
+  });
+
+  it('the capsule ✕ dismisses the whole slot at once', () => {
+    vi.useFakeTimers();
+    render(<MessageViewport scope="fold" data-testid="vp" />);
+    act(() => {
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
+    });
+    const vp = screen.getByTestId('vp');
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-message-count__clear')!);
+    });
+    // the capsule leaves instantly — the cards finish their exit window
+    expect(vp.querySelector('.colox-message-count')).toBeNull();
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(0);
+    vi.useRealTimers();
+  });
+
+  it('freezes the folded countdowns and resumes the last survivor', () => {
+    vi.useFakeTimers();
+    render(<MessageViewport scope="fold" data-testid="vp" />);
+    act(() => {
+      Notify.info({ title: 'one', content: 'first' }, { scope: 'fold' });
+      Notify.info({ title: 'two', content: 'second' }, { scope: 'fold' });
+      Notify.info({ title: 'three', content: 'third' }, { scope: 'fold' });
+    });
+    const vp = screen.getByTestId('vp');
+    // way past their durations, the folded cards stay — frozen
+    act(() => {
+      vi.advanceTimersByTime(10_000);
+    });
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toBe('3');
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(1);
+
+    // pop to the last survivor — its countdown resumes, the capsule
+    // becomes a countdown capsule (each click re-queries: the visible
+    // card changes between re-renders)
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    act(() => {
+      fireEvent.click(vp.querySelector('.colox-notify__close')!);
+    });
+    expect(vp.querySelector('.colox-message-count--countdown')).not.toBeNull();
+    expect(vp.querySelector('.colox-message-count__label')?.textContent).toMatch(/^\d+s$/);
+
+    // the survivor auto-dismisses at the end of its countdown
+    act(() => {
+      vi.advanceTimersByTime(3_500);
+    });
+    expect(vp.querySelectorAll('.colox-notify')).toHaveLength(0);
+    expect(vp.querySelector('.colox-message-count')).toBeNull();
+    vi.useRealTimers();
   });
 });

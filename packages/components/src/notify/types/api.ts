@@ -42,8 +42,9 @@ export interface NotifyOptions {
   /** Which slot inside the container; defaults to `top-right`. */
   position?: MessagePosition;
   /**
-   * How the slot fills; defaults to `'stack'` (the viewport decks a
-   * burst). Pass `'single'` to replace in place instead.
+   * How the slot fills; defaults to `'stack'` (the viewport folds a
+   * burst past two into the newest card + a count capsule). Pass
+   * `'single'` to replace in place instead.
    */
   strategy?: MessageStrategy;
   /**
