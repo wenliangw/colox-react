@@ -57,8 +57,8 @@ update 与替换同款（用户拍板「替换前也直接进行 update，然后
   整体退役，见下条））、`MessageAddOptions`（= MessageOptions + 必填
   `type`）、`MessageRenderer`/`MessageRendererProps`（渲染器契约：
   entry + store）、
-  `MessageViewportProps`（div 元素 props + `scope?` + `positioning?:
-'fixed'|'absolute'`，默认 root/fixed）。
+  `MessageViewportProps`（div 元素 props + `scope?` + `asChild?`，
+  默认 root；无 asChild = 渲染自己的屏幕固定层）。
 
 - **`store.ts`**：`createMessageStore()` 工厂 + `MessageStore` 类——队列 +
   shown→exiting→removed 状态机 + duration 计时 + hover pause/resume
@@ -180,7 +180,9 @@ absolute`、data-scope。**notify 折叠在 MessageSlot 渲染**：fold 记账�
   一钟、到期路由 dismiss。**未来 CountDown 组件复用此核**——hook 只包
   订阅与 tick，计时机制不重写。（纯 TS 装置归 utils 不冒充 hook。）
 
-- **styles/**：viewport.scss（容器 fixed/absolute + 六槽绝对定位 +
+- **styles/**：viewport.scss（两模式：`--fixed` 屏幕固定层（inset:0 +
+  pointer drop + z-overlay）/ `--content` 并入消费者元素的 relative 锚点
+  （asChild 用）；六槽绝对定位 + 槽层 pointer-events none 自让位 +
   notify 折叠计数胶囊/倒计时胶囊/清空✕）、box.scss（palette→私有变量映射 +
   variant 面料 + 图标色）、animation.scss（colox-toast-enter/exit +
   colox-notify-enter/exit keyframes + **`colox-message-zoom-in` zoom
@@ -245,7 +247,9 @@ notify、package.json 加 `./notify` 子路径（modal 后 popover 前）。
 ## 边界
 
 - **scope 路由**：无 scope = root（屏幕宽 fixed 容器）；`{ scope }` 路由进
-  命名容器；`positioning="absolute"` 钉在最近定位祖先（panel/card 内）。
+  命名容器；内容锚定写 `<MessageViewport scope="x" asChild>`——锚点类并入
+  你的元素（零 wrapper div，不依赖父级 position: relative；`positioning="absolute"`
+  依赖最近定位祖先的脆弱约定已退役）。
 - **一容器双面**：共享 scope 表是机制核心——toast/notify 同容器各占自己的槽。
 - **single 作用域**：按槽位（position）+ kind 类型——同槽新 toast 替换旧 toast，
   不同 position / 不同 type 互不干扰。

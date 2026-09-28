@@ -58,7 +58,9 @@ key = `id:contentVersion` 复合，不撞值不吞动画），计数递减；剩
 
 ```tsx
 <MessageViewport />            {/* root 容器（默认 scope/fixed） */}
-<MessageViewport scope="panel" positioning="absolute" />  {/* 容器内 */}
+<MessageViewport scope="panel" asChild>  {/* 锚点并入你的元素，零 wrapper div */}
+  <div style={{ height: 240 }}>…面板内容…</div>
+</MessageViewport>
 
 Notify.info({ title: 'Saved', content: 'The file is on disk.' });
 Notify.info({ title: 'Trace me', content: 'Done.' }, {

@@ -71,7 +71,9 @@ store 原样保留；`onClose({ id, data })` 随「载荷终结」发**一次**�
 
 ```tsx
 <MessageViewport />            {/* root 容器（默认 scope/fixed） */}
-<MessageViewport scope="panel" positioning="absolute" />  {/* 容器内 */}
+<MessageViewport scope="panel" asChild>  {/* 锚点并入你的元素，零 wrapper div */}
+  <div style={{ height: 240 }}>…面板内容…</div>
+</MessageViewport>
 
 Toast.info('Saved.');                       // 默认 top-center、single、plain
 Toast.info('Brand.', { palette: 'primary', variant: 'solid' });

@@ -124,6 +124,15 @@
 
 来源：Toast/Notify 继续优化定案（决策 10252fe1，caused_by Toast 设计对齐定案 89cd1415）；原地替换两点修正（决策 f9f95d95，caused_by 10252fe1）；替换/更新淡出淡入 staged swap（决策 b2a192d8，caused_by f9f95d95，用户浏览器反馈「更新的时候加个淡出淡入」）；换场改单容器 transition 链式 + 0.3s motion-slow（决策 2eef2f61，caused_by + supersedes b2a192d8，用户反馈「像闪一下，衔接更自然」+ 给 transition 实现建议）；谷底透明度 0→0.4 浅谷（决策 48cafcc8，caused_by 2eef2f61，用户「现在的效果好多了，但不要到 0，到 0.4 试试效果」）；回升提速 + update 软谷 0.6（决策 887bb77c，caused_by 48cafcc8，用户「0-1 透明度再快一些、update 初始透明度 0.6」）；update 改 zoom 进场 + data/onClose 终结合约（决策 1c5eff77，caused_by c0abf854，用户「update 移除透明度过渡改为 zoom 进场 + 新增 data/onClose」）；替换过渡整体退役 + shadow 走设计语言 + Toast 改名（决策 be61c45c，caused_by 1c5eff77，用户「替换前也直接 update 然后 zoom + 三点改名 + shadow 走设计语言」）；积压折叠终态 = 计数胶囊 + 冻结 + LIFO pop（决策 c66af602，supersedes e6f28983，用户「更好的想法」——不堆叠、积压冻结、按栈 pop、胶囊 ✕ 清空 + 最后一卡倒计时胶囊）；pop 即时同位置更新 + 胶囊样式回收（决策 cc563aba，caused_by c66af602，用户「点击关闭直接同位置更新，不要再走退出动画了，只有最后一个卡片走退出动画。胶囊样式和最早一版不一致，喜欢第一版」）；折叠期间露出统一 zoom + 胶囊 ✕ 指针修复（决策 06952e3d，caused_by cc563aba，用户「当出现计数之后，再次露出的卡片使用 zoom 动画过渡出现（新增卡片/关闭露出上一个）」+「计数的 x 图标无法点击也没有 pointer 样式」）；zoom 每次露出必播（id:version 复合 key）+ 倒计时胶囊收 ✕（决策 057438ea，caused_by 06952e3d，用户「zoom 只有第一个被替换的卡片有，后面就没有了」+「出现倒计时胶囊时就不需要 x 了」）。
 
+## 浮层锚定：锚点归组件自建/并入当事人节点，绝不依赖父级隐式约定（MessageViewport asChild 定案）
+
+- **「定位上下文」是组件自己的责任，不是父元素的隐式义务**：`positioning="absolute"` 时代的 MessageViewport 把锚定寄托在「父元素恰好 `position: relative`」上——约定在 JSX 里不可见，父级漏设就穿透到 body（用户实测体验差后点破「依赖父元素设置 relative 是一个脆弱的约定行为」）。整治 = `asChild`：viewport 不渲染自己的盒子，把锚点类 `--content`（`position: relative`）merge 到消费者自己的元素上、槽作为绝对定位兄弟注入——**当事人节点就是定位上下文**，父级零约定。
+- **零 div 用声明式并盒，不用命令式改父样式**：用户曾提议「viewport 不渲染 div，找父元素设 position: relative」——命令式改父元素有两层死结：① React 每次 commit 用 style diff 重置未声明的 inline 键，JS 直写的相对定位会被抹掉，要每帧重写（纯渲染被副作用污染）；② 卸载时恢复原值、StrictMode 双调用下注入/恢复打架。asChild（cloneElement 并类 + 注入绝对定位兄弟）拿到同样的零 div 收益，且完全声明式——沿 Tooltip/Popover「零容器 + clone trigger」先例。
+- **中间层盒子不做布局，布局归内容自带**：children 方案里 viewport 盒只贡献「锚点 + 消息层」（Anchor 式 layout-neutral 相对盒），Container 管宽度语义、Stack/Grid 管布局机制——层宿主不学布局 API，不复制 Container props（每加一轴都要跟 = API 面债 + 职责含糊）。
+- **双形态收敛为单一写法，不并存**：无 children = 屏幕固定层（`--fixed`），`asChild` = 内容锚定（`--content`）——结构自证锚点，删掉 `positioning` 词面而非保留双通道（同语义双通道不设优先级是 Select 模板教训的延续）。单个元素子节点是硬约束（多子节点/无子节点抛硬错误——并入需要唯一当事人），所以「pointer-events 隔离」也简化：固定层 drop + 卡片 re-enable，内容层槽显式 `pointer-events: none` 自让位。
+
+来源：MessageViewport 层级结构与锚定讨论（用户「层级结构不够明显，需要与你讨论」→「依赖父元素设置 relative 是脆弱约定」→「viewport 又没有 Container 布局能力」→提议「不渲染 div，找父元素设 relative」→ 我提 asChild 并盒，用户拍板「方案更好，意图也更清晰」）。决策 c4c018e0。
+
 ## variant 是从设计语言推导的封闭轴
 
 - 轴必须来自 Figma 真实状态；取值集合小且穷举；轴间正交（非法组合用 `compoundVariants` 显式声明）。
