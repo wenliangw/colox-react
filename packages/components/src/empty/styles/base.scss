@@ -1,0 +1,61 @@
+// Empty: a centered empty-state block. The figure, title, description
+// and action stack vertically, cross-axis centered; the figure paints
+// the scene (multi-color and atmospheric), the words carry the meaning
+// and keep their own semantic color.
+.colox-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: var(--colox-color-text-default);
+}
+
+// The figure: a rich first-party scene illustration. The illustration
+// sizes via 1em + font-size, so the footprint rides the theme size
+// token rather than a hardcoded pixel. The private palette feeds the
+// illustration's layers:
+//   panel / faint  — the object faces and their soft inner details,
+//                    faint mixed as "panel darkened by text-muted" so
+//                    the two stay distinct in both themes;
+//   shadow         — the ground pool under the objects;
+//   wash-* / solid-* — the scene hue accents (blue/green/orange/red
+//                    families): soft 14% color-mix halos + the solid
+//                    sparkles, bubbles, lens rim and alert mark.
+// Each scene borrows only its own hues, and because every tone is a
+// theme token (or a mix of them), light and dark adapt for free.
+.colox-empty__figure {
+  --colox-empty-panel: var(--colox-color-bg-muted);
+  --colox-empty-faint: color-mix(
+    in srgb,
+    var(--colox-color-text-muted) 22%,
+    var(--colox-color-bg-muted)
+  );
+  --colox-empty-shadow: var(--colox-color-text-subtle);
+  --colox-empty-wash-blue: color-mix(in srgb, var(--colox-color-blue-solid) 14%, transparent);
+  --colox-empty-wash-green: color-mix(in srgb, var(--colox-color-green-solid) 14%, transparent);
+  --colox-empty-wash-orange: color-mix(in srgb, var(--colox-color-orange-solid) 14%, transparent);
+  --colox-empty-wash-red: color-mix(in srgb, var(--colox-color-red-solid) 14%, transparent);
+  --colox-empty-solid-blue: var(--colox-color-blue-solid);
+  --colox-empty-solid-green: var(--colox-color-green-solid);
+  --colox-empty-solid-orange: var(--colox-color-orange-solid);
+  --colox-empty-solid-red: var(--colox-color-red-solid);
+  margin-bottom: var(--colox-spacing-4);
+  font-size: var(--colox-size-20);
+}
+
+// The primary line reads as the block's heading (the heading element
+// itself is the consumer's call — pass `<h3>` as `title` for real
+// semantics); the description stays muted.
+.colox-empty__title {
+  margin-bottom: var(--colox-spacing-2);
+  font-size: var(--colox-font-size-lg);
+  font-weight: var(--colox-font-weight-semibold);
+}
+
+.colox-empty__description {
+  color: var(--colox-color-text-muted);
+}
+
+.colox-empty__action {
+  margin-top: var(--colox-spacing-4);
+}

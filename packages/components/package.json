@@ -155,6 +155,11 @@
       "import": "./dist/es/skeleton.js",
       "require": "./dist/cjs/skeleton.cjs"
     },
+    "./empty": {
+      "types": "./dist/types/empty/index.d.ts",
+      "import": "./dist/es/empty.js",
+      "require": "./dist/cjs/empty.cjs"
+    },
     "./textarea": {
       "types": "./dist/types/textarea/index.d.ts",
       "import": "./dist/es/textarea.js",

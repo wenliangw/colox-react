@@ -1,0 +1,62 @@
+---
+sidebar_position: 27
+---
+
+import { Button, Empty, Grid, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Empty
+
+The **empty-state block**: a centered figure, a title and a description —
+plus an optional action — that tell the reader a region has nothing to show
+and what to do about it. `type` (`empty`/`search`/`error`, `empty` by
+default) picks the built-in scene figure — a multi-color atmospheric
+illustration with its own ambient palette; `figure` swaps in a custom
+illustration. Static display: no events, no state, not closable.
+
+## Scenes
+
+Each built-in figure is a **decorative scene** — `empty` paints a folder
+with paper pages and a drifting data sheet (blue/orange tones), `search` a
+magnifier over floating documents (green/blue), `error` a ringed planet with
+its moon under a starfield (red/orange). The illustrations are ambient
+painting only: no labels, no interaction. The meaning of the state lives in
+the prose — you narrate it in `title` and `description`, and put semantic
+color into the text and any `action`. The figure wrapper carries `data-scene`
+(`empty`/`search`/`error`) as a CSS hook.
+
+<Grid columns={3} gap="4">
+  <Empty type="empty" title="暂无数据" description="这里还没有内容" />
+  <Empty type="search" title="没有匹配结果" description="换个关键词试试" />
+  <Empty type="error" title="加载失败" description="请稍后重试" />
+</Grid>
+
+## Content and action
+
+`title` is the primary line, `description` the optional secondary line,
+`action` the optional bottom CTA — all ReactNode, so rich content fits
+directly. Pass a heading element as `title` (e.g. `<h3>`) when the block
+should announce a real heading.
+
+<Empty
+  type="search"
+  title="没有找到「colox」"
+  description="试试更换搜索词，或清空筛选条件。"
+  action={<Button>清空筛选</Button>}
+/>
+
+## Custom figure
+
+`figure` replaces the built-in scene figure entirely — a custom SVG, an
+image, or any ReactNode. Whatever you pass owns its own semantics (the
+built-in figures are decorative; your `figure` is not auto-hidden).
+
+<Empty
+  figure={
+    <svg viewBox="0 0 48 48" width={48} height={48} aria-hidden="true">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  }
+  title="自定义插图"
+  description="figure 完全替代内置图，语义由你自己控制"
+/>

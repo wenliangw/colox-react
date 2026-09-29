@@ -11,6 +11,7 @@ export * from './compact';
 export * from './container';
 export * from './date-picker';
 export * from './drawer';
+export * from './empty';
 export * from './form';
 export * from './grid';
 export * from './icon-button';

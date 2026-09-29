@@ -326,7 +326,12 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   `Skeleton.Text`/`Skeleton.Circle`/`Skeleton.Button`; pulse/wave/none
   motion axis; decorative `aria-hidden` default, the loading switch
   stays the caller's).
-- `Empty` — planned.
+- `Empty` — shipped: the empty-state block (centered figure + title +
+  description + optional action). `type` (empty/search/error, empty by
+  default) picks the built-in scene figure — a multi-color atmospheric
+  illustration with its own ambient palette per scene; `figure` overrides
+  with a custom illustration. Static display: no events, no state, not
+  closable.
 
 ### M6 — Navigation and containment (planned)
 
