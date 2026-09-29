@@ -389,3 +389,16 @@
 - **圆角档位落在设计语言 radius 真实 token**（sm/full），不造数值。
 
 来源：Badge.Group 圆角语义对齐（用户「rounded 的时候才设置圆角，默认应该是方块的轻圆角」）。
+
+## 流内状态消息块：语义轴用生态词 + 默认面料随表面身份 + action 归属跟持久性（Alert 定案）
+
+- **语义轴叫 `type`（antd 生态标准词），不因别处占用就回避**：Alert 的语义轴（info/success/warning/error，驱动图标字形 + 默认 palette 族）叫 `type`——antd `<Alert type="success">` 心智零成本；消息系统的 `type→mode` 改名是被 toast/notify 判别词**挤占**所致（判别词占 type 词位），Alert 没有 kind 判别词、type 词位空着，就用生态标准词。词位空着时优先生态标准词，不因「别处占用过」而回避。
+- **默认面料随表面身份，不随家族默认**：Alert 默认 `variant: 'subtle'`（palette 浅底 + 族色字，内联状态块读作「染色块」一眼可扫），区别于瞬时浮层 toast 的 plain 默认（bg-default 中性卡）——持久流内块与瞬时浮层的表面身份不同，默认面料各归其位；家族默认统一让位于表面身份语义。
+- **action 归属跟持久性走**：瞬时消息（toast/notify）不索求决策（round 14 移除 action，推理基于 3 秒消失的瞬时性）；持久内联块（Alert）是「状态提示 + CTA」的正当宿主——错误提示 + 重试按钮极常见，`action` 是可选 ReactNode 尾部动作槽。
+- **流内组件不自持内部隐藏状态（受控关闭）**：`closeable` + `onClose`——✕ 只触发回调，Alert 自己不隐藏，父级条件渲染决定显隐（MUI 模型）。Alert 在页面流里，显隐是页面数据的决定；内部隐藏状态藏在子组件里、父级失去跟踪（Button「无内部状态」纪律的延续）。
+- **内容简单走 props 形式，不建 dot-part**：`message`（ReactNode 主行）+ `description`（可选副行）+ `showIcon`（默认 true）——内容型组件「内容必须在树中」判据只在三段结构明确（Modal/Drawer Title/Content/Footer）时才走纯组合式；Alert 内容简单（两行文本），props 形式足够。
+- **自定义能力靠 ReactNode props，不建 dot 形式（用户追问后裁决）**：自定义 Title/Content 的本质诉求是「富内容」，而 message/description 作为 ReactNode 已天然满足（标题放图标、内容嵌任意 JSX 都成立）——**dot 不增加能力只换写法**，能放进 props 的内容就不建 part。dot 判据不满足：Alert 两行文本无 context、无 Modal 式「Content 唯一滚动区」机制职责、纯顺序渲染；且 Colox 是 styled lib 走 **props 营**（antd/MUI/Mantine），dot 营是 Radix/Ark 路线。纯组合式丢简单用法、双通道需硬错误机制 + 维护两套 = 对两行文本过度设计。
+- **palette/variant 与消息系统同构**：palette 六族（默认跟随 type 的族）+ variant plain/subtle/solid/outline——消息面（toast/notify/alert）共享同一套三轴词汇。
+- **范围外克制**：banner 全宽模式、icon 覆盖、rich children 槽、size 轴（非控件）均无真实消费场景，按「软事实不落盘」纪律不进 API。
+
+来源：Alert 设计对齐轮（用户四项全拍板推荐：type/subtle/要 action/受控关闭）；自定义内容形态细化（用户追问「是否需要 dot 形式」→ 裁决不需要，词形 message/description 拍板）。

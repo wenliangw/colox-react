@@ -76,3 +76,25 @@
 - **浮层深度走设计语言 shadow 档**（用户「shadow 样式走设计语言」）：消息 pill/card 的深度用 `box-shadow: var(--colox-shadow-md)`——md 是设计语言的浮层面标准档（Select/DatePicker/Autocomplete/TimePicker popup 全部同档），不透明浮层直接消费 token 即可；face 私有 rgba + filter drop-shadow 是「自造深度值」。drop-shadow 版式只留给必须投影联合形状的半透明面（Tooltip/Popover 箭头）。
 
 来源：Toast/Notify 换场两代定案（决策 2eef2f61，caused_by + supersedes b2a192d8——用户反馈「像闪一下，衔接更自然」并给 transition 实现建议）+ 谷底 0→0.4 微调（决策 48cafcc8，caused_by 2eef2f61——用户「现在的效果好多了，但不要到 0，到 0.4 试试」）+ 不对称节奏与 update 软谷（决策 887bb77c，caused_by 48cafcc8——用户「0-1 透明度时再快一些、update 初始透明度改 0.6」，其 update 软谷段被 1c5eff77 推翻）+ update 换 zoom 进场（决策 1c5eff77，caused_by c0abf854——用户「移除透明度的 update 过渡效果，改为给要替换的元素一个 zoom 的进场动画」）+ **替换下潜也移除、transition 换场整体退役（决策 be61c45c，caused_by 1c5eff77——用户「替换前的浅谷透明度过渡也移除，直接进行 update，然后 zoom 进场即可」；同轮影子走设计语言 md 档）**。
+
+## 动画提权看「共享逻辑」而非「文本重复」；机制与形态分层
+
+- **提权的判据是有共享逻辑/行为的东西，不是文本重复**：combobox 内核、floating 定位、input-control、Timer 是「共享逻辑」，该提权 cdk；一个 2 行 `fade-out` keyframes（opacity 1→0）在 modal/tooltip/popover/overlay 重复多份也**不抽 cdk**——抽掉它只省几行文本，代价是组件不再自包含、动画文件跨目录引用。组件各自带 `animation.scss`（keyframes 前缀 = 组件名）是既定内聚惯例。
+- **机制与形态分层**：共享已经在 theme 层发生——motion token（`--colox-motion-duration-*`/easing）+ reduced-motion 门在 theme 统一收口（reduce 时 duration 降到 0.01ms 而非 none，所以 `onAnimationEnd` 仍可靠触发），各组件只各自写 from/to 形态。**「一组通用进场/退场形态（fade / fade+scale / slide / zoom）被 5+ 组件复用」才是提权 cdk 动画形态库的时机**——那时抽的是形态库，不是单个 keyframes。
+- **退出动画用动画事件而非 setTimeout 魔法数**：`onAnimationEnd` 是「动画真的结束了」的诚实信号，且 reduced-motion 把 duration 收成 0.01ms 后依然触发；守卫用「退场态 + `event.target === event.currentTarget`」只认 root 自身动画、挡住子元素冒泡（animationName 是只读 DOM 属性，测试难注入、也易被子元素冒泡误触）。
+
+来源：Alert 优化轮（决策 7e343999 淡出过渡 + 决策 2393707c 动画不抽 cdk）。
+
+## 对齐用 calc 半差 + 私有变量，不手写 px、不猜固定 margin
+
+- **图标与首行文字的光学中心对齐 = `margin-top: calc((line-height - icon-size) / 2)`**，icon 尺寸收进私有变量（`--colox-alert-icon-size: var(--colox-size-5)`）：同一固定 margin 在不同字号上相对文字中心偏移不同——notify title 是 16px（font-size-md）用 4px 对齐，Alert message 是 14px（font-size-sm）沿用 4px 就偏下 3px（用户报「没对齐」的根因）。半差公式把「icon 中心钉在首行行盒中心」表达成 token 关系，而非手写 px 或抄别处的固定档。
+
+来源：Alert 优化轮（决策 7e343999：图标对齐修正）。
+
+## 图标尺寸归视觉裁量：token 有档即可，不预设硬性 icon 档表
+
+- **icon 尺寸以「放大看实物、用户拍板」为准，规格档表是参考不是铁律**：曾据「icon 只有 12/14/16/18/24/28/32 档、20px 不是档」把 Alert icon 定为 16px（`--colox-size-4`），结果用户嫌小、点名 22px，摆出「22 无 token」的落地选项后用户自选「还是 20px 更好」——最终 `--colox-alert-icon-size: var(--colox-size-5)`(20px)。数值落在 theme size token 档即可，没有独立的「icon 档表」铁律。
+- **「数值有无 token 档」是选尺寸的真实约束**：22px 被否的重要背景恰恰是它不在 theme size token（只有 20/24 相邻档）——视觉想要的值若无 token 档，先找相邻 token 档，不造裸值、也不为一个组件动 token 面。
+- **随看随改如实记**：视觉细节用户会多次往返（16→22→20），决策链由新节点 supersede 旧定案如实记录，不在「上次说了什么」上纠缠。
+
+来源：Alert icon 尺寸三轮往复（决策 e3472a72「20 非规格用 16」被 9a23f681「最终裁定 20px」supersedes，用户自选「看来还是用 20px 的更好」）。
