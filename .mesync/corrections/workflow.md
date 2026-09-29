@@ -65,3 +65,19 @@
 - **写后立即验证**：每次编辑后马上对关键标记跑 `grep`/`sed` 抽查；大改优先整文件 `write` 而非多段 `edit`（edit 的 old_string 在状态错位时匹配到旧底本，产生拼接垃圾）。
 - **三重对齐才可交付**：测试全绿 + `git status` 包含预期文件 + 关键标记 grep 命中；三者齐了才算改完成。小改动只做窄验证即可，但该窄验证必须真跑。
 - 为什么：现象指向会话运行时的快照恢复（本会话出现过 checkpoint 压缩 + runtime-context snapshot 替换，时间线与回退位置吻合），根因在 harness 内部、不可见，但协议在 agent 侧可守；静默回退最危险的是「测试恰好不覆盖」的文档类文件（styling.md 差点就这样丢了）。
+
+# 跨包改源码 → 必须重构建被消费的依赖包（dist 过期）
+
+## 改这里
+
+改某个 workspace 包（现例 `@colox/icons`）的**源码**（新增图标/组件/导出），而这个包被另一个包（`@colox/react`）通过**已构建的 dist** 消费。
+
+## 必须检查
+
+- **改了 icons 源码后，组件测试按 `@colox/icons` 解析到 dist → 新图标是 `undefined`**：组件 `<Empty />` 默认 renders 新 `IconInbox`，得到 `Element type is invalid … got: undefined`（五个 default 态用例齐崩、也正是被改图标的走法）；而 icons 自己的 spec 测试直读 `../src`，130 例全绿——**源码测试绿 ≠ dist 有它**。
+- **改 source → 先 `pnpm --filter <pkg> build` 再跑消费侧**：消费侧看到的是 dist；只改源码不重建，消费者手里的还是旧产物。验证链里「icons spec 绿」是源码侧信号，不替代「dist 含新导出」的产物侧信号（`grep -rl "新导出" dist` 确认）。
+- **据此锁定「改动 → 重建」的归属**：改组件包源码只重建组件包；改了 `@colox/icons`/`@colox/theme`/`@colox/theme-builder` 等被依赖包，先重建它，再重建组件包（否则组件包的产物里仍是旧依赖的外链或旧类型）。
+
+## 为什么
+
+workspace 里包的消费链是「dist ↔ dist」（依赖包 exports 指向自己的 dist），不是「源码 ↔ 源码」；只有 apps（preview/docs 的 tsconfig paths 把 `@colox/react` 指到源码）才走了源码直链。改依赖包源码而不重建，等于给消费侧发了「改了」的假信号，产物与源码脱节、报错点（undefined element）远离根因（缺构建）。
