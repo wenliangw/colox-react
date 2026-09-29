@@ -27,3 +27,12 @@ Colox monorepo 构建竞态的防护清单（Textarea 交付期的实测，三�
   - [ ] 结论：门禁链要么 `set -o pipefail`，要么拆分判定（`pnpm typecheck && echo TYPECHECK-OK; pnpm exec eslint src/textarea && echo LINT-OK`），echo 紧跟在真实命令后。
 - **为什么**：错误链里 eslint 若失败会被 tail 吞掉，`FULL-GATE-GREEN` 不可信。
 - **2026 复发（表单载荷统一轮）**：`pnpm exec eslint packages/components/src apps/preview/src | tail -15 && echo "ESLINT exit=$?"` 再次把 3 个 `no-unused-vars` 报成 exit 0（`$?` 是 tail 的），直到 husky 预提交才红。**核对过的写法**：`set -o pipefail; pnpm exec eslint … ; echo "EXIT=$?"`——pipefail 让管道整体返回失败者的状态；或 echo 紧跟真实命令、不接管道。
+
+## story/docs 构建不查类型，接线错误会漏（Badge 前科）
+
+- **改这里**：交付「组件 + story/docs」后只跑 `build-storybook` / `docusaurus build` 当全部门禁。
+- **必须检查**：
+  - [ ] 两个应用构建都不跑 tsc（vite/esbuild 剥类型、docusaurus 不查 story 类型）——story 给组件传不存在的 prop（前科：`<Badge.Group size="sm">`，size 只在根/Dot/Count/Item 上）构建照样绿，类型错误漏整段时间。
+  - [ ] 门禁清单里显式加 `apps/preview` 与 `apps/docs` 的 `tsc -p tsconfig.json --noEmit`（apps 有 tsconfig）；组件包 typecheck 管不到 story 的 prop 接线。
+  - [ ] story 报「prop 不存在」先核对真实 API 面再决定修哪边：size 属 Item 不属 Group → 修 story 接线（把 size 移进各 `Badge.Item`），**不动组件契约**；确为组件面缺失才进组件。
+- **为什么**：构建绿 ≠ 类型绿；story 接线错误会把「组件没这 prop」留到 CI/用户在 demo 里撞见才暴露。

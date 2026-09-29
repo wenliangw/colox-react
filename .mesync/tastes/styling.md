@@ -82,6 +82,8 @@
 - **提权的判据是有共享逻辑/行为的东西，不是文本重复**：combobox 内核、floating 定位、input-control、Timer 是「共享逻辑」，该提权 cdk；一个 2 行 `fade-out` keyframes（opacity 1→0）在 modal/tooltip/popover/overlay 重复多份也**不抽 cdk**——抽掉它只省几行文本，代价是组件不再自包含、动画文件跨目录引用。组件各自带 `animation.scss`（keyframes 前缀 = 组件名）是既定内聚惯例。
 - **机制与形态分层**：共享已经在 theme 层发生——motion token（`--colox-motion-duration-*`/easing）+ reduced-motion 门在 theme 统一收口（reduce 时 duration 降到 0.01ms 而非 none，所以 `onAnimationEnd` 仍可靠触发），各组件只各自写 from/to 形态。**「一组通用进场/退场形态（fade / fade+scale / slide / zoom）被 5+ 组件复用」才是提权 cdk 动画形态库的时机**——那时抽的是形态库，不是单个 keyframes。
 - **退出动画用动画事件而非 setTimeout 魔法数**：`onAnimationEnd` 是「动画真的结束了」的诚实信号，且 reduced-motion 把 duration 收成 0.01ms 后依然触发；守卫用「退场态 + `event.target === event.currentTarget`」只认 root 自身动画、挡住子元素冒泡（animationName 是只读 DOM 属性，测试难注入、也易被子元素冒泡误触）。
+- **持续装饰动画不在换场三档语义里——时长归组件私有变量 + 局部 reduced-motion 门**（Progress 定案）：motion token 只给 enter/exit 换场分级（fast/normal/slow）；indeterminate 扫动这类无限循环是持续运动，时长语义不同——用组件私有变量（`--colox-progress-linear-flow-duration: 1.6s`），并因此自己接 `@media (prefers-reduced-motion: reduce)` 局部门（把扫动停成静态驻点），注释里诚实说明为什么不走中央 motion 门。这不是「为了造值而造值」——是机制分层（中央门只管它覆盖的 token 面）。**方向语义**：无限循环用单向扫过 + 跳回重入（from -100% → to 400%、linear 匀速），不做往返折返——用户反馈「反复滑动的动画有点怪，应该是向一个方向的循环滑块」，单向循环是 loading 动画的经典形态（转圈也是单向不回转）。
+- **值跟随过渡与持续装饰动画互为对偶——前者走 motion token**（Progress 二轮，用户反馈「很卡」后补）：数据驱动的宽度/高度平滑跟随（`transition: width`）本质是把离散步进拉平成连续流动，时长取「与驱动更新率对齐」的档位（策略钟 200ms tick → 用 motion normal 200ms，相邻步无缝交接），easing 用 linear（曲线感来自值的步长收缩，不来自过渡的加/减速）——它正好落在换场 token 语义里，不用私有值，还白得 theme 的 reduced-motion 归零（duration 收 0.01ms 时紧贴受控值无动效）。对偶读法：**换场（有限次、一次性）= token 三档；持续装饰（无限循环）= 私有变量 + 局部门；值跟随（连续数据）= token 某档 + 时长对齐驱动率**。
 
 来源：Alert 优化轮（决策 7e343999 淡出过渡 + 决策 2393707c 动画不抽 cdk）。
 

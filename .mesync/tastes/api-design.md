@@ -374,6 +374,18 @@
 
 来源：Badge 设计对齐轮（两轮：① 纯展示 + Positioner 锚定 + Tag 并入，② Group/Item 多段改判 + 无缝一体拍板）。
 
+## 命名空间家族第二实例 + 缺席即语义（Progress 定案）
+
+- **命名空间家族确认成章**：Progress 同样走「形态家族命名空间」（Badge 后第二实例）——用户点名「做 `Progress.Linear` 这样的 dot 组件，导出 `const Progress = { ... }` 即可」；否决 type 轴单组件（div 宽度 vs SVG stroke-dasharray 机制差异大，type 轴伪装分发）与完全拆散（`LinearProgress`/`CircularProgress` 散掉家族入口）。容器不渲染，只做成员挂载点。
+- **缺席即语义**：`value` 缺席即 indeterminate——只有一种「无值」态就由缺席表达（空格无数字可报），不造 `variant="indeterminate"` 开关词（Toggle 类词位省下的先例延续）。
+- **纯展示件 = 显式语义词 + 零事件面**：颜色诉求全走 `palette` 六族（默认 primary 品牌色——进度条是活动指示；有别 Badge 的中性 gray），**不做 status 轴、不做「满值自动变绿」魔法**——语义色由消费方显式给（`palette="success"`），组件不猜。
+- **信任契约让 CSS 担当**：value 0–100 不被 JS clamp——溢出由 track `overflow: hidden` 天然裁剪（Header 宽度超过 100% 不会破版）。
+- **行为调度策略放 hook、组件保持纯展示受控**（`useProgressStrategy` 定案）：路由条「自动由快到慢增长到 99% 停、完成时主动 100%」的行为面新能力，先选 hook 形态而非给纯件加 prop——strategic 时钟归 hook（`start/done/reset` + cap），组件一个 prop 不加；消费方想要不同曲线自写 hook，不动公共面。hook 契约的幂等/完成语义用 **ref 旗**（doneRef）而非 value 读数——`reset(); start();` 同 tick 同步重玩不因 state 未提交而失效。连续递增型策略曲线**确定性优先**（指数逼近常量、无随机抖动），每 tick 步长可断言。
+- **完整自定义能力走数据出口、不进参数面**（`strategy` 计划定案）：用户问「增长速率能否自定义」——不收成 rate/interval/stop 的多轴 prop 面，而是 `strategy: [['20%', 300], ['60%', 600], ['99%', 1000]]` 一个 checkpoint 数组把整段曲线全表达：默认路径零配置（cap 一个词）、自定义路径一步到全量——与「档位管语义、逃生舱管精确」（Modal/Drawer width、Positioner offset）同族的分层：**默认契约保持最小面，完整表达走数据结构**。
+- **相关数值同一刻度**（`strategy` marker 修正轮）：用户否决 0–1 小数——cap 是 0–100 主词，plan 的 marker 必须讲同一门语言（整数 %），不引入 0–1→0–100 的换算心智。
+- **字面量自文档**（`'20%'` marker 定案）：值上直接带语义单位比裸数字直观——`'20%'` 一看即百分比，读码零查证；内部 trim `%` 是机械解析，冲动时更把词法约束做成模板字面量类型 `` `${number}%` `` 在编译期把关。
+- **超范围容错 = 钳到边界**（cap 恒为天花板定案）：范围主词永远生效——marker 超 cap 钳值（该段时间照走）、plan 终点低于 cap 停末 marker；不报错、不忽略、不引入「停驻点 vs 终点」第二矛盾。
+
 ## 定位偏移的逃生舱：数字 px 悬出，不造负 token 键（Positioner offset 定案）
 
 - **offset 值双通道**：spacing key（语义档位，走 class 表，盒内推）与**数字 px**（逃生舱，走 inline style 逻辑属性）——「档位管语义、逃生舱管精确」家族模式（Modal/Drawer width 同款）。
