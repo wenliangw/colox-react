@@ -1,0 +1,90 @@
+/**
+ * Alert — the inline status message.
+ *
+ * Base scope: the in-flow block layout (a horizontal row:
+ * [icon] [body: message / description] [action] [close]), the private
+ * palette variables (the brand fallback keeps the paint alive even
+ * without a palette class) and the message/description typography.
+ * Palette families land in palette.scss, the surface strength in
+ * variant.scss.
+ *
+ * The alert is a page block, not a float: no shadow, no max-width
+ * cap — the block fills its container and the words own the width.
+ * The icon pins to the first line (`align-items: flex-start`), its
+ * optical center aligned to the message's line box (the half-difference
+ * of line-height and glyph, not a fixed tick).
+ */
+.colox-alert {
+  // Palette fallback: the palette layer overrides these; the brand
+  // family keeps the paint alive even without a palette class.
+  --colox-alert-palette-solid: var(--colox-color-brand-solid);
+  --colox-alert-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-alert-palette-muted: var(--colox-color-brand-muted);
+  --colox-alert-palette-inverse: var(--colox-color-brand-inverse);
+
+  // The semantic icon: size-5 = 20px — the maintainer's final pick
+  // (walked the spec-tier sizes 14/16/18, found them too small, and
+  // settled back on 20, which lands on a theme size token), its center
+  // pinned to the first line box center. The color comes from the
+  // variant paint (palette-driven).
+  --colox-alert-icon-size: var(--colox-size-5);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--colox-spacing-3);
+  padding: var(--colox-spacing-3) var(--colox-spacing-4);
+  border-radius: var(--colox-radius-lg);
+  color: var(--colox-color-text-default);
+}
+
+// The fixed-size glyph, center pinned to the first line box center.
+.colox-alert__icon {
+  flex: none;
+  width: var(--colox-alert-icon-size);
+  height: var(--colox-alert-icon-size);
+  margin-top: calc((var(--colox-line-height-md) - var(--colox-alert-icon-size)) / 2);
+}
+
+// The body owns the leftover width; the words wrap inside it.
+.colox-alert__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.colox-alert__message {
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  font-weight: 600;
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-default);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.colox-alert__description {
+  margin-top: var(--colox-spacing-1);
+  font-family: var(--colox-font-sans);
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-md);
+  color: var(--colox-color-text-muted);
+  white-space: normal;
+  word-break: break-word;
+}
+
+// The trailing CTA slot: vertically centered against the block.
+.colox-alert__action {
+  flex: none;
+  align-self: center;
+}
+
+// The corner close: the shared IconButton muted base — this site class
+// only widens the hit area around the 16px icon and pulls it into the
+// block's top-right corner (the negative margin counters the block
+// padding).
+.colox-alert__close {
+  flex: none;
+  margin-top: calc(var(--colox-spacing-1) * -1);
+  margin-right: calc(var(--colox-spacing-1) * -1);
+  margin-left: var(--colox-spacing-1);
+  padding: var(--colox-spacing-1);
+}

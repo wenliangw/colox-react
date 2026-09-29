@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
         { type: 'doc', id: 'components/icon-button', label: 'IconButton' },
         { type: 'doc', id: 'components/tooltip', label: 'Tooltip' },
         { type: 'doc', id: 'components/popover', label: 'Popover' },
+        { type: 'doc', id: 'components/alert', label: 'Alert' },
       ],
     },
     {

@@ -9,6 +9,7 @@ import dts from 'vite-plugin-dts';
 const entries = {
   index: resolve(import.meta.dirname, 'src/index.ts'),
   anchor: resolve(import.meta.dirname, 'src/anchor/index.ts'),
+  alert: resolve(import.meta.dirname, 'src/alert/index.ts'),
   autocomplete: resolve(import.meta.dirname, 'src/autocomplete/index.ts'),
   avatar: resolve(import.meta.dirname, 'src/avatar/index.ts'),
   badge: resolve(import.meta.dirname, 'src/badge/index.ts'),

@@ -85,6 +85,11 @@
       "import": "./dist/es/anchor.js",
       "require": "./dist/cjs/anchor.cjs"
     },
+    "./alert": {
+      "types": "./dist/types/alert/index.d.ts",
+      "import": "./dist/es/alert.js",
+      "require": "./dist/cjs/alert.cjs"
+    },
     "./autocomplete": {
       "types": "./dist/types/autocomplete/index.d.ts",
       "import": "./dist/es/autocomplete.js",

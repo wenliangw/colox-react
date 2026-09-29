@@ -1,0 +1,48 @@
+/**
+ * Palette color families — the six design-language families mapped
+ * onto the private alert palette variables. Each family carries its
+ * solid level (the subtle fill's text, the outline's ring), the
+ * subtle tint fill and the inverse on-fill. Base.scss holds the brand
+ * fallback so the paint survives even without a palette class.
+ */
+.colox-alert--primary {
+  --colox-alert-palette-solid: var(--colox-color-brand-solid);
+  --colox-alert-palette-subtle: var(--colox-color-brand-subtle);
+  --colox-alert-palette-muted: var(--colox-color-brand-muted);
+  --colox-alert-palette-inverse: var(--colox-color-brand-inverse);
+}
+
+.colox-alert--gray {
+  --colox-alert-palette-solid: var(--colox-color-gray-solid);
+  --colox-alert-palette-subtle: var(--colox-color-gray-subtle);
+  --colox-alert-palette-muted: var(--colox-color-gray-muted);
+  --colox-alert-palette-inverse: var(--colox-color-gray-inverse);
+}
+
+.colox-alert--info {
+  --colox-alert-palette-solid: var(--colox-color-blue-solid);
+  --colox-alert-palette-subtle: var(--colox-color-blue-subtle);
+  --colox-alert-palette-muted: var(--colox-color-blue-muted);
+  --colox-alert-palette-inverse: var(--colox-color-blue-inverse);
+}
+
+.colox-alert--error {
+  --colox-alert-palette-solid: var(--colox-color-red-solid);
+  --colox-alert-palette-subtle: var(--colox-color-red-subtle);
+  --colox-alert-palette-muted: var(--colox-color-red-muted);
+  --colox-alert-palette-inverse: var(--colox-color-red-inverse);
+}
+
+.colox-alert--warning {
+  --colox-alert-palette-solid: var(--colox-color-orange-solid);
+  --colox-alert-palette-subtle: var(--colox-color-orange-subtle);
+  --colox-alert-palette-muted: var(--colox-color-orange-muted);
+  --colox-alert-palette-inverse: var(--colox-color-orange-inverse);
+}
+
+.colox-alert--success {
+  --colox-alert-palette-solid: var(--colox-color-green-solid);
+  --colox-alert-palette-subtle: var(--colox-color-green-subtle);
+  --colox-alert-palette-muted: var(--colox-color-green-muted);
+  --colox-alert-palette-inverse: var(--colox-color-green-inverse);
+}

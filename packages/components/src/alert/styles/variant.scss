@@ -1,0 +1,44 @@
+/**
+ * Variant paint — the surface strength over the private palette
+ * variables. subtle (default) tints the block with the family subtle
+ * fill (an inline status block reads as a tinted block — the antd/MUI
+ * alert look), solid paints the full family fill with inverse ink,
+ * outline draws a family ring on the neutral surface, plain stays the
+ * quiet neutral surface (palette-independent). On subtle/outline only
+ * the icon carries the family color; the words stay readable neutral.
+ */
+.colox-alert--plain {
+  background-color: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+}
+
+.colox-alert--subtle {
+  background-color: var(--colox-alert-palette-subtle);
+  color: var(--colox-color-text-default);
+}
+
+.colox-alert--solid {
+  background-color: var(--colox-alert-palette-solid);
+  color: var(--colox-alert-palette-inverse);
+}
+
+.colox-alert--outline {
+  background-color: var(--colox-color-bg-default);
+  color: var(--colox-color-text-default);
+  box-shadow: inset 0 0 0 1px var(--colox-alert-palette-solid);
+}
+
+// Icon color: on the tinted/ring surfaces the icon carries the family
+// solid (the words stay neutral); on the solid fill everything — icon,
+// words and close — rides the inverse ink.
+.colox-alert--subtle .colox-alert__icon,
+.colox-alert--outline .colox-alert__icon {
+  color: var(--colox-alert-palette-solid);
+}
+
+.colox-alert--solid .colox-alert__icon,
+.colox-alert--solid .colox-alert__message,
+.colox-alert--solid .colox-alert__description,
+.colox-alert--solid .colox-alert__close {
+  color: var(--colox-alert-palette-inverse);
+}

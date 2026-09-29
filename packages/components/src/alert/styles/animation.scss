@@ -1,0 +1,24 @@
+// The exit: a plain fade-out played across the whole block when the ✕
+// is clicked. The component flips its internal exit-window state (the
+// `--exiting` class), this fade plays on the motion-normal token, and
+// `onClose` fires on the animation end — at which point the parent
+// conditionally renders the alert away (the controlled-close contract
+// holds: the alert never hides itself, it only stages the fade and
+// then hands the decision back). `forwards` holds the invisible end
+// state until the unmount lands; the motion tokens gate reduced motion
+// centrally (the theme zeroes the durations), so no local media query
+// belongs here.
+@keyframes colox-alert-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.colox-alert--exiting {
+  animation: colox-alert-exit var(--colox-motion-duration-normal) var(--colox-motion-easing-out)
+    forwards;
+}

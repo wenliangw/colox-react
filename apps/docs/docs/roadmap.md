@@ -21,12 +21,13 @@ discipline and non-goals — lives in the repository:
   `Form.Validate` and `useForm`; `TimePicker`; `Compact` (the visual joining base).
 - **Overlay** — `Tooltip`, `Popover`, `Modal`, `Drawer` and the message system
   (`Toast` / `Notify` on the shared `MessageViewport`).
+- **Display and feedback** — `Avatar`, `Badge`, `Alert`.
 
 ## Next
 
 | Milestone                     | Contents                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------ |
-| M5 Display and feedback       | `Avatar`, `Badge`, `Tag`, `Alert`, `Progress`, `Skeleton`, `Empty`       |
+| M5 Display and feedback       | `Progress`, `Skeleton`, `Empty`                                          |
 | M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps` |
 | M7 Data display               | `Table`, `VirtualList`, `Tree`                                           |
 | M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                          |

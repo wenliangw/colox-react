@@ -1,6 +1,7 @@
 import './styles/index.scss';
 
 export * from './anchor';
+export * from './alert';
 export * from './autocomplete';
 export * from './avatar';
 export * from './badge';

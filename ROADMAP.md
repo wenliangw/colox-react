@@ -265,7 +265,30 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   (solid/subtle/outline/plain — where the surface has a strength;
   the Dot is always a solid point, the Count always a solid pill).
   `Tag` is dropped — the standalone pill is Badge's root form.
-- `Alert`, `Progress`, `Skeleton`, `Empty` — planned.
+- `Alert` — the inline status message — **shipped**: the persistent,
+  in-flow, declarative status block (the flow-in sibling of the
+  transient Toast/Notify message system — it lives in the page, the
+  parent decides whether it shows, and the words are JSX, not a call).
+  `type` (info/success/warning/error, default info — the ecosystem word;
+  Alert has no kind-discriminator word to evict it, so it keeps `type`
+  where the message system renamed it `mode` for the toast/notify
+  pair) picks the semantic icon glyph and the default palette family;
+  `palette` (six families, defaulting to the type's family) picks the
+  color; `variant` (plain/subtle/solid/outline, default **subtle** — an
+  inline status block reads as a tinted block, unlike a transient
+  pill's neutral plain) picks the surface strength. `message` is the
+  primary line, `description` the optional secondary line — both
+  ReactNode, so rich content fits directly (no dot-part: content
+  simple enough for props, the maintainer confirmed against a
+  dot form). `showIcon` gates the semantic icon (default on), `action`
+  is the trailing CTA slot (a persistent inline block is the proper
+  host for a status + CTA, unlike a 3s transient hint), and
+  `closeable` + `onClose` is the **controlled** close — the ✕ stages
+  a fade-out and fires the callback on the animation end, the parent
+  decides visibility (no internal hidden state). The live region
+  follows the type: error/warning announce assertively
+  (`role="alert"`), info/success politely (`role="status"`).
+- `Progress`, `Skeleton`, `Empty` — planned.
 
 ### M6 — Navigation and containment (planned)
 

@@ -1,0 +1,107 @@
+---
+sidebar_position: 24
+---
+
+import { Alert, Button, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import AlertCloseableDemo from '@site/src/components/alert-closeable-demo';
+
+# Alert
+
+The **inline status message** — a persistent, in-flow, declarative status
+block. The flow-in sibling of the transient `Toast`/`Notify` message system:
+it lives in the page, the parent decides whether it shows, and the words are
+JSX, not a call.
+
+## Types
+
+`type` (info/success/warning/error, default info) picks the semantic icon
+glyph and the default palette family. error/warning announce assertively
+(`role="alert"`), info/success politely (`role="status"`).
+
+<Stack direction="column" gap="4">
+  <Alert type="info" message="这是一条信息提示" description="更多详情可以放在这里。" />
+  <Alert type="success" message="保存成功" description="已写入本地缓存。" />
+  <Alert type="warning" message="磁盘空间不足" description="请清理后重试。" />
+  <Alert type="error" message="连接失败" description="请检查网络后重试。" />
+</Stack>
+
+## Variants
+
+`variant` (plain/subtle/solid/outline, default **subtle**) picks the surface
+strength. An inline status block reads as a tinted block — the antd/MUI alert
+look — unlike a transient pill's neutral plain.
+
+<Stack direction="column" gap="4">
+  <Alert type="success" message="Subtle（默认）" />
+  <Alert type="success" variant="solid" message="Solid" />
+  <Alert type="success" variant="outline" message="Outline" />
+  <Alert type="success" variant="plain" message="Plain" />
+</Stack>
+
+## Palette
+
+`palette` (the six design-language families) overrides the type-derived color
+family — e.g. a neutral gray info box, or a brand-primary box.
+
+<Stack direction="column" gap="4">
+  <Alert type="info" palette="primary" message="Primary" />
+  <Alert type="info" palette="gray" message="Gray" />
+  <Alert type="info" palette="success" message="Success" />
+  <Alert type="info" palette="error" message="Error" />
+</Stack>
+
+## Content
+
+`message` is the primary line, `description` the optional secondary line.
+Both are **ReactNode** — arbitrary rich content fits directly (no dot-part:
+content simple enough for props). `showIcon` (default on) gates the semantic
+icon.
+
+<Stack direction="column" gap="4">
+  <Alert type="info" message="只有主行" />
+  <Alert
+    type="info"
+    message={
+      <span>
+        富内容 <b>主行</b>
+      </span>
+    }
+    description="message / description 都是 ReactNode，任意 JSX 直接放。"
+  />
+  <Alert type="info" message="没有图标" showIcon={false} />
+</Stack>
+
+## Action
+
+`action` is the trailing CTA slot. A persistent inline block is the proper
+host for a status + CTA — unlike a 3s transient hint, which solicits no
+decision.
+
+<Stack direction="column" gap="4">
+  <Alert
+    type="error"
+    message="上传失败"
+    description="请检查文件后重试。"
+    action={<Button size="sm">重试</Button>}
+  />
+</Stack>
+
+## Closeable
+
+`closeable` renders the corner ✕; clicking it fades the block out and then
+fires `onClose` (on the animation end). The close is **controlled** — the ✕
+only stages the fade and calls back, the alert does not hide itself: the
+parent decides visibility (the alert lives in the page flow, so its presence
+is a page-data decision). Unmount it in `onClose` to land the fade.
+
+<Stack direction="column" gap="4">
+  <AlertCloseableDemo />
+</Stack>
+
+## Accessibility
+
+- `error`/`warning` render `role="alert"` (assertive); `info`/`success`
+  render `role="status"` (polite).
+- The semantic icon is decorative (`aria-hidden`).
+- The ✕ is an accessible button named "Close".
