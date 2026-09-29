@@ -90,6 +90,11 @@
       "import": "./dist/es/alert.js",
       "require": "./dist/cjs/alert.cjs"
     },
+    "./progress": {
+      "types": "./dist/types/progress/index.d.ts",
+      "import": "./dist/es/progress.js",
+      "require": "./dist/cjs/progress.cjs"
+    },
     "./autocomplete": {
       "types": "./dist/types/autocomplete/index.d.ts",
       "import": "./dist/es/autocomplete.js",

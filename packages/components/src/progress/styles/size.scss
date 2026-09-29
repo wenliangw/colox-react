@@ -1,0 +1,25 @@
+// The three tiers ride the spacing ladder for the stripe height
+// (4/6/8) and the font ladder for the trailing label — the tier class
+// declares the track height that base.scss reads, the same recipe as
+// the Slider tiers. The default tier is md, so the track height is
+// always defined.
+.colox-progress-linear--sm {
+  --colox-progress-linear-track: var(--colox-spacing-1);
+
+  font-size: var(--colox-font-size-xs);
+  line-height: var(--colox-line-height-xs);
+}
+
+.colox-progress-linear--md {
+  --colox-progress-linear-track: var(--colox-spacing-1-5);
+
+  font-size: var(--colox-font-size-sm);
+  line-height: var(--colox-line-height-sm);
+}
+
+.colox-progress-linear--lg {
+  --colox-progress-linear-track: var(--colox-spacing-2);
+
+  font-size: var(--colox-font-size-md);
+  line-height: var(--colox-line-height-md);
+}

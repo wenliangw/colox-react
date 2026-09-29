@@ -27,7 +27,7 @@ discipline and non-goals — lives in the repository:
 
 | Milestone                     | Contents                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------ |
-| M5 Display and feedback       | `Progress`, `Skeleton`, `Empty`                                          |
+| M5 Display and feedback       | `Skeleton`, `Empty`                                                      |
 | M6 Navigation and containment | `Tabs`, `Accordion`, `Card`, `Breadcrumb`, `Pagination`, `Menu`, `Steps` |
 | M7 Data display               | `Table`, `VirtualList`, `Tree`                                           |
 | M8 Scroll and geometry        | `ScrollView` (with sticky), `Affix`, `Splitter`                          |

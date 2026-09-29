@@ -20,6 +20,7 @@ export * from './modal';
 export * from './notify';
 export * from './positioner';
 export * from './popover';
+export * from './progress';
 export * from './radio';
 export * from './select';
 export * from './slider';

@@ -1,0 +1,29 @@
+// The indeterminate sweep: the fixed-width block rides one direction —
+// from fully outside the left end to fully outside the right end — and
+// loops back around for the next cycle (translateX percentages are
+// relative to the block's own width, so 400% parks its left edge past
+// the track's right edge). One direction, one loop: the classic
+// indeterminate bar, no round trip. The straight-line motion runs on a
+// linear timing curve; the loop restarts the cycle rather than
+// traveling back.
+//
+// Reduced motion parks the block at its rest width — the bar keeps
+// reading "indeterminate" through the progressbar role (no number is
+// announced either way); stillness only removes the motion. The gate
+// is local because the sweep duration is the bar's own variable, not
+// one of the centrally-gated motion tiers.
+@keyframes colox-progress-linear-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(400%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .colox-progress-linear__bar--indeterminate {
+    animation: none;
+  }
+}

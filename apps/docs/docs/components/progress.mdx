@@ -1,0 +1,129 @@
+---
+sidebar_position: 25
+---
+
+import { Progress, Stack } from '@colox/react';
+import '@colox/react/style.css';
+import ProgressRouteDemo from '@site/src/components/progress-route-demo';
+
+# Progress
+
+The **progress family** — `Progress.Linear` is the horizontal progress bar: a
+track fabric with a filled bar grown to the committed percent. Pure display:
+no events, no form integration — you drive the `value` from your store (and
+the sibling circular shape joins the same namespace, `Progress.Circular`, when
+it ships).
+
+## Determinate
+
+`value` is the committed percent (0–100). The bar grows to it, and the
+trailing label reports it. `aria-valuenow` mirrors the number. Value updates
+slide to their new width through a short transition, so discrete updates
+(timers, per-event setState) read as one continuous flow instead of a stutter.
+
+<Stack direction="column" gap="4">
+  <Progress.Linear value={30} />
+  <Progress.Linear value={60} />
+  <Progress.Linear value={100} />
+</Stack>
+
+## Indeterminate
+
+Without a `value` the bar turns into a **sweeping block** — in-flight work
+without a committed number. It announces no number (`aria-valuenow` is
+omitted); the motion respects `prefers-reduced-motion`.
+
+<Stack direction="column" gap="4">
+  <Progress.Linear />
+</Stack>
+
+## Palette
+
+`palette` (the six design-language families, default `primary`) picks the bar
+paint. Success stays `palette="success"`, failure `palette="error"` — the
+semantic color is your call, never an automatic one.
+
+<Stack direction="column" gap="4">
+  <Progress.Linear value={60} palette="primary" />
+  <Progress.Linear value={60} palette="gray" />
+  <Progress.Linear value={60} palette="info" />
+  <Progress.Linear value={60} palette="success" />
+  <Progress.Linear value={60} palette="warning" />
+  <Progress.Linear value={60} palette="error" />
+</Stack>
+
+## Sizes
+
+`size` (sm/md/lg, default md) picks the stripe thickness — 4/6/8px via the
+spacing ladder. The trailing label rides the matching font tier.
+
+<Stack direction="column" gap="4">
+  <Progress.Linear value={60} size="sm" />
+  <Progress.Linear value={60} size="md" />
+  <Progress.Linear value={60} size="lg" />
+</Stack>
+
+## Info
+
+`showInfo` (default on) shows the trailing `n%` label — determinate only: an
+indeterminate bar has nothing to report. `format` takes the percent number
+and returns any node — e.g. a file counter, a word, an icon.
+
+<Stack direction="column" gap="4">
+  <Progress.Linear value={60} />
+  <Progress.Linear value={60} showInfo={false} />
+  <Progress.Linear value={4} format={(percent) => `${percent} / 5 files done`} />
+</Stack>
+
+## Route progress
+
+The classic top-of-page loading bar (YouTube/GitHub style): entering a route
+starts the bar, it **grows fast-then-slow and parks at 99%**, and only the real
+load commit takes it to 100. The component stays pure — `useProgressStrategy`
+owns the clock, the consumer feeds its `value` straight into the bar. Its
+commands:
+
+- `start()` — begin the automatic growth (the value approaches `cap`, default
+  99, fast first and slower as it closes in)
+- `done()` — the load committed: the value jumps to 100 (fade the bar out
+  here)
+- `reset()` — back to 0 for the next transition
+
+```tsx
+const { value, start, done, reset } = useProgressStrategy();
+
+return <Progress.Linear value={value} />;
+```
+
+A custom plan replaces the default curve: an ascending list of
+`[marker, durationMs]` checkpoints — markers are percent strings on the
+same scale `cap` lives in — each segment runs from the previous
+checkpoint to its marker over its duration, at an even pace; the last
+marker is where the run parks. `cap` always stays the ceiling: a marker
+beyond it clamps to it (the segment's duration still applies), a plan
+ending below it parks at its last marker.
+
+A plan's look is its **slopes**: a segment's pace is its percent change
+divided by its duration, so give neighbouring segments clearly different
+slopes — equal slopes merge into one straight line and the segmentation
+disappears.
+
+```tsx
+const { value, start, done, reset } = useProgressStrategy({
+  strategy: [
+    ['20%', 200], // 0 → 20% sprint in 200ms
+    ['60%', 800], // 20% → 60% even pace over 800ms
+    ['99%', 1800], // 60% → 99% crawl over 1.8s — 99% is the parking spot
+  ],
+});
+```
+
+<ProgressRouteDemo />
+
+## Accessibility
+
+- The root carries `role="progressbar"` with `aria-valuemin={0}` /
+  `aria-valuemax={100}` pinned; `aria-valuenow` rides only the determinate
+  state.
+- The fill and the track are plain boxes with no text — the number lives in
+  the live region, not in the DOM words.

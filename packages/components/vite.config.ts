@@ -37,6 +37,7 @@ const entries = {
   toast: resolve(import.meta.dirname, 'src/toast/index.ts'),
   tooltip: resolve(import.meta.dirname, 'src/tooltip/index.ts'),
   popover: resolve(import.meta.dirname, 'src/popover/index.ts'),
+  progress: resolve(import.meta.dirname, 'src/progress/index.ts'),
   // The public date/time toolbelt: @colox/react/cdk/date. The entry
   // sits under cdk/ so the subpath stays put when cdk promotes to its
   // own package.

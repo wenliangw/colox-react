@@ -1,0 +1,98 @@
+/**
+ * Progress.Linear — the horizontal progress bar.
+ *
+ * Base scope: the in-flow row layout ([track][info]), the private
+ * paint variables and the track/bar/info drawing. The palette families
+ * land in palette.scss (the class declares the bar paint, the rules
+ * read it — the Slider recipe), the stripe thickness in size.scss, the
+ * indeterminate sweep in animation.scss.
+ *
+ * The bar is its own box on purpose: the full capsule radius only
+ * rounds a box whose height IS the stripe height — painting the fill
+ * as a background-clip on the track would render square ends (the
+ * Slider track lesson). The track clips, the bar rides inside it with
+ * its pill caps.
+ *
+ * The indeterminate flow is a continuous decorative motion — the
+ * motion tokens only grade enter/exit transitions, so the sweep owns
+ * its loop duration (--colox-progress-linear-flow-duration) and a
+ * local reduced-motion gate in animation.scss parks the block.
+ */
+.colox-progress-linear {
+  // The filled-bar paint falls back to the brand family so the bar
+  // survives without a palette class (the families override it in
+  // palette.scss); the fabric is the untraversed track fill.
+  --colox-progress-linear-palette-solid: var(--colox-color-brand-solid);
+  --colox-progress-linear-fabric: var(--colox-color-bg-muted);
+  // The indeterminate sweep loop length (not a transition tier — the
+  // motion tokens grade enter/exit, this is a continuous motion).
+  --colox-progress-linear-flow-duration: 1.6s;
+  // The sweeping block's fixed width while indeterminate.
+  --colox-progress-linear-bar-width: 25%;
+
+  display: flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+  width: 100%;
+  font-family: var(--colox-font-sans);
+  color: var(--colox-color-text-default);
+}
+
+// The track: the untraversed fabric strip, clipped so the sweeping
+// block and an over-committed width stay inside the stripe.
+.colox-progress-linear__track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--colox-progress-linear-track);
+  border-radius: var(--colox-radius-full);
+  background: var(--colox-progress-linear-fabric);
+  overflow: hidden;
+}
+
+// The filled bar: its own box (the Slider recipe) riding inside the
+// clipped track with full pill caps. The width is the inline
+// determinate percent, or the fixed sweeping width on the
+// indeterminate class.
+//
+// The width follows the committed value through a transition: a driven
+// percent often arrives in discrete updates (the useProgressStrategy
+// clock ticks every 200ms, consumers may setState per event), and the
+// raw jump reads as a stutter. The slide turns the steps into one
+// continuous flow. The duration is the motion normal tier — the same
+// 200ms as the strategy tick, so consecutive steps hand off with no
+// gap — and the timing is linear: the curve feeling comes from the
+// value steps shrinking, not from the in-between easing. Riding the
+// motion token also inherits the theme's reduced-motion contract
+// (durations collapse to ~0), where the bar snaps to the committed
+// value without motion.
+.colox-progress-linear__bar {
+  height: 100%;
+  border-radius: var(--colox-radius-full);
+  background: var(--colox-progress-linear-palette-solid);
+  transition: width var(--colox-motion-duration-normal) linear;
+}
+
+.colox-progress-linear__bar--indeterminate {
+  width: var(--colox-progress-linear-bar-width);
+  animation: colox-progress-linear-indeterminate var(--colox-progress-linear-flow-duration) linear
+    infinite;
+}
+
+// The trailing label: component-gated to the determinate state, sized
+// by the tier ladder in size.scss.
+//
+// The label holds a stable slot next to the fill: a numeric readout
+// beside a percent fill must not change layout as it changes value. A
+// widening label reflows this flex row — the track shrinks, the bar's
+// pixel width drops while its percent (and the number) grow, and the
+// fill visibly moves backwards mid-run (the "it goes backwards" bug).
+// `min-width: 5ch` reserves the widest default readout ("99.9%", the
+// strategy commits 1 decimal); `tabular-nums` makes every digit the
+// same width so the text inside the slot never wobbles either. A
+// custom `format` content wider than the slot still owns its layout
+// (and the reflow that comes with it).
+.colox-progress-linear__info {
+  flex: none;
+  min-width: 5ch;
+  font-variant-numeric: tabular-nums;
+}

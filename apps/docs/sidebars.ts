@@ -20,6 +20,7 @@ const sidebars: SidebarsConfig = {
         { type: 'doc', id: 'components/tooltip', label: 'Tooltip' },
         { type: 'doc', id: 'components/popover', label: 'Popover' },
         { type: 'doc', id: 'components/alert', label: 'Alert' },
+        { type: 'doc', id: 'components/progress', label: 'Progress' },
       ],
     },
     {

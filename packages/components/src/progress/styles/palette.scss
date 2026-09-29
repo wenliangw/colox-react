@@ -1,0 +1,27 @@
+// The six Button families mapped onto the private bar paint (same
+// wiring as the Slider palette: the class declares the variable, the
+// drawing rules in base.scss read it). The brand fallback lives in
+// base.scss so the paint survives even without a palette class.
+.colox-progress-linear--primary {
+  --colox-progress-linear-palette-solid: var(--colox-color-brand-solid);
+}
+
+.colox-progress-linear--gray {
+  --colox-progress-linear-palette-solid: var(--colox-color-gray-solid);
+}
+
+.colox-progress-linear--info {
+  --colox-progress-linear-palette-solid: var(--colox-color-blue-solid);
+}
+
+.colox-progress-linear--error {
+  --colox-progress-linear-palette-solid: var(--colox-color-red-solid);
+}
+
+.colox-progress-linear--warning {
+  --colox-progress-linear-palette-solid: var(--colox-color-orange-solid);
+}
+
+.colox-progress-linear--success {
+  --colox-progress-linear-palette-solid: var(--colox-color-green-solid);
+}

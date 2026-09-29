@@ -288,7 +288,41 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   decides visibility (no internal hidden state). The live region
   follows the type: error/warning announce assertively
   (`role="alert"`), info/success politely (`role="status"`).
-- `Progress`, `Skeleton`, `Empty` — planned.
+- `Progress` — the progress family — **shipped**: `Progress.Linear`
+  is the horizontal progress bar — a track fabric with a filled bar
+  grown to the committed percent (0–100), or, without a `value`, an
+  **indeterminate** sweeping block that signals in-flight work
+  without a number (announces no `aria-valuenow`; the sweep pauses
+  under `prefers-reduced-motion`). The shape is a **namespace family**
+  (the maintainer picked `Progress.Linear` over a `type` axis or a
+  split `LinearProgress`): the sibling circular shape joins the same
+  namespace (`Progress.Circular`) when it ships. `palette` (six
+  design-language families, brand by default) picks the bar paint —
+  success stays `palette="success"`, failure `palette="error"`, never
+  an automatic color. `size` (sm/md/lg) picks the stripe thickness
+  (4/6/8px via the spacing ladder). `showInfo` (default on,
+  determinate only) shows the trailing `n%` label and `format`
+  rewrites it (`format={(percent) => `${percent} / 5 files`}`). Pure
+  display — no events, no form integration; consumers drive the value
+  from their store. The live region is the family contract:
+  `role="progressbar"` with `aria-valuemin/max` pinned to 0–100.
+  The **`useProgressStrategy` hook** pairs with the bar for the
+  classic top-of-page route loading bar (created on the maintainer's
+  request): `start()` grows the value **fast-then-slow** toward a cap
+  (default 99, exponential approach — each tick walks 10% of the
+  remaining distance) and parks; `done()` commits to 100; `reset()`
+  re-arms for the next route (`reset(); start();` works in the same
+  tick). A custom `strategy` plan replaces the default curve —
+  ascending `[marker, durationMs]` checkpoints (e.g. `[['20%', 200],
+['60%', 800], ['99%', 1800]]`: 20% in 200ms, then 60%, then 99%, each
+  segment paced evenly — give neighbouring segments clearly different
+  slopes, equal slopes read as one straight line; the last marker the
+  parking spot; markers are percent strings on the cap's scale). `cap`
+  always stays the ceiling — a marker beyond it clamps to it (the
+  segment's duration still applies). The strategy clock lives in the
+  hook, the bar stays pure — the same divide as the component's
+  pure-display identity.
+- `Skeleton`, `Empty` — planned.
 
 ### M6 — Navigation and containment (planned)
 
