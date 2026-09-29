@@ -126,9 +126,11 @@ export const Overview: Story = {
             <Anchor inline>
               <IconButton aria-label="消息" variant="muted" />
               <Positioner placement="top-end" offset={{ top: -4, end: -4 }}>
-                <Badge.Group size="sm">
-                  <Badge.Item palette="error">5</Badge.Item>
-                  <Badge.Item>new</Badge.Item>
+                <Badge.Group>
+                  <Badge.Item palette="error" size="sm">
+                    5
+                  </Badge.Item>
+                  <Badge.Item size="sm">new</Badge.Item>
                 </Badge.Group>
               </Positioner>
             </Anchor>
