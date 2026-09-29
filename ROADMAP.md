@@ -322,7 +322,11 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   segment's duration still applies). The strategy clock lives in the
   hook, the bar stays pure — the same divide as the component's
   pure-display identity.
-- `Skeleton`, `Empty` — planned.
+- `Skeleton` — shipped: the loading-placeholder family (rect root +
+  `Skeleton.Text`/`Skeleton.Circle`/`Skeleton.Button`; pulse/wave/none
+  motion axis; decorative `aria-hidden` default, the loading switch
+  stays the caller's).
+- `Empty` — planned.
 
 ### M6 — Navigation and containment (planned)
 

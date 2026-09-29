@@ -1,0 +1,105 @@
+---
+sidebar_position: 26
+---
+
+import { Grid, Skeleton, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Skeleton
+
+The **loading-placeholder family**: neutral fabric shapes that reserve a
+slot's real estate until the content arrives, so the page does not jump when
+it does. The root `Skeleton` is the rect block; `Skeleton.Text` (line),
+`Skeleton.Circle` (round) and `Skeleton.Button` (control silhouette) join it.
+Pure display: no events, no state — every shape is decorative
+(`aria-hidden` by default).
+
+## Rect blocks
+
+The rect block **fills its layout cell** — Grid and Stack stretch it by
+default, so the box comes from the layout. `width`/`height` px escapes pin
+exact sizes.
+
+<Grid columns={2} gap="4">
+  <Skeleton height={120} />
+  <Skeleton height={120} />
+  <Skeleton height={72} />
+  <Skeleton height={72} />
+</Grid>
+
+## Shapes
+
+Avatar rows, paragraphs and action bars compose from the three companions:
+
+<Stack direction="column" gap="6">
+  <Stack direction="row" gap="3" align="center">
+    <Skeleton.Circle size="lg" />
+    <Stack.Item grow>
+      <Stack direction="column" gap="2" align="stretch">
+        <Skeleton.Text />
+        <Skeleton.Text width={220} />
+      </Stack>
+    </Stack.Item>
+  </Stack>
+  <Stack direction="column" gap="2" align="stretch">
+    <Skeleton.Text size="lg" />
+    <Skeleton.Text />
+    <Skeleton.Text width={280} />
+  </Stack>
+</Stack>
+
+## Sizes
+
+`Skeleton.Text` tiers land on the font ladder (sm/md/lg). `Skeleton.Circle`
+footprints mirror the Avatar tiers (xs 24 / sm 32 / md 40 / lg 48) and accept
+**any theme size-token key** — `size="7"` renders a 28px circle.
+`Skeleton.Button` heights mirror the Button control ladder (xs/sm/md/lg).
+
+<Stack direction="column" gap="5">
+  <Stack direction="row" gap="4" align="center">
+    <Skeleton.Circle size="xs" />
+    <Skeleton.Circle size="sm" />
+    <Skeleton.Circle size="md" />
+    <Skeleton.Circle size="lg" />
+    <Skeleton.Circle size="7" />
+  </Stack>
+  <Stack direction="row" gap="3" align="center">
+    <Skeleton.Button size="xs" />
+    <Skeleton.Button size="sm" />
+    <Skeleton.Button size="md" />
+    <Skeleton.Button size="lg" />
+  </Stack>
+  <Stack direction="column" gap="2" align="stretch">
+    <Skeleton.Text size="sm" />
+    <Skeleton.Text size="md" />
+    <Skeleton.Text size="lg" />
+  </Stack>
+</Stack>
+
+## Animation
+
+`animation` (the shared axis, default `pulse`) picks the placeholder motion:
+`pulse` breathes the fabric opacity, `wave` glides a soft luminous band
+across it, `none` stays still. The motion respects
+`prefers-reduced-motion`.
+
+<Stack direction="row" gap="4" align="stretch">
+  <Stack.Item grow>
+    <Skeleton height={64} animation="pulse" />
+  </Stack.Item>
+  <Stack.Item grow>
+    <Skeleton height={64} animation="wave" />
+  </Stack.Item>
+  <Stack.Item grow>
+    <Skeleton height={64} animation="none" />
+  </Stack.Item>
+</Stack>
+
+## The loading switch is yours
+
+Skeletons hold no state: the `loading ? <Skeleton /> : <Content />` switch
+belongs to the caller — typically one ternary guarding the slot whose real
+content is still on the way. Announce the loading state with your own live
+region; the shapes themselves are `aria-hidden` so screen readers skip the
+fabric (pass `aria-hidden={false}` only when wiring an announcement into a
+shape yourself).

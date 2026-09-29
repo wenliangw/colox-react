@@ -1,0 +1,69 @@
+// Skeleton family fabric: neutral placeholder shapes. The four blocks
+// share the private surface/animation tokens through this grouped
+// scope; each block keeps its own geometry below. The surface rides
+// the muted design-language background, so light/dark themes both
+// give a fabric that sits below real content.
+.colox-skeleton,
+.colox-skeleton-text,
+.colox-skeleton-circle,
+.colox-skeleton-button {
+  --colox-skeleton-surface: var(--colox-color-bg-muted);
+  // Pulse breathing rides the family duration.
+  --colox-skeleton-animation-duration: 1.5s;
+  // The wave glides a little slower than the breath.
+  --colox-skeleton-wave-duration: 2s;
+  // The wave highlight: white lifted above the surface — reads as a
+  // lighter band in both themes (no mode-specific flip). Two strengths
+  // — the soft shoulders and the bright core — build a luminous hump
+  // whose edges fade out instead of cutting off.
+  --colox-skeleton-shimmer: color-mix(in srgb, var(--colox-palette-white-900) 45%, transparent);
+  --colox-skeleton-shimmer-soft: color-mix(
+    in srgb,
+    var(--colox-palette-white-900) 18%,
+    transparent
+  );
+
+  background: var(--colox-skeleton-surface);
+}
+
+// The rect block: the layout cell draws its box — the block fills the
+// slot (Grid/Stack stretch it by default) with the card radius.
+.colox-skeleton {
+  border-radius: var(--colox-radius-md);
+}
+
+// Text line: a full-width capsule the height of its font ladder tier
+// (the var is fed by the size tier; the md reader size is the
+// fallback so the line has a face even without a size class).
+.colox-skeleton-text {
+  display: block;
+  width: 100%;
+  // md fallback: the size tier normally feeds this var through a
+  // size class, but the base keeps a sane line on its own.
+  --colox-skeleton-text-height: var(--colox-font-size-sm);
+  height: var(--colox-skeleton-text-height);
+  border-radius: var(--colox-radius-full);
+}
+
+// Circle: a round footprint, same tiers and raw scale keys as Avatar.
+.colox-skeleton-circle {
+  display: inline-block;
+  flex: none;
+  // md fallback: see the text line note.
+  --colox-skeleton-circle-block: var(--colox-size-10);
+  width: var(--colox-skeleton-circle-block);
+  height: var(--colox-skeleton-circle-block);
+  border-radius: var(--colox-radius-full);
+}
+
+// Button: the control silhouette — the Button size ladder's heights,
+// radius-lg corners (the control's own), and a modest default width
+// (height via the size tier, width via the prop or this fallback).
+.colox-skeleton-button {
+  display: inline-block;
+  flex: none;
+  // md fallback: see the text line note.
+  height: var(--colox-size-10);
+  width: var(--colox-skeleton-button-width, var(--colox-size-16));
+  border-radius: var(--colox-radius-lg);
+}

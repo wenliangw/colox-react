@@ -150,6 +150,11 @@
       "import": "./dist/es/slider.js",
       "require": "./dist/cjs/slider.cjs"
     },
+    "./skeleton": {
+      "types": "./dist/types/skeleton/index.d.ts",
+      "import": "./dist/es/skeleton.js",
+      "require": "./dist/cjs/skeleton.cjs"
+    },
     "./textarea": {
       "types": "./dist/types/textarea/index.d.ts",
       "import": "./dist/es/textarea.js",

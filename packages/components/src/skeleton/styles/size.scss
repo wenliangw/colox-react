@@ -1,0 +1,58 @@
+@use '@colox/theme/variables' as tokens;
+
+// Text line tiers land on the font ladder: the placeholder line reads
+// at the tier's own size (sm = xs reader size, md = sm, lg = md).
+.colox-skeleton-text--sm {
+  --colox-skeleton-text-height: var(--colox-font-size-xs);
+}
+
+.colox-skeleton-text--md {
+  --colox-skeleton-text-height: var(--colox-font-size-sm);
+}
+
+.colox-skeleton-text--lg {
+  --colox-skeleton-text-height: var(--colox-font-size-md);
+}
+
+// Circle footprints: preset tiers alias the Avatar footprints (xs 24 /
+// sm 32 / md 40 / lg 48) and every raw scale key is addressable
+// (`size="7"` renders a 28px circle — theme overrides flow through
+// the token).
+.colox-skeleton-circle--xs {
+  --colox-skeleton-circle-block: var(--colox-size-6);
+}
+
+.colox-skeleton-circle--sm {
+  --colox-skeleton-circle-block: var(--colox-size-8);
+}
+
+.colox-skeleton-circle--md {
+  --colox-skeleton-circle-block: var(--colox-size-10);
+}
+
+.colox-skeleton-circle--lg {
+  --colox-skeleton-circle-block: var(--colox-size-12);
+}
+
+@each $key in tokens.$colox-size-keys {
+  .colox-skeleton-circle--size-#{$key} {
+    --colox-skeleton-circle-block: var(--colox-size-#{$key});
+  }
+}
+
+// Button silhouette heights mirror the Button control ladder.
+.colox-skeleton-button--xs {
+  height: var(--colox-size-6);
+}
+
+.colox-skeleton-button--sm {
+  height: var(--colox-size-8);
+}
+
+.colox-skeleton-button--md {
+  height: var(--colox-size-10);
+}
+
+.colox-skeleton-button--lg {
+  height: var(--colox-size-12);
+}

@@ -1,0 +1,78 @@
+// The placeholder motion vocabulary: pulse breathes the fabric, wave
+// sweeps a translucent highlight band across it, none stays still.
+// The animation classes are shared root-block modifiers that parts
+// ride too (the same channel Badge.Count rides `colox-badge--sm`),
+// so the rules live once. Placeholder motion is continuous decoration
+// — its duration rides the private family var, not the transition
+// motion tokens (those mean "between states").
+
+@keyframes colox-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes colox-skeleton-wave-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.colox-skeleton--pulse {
+  animation: colox-skeleton-pulse var(--colox-skeleton-animation-duration) ease-in-out infinite;
+}
+
+.colox-skeleton--wave {
+  position: relative;
+  overflow: hidden;
+
+  // The wave: a soft luminous hump gliding over the fabric. The band
+  // is a wide gradient with faded shoulders — no hard stops, hard
+  // edges read as a marching stripe instead of flowing light — swept
+  // with ease-in-out so it gathers, glides across and fades. At the
+  // loop ends the hump parks outside the box (the static face is just
+  // the surface color), so the restart is invisible.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--colox-skeleton-shimmer-soft) 30%,
+      var(--colox-skeleton-shimmer) 50%,
+      var(--colox-skeleton-shimmer-soft) 70%,
+      transparent 100%
+    );
+    animation: colox-skeleton-wave-sweep var(--colox-skeleton-wave-duration) ease-in-out infinite;
+  }
+}
+
+// The static face: an explicit class, so resting on a cva state never
+// leaves a dangling modifier.
+.colox-skeleton--none {
+  animation: none;
+}
+
+// The local reduced-motion gate: placeholder motion is decoration
+// (not a state transition), so it parks statically here rather than
+// riding the central motion tokens.
+@media (prefers-reduced-motion: reduce) {
+  .colox-skeleton--pulse,
+  .colox-skeleton--wave {
+    animation: none;
+  }
+
+  .colox-skeleton--wave::after {
+    display: none;
+  }
+}
