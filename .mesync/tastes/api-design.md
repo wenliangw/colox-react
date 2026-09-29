@@ -414,3 +414,15 @@
 - **范围外克制**：banner 全宽模式、icon 覆盖、rich children 槽、size 轴（非控件）均无真实消费场景，按「软事实不落盘」纪律不进 API。
 
 来源：Alert 设计对齐轮（用户四项全拍板推荐：type/subtle/要 action/受控关闭）；自定义内容形态细化（用户追问「是否需要 dot 形式」→ 裁决不需要，词形 message/description 拍板）。
+
+## 加载占位家族：占位纯展示 + 动效轴化 + 装饰诚实默认（Skeleton 定案）
+
+- **形态家族 + Object.assign 根挂载**（Badge 同构第三件）：Skeleton 根自己渲染（rect 块），所以走 Badge 的 Object.assign 形态而非 Progress 的纯容器 const——「根是否渲染」决定挂载形态，不是无脑统一。
+- **占位件装饰诚实**：aria-hidden 默认 true——占位不是内容、读屏器不念灰块；加载播报归消费方 live region；显式 false 逃生舱。
+- **布局画盒子**：root 免宽免高（默认 block 撑满布局格位，Grid/Stack 默认 stretch 同绘），width/height px 逃生舱管精确——「布局给尺寸、组件给形状」的分层；自带成形件（Circle/Button）inline 定形盒不吃布局宽度。
+- **持续装饰动画轴化**：用户拍板「动画可以做 pulse 和 wave 和无动画」→ `animation: 'pulse' | 'wave' | 'none'` 一个三值轴（默认 pulse 生态默认）替代 animated 布尔——动效是有名字的形态不是开关；装饰动画属视觉形态，进 API 为显式词。
+- **不做 loading 交换壳**：antd「骨架包真实内容、内部切换渲染」的 loading 壳被澄清后否决——纯展示件不自持交换状态，`loading ? <Skeleton/> : <Content/>` 归消费方（Button「无内部状态」纪律同源）。
+- **尺寸词表复用不发明**：Circle 档位词+裸键通道与 Avatar 完全同源（xs 24/sm 32/md 40/lg 48 + size="7"→28px），Button 高度与 Button 控制梯同源，Text 行高走字号梯——家族词表密度靠复用已有档位，不为占位件造新档。
+- **无消费场景的能力不立项**：palette 轴（骨架中性面无彩色诉求）、rows 参数（段落=Stack 堆行）不进——「软事实不落盘」同例。
+
+来源：Skeleton 设计对齐轮（2026-11）：「1. 要 Skeleton.Button；2. loading 交换壳是什么；3. 动画可以做 pulse 和 wave 和无动画；4. 免宽 + px 够了…skeleton 默认 block 撑满？」——四项拍板如上。

@@ -100,3 +100,12 @@
 - **随看随改如实记**：视觉细节用户会多次往返（16→22→20），决策链由新节点 supersede 旧定案如实记录，不在「上次说了什么」上纠缠。
 
 来源：Alert icon 尺寸三轮往复（决策 e3472a72「20 非规格用 16」被 9a23f681「最终裁定 20px」supersedes，用户自选「看来还是用 20px 的更好」）。
+
+## 占位织物：共享修饰通道 + 白抬升扫描带 + 私有时长局部门
+
+- **共享轴骑根块类**（共享修饰通道第二例）：`colox-skeleton--pulse/wave/none` 一套类全族共享——动画规则只写一次，部件的自有轴（size）才走部件块修饰（`colox-skeleton-circle--xs`）；cva 轴里有显式 none 类（static face 也是真实类，不悬空修饰类）。
+- **wave = 柔光流动伪元素带，无 filter 无透镜**：高光带是 `::after` absolute inset:0 的**软钟形渐变**（白 45% 亮核 + 18% 软肩、两端口零渐隐）+ `translateX(-100→100%)` 平移，静止态停在盒外——wave 的静态脸就是表面色；白抬升 `color-mix(in srgb, white-900 45%/18%, transparent)` 亮暗同向更亮，不造模式翻面；父配 position:relative + overflow:hidden（裁剪内带不塌容器）。
+- **流动感 = 边缘硬度 + 速度曲线，缺一即「行进条纹」**（用户报「扫光动效有点生硬」后柔化）：装饰滑动的生硬来自两个源——渐变硬停（35/50/65% 三停即 cut 断的光带边缘）读成条纹，匀速 linear 读成机械行军；修法各司其职：两端渐隐 + 肩档层叠成发光钟形（形状面）、ease-in-out 缓动（时间面）、时长按动效角色专属（波 2s、呼吸 1.5s，不共用一个数）。装饰动效的「丝滑」是视觉词，配方归形状与曲线两层，不是调一个 magic number。
+- **持续装饰动画不在换场三档语义里**（Progress/Skeleton 双实例成章）：占位动效是连续装饰不是状态换场——时长私有（`--colox-skeleton-wave-duration: 2s` / `--colox-skeleton-animation-duration: 1.5s`）+ 局部 prefers-reduced-motion 门（park 成静态灰面），不 ride 中央 motion token。
+
+来源：Skeleton 样式实现轮（共享修饰通道 Badge.Count 先例；局部 reduced-motion 门 Progress 先例）+ 用户「扫光动效有点生硬」柔化轮。

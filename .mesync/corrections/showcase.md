@@ -85,3 +85,25 @@
 ## 为什么
 
 示例的目的不是「跑得通」而是「特征可见」；数字层面的巧合（斜率相等）会让正确的实现演示出错误的观感，用户会把观感报成 bug。
+
+---
+
+# 免宽占位件裸塞 flex row = 零宽空盒（Skeleton 第五前科）
+
+## 现状
+
+- Skeleton story/docs 的 Animation 区把三条 `height={64}` 的 rect 裸块直接放进 `Stack direction="row"`——flex 子项的 `flex-basis: auto` 对空 div 宽度坍缩为 0，加 `align="stretch"` 只给高度不给宽度，三条 bar 全部零宽，区里看起来什么都没有。用户反馈「Animation 示例里面我没有看到示例」。组件契约没错（布局画盒子），是 demo 没给出盒子。root 块在 Grid 列、Stack column 里不塌（拉伸/占满），唯独 flex row 才是雷。
+
+## 改这里
+
+- 给任何**免宽块/占位块**（rect Skeleton、未来同契约件）的 row 布局 demo 接盒子。
+
+## 必须检查
+
+- [ ] 免宽件的并排 demo：每条用 `Stack.Item grow`（Spacer 语义）等分列宽，或 Grid 分列——flex row 里裸块必零宽。
+- [ ] demo 写完先自查「每个区最坏渲染」：空盒 + row 布局 = 隐形区；高度给了但宽度源为零的块同样失明。
+- [ ] 用户报「某区看到标题看不到示例」先按布局坍缩排嫌：block/flex 上下文差异比 CSS 属性 bug 常见得多，组件单测照绿。
+
+## 为什么
+
+「布局画盒子」契约的等价面是「demo 负责给盒子」；布局上下文（row/column/grid）是隐形的第二参数，同一组件在不同上下文里宽高源不同——demo 接错上下文，正确的组件演示出空区。
