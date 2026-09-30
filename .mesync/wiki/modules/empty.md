@@ -28,7 +28,7 @@ interface EmptyProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
 ```
 empty/
 ├── empty.tsx                 # Empty 根（forwardRef）：type→插画映射 + data-scene + 三槽渲染
-├── presentations/
+├── figures/                  # 三场景图件（figure 词表：目录名与 figure 槽使用命名一致 + 复数）
 │   ├── empty.tsx             # EmptyDataFigure 文件夹+数据页场景（蓝橙氛围；飘出页带迷你柱状图）
 │   ├── search.tsx            # SearchEmptyFigure 放大镜+漂浮文档场景（绿蓝氛围）
 │   ├── error.tsx             # ErrorEmptyFigure 环星行星+月亮场景（红橙氛围；轨道虚线+星野）

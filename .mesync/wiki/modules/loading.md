@@ -56,7 +56,7 @@ src/loading/
 - 2026-11 用户「外围两层不要线性、要面性」：两圈环从描边线（`stroke` 圆）改**填充环（面性带状）**——evenodd 双圆 path 填实（内环 ro/ri 6.5/5、外环 10/8.5），静态层级从 stroke-opacity 改 fill-opacity（0.45/0.22）；波纹呼吸机制不变（keyframe 只调 element opacity）。核心与 dots/spinner 不动。（仍留了空白间隙，被下一轮修掉。）
 - 2026-11 用户「没看到面性，实心到外围之间不该有空白间隙」：**pulse 改三层实心盘堆叠**——弃 evenodd 环带（留有间隙且面感弱），改为**三个实心圆盘从小到大叠放**（外 r10 最浅先画 → 中 r6.5 浅 → 核 r3 实心后画），fill-opacity 1/0.45/0.22，**无间隙连续同心面**（0→3 实心、3→6.5 浅、6.5→10 最浅）；波纹呼吸不变（各盘 opacity 错拍 1/3 周期，波向外传导）。
 - 2026-11 用户「示例里只有灰色，多加些其他色值」+「其他动画效果也补颜色示例」：无 API 变更（currentColor 无 palette 轴已定案）——Storybook Colors 分区改为**三形态 × 五色矩阵**（`ANIMATIONS × COLORS` 双 map：spinner/dots/pulse 各配 brand/info/success/warning/error），docs 同步三排彩色示例：给 `<Loading style={{ color: 'var(--colox-color-{brand|blue|green|orange|red}-solid)' }}>` 即换色（currentColor 继承自 span host）。同步修正 story/docs 里 pulse 的旧描述（「呼吸环」「radar ring breathing outward」→ 波纹呼吸点 / solid core + two filled bands rippling）。
-- 2026-11 用户「presentations 命名奇怪，Loading 里用的是 indicator」：图件目录 `presentations/` → **`indicators/`**（词随组件自身词表，不搬家族通用词）；仅 import 与文档同步，行为零变化。Empty 的 `presentations/` 不动（那是 figure 词表的出处）。
+- 2026-11 用户「presentations 命名奇怪，Loading 里用的是 indicator」：图件目录 `presentations/` → **`indicators/`**（词随组件自身词表，不搬家族通用词）；仅 import 与文档同步，行为零变化。Empty 的 `presentations/` 当时不动。（后话：Empty 亦按同律改名 `figures/`，见 empty 轮。）
 
 ## 详见
 

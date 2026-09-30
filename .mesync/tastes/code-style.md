@@ -32,7 +32,7 @@
 - **样式文件与组件/件名同构**：哪个 ts 文件画哪张脸，scss 就同名——`box.tsx`(MessageBox) ≥ `box.scss`（前科：消息共享条目样式叫 `shell.scss`，用户指正「命名已经过时了吧，最新的应该是 box」）。文件名不是描述文件内容的自由行文，是「谁的样子」的指针。
 - **单文件能力不套目录层**：`stores/store.ts` 这类「目录只装一个文件」的包装不必要——store 单文件直落基座同级（`factory.ts`、`box.tsx`、`viewport.tsx`、`store.ts` 平级）；只有真正多文件的族才留 `types/`、`constants/` 目录。
 - **内部件名避词撞**：同一系统的两个不同职责不共享同一个词（viewport 里的「slot」既是位置槽又是条目渲染器——后者改 `EntryRenderer`；`notifyClose` 与 Notify 面撞词——改 `fireClose`）。名字让读者一眼分清职责。
-- **目录/件名随组件自身词表，不搬家族通用词**：Loading 的三形态图件目录叫 `indicators/`（组件自家词表是 indicator——`colox-loading__indicator`、`size` 动的是 indicator footprint），不叫家族通用的 `presentations/`（Empty 的词表是 figure，它叫 presentations 有它自己的出处）。来源：用户指正「presentations 的命名有些奇怪，既然 Loading 里用的是 indicator，不如叫 indicators」。
+- **目录/件名随组件自身词表 + 与使用命名一致、用复数**：图件目录跟组件公开面的词走——Loading 用 indicator 词表（`colox-loading__indicator`）目录叫 `indicators/`、Empty 用 `figure` 槽词目录叫 `figures/`，不搬家族通用的 `presentations/`（「怎么组织」的词在组件里无语义出口）。**目录名 = 使用时命名的复数形式**。来源：用户两次指正——「presentations 的命名有些奇怪，既然 Loading 里用的是 indicator，不如叫 indicators」；「将 empty 的 presentations 改名为 figures，像这种组件应该跟使用时的命名保持一致，然后用复数形式」。
 
 ## 目录分类：能力文件夹 + 层内分组（2025 通用规范）
 
