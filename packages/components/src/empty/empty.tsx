@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
-import { EmptyDataFigure, ErrorEmptyFigure, SearchEmptyFigure } from './presentations';
+import { EmptyDataFigure, ErrorEmptyFigure, SearchEmptyFigure } from './figures';
 import type { EmptyProps, EmptyRef, EmptyType } from './types';
 
 import './styles/index.scss';
