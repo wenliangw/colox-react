@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         { type: 'doc', id: 'components/progress', label: 'Progress' },
         { type: 'doc', id: 'components/skeleton', label: 'Skeleton' },
         { type: 'doc', id: 'components/empty', label: 'Empty' },
+        { type: 'doc', id: 'components/loading', label: 'Loading' },
       ],
     },
     {

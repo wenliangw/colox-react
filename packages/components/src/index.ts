@@ -17,6 +17,7 @@ export * from './grid';
 export * from './icon-button';
 export * from './input';
 export * from './input-number';
+export * from './loading';
 export * from './modal';
 export * from './notify';
 export * from './positioner';

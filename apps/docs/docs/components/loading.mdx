@@ -1,0 +1,115 @@
+---
+sidebar_position: 28
+---
+
+import { Button, Empty, Loading, Stack } from '@colox/react';
+import '@colox/react/style.css';
+
+# Loading
+
+The **inline busy indicator**: a decorative motion figure that says
+"work in progress" — it paints no value and no layout. Determinism
+belongs to `Progress`, placeholding to `Skeleton`.
+`animation` (`spinner`/`dots`/`pulse`, `spinner` by default) picks the
+figure: a round arc spinning, three dots in a staggered wave, a solid
+core with two filled bands rippling outward.
+
+## Animations
+
+<Stack direction="row" gap="24" align="center">
+  <Loading animation="spinner" label="spinner" />
+  <Loading animation="dots" label="dots" />
+  <Loading animation="pulse" label="pulse" />
+</Stack>
+
+## Sizes
+
+`size` (`sm` 16 / `md` 24 / `lg` 32 riding the theme size scale, or a
+number pinning the exact pixel footprint) moves the **indicator only**
+— the label keeps the surrounding text size.
+
+<Stack direction="row" gap="24" align="center">
+  <Loading size="sm" />
+  <Loading size="md" />
+  <Loading size="lg" />
+  <Loading size={40} />
+</Stack>
+
+## Label and color
+
+`label` rides beside the indicator and doubles as the accessible name;
+with neither `label` nor `aria-label`, the default name is "Loading".
+The figure inherits `currentColor`, so a spinner dropped into a Button
+or a tinted line of text picks the color up for free — no color axis
+to tune:
+
+<Stack direction="row" gap="16" align="center">
+  <Button>提交中</Button>
+  <Button variant="subtle">
+    加载中 <Loading size="sm" />
+  </Button>
+</Stack>
+
+The tint is a plain `color`, so any design token works — no palette axis
+to learn; every `animation` inherits `currentColor` equally:
+
+<Stack direction="column" gap="12">
+  <Stack direction="row" gap="16" align="center">
+    <Loading
+      animation="spinner"
+      label="brand"
+      style={{ color: 'var(--colox-color-brand-solid)' }}
+    />
+    <Loading animation="spinner" label="info" style={{ color: 'var(--colox-color-blue-solid)' }} />
+    <Loading
+      animation="spinner"
+      label="success"
+      style={{ color: 'var(--colox-color-green-solid)' }}
+    />
+    <Loading
+      animation="spinner"
+      label="warning"
+      style={{ color: 'var(--colox-color-orange-solid)' }}
+    />
+    <Loading animation="spinner" label="error" style={{ color: 'var(--colox-color-red-solid)' }} />
+  </Stack>
+  <Stack direction="row" gap="16" align="center">
+    <Loading animation="dots" label="brand" style={{ color: 'var(--colox-color-brand-solid)' }} />
+    <Loading animation="dots" label="info" style={{ color: 'var(--colox-color-blue-solid)' }} />
+    <Loading animation="dots" label="success" style={{ color: 'var(--colox-color-green-solid)' }} />
+    <Loading
+      animation="dots"
+      label="warning"
+      style={{ color: 'var(--colox-color-orange-solid)' }}
+    />
+    <Loading animation="dots" label="error" style={{ color: 'var(--colox-color-red-solid)' }} />
+  </Stack>
+  <Stack direction="row" gap="16" align="center">
+    <Loading animation="pulse" label="brand" style={{ color: 'var(--colox-color-brand-solid)' }} />
+    <Loading animation="pulse" label="info" style={{ color: 'var(--colox-color-blue-solid)' }} />
+    <Loading
+      animation="pulse"
+      label="success"
+      style={{ color: 'var(--colox-color-green-solid)' }}
+    />
+    <Loading
+      animation="pulse"
+      label="warning"
+      style={{ color: 'var(--colox-color-orange-solid)' }}
+    />
+    <Loading animation="pulse" label="error" style={{ color: 'var(--colox-color-red-solid)' }} />
+  </Stack>
+</Stack>
+
+## Accessibility and motion
+
+The root announces itself with `role="status"` (an implicit polite live
+region); the animated figure is hidden from screen readers as pure
+decoration. Under `prefers-reduced-motion: reduce` the motion calms
+down rather than freezing — the spin turns slower, the dots sync into
+one soft breath, the pulse ripples slower.
+
+`Loading` is a **leaf**: it never wraps or masks children. To mark a
+whole region as loading, compose it yourself — e.g. an absolutely
+positioned `Empty`-style block carrying a centered `Loading` over the
+content. That stays the caller's overlay, this stays the indicator.

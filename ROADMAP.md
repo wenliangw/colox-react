@@ -224,7 +224,7 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   the M4 overlay family is complete: Tooltip / Popover / Modal / Drawer
   / Toast / Notify.
 
-### M5 — Display and feedback (in progress)
+### M5 — Display and feedback (shipped)
 
 - `Avatar` — the portrait primitive — **shipped**: a round footprint
   (circle by default — the ecosystem convention, an avatar reads as a
@@ -332,6 +332,14 @@ milestone adds the semantics on top (focus management, scroll locking, ARIA):
   illustration with its own ambient palette per scene; `figure` overrides
   with a custom illustration. Static display: no events, no state, not
   closable.
+- `Loading` — shipped: the inline busy indicator — a decorative motion
+  figure (spinner arc / dots wave / pulse ripple via `animation`, spinner
+  by default; the axis rides the Skeleton `animation` word, not `type`).
+  `size` sm 16 / md 24 / lg 32 or a px number moves the indicator only;
+  `label` rides beside it and doubles as the accessible name (default
+  "Loading"). Inherits `currentColor`; announces with `role="status"`;
+  `prefers-reduced-motion` calms the motion instead of freezing. A leaf:
+  it wraps nothing (no mask mode, no page-level stage).
 
 ### M6 — Navigation and containment (planned)
 

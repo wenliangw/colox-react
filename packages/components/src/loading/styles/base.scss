@@ -1,0 +1,46 @@
+// Loading: the inline busy indicator. The root is a leaf — it paints
+// motion, not meaning: no value (Progress), no layout (Skeleton), no
+// wrapping mask. The figure inherits currentColor, so it follows the
+// surrounding text or a Button tint for free; the size axis moves the
+// indicator em-footprint only, the label keeps the surrounding size.
+//
+// The indicator footprint rides font-size: the figures are drawn in
+// `em` (Empty illustrations precedent), preset tiers pin the theme
+// size scale (sm 16 / md 24 / lg 32), and the numeric escape inlines
+// an exact px font-size (inline wins over the class).
+.colox-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--colox-spacing-2);
+}
+
+.colox-loading__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: var(--colox-size-6);
+}
+
+.colox-loading--sm .colox-loading__indicator {
+  font-size: var(--colox-size-4);
+}
+
+.colox-loading--lg .colox-loading__indicator {
+  font-size: var(--colox-size-8);
+}
+
+// One private duration per figure shape — the spin is a wheel (fast,
+// steady), the dots a breath (medium), the pulse a ripple (slow).
+// A theme may repin the loop pace without touching the recipes.
+.colox-loading--spinner {
+  --colox-loading-duration: 800ms;
+}
+
+.colox-loading--dots {
+  --colox-loading-duration: 900ms;
+}
+
+.colox-loading--pulse {
+  --colox-loading-duration: 1200ms;
+}

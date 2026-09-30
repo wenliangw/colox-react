@@ -160,6 +160,11 @@
       "import": "./dist/es/empty.js",
       "require": "./dist/cjs/empty.cjs"
     },
+    "./loading": {
+      "types": "./dist/types/loading/index.d.ts",
+      "import": "./dist/es/loading.js",
+      "require": "./dist/cjs/loading.cjs"
+    },
     "./textarea": {
       "types": "./dist/types/textarea/index.d.ts",
       "import": "./dist/es/textarea.js",
